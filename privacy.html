@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Politique de Confidentialité - Pixora</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-base: #050507;
+            --bg-surface: rgba(24, 24, 27, 0.6);
+            --border-subtle: rgba(63, 63, 70, 0.5);
+            --accent-primary: #8B5CF6;
+            --accent-secondary: #EC4899;
+            --text-main: #FAFAFA;
+            --text-muted: #A1A1AA;
+            --text-dim: #71717A;
+            --font-ui: 'Inter', -apple-system, sans-serif;
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            line-height: 1.8;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 20s infinite ease-in-out; }
+        .orb-1 { width: 400px; height: 400px; background: var(--accent-primary); top: -100px; left: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: var(--accent-secondary); bottom: 10%; right: -50px; animation-delay: -5s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        .header {
+            background: rgba(9, 9, 11, 0.85);            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1rem 1.5rem;
+            display: flex; align-items: center; gap: 1rem;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn {
+            display: flex; align-items: center; gap: 0.5rem;
+            color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s;
+        }
+        .back-btn:hover { color: var(--text-main); }
+        .header-title { font-size: 1.1rem; font-weight: 700; }
+
+        .content {
+            max-width: 800px; margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 {
+            font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 50%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .last-updated { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+        .card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.15rem; font-weight: 700; margin-bottom: 0.75rem;
+            color: var(--accent-primary);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        h2 i { font-size: 1rem; }
+
+        p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
+        p:last-child { margin-bottom: 0; }
+
+        ul { list-style: none; padding-left: 0; margin-bottom: 0.75rem; }
+        ul li {
+            color: var(--text-muted); font-size: 0.9rem;
+            padding: 0.3rem 0; padding-left: 1.2rem; position: relative;        }
+        ul li::before {
+            content: ''; position: absolute; left: 0; top: 0.65rem;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent-primary);
+        }
+
+        .contact-box {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(236,72,153,0.05));
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem; text-align: center;
+        }
+        .contact-box p { color: var(--text-main); font-weight: 500; }
+        .contact-email {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--accent-primary); font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem; margin-top: 0.5rem;
+        }
+
+        .footer {
+            text-align: center; padding: 2rem 1rem;
+            color: var(--text-dim); font-size: 0.75rem;
+            border-top: 1px solid var(--border-subtle); margin-top: 2rem;
+        }
+        .footer a { color: var(--text-muted); transition: color 0.2s; }
+        .footer a:hover { color: var(--accent-primary); }
+        .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.5rem; }
+            .card { padding: 1.25rem 1.5rem; }
+            .content { padding: 1.5rem 1rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+</div>
+
+<header class="header">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i><span>Retour</span></a>
+    <div class="header-title">Confidentialité</div>
+</header>
+
+<main class="content">
+    <h1>Politique de Confidentialité</h1>    <p class="last-updated">Dernière mise à jour : Juillet 2026</p>
+
+    <div class="card">
+        <h2><i class="fas fa-shield-alt"></i> Introduction</h2>
+        <p>Bienvenue sur Pixora. Nous nous engageons à protéger la vie privée de nos utilisateurs. Cette politique explique comment nous collectons, utilisons et protégeons vos données lorsque vous utilisez notre plateforme de génération d'images et vidéos par intelligence artificielle.</p>
+    </div>
+
+    <div class="card">
+        <h2><i class="fas fa-database"></i> Données collectées</h2>
+        <p>Nous collectons un minimum de données pour assurer le fonctionnement du service :</p>
+        <ul>
+            <li>Adresse IP (pour la détection automatique de région et l'adaptation des tarifs)</li>
+            <li>Données de navigation locales (points, historique, préférences — stockées uniquement dans votre navigateur via LocalStorage)</li>
+            <li>Adresse email (uniquement si vous créez un compte ou contactez le support)</li>
+            <li>Prompts de génération (traités temporairement par nos fournisseurs d'API IA, non stockés sur nos serveurs)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2><i class="fas fa-ad"></i> Publicité et partenaires tiers</h2>
+        <p>Pixora est gratuit grâce à la publicité. Nous travaillons avec les partenaires suivants qui peuvent utiliser des cookies et des technologies de suivi :</p>
+        <ul>
+            <li><strong>Adsterra</strong> — Liens directs, popunders et bannières natives</li>
+            <li><strong>Monetag</strong> — MultiTag et publicités vidéo récompensées</li>
+            <li><strong>PopAds</strong> — Popunders de backup</li>
+            <li><strong>AdscendMedia</strong> — Offres CPA et offerwall</li>
+        </ul>
+        <p>Ces partenaires peuvent collecter des données anonymisées pour personnaliser les annonces. Vous pouvez désactiver les cookies publicitaires dans les paramètres de votre navigateur à tout moment.</p>
+    </div>
+
+    <div class="card">
+        <h2><i class="fas fa-coins"></i> Système de points et paiements</h2>
+        <p>Les points gagnés via les publicités, offres et actions quotidiennes sont stockés localement dans votre navigateur. Les achats de packs de points sont traités par des processeurs de paiement sécurisés (Stripe, PayPal). Nous ne stockons jamais vos informations bancaires.</p>
+    </div>
+
+    <div class="card">
+        <h2><i class="fas fa-lock"></i> Sécurité des données</h2>
+        <p>Vos données locales (points, historique) restent dans votre navigateur et ne sont jamais envoyées à nos serveurs. Les transactions de paiement sont chiffrées via SSL/TLS. Nous ne vendons ni ne partageons vos données personnelles avec des tiers non autorisés.</p>
+    </div>
+
+    <div class="card">
+        <h2><i class="fas fa-user-cog"></i> Vos droits</h2>
+        <p>Vous disposez des droits suivants :</p>
+        <ul>
+            <li>Accéder à vos données personnelles</li>
+            <li>Demander la suppression de vos données</li>
+            <li>Désactiver les cookies publicitaires</li>
+            <li>Réinitialiser vos données locales via la page Profil</li>
+            <li>Retirer votre consentement à tout moment</li>
+        </ul>    </div>
+
+    <div class="card">
+        <h2><i class="fas fa-child"></i> Protection des mineurs</h2>
+        <p>Pixora n'est pas destiné aux personnes de moins de 13 ans. Nous ne collectons sciemment aucune donnée auprès de mineurs. Si vous êtes parent ou tuteur et pensez que votre enfant nous a fourni des données, contactez-nous immédiatement.</p>
+    </div>
+
+    <div class="contact-box">
+        <p><i class="fas fa-envelope" style="margin-right:0.5rem;"></i> Une question ? Contactez-nous</p>
+        <div class="contact-email"><i class="fas fa-at"></i> support@pixoraia.netlify.app</div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="index.html">Studio</a>
+        <a href="shop.html">Boutique</a>
+        <a href="profile.html">Profil</a>
+    </div>
+    <div>© 2026 Pixora. Tous droits réservés.</div>
+</footer>
+
+</body>
+</html>

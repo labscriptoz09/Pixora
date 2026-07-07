@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pixora - Boutique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--bg-base:#050507;--bg-surface:rgba(24,24,27,0.6);--bg-elevated:rgba(39,39,42,0.8);--border-subtle:rgba(63,63,70,0.5);--accent-primary:#8B5CF6;--accent-secondary:#EC4899;--gold:#FBBF24;--gold-dim:rgba(251,191,36,0.1);--success:#10B981;--fire:#F97316;--text-main:#FAFAFA;--text-muted:#A1A1AA;--text-dim:#71717A;--font-ui:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--radius-md:16px;--radius-lg:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--header-bg:rgba(20,20,23,0.85)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg-base);color:var(--text-main);font-family:var(--font-ui);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
+        .orb-1{width:400px;height:400px;background:var(--accent-primary);top:-100px;left:-100px}
+        .orb-2{width:300px;height:300px;background:var(--accent-secondary);bottom:10%;right:-50px;animation-delay:-5s}
+        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
+        a{text-decoration:none;color:inherit}
+        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+        
+        /* HEADER */
+        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--header-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border-subtle);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+        .header-left{display:flex;align-items:center;gap:0.8rem}
+        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text-main)}
+        .header-logo svg{width:26px;height:26px;flex-shrink:0}
+        .logo-text{font-size:1.1rem;font-weight:700;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--accent-primary) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header-right{display:flex;align-items:center;gap:0.8rem}
+        .header-stats{display:flex;gap:0.5rem}
+        .stat-badge{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;border-radius:20px;font-family:var(--font-mono);font-size:0.7rem;font-weight:600;background:rgba(255,255,255,0.05);border:1px solid var(--border-subtle)}
+        .stat-badge.points{color:var(--gold);border-color:rgba(251,191,36,0.3);background:var(--gold-dim)}
+        .stat-badge.streak{color:var(--fire);border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.1)}
+        .header-nav-item{padding:0.4rem 0.8rem;border-radius:10px;font-size:0.8rem;font-weight:500;color:var(--text-muted);transition:all 0.2s;display:flex;align-items:center;gap:0.35rem}
+        .header-nav-item:hover{color:var(--text-main);background:rgba(255,255,255,0.05)}
+        .btn-header-auth{padding:0.4rem 1rem;background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));color:white;border-radius:10px;font-size:0.8rem;font-weight:600;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;white-space:nowrap;flex-shrink:0}
+        .btn-header-auth:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
+        @media(max-width:767px){.header-nav,.header-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-header-auth{padding:0.35rem 0.8rem;font-size:0.75rem}}
+        
+        /* SHOP CONTENT */
+        .shop-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:75px;padding-bottom:40px;animation:slideUp 0.4s var(--ease-out)}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .shop-hero{text-align:center;padding:1.5rem 1rem;margin-bottom:2rem}
+        .shop-hero h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent-primary) 50%,var(--accent-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem}
+        .shop-hero p{color:var(--text-muted);font-size:0.95rem}
+        .section-label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+        .section-label i{color:var(--accent-primary)}
+        
+        /* PACKS & SUBS GRID */
+        .packs-grid,.subs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:2.5rem}
+        .pack-card,.sub-card{background:var(--bg-surface);backdrop-filter:blur(20px);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:1.5rem;transition:all 0.3s var(--ease-out);position:relative;overflow:hidden}        .pack-card:hover,.sub-card:hover{transform:translateY(-4px);border-color:rgba(139,92,246,0.3);box-shadow:0 10px 40px rgba(139,92,246,0.15)}
+        .pack-badge{position:absolute;top:1rem;right:1rem;padding:0.3rem 0.6rem;border-radius:8px;font-size:0.65rem;font-weight:700;text-transform:uppercase}
+        .pack-badge.popular{background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));color:white}
+        .pack-badge.best-value{background:linear-gradient(135deg,var(--gold),#F59E0B);color:#000}
+        .pack-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;margin-bottom:1rem;box-shadow:0 8px 20px rgba(139,92,246,0.3)}
+        .pack-name{font-size:1.1rem;font-weight:700;margin-bottom:0.3rem}
+        .pack-points{font-family:var(--font-mono);font-size:1.5rem;font-weight:800;color:var(--gold);margin-bottom:0.5rem}
+        .pack-desc{font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;min-height:40px}
+        .pack-price{display:flex;align-items:baseline;gap:0.3rem;margin-bottom:1rem}
+        .price-amount{font-size:2rem;font-weight:800}
+        .price-currency{font-size:1rem;color:var(--text-muted)}
+        .buy-btn{width:100%;padding:0.8rem;background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));color:white;border-radius:12px;font-weight:600;font-size:0.95rem;box-shadow:0 4px 15px rgba(139,92,246,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s}
+        .buy-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
+        
+        /* SUBSCRIPTIONS */
+        .sub-card.featured{border-color:var(--accent-primary);box-shadow:0 0 30px rgba(139,92,246,0.15)}
+        .sub-name{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
+        .sub-price{display:flex;align-items:baseline;gap:0.3rem;margin-bottom:1rem}
+        .sub-price .price-amount{font-size:2.5rem}
+        .sub-period{color:var(--text-muted);font-size:0.9rem}
+        .sub-features{list-style:none;margin-bottom:1.5rem}
+        .sub-features li{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0;font-size:0.85rem;color:var(--text-muted)}
+        .sub-features li i{color:var(--success);font-size:0.8rem}
+        .subscribe-btn{width:100%;padding:0.8rem;background:transparent;border:2px solid var(--accent-primary);color:var(--accent-primary);border-radius:12px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:all 0.3s}
+        .subscribe-btn:hover{background:var(--accent-primary);color:white}
+        .sub-card.featured .subscribe-btn{background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));border:none;color:white}
+        
+        /* TRUST & MODAL */
+        .trust-section{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;padding:2rem 1rem;border-top:1px solid var(--border-subtle);margin-top:2rem}
+        .trust-item{display:flex;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.8rem}
+        .trust-item i{color:var(--success)}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:2000;padding:1rem}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:2rem;max-width:400px;width:100%;text-align:center;animation:scaleIn 0.3s var(--ease-out)}
+        @keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+        .modal-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;margin:0 auto 1rem}
+        .modal h2{font-size:1.3rem;font-weight:700;margin-bottom:0.5rem}
+        .modal p{color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem}
+        .modal-close{padding:0.7rem 2rem;background:var(--accent-primary);color:white;border:none;border-radius:10px;font-weight:600;cursor:pointer}
+        @media(max-width:768px){.shop-hero h1{font-size:1.5rem}.packs-grid,.subs-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+
+<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+<header class="site-header">
+    <div class="header-left">
+        <a href="index.html" class="header-logo">
+            <svg viewBox="0 0 32 32" fill="none">                <defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+                <path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#sg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+                <path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/>
+            </svg>
+            <span class="logo-text">Pixora</span>
+        </a>
+    </div>
+    <div class="header-right">
+        <div class="header-stats" id="header-stats-logged" style="display:none">
+            <div class="stat-badge streak"><i class="fas fa-fire"></i> <span id="header-streak">J1</span></div>
+            <div class="stat-badge points"><i class="fas fa-bolt"></i> <span id="header-points">0</span></div>
+        </div>
+        <a href="profile.html" class="header-nav-item" id="header-profile-link" style="display:none"><i class="fas fa-user"></i> Profil</a>
+        <button class="btn-header-auth" id="header-auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+    </div>
+</header>
+
+<main class="shop-content">
+    <div class="shop-hero">
+        <h1>Rechargez Pixora</h1>
+        <p>Obtenez des crédits pour générer des images et vidéos IA sans limite.</p>
+    </div>
+    
+    <div class="section-label"><i class="fas fa-coins"></i><span>Packs de Points</span></div>
+    <div class="packs-grid" id="packsGrid">
+        <!-- Packs seront chargés dynamiquement -->
+    </div>
+    
+    <div class="section-label"><i class="fas fa-crown"></i><span>Abonnements Mensuels</span></div>
+    <div class="subs-grid" id="subsGrid">
+        <!-- Subs seront chargés dynamiquement -->
+    </div>
+    
+    <div class="trust-section">
+        <div class="trust-item"><i class="fas fa-lock"></i><span>Paiement sécurisé</span></div>
+        <div class="trust-item"><i class="fas fa-credit-card"></i><span>Stripe & PayPal</span></div>
+        <div class="trust-item"><i class="fas fa-undo"></i><span>Remboursement 7j</span></div>
+    </div>
+</main>
+
+<div class="modal-overlay" id="payment-modal">
+    <div class="modal">
+        <div class="modal-icon"><i class="fas fa-check"></i></div>
+        <h2 id="modal-title">Achat confirmé !</h2>
+        <p id="modal-message">Vos points ont été ajoutés.</p>
+        <button class="modal-close" onclick="closeModal()">Retour au Studio</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script>
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function updateShopUI() {
+    var user = await db.auth.getUser();
+    if (!user) {
+        document.getElementById('header-stats-logged').style.display = 'none';
+        document.getElementById('header-profile-link').style.display = 'none';
+        return;
+    }
+    document.getElementById('header-stats-logged').style.display = 'flex';
+    document.getElementById('header-profile-link').style.display = 'flex';
+    
+    var configResult = await db.from('admin_config').select('*').eq('key', 'shop_config').single();
+    var config = configResult.data ? configResult.data.value : {
+        packs: [
+            {name:'Starter',points:100,price:0.99},
+            {name:'Popular',points:500,price:4.99},
+            {name:'Best Value',points:1200,price:9.99},
+            {name:'Pro',points:2500,price:19.99}
+        ],
+        subs: [
+            {name:'Basic',points:2000,price:9.99},
+            {name:'Pro',points:5000,price:19.99},
+            {name:'Elite',points:12000,price:39.99}
+        ],
+        currency:'EUR'
+    };
+    
+    var packsHtml = (config.packs || []).map(p => `
+        <div class="pack-card">
+            <div class="pack-icon"><i class="fas fa-bolt"></i></div>
+            <div class="pack-name">${p.name}</div>
+            <div class="pack-points">${p.points} pts</div>
+            <div class="pack-desc">~${Math.floor(p.points/15)} images</div>
+            <div class="pack-price"><span class="price-amount">${p.price}</span><span class="price-currency">${config.currency}</span></div>
+            <button class="buy-btn" onclick="buyPack('${p.name.toLowerCase()}',${p.points},${p.price})"><i class="fas fa-shopping-cart"></i> Acheter</button>
+        </div>
+    `).join('');
+    document.getElementById('packsGrid').innerHTML = packsHtml;
+    
+    var subsHtml = (config.subs || []).map(s => `
+        <div class="sub-card">
+            <div class="sub-name">${s.name}</div>
+            <div class="sub-price"><span class="price-amount">${s.price}</span><span class="sub-period">${config.currency}/mois</span></div>
+            <ul class="sub-features">
+                <li><i class="fas fa-check"></i> ${s.points} pts/mois</li>
+                <li><i class="fas fa-check"></i> Vidéos incluses</li>                <li><i class="fas fa-check"></i> Support prioritaire</li>
+            </ul>
+            <button class="subscribe-btn" onclick="subscribe('${s.name.toLowerCase()}',${s.points},${s.price})">S'abonner</button>
+        </div>
+    `).join('');
+    document.getElementById('subsGrid').innerHTML = subsHtml;
+}
+
+async function buyPack(name, points, price) {
+    var user = await db.auth.getUser();
+    if (!user) { window.location.href='index.html'; return; }
+    await db.from('transactions').insert({user_id:user.id,type:'purchased',title:'Pack '+name,amount:points});
+    await db.from('purchases').insert({user_id:user.id,type:'pack',name:'Pack '+name,details:points+' pts',price:price});
+    var data = await db.from('user_data').select('*').eq('user_id',user.id).single();
+    if (data.data) await db.from('user_data').update({points:data.data.points+points,total_earned:(data.data.total_earned||0)+points}).eq('user_id',user.id);
+    showModal('Achat réussi !', points+' points ajoutés');
+}
+
+async function subscribe(plan, points, price) {
+    var user = await db.auth.getUser();
+    if (!user) { window.location.href='index.html'; return; }
+    await db.from('transactions').insert({user_id:user.id,type:'purchased',title:'Abonnement '+plan,amount:points});
+    await db.from('purchases').insert({user_id:user.id,type:'subscription',name:'Abonnement '+plan,details:points+' pts/mois',price:price});
+    var data = await db.from('user_data').select('*').eq('user_id',user.id).single();
+    if (data.data) await db.from('user_data').update({points:data.data.points+points,total_earned:(data.data.total_earned||0)+points}).eq('user_id',user.id);
+    showModal('Abonnement activé !', plan+' activé. '+points+' points ajoutés.');
+}
+
+function showModal(t,m) {
+    document.getElementById('modal-title').textContent = t;
+    document.getElementById('modal-message').textContent = m;
+    document.getElementById('payment-modal').classList.add('active');
+}
+function closeModal() { document.getElementById('payment-modal').classList.remove('active'); window.location.href='index.html'; }
+document.getElementById('payment-modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+document.addEventListener('DOMContentLoaded', updateShopUI);
+</script>
+</body>
+</html>
