@@ -47,7 +47,8 @@
         .generator:focus-within{border-color:var(--glow)}
         .prompt-field{width:100%;min-height:80px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:16px;padding:1rem;color:var(--text);font-family:var(--font);font-size:0.95rem;resize:none;outline:none;transition:all 0.3s}
         .prompt-field:focus{border-color:var(--prim);background:rgba(0,0,0,0.5)}
-        .prompt-field::placeholder{color:var(--dim)}        .gen-controls{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1rem;align-items:center;justify-content:space-between}        .chip-group{display:flex;gap:0.4rem;flex-wrap:wrap}
+        .prompt-field::placeholder{color:var(--dim)}        .gen-controls{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1rem;align-items:center;justify-content:space-between}
+        .chip-group{display:flex;gap:0.4rem;flex-wrap:wrap}
         .chip{padding:0.5rem 0.9rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;font-size:0.8rem;color:var(--muted);min-height:38px;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s}
         .chip:hover{background:rgba(255,255,255,0.08);color:var(--text)}
         .chip.active{border-color:var(--prim);color:var(--text);background:rgba(139,92,246,0.1);box-shadow:0 0 15px rgba(139,92,246,0.2)}
@@ -96,7 +97,8 @@
         .auth-logo{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.3rem}
         .auth-logo svg{width:30px;height:30px}
         .auth-logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}        .auth-sub{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem}
-        .auth-tabs{display:flex;gap:0.3rem;background:rgba(255,255,255,0.03);border-radius:12px;padding:0.3rem;margin-bottom:1.2rem}        .auth-tab{flex:1;padding:0.55rem;border-radius:10px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all 0.2s}
+        .auth-tabs{display:flex;gap:0.3rem;background:rgba(255,255,255,0.03);border-radius:12px;padding:0.3rem;margin-bottom:1.2rem}
+        .auth-tab{flex:1;padding:0.55rem;border-radius:10px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all 0.2s}
         .auth-tab.active{background:var(--prim);color:white}
         .form-section{display:none}.form-section.active{display:block;animation:fadeIn 0.3s}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -145,7 +147,8 @@
             <button class="auth-tab" onclick="switchTab('register')">Inscription</button>
         </div>        <div class="form-section active" id="sec-login">
             <form onsubmit="doLogin(event)">
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
+                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
             </form>
         </div>
@@ -194,7 +197,8 @@
                 <button class="chip" data-type="video" onclick="selType('video')"><i class="fas fa-video"></i> <span id="chip-video">Vidéo (90 pts)</span></button>            </div>
             <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> Générer <span class="cost-label" id="gen-cost">-15 pts</span></button>
         </div>
-    </div>    <div class="section-label"><span>Vos Créations</span><span style="font-size:0.65rem;color:var(--dim)">Auto-effacement après 1h</span></div>
+    </div>
+    <div class="section-label"><span>Vos Créations</span><span style="font-size:0.65rem;color:var(--dim)">Auto-effacement après 1h</span></div>
     <div class="results-grid" id="results-grid"></div>
     <footer class="site-footer">
         <div class="footer-links">
@@ -218,7 +222,6 @@ var curType = 'image';
 var lbUrl = '';
 var lbType = 'image';
 
-// === CONFIG DYNAMIQUE DEPUIS ADMIN ===
 var DEFAULT_TIERS = {
     1: { costs:{image:15,video:90}, rewards:{video:30,survey:80,sponsor:5,streak:10,share:20}, limits:{video:3,sponsor:5,share:1} }
 };
@@ -235,22 +238,20 @@ async function loadDynamicConfig() {
     updateCostUI();
 }
 
-// ✅ MISE À JOUR EN TEMPS RÉEL DES COÛTS UI
 function updateCostUI() {
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
     document.getElementById('chip-image').textContent = 'Image (' + c.costs.image + ' pts)';
-    document.getElementById('chip-video').textContent = 'Vidéo (' + c.costs.video + ' pts)';    document.getElementById('gen-cost').textContent = '-' + (curType === 'image' ? c.costs.image : c.costs.video) + ' pts';
+    document.getElementById('chip-video').textContent = 'Vidéo (' + c.costs.video + ' pts)';
+    document.getElementById('gen-cost').textContent = '-' + (curType === 'image' ? c.costs.image : c.costs.video) + ' pts';
 }
-
-// === NOTIFICATION ===
-function notify(m, t) {    t = t || 'success';
+function notify(m, t) {
+    t = t || 'success';
     var n = document.getElementById('notif');
     document.getElementById('notif-text').textContent = m;
     n.className = 'notification show ' + t;
     setTimeout(function() { n.classList.remove('show'); }, 3000);
 }
 
-// === AUTH ===
 async function getUser() { var r = await db.auth.getUser(); return r.data.user; }
 async function isLogged() { return !!await getUser(); }
 function openAuth() { document.getElementById('auth-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
@@ -284,7 +285,6 @@ async function doRegister(e) {
     } catch (err) { notify('❌ Erreur inscription', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; }
 }
 
-// === GOOGLE LOGIN (NOUVELLE FONCTION AJOUTÉE) ===
 async function loginWithGoogle() {
     try {
         await db.auth.signInWithOAuth({
@@ -293,6 +293,7 @@ async function loginWithGoogle() {
                 redirectTo: window.location.origin
             }
         });    } catch (err) {
+        console.error('Google Login error:', err);
         notify('❌ Erreur Google Login', 'error');
     }
 }
@@ -300,7 +301,8 @@ async function loginWithGoogle() {
 async function getUserData() {
     var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
     var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
-    return r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 };}
+    return r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
+}
 
 async function saveTransaction(type, title, amount) {
     var u = await getUser(); if (!u) return;
@@ -316,7 +318,7 @@ async function updateAuthUI() {
     var btn = document.getElementById('auth-btn');
     if (logged) {
         btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Déconnexion';
-        btn.onclick = async function() { await db.auth.signOut(); updateAuthUI(); notify(' Déconnecté', 'success'); setTimeout(function() { location.reload(); }, 800); };
+        btn.onclick = async function() { await db.auth.signOut(); updateAuthUI(); notify('👋 Déconnecté', 'success'); setTimeout(function() { location.reload(); }, 800); };
     } else {
         btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Connexion';
         btn.onclick = openAuth;
@@ -333,7 +335,16 @@ async function updateAuthUI() {
     document.getElementById('hdr-points').textContent = d.points || 0;
 }
 
-// === LIGHTBOX ===
+db.auth.onAuthStateChange(function(event, session) {
+    console.log('Auth event:', event);
+    if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        updateAuthUI();
+        closeAuth();
+        notify('✅ Connecté avec Google !', 'success');
+    } else if (event === 'SIGNED_OUT') {        updateAuthUI();
+    }
+});
+
 function openLB(url, type) {
     lbUrl = url; lbType = type || 'image';
     var container = document.getElementById('lb-container');
@@ -341,14 +352,16 @@ function openLB(url, type) {
     if (lbType === 'video') {
         var vid = document.createElement('video');
         vid.src = url; vid.controls = true; vid.autoplay = true; vid.loop = true;
-        vid.style.cssText = 'max-width:90vw;max-height:80vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';        container.appendChild(vid);
+        vid.style.cssText = 'max-width:90vw;max-height:80vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';
+        container.appendChild(vid);
     } else {
         var img = document.createElement('img');
         img.src = url; img.alt = 'Zoom';
         img.style.cssText = 'max-width:90vw;max-height:80vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';
         container.appendChild(img);
     }
-    document.getElementById('lightbox').classList.add('active');    document.body.style.overflow = 'hidden';
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 function closeLB() {
     document.getElementById('lightbox').classList.remove('active');
@@ -366,7 +379,7 @@ async function dlLB() {
         var u = URL.createObjectURL(b);
         var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext;
         document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
-        notify(' Téléchargé !', 'success');
+        notify('📥 Téléchargé !', 'success');
     } catch(e) { window.open(lbUrl, '_blank'); }
 }
 
@@ -377,8 +390,7 @@ async function dlDirect(btn) {
     try {
         var r = await fetch(media.src); var b = await r.blob();
         var isVideo = media.tagName === 'VIDEO';
-        var ext = isVideo ? '.mp4' : '.jpg';
-        var u = URL.createObjectURL(b);
+        var ext = isVideo ? '.mp4' : '.jpg';        var u = URL.createObjectURL(b);
         var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext;
         document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
         notify('📥 Téléchargé !', 'success');
@@ -388,15 +400,16 @@ async function dlDirect(btn) {
 function selType(t) {
     curType = t;
     document.querySelectorAll('.chip[data-type]').forEach(function(c) { c.classList.toggle('active', c.dataset.type === t); });
-    updateCostUI(); // ✅ Met à jour le coût affiché quand on change de type
+    updateCostUI();
 }
-// === LOAD STUDIO ===
+
 async function loadStudio() {
     var grid = document.getElementById('results-grid');
     try {
         var result = await db.storage.from(BUCKET).list('', { limit: 20, sortBy: { column: 'created_at', order: 'desc' } });
         if (!result.data || result.data.length === 0) return;
-        var now = Date.now();        grid.innerHTML = '';
+        var now = Date.now();
+        grid.innerHTML = '';
         result.data.forEach(function(file) {
             var createdAt = new Date(file.created_at).getTime();
             if ((now - createdAt) < 3600000) {
@@ -422,27 +435,24 @@ async function loadStudio() {
     } catch (err) { console.error('Studio load error:', err); }
 }
 
-// === UPLOAD STORAGE ===
 async function uploadToStorage(mediaUrl, type) {
     try {
         var response = await fetch(mediaUrl);
         var blob = await response.blob();
-        var prefix = type === 'video' ? '_video_' : '_img_';
-        var fileName = Date.now() + prefix + Math.floor(Math.random() * 100000) + (type === 'video' ? '.mp4' : '.jpg');
+        var prefix = type === 'video' ? '_video_' : '_img_';        var fileName = Date.now() + prefix + Math.floor(Math.random() * 100000) + (type === 'video' ? '.mp4' : '.jpg');
         var contentType = type === 'video' ? 'video/mp4' : 'image/jpeg';
         await db.storage.from(BUCKET).upload(fileName, blob, { contentType: contentType, upsert: false });
         loadStudio();
     } catch (err) { console.error('Upload failed:', err); }
 }
 
-// === GENERATE (CORRIGÉ AVEC COÛTS DYNAMIQUES) ===
 async function generate() {
     var p = document.getElementById('prompt').value.trim();
     if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
+
     var logged = await isLogged();
     if (!logged) { openAuth(); return; }
 
-    // ✅ COÛT DYNAMIQUE DEPUIS ADMIN CONFIG
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
     var cost = curType === 'image' ? c.costs.image : c.costs.video;
     var userData = await getUserData();
@@ -478,8 +488,7 @@ async function generate() {
     var loaded = false;
 
     function onLoad() {
-        if (loaded) return;
-        loaded = true;
+        if (loaded) return;        loaded = true;
         clearInterval(iv);
         var elapsed = ((Date.now() - st) / 1000).toFixed(1);
         var to = card.querySelector('.timer-overlay'); if (to) to.remove();
@@ -488,11 +497,12 @@ async function generate() {
             media.onmouseenter = function() { media.play(); };
             media.onmouseleave = function() { media.pause(); media.currentTime = 0; };
         }
-        card.onclick = function() { openLB(url, curType); };        uploadToStorage(url, curType);
-        // ✅ Déduction avec coût dynamique
+        card.onclick = function() { openLB(url, curType); };
+        uploadToStorage(url, curType);
         saveTransaction('spent', 'Génération ' + curType, -cost).then(function() { updateAuthUI(); });
         notify('✅ Générée en ' + elapsed + 's ! (-' + cost + ' pts)', 'success');
-        setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);    }
+        setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);
+    }
 
     if (curType === 'video') {
         media.onloadeddata = onLoad;
@@ -503,9 +513,8 @@ async function generate() {
     }
 }
 
-// === INIT ===
 document.addEventListener('DOMContentLoaded', async function() {
-    await loadDynamicConfig(); // ✅ Charge les coûts depuis admin AVANT tout
+    await loadDynamicConfig();
     await updateAuthUI();
     await loadStudio();
 });
