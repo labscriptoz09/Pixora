@@ -47,8 +47,7 @@
         .page-sub{font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem}
 
         /* GRID */
-        .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem}        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+        .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem}        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}}        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
         .result-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
         .result-card img{width:100%;height:100%;object-fit:cover;display:block}
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.6rem;gap:0.4rem;opacity:0;transition:opacity 0.3s}
@@ -97,8 +96,7 @@
         .form-section{display:none}.form-section.active{display:block;animation:fadeIn 0.3s}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         .form-group{margin-bottom:0.8rem;text-align:left}        .form-label{display:block;font-size:0.7rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.05em}
-        .form-input{width:100%;padding:0.75rem 1rem;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--font);font-size:0.9rem;outline:none;transition:all 0.3s}
-        .form-input:focus{border-color:var(--prim);background:rgba(0,0,0,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
+        .form-input{width:100%;padding:0.75rem 1rem;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--font);font-size:0.9rem;outline:none;transition:all 0.3s}        .form-input:focus{border-color:var(--prim);background:rgba(0,0,0,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
         .form-input::placeholder{color:var(--dim)}
         .btn-submit{width:100%;padding:0.8rem;margin-top:0.3rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:700;font-size:0.95rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3)}
         .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
@@ -147,8 +145,7 @@
                 <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>            </form>
         </div>
-        <div class="form-section" id="sec-register">
-            <form onsubmit="doRegister(event)">
+        <div class="form-section" id="sec-register">            <form onsubmit="doRegister(event)">
                 <div class="form-group"><label class="form-label">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div>
                 <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div>
                 <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div>
@@ -156,7 +153,7 @@
             </form>
         </div>
         <div class="auth-divider">ou continuer avec</div>
-        <button class="social-btn google" onclick="notify('⏳ Google bientôt disponible...','success')"><i class="fab fa-google"></i> Google</button>
+        <button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> Google</button>
         <button class="social-btn github" onclick="notify('⏳ GitHub bientôt disponible...','success')"><i class="fab fa-github"></i> GitHub</button>
         <div class="auth-footer">En continuant, vous acceptez nos <a href="privacy.html">conditions</a>.</div>
     </div>
@@ -197,8 +194,7 @@
         <div class="footer-links">            <a href="index.html">Studio</a>
             <a href="earn.html">Points</a>
             <a href="shop.html">Boutique</a>
-            <a href="profile.html">Profil</a>
-            <a href="privacy.html">Confidentialité</a>
+            <a href="profile.html">Profil</a>            <a href="privacy.html">Confidentialité</a>
         </div>
         <div>© 2026 Pixora. Tous droits réservés.</div>
     </footer>
@@ -247,11 +243,25 @@ async function doRegister(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-reg');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';
-    try {
-        var r = await db.auth.signUp({ email: document.getElementById('r-email').value.trim(), password: document.getElementById('r-pw').value, options: { data: { name: document.getElementById('r-name').value.trim() } } });
+    try {        var r = await db.auth.signUp({ email: document.getElementById('r-email').value.trim(), password: document.getElementById('r-pw').value, options: { data: { name: document.getElementById('r-name').value.trim() } } });
         if (r.error) throw r.error;
         closeAuth(); updateAuthUI(); notify('🎉 Compte créé !', 'success');
     } catch (err) { notify('❌ Erreur inscription', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; }
+}
+
+// ✅ GOOGLE LOGIN AVEC URL VERCEL EN DUR
+async function loginWithGoogle() {
+    try {
+        await db.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: 'https://pixora-gold-eight.vercel.app'
+            }
+        });
+    } catch (err) {
+        console.error('Google Login error:', err);
+        notify('❌ Erreur Google Login', 'error');
+    }
 }
 
 async function updateAuthUI() {
@@ -273,6 +283,17 @@ async function updateAuthUI() {
         mp.onclick = function(e) { e.preventDefault(); openAuth(); };
     }
 }
+
+// ✅ LISTENER AUTH STATE CHANGE
+db.auth.onAuthStateChange(function(event, session) {
+    console.log('Auth event:', event);
+    if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        updateAuthUI();
+        closeAuth();
+        notify('✅ Connecté avec Google !', 'success');
+    } else if (event === 'SIGNED_OUT') {
+        updateAuthUI();    }
+});
 
 // === LIGHTBOX ===
 function openLB(url) { lbUrl = url; document.getElementById('lb-img').src = url; document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
@@ -320,8 +341,7 @@ async function loadGallery() {    var grid = document.getElementById('gallery-gr
         grid.innerHTML = '';
         validFiles.forEach(function(item) {
             var card = document.createElement('div');
-            card.className = 'result-card';
-            card.innerHTML = '<img src="' + item.url + '" alt="Création Pixora" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
+            card.className = 'result-card';            card.innerHTML = '<img src="' + item.url + '" alt="Création Pixora" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
             card.onclick = function() { openLB(item.url); };
             grid.appendChild(card);
         });
