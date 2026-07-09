@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>🔍 Test Supabase Admin — Pixora</title>
+    <style>
+        body{font-family:system-ui,sans-serif;margin:2rem;background:#0a0a0f;color:#FAFAFA}
+        .card{background:#13131a;border:1px solid #2a2a35;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+        .title{font-size:1.4rem;font-weight:700;margin-bottom:1rem;color:#8B5CF6}
+        .item{display:flex;justify-content:space-between;padding:0.8rem 0;border-bottom:1px solid #2a2a35}
+        .item:last-child{border-bottom:none}
+        .status{font-weight:600}
+        .ok{color:#10B981}
+        .ko{color:#EF4444}
+        .info{color:#A1A1AA;font-size:0.85rem}
+    </style>
+</head>
+<body>
+<h1>🔍 Test Supabase Admin — Pixora</h1>
+<div id="results"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var BUCKET = 'pixora-gallery';
+
+function addResult(title, status, msg = '') {
+    var div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="title">${title}</div><div class="item"><span>État</span><span class="status ${status === '✅' ? 'ok' : 'ko'}">${status}</span></div>`;
+    if (msg) div.innerHTML += `<div class="info">${msg}</div>`;
+    document.getElementById('results').appendChild(div);
+}
+
+async function runTest() {
+    try {
+        // 1. Auth
+        var auth = await db.auth.getUser();
+        addResult('🔐 Auth', auth.data?.user ? '✅' : '❌', auth.data?.user?.email || 'Non connecté');
+
+        // 2. user_data
+        try {
+            var ud = await db.from('user_data').select('*').limit(1);
+            addResult('👥 user_data', ud.data && ud.data.length > 0 ? '✅' : '⚠️ vide', `Rows: ${ud.data?.length || 0}`);
+        } catch (e) { addResult('👥 user_data', '❌', e.message); }
+
+        // 3. transactions
+        try {
+            var tx = await db.from('transactions').select('*').limit(1);
+            addResult('💳 transactions', tx.data && tx.data.length > 0 ? '✅' : '⚠️ vide', `Rows: ${tx.data?.length || 0}`);
+        } catch (e) { addResult('💳 transactions', '❌', e.message); }
+
+        // 4. generator_models
+        try {
+            var gm = await db.from('generator_models').select('*').limit(1);
+            addResult('🤖 generator_models', gm.data && gm.data.length > 0 ? '✅' : '⚠️ vide', `Rows: ${gm.data?.length || 0}`);
+        } catch (e) { addResult('🤖 generator_models', '❌', e.message); }
+
+        // 5. admin_config
+        try {
+            var ac = await db.from('admin_config').select('*').eq('key', 'tiers').single();
+            addResult('⚙️ admin_config', ac.data ? '✅' : '⚠️ vide', `key: ${ac.data?.key || 'non trouvé'}`);
+        } catch (e) { addResult('⚙️ admin_config', '❌', e.message); }
+
+        // 6. bucket pixora-gallery
+        try {
+            var list = await db.storage.from(BUCKET).list('', { limit: 1 });
+            addResult('🖼️ bucket pixora-gallery', list.data && list.data.length >= 0 ? '✅' : '⚠️ vide', `Files: ${list.data?.length || 0}`);
+        } catch (e) { addResult('🖼️ bucket pixora-gallery', '❌', e.message); }
+
+        // 7. Realtime (test simple)
+        try {
+            var sub = db.channel('test-channel').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'user_data' }, () => {}).subscribe();
+            setTimeout(() => {
+                sub.unsubscribe();
+                addResult('📡 Realtime', '✅', 'Abonné avec succès');
+            }, 1000);
+        } catch (e) { addResult('📡 Realtime', '❌', e.message); }
+
+    } catch (err) {
+        addResult('💥 Erreur globale', '❌', err.message);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', runTest);
+</script>
+</body>
+</html>
