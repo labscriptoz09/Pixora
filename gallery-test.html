@@ -5,40 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixora - Galerie Publique</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{
-            --bg:#050507;
-            --surf:rgba(24,24,27,0.6);
-            --elev:rgba(39,39,42,0.8);
-            --border:rgba(63,63,70,0.5);
-            --prim:#8B5CF6;
-            --text:#FAFAFA;
-            --muted:#A1A1AA;
-            --hdr:rgba(20,20,23,0.85);
-        }
+        :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.5;min-height:100dvh;overflow-x:hidden}
-        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
-        .header-logo{display:flex;align-items:center;gap:0.5rem;color:var(--text)}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
+        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
+        .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}
+        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
+
+        /* HEADER */
+        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
         .header-logo svg{width:28px;height:28px}
-        .logo-text{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .header-right{display:flex;align-items:center;gap:0.7rem}
-        .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:white;cursor:pointer}
-        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 10px 30px rgba(0,0,0,0.5);opacity:0;visibility:hidden;transform:translateY(-10px);transition:all 0.3s}
+        .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
+        .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:white;cursor:pointer;transition:all 0.2s}
+        .user-avatar.show{display:flex}
+        .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(139,92,246,0.5)}
+        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;transition:all 0.2s}
+        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s;z-index:1001}
         .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
-        .menu-item{display:block;padding:0.6rem;color:var(--text);font-size:0.85rem;text-decoration:none}
+        .menu-item{display:block;padding:0.6rem;color:var(--text);font-size:0.85rem;text-decoration:none;cursor:pointer}
         .menu-item:hover{background:rgba(139,92,246,0.1)}
 
-        .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px}
-        .page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.5rem}
-        .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem;margin-top:1rem}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+        /* MOBILE NAV */
+        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
+        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s}
+        .nav-item i{font-size:1.2rem}
+        .nav-item span{font-size:0.58rem;font-weight:600}
+        .nav-item[data-nav="gallery"].active{color:#3B82F6}
+        .nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 8px rgba(59,130,246,0.6))}
+
+        /* MAIN */
+        .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
+        @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}
+        .page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.03em}
+        .page-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem}
+
+        /* GRID */
+        .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
+        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem}}        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform 0.3s}
+        .result-card:hover{transform:translateY(-3px)}
         .result-card img{width:100%;height:100%;object-fit:cover;display:block}
+        .placeholder{grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted)}
+        .placeholder i{font-size:3rem;opacity:0.3;margin-bottom:1rem}
+
+        /* FOOTER */
+        .site-footer{text-align:center;padding:1.5rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
     </style>
 </head>
 <body>
+
+<div class="bg-orbs"><div class="orb o1"></div></div>
 
 <!-- HEADER -->
 <header class="site-header">
@@ -47,43 +68,107 @@
         <span class="logo-text">Pixora</span>
     </a>
     <div class="header-right">
-        <div class="user-avatar" onclick="document.getElementById('menu').classList.toggle('show')">
-            U
-        </div>
+        <div class="user-avatar" id="user-avatar" onclick="document.getElementById('menu').classList.toggle('show')">U</div>
+        <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'">Connexion</button>
         <div class="user-menu" id="menu">
-            <div class="menu-item">👤 Utilisateur</div>
-            <div class="menu-item">⭐ Points: 150</div>
-            <div class="menu-item">🖼️ Galerie</div>
-            <div class="menu-item">🛒 Boutique</div>
-            <div class="menu-item" style="color:#EF4444">🚪 Déconnexion</div>
+            <div class="menu-item" onclick="window.location.href='profile.html'"> Mon profil</div>
+            <div class="menu-item" onclick="window.location.href='earn.html'">⭐ Gagner des points</div>
+            <div class="menu-item" onclick="window.location.href='shop.html'">🛒 Boutique</div>
         </div>
     </div>
 </header>
 
+<!-- MOBILE NAV -->
+<nav class="nav-mobile">
+    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
+    <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
+    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span>Points</span></a>
+    <a href="#" class="nav-item" id="mob-profile" onclick="event.preventDefault();document.getElementById('menu').classList.toggle('show')"><i class="fas fa-user"></i></a>
+</nav>
+
 <!-- MAIN -->
 <main class="main-content">
     <h1 class="page-title">Galerie Publique</h1>
-    
-    <div class="results-grid">
-        <!-- IMAGE EXEMPLE -->
-        <div class="result-card">
-            <img src="https://picsum.photos/400/400?random=1" alt="Exemple">
-        </div>
-        <div class="result-card">
-            <img src="https://picsum.photos/400/400?random=2" alt="Exemple">
-        </div>
-        <div class="result-card">
-            <img src="https://picsum.photos/400/400?random=3" alt="Exemple">
-        </div>
-        <div class="result-card">
-            <img src="https://picsum.photos/400/400?random=4" alt="Exemple">
-        </div>
-    </div>
+    <p class="page-sub">Les dernières créations de la communauté Pixora</p>
+
+    <div class="results-grid" id="gallery-grid">
+        <!-- Images de test par défaut -->
+        <div class="result-card"><img src="https://picsum.photos/400/400?random=1" alt="Test"></div>
+        <div class="result-card"><img src="https://picsum.photos/400/400?random=2" alt="Test"></div>
+        <div class="result-card"><img src="https://picsum.photos/400/400?random=3" alt="Test"></div>
+        <div class="result-card"><img src="https://picsum.photos/400/400?random=4" alt="Test"></div>    </div>
+
+    <footer class="site-footer">
+        <div>© 2026 Pixora. Tous droits réservés.</div>
+    </footer>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-    // Test simple : si ça s'affiche, c'est que le problème vient de Supabase
-    console.log("✅ Galerie chargée — avatar et images visibles");
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var BUCKET = 'pixora-gallery';
+
+// === LOAD GALLERY ===
+async function loadGallery() {
+    var grid = document.getElementById('gallery-grid');
+    
+    try {
+        console.log('📥 Chargement galerie...');
+        var result = await db.storage.from(BUCKET).list('', { limit: 20, sortBy: { column: 'created_at', order: 'desc' } });
+        
+        console.log('Résultat:', result);
+        
+        if (result.error) {
+            console.error('Erreur Supabase:', result.error);
+            return; // Garde les images de test
+        }
+        
+        if (!result.data || result.data.length === 0) {
+            console.log('📁 Bucket vide');
+            grid.innerHTML = '<div class="placeholder"><i class="fas fa-images"></i><p>Aucune création récente.<br>Génère ta première image dans le Studio !</p></div>';
+            return;
+        }
+
+        console.log('✅', result.data.length, 'fichiers trouvés');
+        grid.innerHTML = ''; // Vide les placeholders
+
+        result.data.forEach(function(file) {
+            var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
+            var url = urlData.data.publicUrl;
+            
+            var card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = '<img src="' + url + '" alt="Création" loading="lazy" onerror="this.parentElement.style.display=\'none\'">';
+            grid.appendChild(card);
+        });
+
+    } catch (err) {
+        console.error('❌ Erreur:', err);        // Garde les images de test
+    }
+}
+
+// === AUTH SIMPLE ===
+async function updateAuth() {
+    try {
+        var user = await db.auth.getUser();
+        if (user.data.user) {
+            document.getElementById('user-avatar').classList.add('show');
+            document.getElementById('auth-btn').style.display = 'none';
+            var initial = (user.data.user.user_metadata?.name || user.data.user.email).charAt(0).toUpperCase();
+            document.getElementById('user-avatar').textContent = initial;
+        }
+    } catch (e) {
+        console.log('Pas connecté');
+    }
+}
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', function() {
+    updateAuth();
+    loadGallery();
+});
 </script>
 </body>
 </html>
