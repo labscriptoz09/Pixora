@@ -8,7 +8,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
+        :root{
+            --bg:#050507;
+            --surf:rgba(24,24,27,0.6);
+            --elev:rgba(39,39,42,0.8);
+            --border:rgba(63,63,70,0.5);
+            --glow:rgba(139,92,246,0.25);
+            --prim:#8B5CF6;
+            --sec:#EC4899;
+            --gold:#FBBF24;
+            --success:#10B981;
+            --danger:#EF4444;
+            --text:#FAFAFA;
+            --muted:#A1A1AA;
+            --dim:#71717A;
+            --font:'Inter',sans-serif;
+            --mono:'JetBrains Mono',monospace;
+            --hdr:rgba(20,20,23,0.85);
+        }
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
         .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
@@ -30,8 +47,7 @@
         .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;color:white;position:relative;flex-shrink:0}
         .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(139,92,246,0.5)}
         .user-avatar.show{display:flex}
-        .avatar-hamburger{position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.45rem;color:var(--muted);border:1.5px solid var(--border)}
-        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);white-space:nowrap}
+        .avatar-hamburger{position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.45rem;color:var(--muted);border:1.5px solid var(--border)}        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);white-space:nowrap}
         .btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
 
@@ -47,7 +63,8 @@
         .menu-points-bar i{color:var(--gold);font-size:0.75rem}
         .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
         .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
-        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
+        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
+        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
         .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
         .menu-item:hover i{color:var(--prim)}
         .menu-item.danger{color:var(--danger)}
@@ -79,8 +96,7 @@
         /* GRID */
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
         @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem}}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
-        .result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}        .result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
         .result-card img{width:100%;height:100%;object-fit:cover;display:block}
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.6rem;gap:0.4rem;opacity:0;transition:opacity 0.3s}
         .result-card:hover .result-overlay{opacity:1}
@@ -96,7 +112,8 @@
         .lightbox-close:hover{background:var(--danger);transform:rotate(90deg)}
         .lightbox-actions{display:flex;gap:1rem;margin-top:1.5rem}
         .lb-btn{padding:0.7rem 1.3rem;background:var(--prim);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s}
-        .lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}        .lb-btn.sec{background:rgba(255,255,255,0.1)}
+        .lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
+        .lb-btn.sec{background:rgba(255,255,255,0.1)}
 
         /* NOTIFICATION */
         .notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
@@ -128,8 +145,7 @@
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         .form-group{margin-bottom:0.85rem;text-align:left}
         .form-label{display:block;font-size:0.68rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.08em}
-        .form-input{width:100%;padding:0.8rem 0.9rem;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--font);font-size:0.88rem;outline:none;transition:all 0.3s}
-        .form-input:focus{border-color:var(--prim);background:rgba(0,0,0,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
+        .form-input{width:100%;padding:0.8rem 0.9rem;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--font);font-size:0.88rem;outline:none;transition:all 0.3s}        .form-input:focus{border-color:var(--prim);background:rgba(0,0,0,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
         .form-input::placeholder{color:var(--dim)}
         .btn-submit{width:100%;padding:0.85rem;margin-top:0.3rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:700;font-size:0.92rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3)}
         .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
@@ -145,6 +161,7 @@
     </style>
 </head>
 <body>
+
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
 
@@ -163,7 +180,11 @@
     <div class="auth-modal">
         <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
         <div class="auth-logo">
-            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
+            <svg viewBox="0 0 32 32" fill="none">
+                <defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+                <path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+                <path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/>
+            </svg>
             <span>Pixora</span>
         </div>
         <p class="auth-sub">Connectez-vous pour générer et gagner des points</p>
@@ -173,8 +194,7 @@
         </div>
         <div class="form-section active" id="sec-login">
             <form onsubmit="doLogin(event)">
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
-                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
             </form>
         </div>
@@ -194,8 +214,13 @@
 </div>
 
 <!-- HEADER -->
-<header class="site-header">    <a href="index.html" class="header-logo">
-        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
+<header class="site-header">
+    <a href="index.html" class="header-logo">
+        <svg viewBox="0 0 32 32" fill="none">
+            <defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+            <path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+            <path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/>
+        </svg>
         <span class="logo-text">Pixora</span>
     </a>
     <div class="header-right">
@@ -218,8 +243,7 @@
                     <div class="menu-email" id="menu-email">email@example.com</div>
                 </div>
             </div>
-            <div class="menu-points-bar">
-                <i class="fas fa-bolt"></i>
+            <div class="menu-points-bar">                <i class="fas fa-bolt"></i>
                 <span id="menu-points">0</span>
                 <small>points</small>
             </div>
@@ -243,7 +267,8 @@
 <!-- MOBILE NAV -->
 <nav class="nav-mobile">
     <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
-    <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>    <a href="earn.html" class="nav-item" data-nav="points">
+    <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
+    <a href="earn.html" class="nav-item" data-nav="points">
         <i class="fas fa-coins"></i>
         <span class="badge" id="nav-points-badge" style="display:none">0</span>
     </a>
@@ -256,6 +281,7 @@
     <p class="page-sub">Les dernières créations de la communauté Pixora</p>
 
     <div class="results-grid" id="gallery-grid">
+        <!-- Les 3 vraies images seront chargées ici par Supabase -->
         <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);">
             <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i>
             <p>Chargement...</p>
@@ -266,8 +292,7 @@
         <div class="footer-links">
             <a href="index.html">Studio</a>
             <a href="earn.html">Points</a>
-            <a href="shop.html">Boutique</a>
-            <a href="profile.html">Profil</a>
+            <a href="shop.html">Boutique</a>            <a href="profile.html">Profil</a>
             <a href="privacy.html">Confidentialité</a>
         </div>
         <div>© 2026 Pixora. Tous droits réservés.</div>
@@ -280,7 +305,6 @@ var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var BUCKET = 'pixora-gallery';
-var lbUrl = '';
 
 // === NOTIFICATION ===
 function notify(m, t) {
@@ -292,7 +316,8 @@ function notify(m, t) {
 }
 
 // === AUTH ===
-async function getUser() { var r = await db.auth.getUser(); return r.data.user; }async function isLogged() { return !!await getUser(); }
+async function getUser() { var r = await db.auth.getUser(); return r.data.user; }
+async function isLogged() { return !!await getUser(); }
 function openAuth() { document.getElementById('auth-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
 function closeAuth() { document.getElementById('auth-modal').classList.remove('active'); document.body.style.overflow = ''; }
 document.getElementById('auth-modal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });
@@ -316,8 +341,7 @@ async function doLogin(e) {
 async function doRegister(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-reg');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';
-    try {
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';    try {
         var r = await db.auth.signUp({ email: document.getElementById('r-email').value.trim(), password: document.getElementById('r-pw').value, options: { data: { name: document.getElementById('r-name').value.trim() } } });
         if (r.error) throw r.error;
         closeAuth(); updateUI(); notify('🎉 Compte créé !', 'success');
@@ -341,7 +365,8 @@ function toggleUserMenu(e) {
     if (e) e.preventDefault();
     document.getElementById('user-menu').classList.toggle('show');
 }
-function closeUserMenu() {    document.getElementById('user-menu').classList.remove('show');
+function closeUserMenu() {
+    document.getElementById('user-menu').classList.remove('show');
 }
 document.addEventListener('click', function(e) {
     var menu = document.getElementById('user-menu');
@@ -354,7 +379,7 @@ async function doLogout() {
     await db.auth.signOut();
     closeUserMenu();
     updateUI();
-    notify(' Déconnecté', 'success');
+    notify('👋 Déconnecté', 'success');
     setTimeout(function() { location.reload(); }, 800);
 }
 
@@ -365,8 +390,7 @@ async function getUserData() {
     return r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
 }
 
-// === UPDATE UI ===
-async function updateUI() {
+// === UPDATE UI ===async function updateUI() {
     var logged = await isLogged();
     var user = await getUser();
 
@@ -390,7 +414,8 @@ async function updateUI() {
     }
 }
 
-// === LIGHTBOX ===function openLB(url) {
+// === LIGHTBOX ===
+function openLB(url) {
     lbUrl = url;
     document.getElementById('lb-img').src = url;
     document.getElementById('lightbox').classList.add('active');
@@ -414,8 +439,7 @@ async function dlLB() {
         a.download = 'pixora-' + Date.now() + '.jpg';
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(u);
+        document.body.removeChild(a);        URL.revokeObjectURL(u);
         notify('📥 Téléchargé !', 'success');
     } catch (e) {
         window.open(lbUrl, '_blank');
@@ -439,7 +463,8 @@ async function dlDirect(btn) {
         URL.revokeObjectURL(u);
         notify('📥 Téléchargé !', 'success');
     } catch (e) {
-        window.open(img.src, '_blank');    }
+        window.open(img.src, '_blank');
+    }
 }
 
 // === LOAD GALLERY ===
@@ -448,17 +473,8 @@ async function loadGallery() {
     grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p>Chargement...</p></div>';
     
     try {
-        console.log('Loading gallery from bucket:', BUCKET);
         var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
-        
-        console.log('Gallery result:', result);
-        
-        if (result.error) {
-            console.error('Storage error:', result.error);
-            grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur: ' + result.error.message + '</p></div>';
-            return;
-        }
-        
+        if (result.error) throw result.error;
         if (!result.data || result.data.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
             return;
@@ -472,14 +488,7 @@ async function loadGallery() {
             if ((now - createdAt) < 3600000) {
                 var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
                 validFiles.push({ url: urlData.data.publicUrl, name: file.name });
-            } else {
-                // Supprimer les fichiers > 1h
-                console.log('Deleting old file:', file.name);
-                await db.storage.from(BUCKET).remove([file.name]);
-            }
-        }
-
-        console.log('Valid files:', validFiles.length);
+            }        }
 
         if (validFiles.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
@@ -488,7 +497,8 @@ async function loadGallery() {
 
         grid.innerHTML = '';
         validFiles.forEach(function(item) {
-            var card = document.createElement('div');            card.className = 'result-card';
+            var card = document.createElement('div');
+            card.className = 'result-card';
             card.innerHTML = '<img src="' + item.url + '" alt="Création Pixora" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
             card.onclick = function() { openLB(item.url); };
             grid.appendChild(card);
@@ -520,7 +530,6 @@ db.auth.onAuthStateChange(function(event) {
 
 // === INIT ===
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('Gallery page loaded');
     await updateUI();
     await loadGallery();
 });
