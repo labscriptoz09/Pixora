@@ -53,79 +53,78 @@
         .user-stats.show{display:flex}
         .stat-icon{color:var(--gold);font-size:0.85rem}
         .stat-points{font-family:var(--mono);font-size:0.85rem;font-weight:700;color:var(--gold)}
-        .user-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;color:white}
+        .user-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;color:white;position:relative}
         .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(139,92,246,0.5)}
         .user-avatar.show{display:flex}
+        .user-avatar .hamburger{position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--muted);border:1px solid var(--border)}
         .btn-auth{padding:0.5rem 1.2rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-size:0.85rem;font-weight:600;display:flex;align-items:center;gap:0.5rem;white-space:nowrap;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3)}
         .btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.4rem 0.9rem;font-size:0.8rem}.logo-text{font-size:1.15rem}}
 
-        /* MOBILE NAV - COULEURS DISTINCTES */
+        /* USER MENU DROPDOWN */
+        .user-menu{position:absolute;top:calc(100% + 12px);right:0;width:280px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:20px;padding:0.8rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-10px);transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
+        .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
+        .user-menu-header{display:flex;align-items:center;gap:0.8rem;padding:0.6rem 0.4rem 1rem;border-bottom:1px solid var(--border)}
+        .user-menu-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:white;flex-shrink:0}
+        .user-menu-info{flex:1;min-width:0}
+        .user-menu-name{font-size:0.9rem;font-weight:700;margin-bottom:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .user-menu-email{font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .user-menu-points{display:flex;align-items:center;gap:0.4rem;padding:0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:10px;margin-bottom:0.6rem}
+        .user-menu-points i{color:var(--gold);font-size:0.85rem}
+        .user-menu-points span{font-family:var(--mono);font-size:0.85rem;font-weight:700;color:var(--gold);flex:1}
+        .user-menu-points small{font-size:0.65rem;color:var(--muted);font-weight:500}
+        .user-menu-item{display:flex;align-items:center;gap:0.8rem;padding:0.75rem 0.6rem;border-radius:12px;color:var(--text);font-size:0.85rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
+        .user-menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
+        .user-menu-item i{width:20px;text-align:center;color:var(--muted);font-size:0.95rem;transition:color 0.2s}
+        .user-menu-item:hover i{color:var(--prim)}
+        .user-menu-item.danger{color:var(--danger)}
+        .user-menu-item.danger i{color:var(--danger)}
+        .user-menu-item.danger:hover{background:rgba(239,68,68,0.08)}
+        .user-menu-divider{height:1px;background:var(--border);margin:0.4rem 0}
+
+        /* MOBILE NAV */
         .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.5rem 0 0.6rem;padding-bottom:calc(0.6rem + env(safe-area-inset-bottom));z-index:1000}
         .nav-item{width:64px;height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.2rem;border-radius:18px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}
         .nav-item i{font-size:1.3rem;transition:all 0.3s}
-        .nav-item span{font-size:0.65rem;font-weight:600;letter-spacing:0.02em}
         .nav-item[data-nav="studio"].active{color:var(--nav-studio)}
         .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 10px rgba(139,92,246,0.6))}
-        .nav-item[data-nav="studio"].active span{color:var(--nav-studio)}
         .nav-item[data-nav="gallery"].active{color:var(--nav-gallery)}
         .nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 10px rgba(59,130,246,0.6))}
-        .nav-item[data-nav="gallery"].active span{color:var(--nav-gallery)}
         .nav-item[data-nav="points"].active{color:var(--nav-points)}
         .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 10px rgba(251,191,36,0.6))}
-        .nav-item[data-nav="points"].active span{color:var(--nav-points)}
         .nav-item[data-nav="profile"].active{color:var(--nav-profile)}
         .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 10px rgba(236,72,153,0.6))}
-        .nav-item[data-nav="profile"].active span{color:var(--nav-profile)}
         .nav-item .badge{position:absolute;top:4px;right:10px;background:var(--danger);color:white;font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center;font-family:var(--mono)}
 
-        /* MAIN */
-        .main-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:80px;padding-bottom:110px}
+        /* MAIN */        .main-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:80px;padding-bottom:110px}
         @media(min-width:768px){.main-content{margin-top:70px;padding:2rem}}
 
-        /* HERO - RAFFINÉ */
+        /* HERO */
         .hero{text-align:center;padding:1.5rem 1rem;margin-bottom:2rem}
         .hero h1{font-size:2.4rem;font-weight:800;line-height:1.1;letter-spacing:-0.04em;color:var(--text);text-shadow:0 0 20px rgba(139,92,246,0.25)}
         .hero p{font-size:0.95rem;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.6;font-weight:400;opacity:0.85}
-        .hero p::before{content:"— ";color:var(--prim);font-weight:600}
 
-        /* GENERATOR - GLASSMORPHISM */
+        /* GENERATOR */
         .generator{background:var(--surf);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:28px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 10px 40px rgba(0,0,0,0.4);transition:border-color 0.3s}
         .generator:focus-within{border-color:var(--glow)}
-        .prompt-field{width:100%;min-height:90px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:16px;padding:1rem;color:var(--text);font-family:var(--font);font-size:0.95rem;resize:none;outline:none;transition:all 0.3s;position:relative}
+        .prompt-field{width:100%;min-height:90px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:16px;padding:1rem;color:var(--text);font-family:var(--font);font-size:0.95rem;resize:none;outline:none;transition:all 0.3s}
         .prompt-field::placeholder{color:var(--dim);opacity:0.6}
         .prompt-field:focus{border-color:var(--prim);background:rgba(0,0,0,0.4);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
-        .prompt-field:before{content:"✨";position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--prim);font-size:1.1rem;opacity:0.4;pointer-events:none}
-        .prompt-field:focus:before{opacity:0.8;transform:translateY(-50%) scale(1.1)}
-        /* TYPE SELECTOR - GLASSMORPHISM */
+
+        /* TYPE SELECTOR */
         .type-selector{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:1rem}
-        .type-btn{padding:1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(139,92,246,0.15);border-radius:16px;font-size:0.9rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);cursor:pointer;position:relative;overflow:hidden}
+        .type-btn{padding:1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(139,92,246,0.15);border-radius:16px;font-size:0.9rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);cursor:pointer}
         .type-btn i{font-size:1.4rem;transition:all 0.3s}
-        .type-btn .type-name{font-weight:600;font-size:0.95rem;letter-spacing:0.01em}
+        .type-btn .type-name{font-weight:600;font-size:0.95rem}
         .type-btn .type-cost{font-family:var(--mono);font-size:0.75rem;opacity:0.8;background:rgba(0,0,0,0.2);padding:3px 10px;border-radius:8px;font-weight:600}
         .type-btn:hover{background:rgba(139,92,246,0.05);transform:translateY(-2px);border-color:rgba(139,92,246,0.3)}
         .type-btn.active{border-color:var(--prim);background:rgba(139,92,246,0.08);color:var(--text);box-shadow:0 0 20px rgba(139,92,246,0.15)}
         .type-btn.active i{color:var(--prim);transform:scale(1.1)}
 
-        /* GENERATE BUTTON - PRO */
-        .btn-gen{width:100%;margin-top:1.2rem;padding:1.1rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:16px;font-weight:700;font-size:1.05rem;display:flex;align-items:center;justify-content:center;gap:0.7rem;box-shadow:0 4px 20px rgba(139,92,246,0.4);transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);letter-spacing:0.02em;position:relative;overflow:hidden}
-        .btn-gen:before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:translateX(-100%);transition:transform 0.4s}
+        /* GENERATE BUTTON */
+        .btn-gen{width:100%;margin-top:1.2rem;padding:1.1rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:16px;font-weight:700;font-size:1.05rem;display:flex;align-items:center;justify-content:center;gap:0.7rem;box-shadow:0 4px 20px rgba(139,92,246,0.4);transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);letter-spacing:0.02em}
         .btn-gen:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(139,92,246,0.6)}
-        .btn-gen:hover:before{transform:translateX(0)}
         .btn-gen:active{transform:scale(0.98)}
-
-        /* USER BAR - RAFFINÉ */
-        .user-bar{display:none;background:var(--elev);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:1rem;margin-bottom:1.5rem;align-items:center;justify-content:space-between;gap:1rem}
-        .user-bar.show{display:flex}
-        .user-info{display:flex;align-items:center;gap:0.8rem}
-        .user-avatar-lg{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:white}
-        .user-details h3{font-size:0.95rem;font-weight:600;margin-bottom:0.15rem;letter-spacing:-0.01em}
-        .user-details p{font-size:0.75rem;color:var(--muted)}
-        .user-details .badge{margin-left:0.4rem;font-size:0.6rem;padding:2px 6px;border-radius:6px;background:rgba(139,92,246,0.15);color:var(--prim)}
-        .user-actions{display:flex;gap:0.6rem}
-        .action-btn{padding:0.6rem 1rem;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all 0.2s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.4rem}
-        .action-btn:hover{border-color:var(--prim);background:rgba(139,92,246,0.05);color:var(--text)}
-        .action-btn.primary{background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border:none}
 
         /* QUICK STATS */
         .quick-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;margin-bottom:1.5rem}
@@ -140,12 +139,16 @@
         .stat-value{font-family:var(--mono);font-size:1.3rem;font-weight:700;margin-bottom:0.2rem}
         .stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
 
+        /* SECTION LABEL */
+        .section-label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--dim);margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+        .section-label span{font-size:0.7rem;color:var(--muted);text-transform:none;letter-spacing:0}
+
         /* RESULTS GRID */
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem}
-        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:20px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s cubic-bezier(0.25,0.8,0.25,1);cursor:pointer}
+        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}}        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:20px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s cubic-bezier(0.25,0.8,0.25,1);cursor:pointer}
         .result-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-        .result-card img,.result-card video{width:100%;height:100%;object-fit:cover;display:block}        .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.8rem;gap:0.5rem;opacity:0;transition:opacity 0.3s}
+        .result-card img,.result-card video{width:100%;height:100%;object-fit:cover;display:block}
+        .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.8rem;gap:0.5rem;opacity:0;transition:opacity 0.3s}
         .result-card:hover .result-overlay{opacity:1}
         .icon-btn{width:40px;height:40px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:0.9rem;transition:all 0.2s}
         .icon-btn:hover{background:var(--prim);border-color:var(--prim);transform:scale(1.1)}
@@ -191,10 +194,10 @@
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         .form-group{margin-bottom:1rem;text-align:left}
         .form-label{display:block;font-size:0.75rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.08em}
-        .form-input{width:100%;padding:0.9rem 1rem;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:var(--font);font-size:0.95rem;outline:none;transition:all 0.3s}
-        .form-input:focus{border-color:var(--prim);background:rgba(0,0,0,0.6);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
+        .form-input{width:100%;padding:0.9rem 1rem;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:var(--font);font-size:0.95rem;outline:none;transition:all 0.3s}        .form-input:focus{border-color:var(--prim);background:rgba(0,0,0,0.6);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
         .form-input::placeholder{color:var(--dim)}
-        .btn-submit{width:100%;padding:1rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3)}        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
+        .btn-submit{width:100%;padding:1rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         .btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}
         .auth-divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:var(--dim);font-size:0.8rem}
         .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -240,10 +243,10 @@
                 <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
             </form>
-        </div>
-        <div class="form-section" id="sec-register">
+        </div>        <div class="form-section" id="sec-register">
             <form onsubmit="doRegister(event)">
-                <div class="form-group"><label class="form-label">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div>                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div>
+                <div class="form-group"><label class="form-label">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div>
                 <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> Créer mon compte</button>
             </form>
@@ -266,8 +269,43 @@
             <i class="fas fa-bolt stat-icon"></i>
             <span class="stat-points" id="header-points">0</span>
         </div>
-        <div class="user-avatar" id="user-avatar" onclick="window.location.href='profile.html'"></div>
+        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)">
+            <span id="avatar-initial">U</span>
+            <div class="hamburger"><i class="fas fa-bars"></i></div>
+        </div>
         <button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+        
+        <!-- USER MENU DROPDOWN -->
+        <div class="user-menu" id="user-menu">
+            <div class="user-menu-header">
+                <div class="user-menu-avatar" id="menu-avatar">U</div>
+                <div class="user-menu-info">
+                    <div class="user-menu-name" id="menu-name">Utilisateur</div>
+                    <div class="user-menu-email" id="menu-email">email@example.com</div>
+                </div>
+            </div>
+            <div class="user-menu-points">
+                <i class="fas fa-bolt"></i>
+                <span id="menu-points">0</span>
+                <small>points</small>
+            </div>
+            <a href="profile.html" class="user-menu-item" onclick="closeUserMenu()">
+                <i class="fas fa-user"></i>
+                <span>Mon profil</span>
+            </a>            <a href="earn.html" class="user-menu-item" onclick="closeUserMenu()">
+                <i class="fas fa-coins"></i>
+                <span>Gagner des points</span>
+            </a>
+            <a href="shop.html" class="user-menu-item" onclick="closeUserMenu()">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Mes achats</span>
+            </a>
+            <div class="user-menu-divider"></div>
+            <button class="user-menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </button>
+        </div>
     </div>
 </header>
 
@@ -279,29 +317,15 @@
         <i class="fas fa-coins"></i>
         <span class="badge" id="nav-points-badge" style="display:none">0</span>
     </a>
-    <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();openAuth()"><i class="fas fa-user"></i></a>
+    <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
 </nav>
 
 <!-- MAIN -->
 <main class="main-content">
     <!-- HERO -->
     <div class="hero">
-        <h1>Générez l’impossible</h1>
+        <h1>Générez l'impossible</h1>
         <p>Images et vidéos IA de qualité professionnelle. Sans limite. Sans compromis.</p>
-    </div>
-
-    <!-- USER BAR -->
-    <div class="user-bar" id="user-bar">
-        <div class="user-info">            <div class="user-avatar-lg" id="user-avatar-lg"></div>
-            <div class="user-details">
-                <h3 id="user-name">Utilisateur</h3>
-                <p id="user-email">email@example.com</p>
-            </div>
-        </div>
-        <div class="user-actions">
-            <a href="shop.html" class="action-btn primary"><i class="fas fa-shopping-bag"></i> Shop</a>
-            <a href="earn.html" class="action-btn"><i class="fas fa-coins"></i> Gagner</a>
-        </div>
     </div>
 
     <!-- QUICK STATS -->
@@ -317,8 +341,7 @@
             <div class="stat-label">Streak</div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-image"></i></div>
-            <div class="stat-value" id="stat-generated">0</div>
+            <div class="stat-icon"><i class="fas fa-image"></i></div>            <div class="stat-value" id="stat-generated">0</div>
             <div class="stat-label">Créations</div>
         </div>
         <div class="stat-card">
@@ -332,7 +355,6 @@
     <div class="generator">
         <textarea class="prompt-field" id="prompt" placeholder="Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k"></textarea>
         
-        <!-- BOUTONS IMAGE/VIDÉO -->
         <div class="type-selector">
             <button class="type-btn active" onclick="selType('image')">
                 <i class="fas fa-image"></i>
@@ -341,7 +363,8 @@
             </button>
             <button class="type-btn" onclick="selType('video')">
                 <i class="fas fa-video"></i>
-                <span class="type-name">Vidéo</span>                <span class="type-cost" id="cost-video">90 pts</span>
+                <span class="type-name">Vidéo</span>
+                <span class="type-cost" id="cost-video">90 pts</span>
             </button>
         </div>
         
@@ -367,8 +390,7 @@
             <a href="privacy.html">Confidentialité</a>
         </div>
         <div>© 2026 Pixora. Tous droits réservés.</div>
-    </footer>
-</main>
+    </footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
@@ -390,7 +412,8 @@ async function loadDynamicConfig() {
     try {
         var tiersResult = await db.from('admin_config').select('*').eq('key', 'tiers').single();
         if (tiersResult.data && tiersResult.data.value) CONFIG_TIERS = tiersResult.data.value;
-    } catch (err) { console.error('Config error:', err); }    updateCostUI();
+    } catch (err) { console.error('Config error:', err); }
+    updateCostUI();
 }
 
 function updateCostUI() {
@@ -417,7 +440,6 @@ function switchTab(m) {
     document.getElementById('sec-login').classList.toggle('active', m === 'login');
     document.getElementById('sec-register').classList.toggle('active', m !== 'login');
 }
-
 async function doLogin(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-login');
@@ -437,8 +459,9 @@ async function doRegister(e) {
         var r = await db.auth.signUp({ email: document.getElementById('r-email').value.trim(), password: document.getElementById('r-pw').value, options: { data: { name: document.getElementById('r-name').value.trim() } } });
         if (r.error) throw r.error;
         closeAuth(); updateUI(); notify('🎉 Compte créé !', 'success');
-    } catch (err) { notify('❌ Erreur inscription', 'error'); btn.disabled; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; }
+    } catch (err) { notify('❌ Erreur inscription', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; }
 }
+
 async function loginWithGoogle() {
     try {
         await db.auth.signInWithOAuth({
@@ -465,6 +488,31 @@ async function saveTransaction(type, title, amount) {
     await db.from('user_data').update(up).eq('user_id', u.id);
 }
 
+// === USER MENU ===function toggleUserMenu(e) {
+    if (e) e.preventDefault();
+    var menu = document.getElementById('user-menu');
+    menu.classList.toggle('show');
+}
+function closeUserMenu() {
+    document.getElementById('user-menu').classList.remove('show');
+}
+document.addEventListener('click', function(e) {
+    var menu = document.getElementById('user-menu');
+    var avatar = document.getElementById('user-avatar');
+    var mobProfile = document.getElementById('mob-profile');
+    if (!menu.contains(e.target) && !avatar.contains(e.target) && !mobProfile.contains(e.target)) {
+        closeUserMenu();
+    }
+});
+
+async function doLogout() {
+    await db.auth.signOut();
+    closeUserMenu();
+    updateUI();
+    notify('👋 Déconnecté', 'success');
+    setTimeout(function() { location.reload(); }, 800);
+}
+
 // === UPDATE UI ===
 async function updateUI() {
     var logged = await isLogged();
@@ -473,12 +521,10 @@ async function updateUI() {
     document.getElementById('user-stats').classList.toggle('show', logged);
     document.getElementById('user-avatar').classList.toggle('show', logged);
     document.getElementById('quick-stats').style.display = logged ? 'grid' : 'none';
-    document.getElementById('user-bar').classList.toggle('show', logged);
     
     var btn = document.getElementById('auth-btn');
     if (logged) {
-        btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Déconnexion';
-        btn.onclick = async function() { await db.auth.signOut(); updateUI(); notify('👋 Déconnecté', 'success'); setTimeout(function() { location.reload(); }, 800); };
+        btn.style.display = 'none';
         
         var d = await getUserData();
         document.getElementById('header-points').textContent = d.points || 0;
@@ -488,21 +534,17 @@ async function updateUI() {
         document.getElementById('stat-streak').textContent = d.streak || 1;
         document.getElementById('stat-generated').textContent = d.total_generated || 0;
         document.getElementById('stat-earned').textContent = d.total_earned || 0;
-                document.getElementById('user-name').textContent = user.user_metadata?.name || 'Utilisateur';
-        document.getElementById('user-email').textContent = user.email;
-        var initial = (user.user_metadata?.name || user.email).charAt(0).toUpperCase();
-        document.getElementById('user-avatar').textContent = initial;
-        document.getElementById('user-avatar-lg').textContent = initial;
         
-        // Badge Premium
-        var badge = document.querySelector('.user-details .badge');
-        if (badge) {
-            badge.style.display = d.points >= 100 ? 'inline-block' : 'none';
-        }
+        var name = user.user_metadata?.name || 'Utilisateur';
+        var initial = name.charAt(0).toUpperCase();
+        document.getElementById('avatar-initial').textContent = initial;        document.getElementById('menu-avatar').textContent = initial;
+        document.getElementById('menu-name').textContent = name;
+        document.getElementById('menu-email').textContent = user.email;
+        document.getElementById('menu-points').textContent = d.points || 0;
     } else {
+        btn.style.display = 'flex';
         btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Connexion';
         btn.onclick = openAuth;
-        document.getElementById('mob-profile').onclick = function(e) { e.preventDefault(); openAuth(); };
     }
 }
 
@@ -537,14 +579,14 @@ async function dlLB() {
     try {
         var r = await fetch(lbUrl); var b = await r.blob();
         var ext = lbType === 'video' ? '.mp4' : '.jpg';
-        var u = URL.createObjectURL(b);        var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext;
+        var u = URL.createObjectURL(b);
+        var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext;
         document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
         notify('📥 Téléchargé !', 'success');
     } catch(e) { window.open(lbUrl, '_blank'); }
 }
 
-async function dlDirect(btn) {
-    var card = btn.closest('.result-card');
+async function dlDirect(btn) {    var card = btn.closest('.result-card');
     var media = card.querySelector('img') || card.querySelector('video');
     if (!media || !media.src) return;
     try {
@@ -563,7 +605,6 @@ function selType(t) {
     document.querySelectorAll('.type-btn').forEach(function(c, i) { c.classList.toggle('active', (t === 'image' && i === 0) || (t === 'video' && i === 1)); });
 }
 
-// === LOAD STUDIO ===
 async function loadStudio() {
     var grid = document.getElementById('results-grid');
     try {
@@ -586,7 +627,8 @@ async function loadStudio() {
                     vid.onmouseleave = function() { vid.pause(); vid.currentTime = 0; };
                 } else {
                     card.innerHTML = '<img src="' + url + '" alt="Création" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
-                }                card.onclick = function() { openLB(url, isVideo ? 'video' : 'image'); };
+                }
+                card.onclick = function() { openLB(url, isVideo ? 'video' : 'image'); };
                 grid.appendChild(card);
                 var remaining = 3600000 - (now - createdAt);
                 setTimeout(function() { if (card.parentNode === grid) card.remove(); }, remaining);
@@ -594,8 +636,6 @@ async function loadStudio() {
         });
     } catch (err) { console.error('Studio load error:', err); }
 }
-
-// === UPLOAD STORAGE ===
 async function uploadToStorage(mediaUrl, type) {
     try {
         var response = await fetch(mediaUrl);
@@ -608,7 +648,6 @@ async function uploadToStorage(mediaUrl, type) {
     } catch (err) { console.error('Upload failed:', err); }
 }
 
-// === GENERATE ===
 async function generate() {
     var p = document.getElementById('prompt').value.trim();
     if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
@@ -635,6 +674,7 @@ async function generate() {
     var grid = document.getElementById('results-grid');
     var card = document.createElement('div');
     card.className = 'result-card';
+
     if (curType === 'video') {
         card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="tmr">0.0s</div><div class="timer-label">Génération vidéo...</div></div><video src="' + url + '" muted loop playsinline style="opacity:0;transition:opacity 0.3s"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
     } else {
@@ -645,7 +685,6 @@ async function generate() {
     var st = Date.now();
     var tmr = document.getElementById('tmr');
     var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
-
     var media = curType === 'video' ? card.querySelector('video') : card.querySelector('img');
     var loaded = false;
 
@@ -676,15 +715,14 @@ async function generate() {
     }
 }
 
-// ✅ LISTENER - SANS NOTIFICATION EN BOUCLE
 var authNotified = false;
-
 db.auth.onAuthStateChange(function(event, session) {
     console.log('Auth event:', event);
     if (event === 'SIGNED_IN') {
         updateUI();
         closeAuth();
-        if (!authNotified) {            notify('✅ Connecté avec Google !', 'success');
+        if (!authNotified) {
+            notify('✅ Connecté avec Google !', 'success');
             authNotified = true;
             setTimeout(function() { authNotified = false; }, 3000);
         }
@@ -695,8 +733,6 @@ db.auth.onAuthStateChange(function(event, session) {
         updateUI();
     }
 });
-
-// === INIT ===
 document.addEventListener('DOMContentLoaded', async function() {
     await loadDynamicConfig();
     await updateUI();
