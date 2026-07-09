@@ -36,7 +36,7 @@
         @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
 
         /* USER MENU */
-        .user-menu{position:absolute;top:calc(100% +10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
+        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
         .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
         .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}
         .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;flex-shrink:0}
@@ -354,8 +354,15 @@ async function doLogout() {
     await db.auth.signOut();
     closeUserMenu();
     updateUI();
-    notify('👋 Déconnecté', 'success');
+    notify(' Déconnecté', 'success');
     setTimeout(function() { location.reload(); }, 800);
+}
+
+// === USER DATA ===
+async function getUserData() {
+    var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
+    var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
+    return r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
 }
 
 // === UPDATE UI ===
@@ -381,13 +388,6 @@ async function updateUI() {
         document.getElementById('menu-name').textContent = name;
         document.getElementById('menu-email').textContent = user.email;
     }
-}
-
-// === USER DATA ===
-async function getUserData() {
-    var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
-    var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
-    return r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
 }
 
 // === LIGHTBOX ===function openLB(url) {
@@ -448,8 +448,18 @@ async function loadGallery() {
     grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p>Chargement...</p></div>';
     
     try {
+        console.log('Loading gallery from bucket:', BUCKET);
         var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
-        if (result.error || !result.data || result.data.length === 0) {
+        
+        console.log('Gallery result:', result);
+        
+        if (result.error) {
+            console.error('Storage error:', result.error);
+            grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur: ' + result.error.message + '</p></div>';
+            return;
+        }
+        
+        if (!result.data || result.data.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
             return;
         }
@@ -464,9 +474,12 @@ async function loadGallery() {
                 validFiles.push({ url: urlData.data.publicUrl, name: file.name });
             } else {
                 // Supprimer les fichiers > 1h
+                console.log('Deleting old file:', file.name);
                 await db.storage.from(BUCKET).remove([file.name]);
             }
         }
+
+        console.log('Valid files:', validFiles.length);
 
         if (validFiles.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
@@ -475,20 +488,20 @@ async function loadGallery() {
 
         grid.innerHTML = '';
         validFiles.forEach(function(item) {
-            var card = document.createElement('div');
-            card.className = 'result-card';
+            var card = document.createElement('div');            card.className = 'result-card';
             card.innerHTML = '<img src="' + item.url + '" alt="Création Pixora" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
             card.onclick = function() { openLB(item.url); };
             grid.appendChild(card);
         });
     } catch (err) {
         console.error('Gallery load error:', err);
-        grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur chargement galerie</p></div>';
+        grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur chargement galerie</p></div>';
     }
 }
 
 // === AUTH LISTENER ===
-var authNotified = false;db.auth.onAuthStateChange(function(event) {
+var authNotified = false;
+db.auth.onAuthStateChange(function(event) {
     if (event === 'SIGNED_IN') {
         updateUI();
         closeAuth();
@@ -507,6 +520,7 @@ var authNotified = false;db.auth.onAuthStateChange(function(event) {
 
 // === INIT ===
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Gallery page loaded');
     await updateUI();
     await loadGallery();
 });
