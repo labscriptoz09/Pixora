@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>🔄 Test Sync Admin ↔ Front — Pixora</title>
+    <style>
+        body{font-family:system-ui,sans-serif;margin:2rem;background:#0a0a0f;color:#FAFAFA}
+        h1{color:#8B5CF6;margin-bottom:1.5rem}
+        .card{background:#13131a;border:1px solid #2a2a35;border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+        .title{font-size:1.2rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+        .row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid #2a2a35;font-size:0.9rem}
+        .row:last-child{border-bottom:none}
+        .ok{color:#10B981;font-weight:700}
+        .ko{color:#EF4444;font-weight:700}
+        .warn{color:#F97316;font-weight:700}
+        .btn{padding:0.5rem 1rem;background:#8B5CF6;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-top:0.5rem}
+        .btn:hover{background:#7C3AED}
+        .btn.danger{background:#EF4444}.btn.danger:hover{background:#DC2626}
+        .log{background:#050507;border:1px solid #2a2a35;border-radius:8px;padding:1rem;margin-top:1rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#A1A1AA;max-height:200px;overflow-y:auto}
+    </style>
+</head>
+<body>
+<h1>🔄 Test Sync Admin ↔ Front</h1>
+
+<!-- TEST 1: PRICING -->
+<div class="card">
+    <div class="title">💰 Pricing (index.html + earn.html)</div>
+    <div class="row"><span>Coût Image actuel</span><span id="currentCostImage">-</span></div>
+    <div class="row"><span>Récompense Vidéo actuelle</span><span id="currentRewardVideo">-</span></div>
+    <button class="btn" onclick="testPricingSync()">🔄 Tester Modif Pricing</button>
+    <div class="log" id="logPricing"></div>
+</div>
+
+<!-- TEST 2: SHOP CONFIG -->
+<div class="card">
+    <div class="title">🛒 Boutique (shop.html)</div>
+    <div class="row"><span>Packs configurés</span><span id="currentPacks">-</span></div>
+    <div class="row"><span>Devise</span><span id="currentCurrency">-</span></div>
+    <button class="btn" onclick="testShopSync()">🔄 Tester Modif Shop</button>
+    <div class="log" id="logShop"></div>
+</div>
+
+<!-- TEST 3: GENERATOR MODELS -->
+<div class="card">
+    <div class="title">🤖 Modèles Générateur (index.html)</div>
+    <div class="row"><span>Modèles Image actifs</span><span id="currentModels">-</span></div>
+    <button class="btn" onclick="testModelsSync()">🔄 Tester Modif Modèles</button>
+    <div class="log" id="logModels"></div>
+</div>
+<!-- TEST 4: AD NETWORKS -->
+<div class="card">
+    <div class="title">📢 Régies Pub (earn.html)</div>
+    <div class="row"><span>Régies actives</span><span id="currentAds">-</span></div>
+    <button class="btn" onclick="testAdsSync()">🔄 Tester Modif Ads</button>
+    <div class="log" id="logAds"></div>
+</div>
+
+<!-- TEST 5: USER DATA REALTIME -->
+<div class="card">
+    <div class="title">👥 User Data Realtime (profile.html)</div>
+    <div class="row"><span>Points utilisateur test</span><span id="currentUserPoints">-</span></div>
+    <button class="btn" onclick="testUserRealtime()">🔄 Tester Realtime User</button>
+    <div class="log" id="logUser"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function log(id, msg) {
+    var el = document.getElementById(id);
+    el.innerHTML += '<div>' + new Date().toLocaleTimeString() + ' → ' + msg + '</div>';
+    el.scrollTop = el.scrollHeight;
+}
+
+// === TEST 1: PRICING ===
+async function testPricingSync() {
+    var logId = 'logPricing';
+    log(logId, '📥 Lecture pricing actuel...');
+    try {
+        var r = await db.from('admin_config').select('value').eq('key', 'tiers').single();
+        if (!r.data) { log(logId, '❌ Clé tiers introuvable'); return; }
+        var tiers = r.data.value;
+        var oldCost = tiers[1]?.costs?.image;
+        var oldReward = tiers[1]?.rewards?.video;
+        document.getElementById('currentCostImage').textContent = oldCost + ' pts';
+        document.getElementById('currentRewardVideo').textContent = oldReward + ' pts';
+        log(logId, '✅ Actuel: Image=' + oldCost + ', Vidéo Reward=' + oldReward);
+
+        // Modifier temporairement
+        var newCost = oldCost === 15 ? 99 : 15;
+        var newReward = oldReward === 30 ? 77 : 30;
+        tiers[1].costs.image = newCost;
+        tiers[1].rewards.video = newReward;
+        log(logId, '✏️ Modification: Image=' + newCost + ', Vidéo Reward=' + newReward);
+
+        await db.from('admin_config').update({ value: tiers, updated_at: new Date().toISOString() }).eq('key', 'tiers');        log(logId, '💾 Sauvegardé dans admin_config');
+
+        // Re-lire pour vérifier
+        setTimeout(async function() {
+            var r2 = await db.from('admin_config').select('value').eq('key', 'tiers').single();
+            var checkCost = r2.data.value[1]?.costs?.image;
+            var checkReward = r2.data.value[1]?.rewards?.video;
+            if (checkCost === newCost && checkReward === newReward) {
+                log(logId, '✅ SYNC OK: Les nouvelles valeurs sont lues correctement');
+                log(logId, 'ℹ️ index.html et earn.html chargeront ces valeurs au prochain refresh');
+            } else {
+                log(logId, '❌ SYNC FAIL: Valeurs lues=' + checkCost + '/' + checkReward);
+            }
+            // Restaurer
+            tiers[1].costs.image = oldCost;
+            tiers[1].rewards.video = oldReward;
+            await db.from('admin_config').update({ value: tiers, updated_at: new Date().toISOString() }).eq('key', 'tiers');
+            log(logId, '♻️ Valeurs originales restaurées');
+            document.getElementById('currentCostImage').textContent = oldCost + ' pts';
+            document.getElementById('currentRewardVideo').textContent = oldReward + ' pts';
+        }, 1000);
+    } catch (e) { log(logId, '❌ Erreur: ' + e.message); }
+}
+
+// === TEST 2: SHOP ===
+async function testShopSync() {
+    var logId = 'logShop';
+    log(logId, '📥 Lecture shop_config...');
+    try {
+        var r = await db.from('admin_config').select('value').eq('key', 'shop_config').single();
+        if (!r.data) { log(logId, '❌ Clé shop_config introuvable'); return; }
+        var config = r.data.value;
+        document.getElementById('currentPacks').textContent = (config.packs?.length || 0) + ' packs';
+        document.getElementById('currentCurrency').textContent = config.currency || '-';
+        log(logId, '✅ Actuel: ' + (config.packs?.length || 0) + ' packs, devise=' + config.currency);
+
+        // Ajouter un pack test
+        var testPack = { name: 'TEST_SYNC_PACK', points: 999, price: 0.01 };
+        config.packs.push(testPack);
+        log(logId, '✏️ Ajout pack test: ' + testPack.name);
+
+        await db.from('admin_config').update({ value: config, updated_at: new Date().toISOString() }).eq('key', 'shop_config');
+        log(logId, '💾 Sauvegardé');
+
+        setTimeout(async function() {
+            var r2 = await db.from('admin_config').select('value').eq('key', 'shop_config').single();
+            var found = r2.data.value.packs.find(function(p) { return p.name === 'TEST_SYNC_PACK'; });
+            if (found) {
+                log(logId, '✅ SYNC OK: Pack test trouvé dans shop_config');
+                log(logId, 'ℹ️ shop.html affichera ce pack au prochain chargement');            } else {
+                log(logId, '❌ SYNC FAIL: Pack test introuvable après relecture');
+            }
+            // Nettoyer
+            config.packs = config.packs.filter(function(p) { return p.name !== 'TEST_SYNC_PACK'; });
+            await db.from('admin_config').update({ value: config, updated_at: new Date().toISOString() }).eq('key', 'shop_config');
+            log(logId, '♻️ Pack test supprimé');
+            document.getElementById('currentPacks').textContent = config.packs.length + ' packs';
+        }, 1000);
+    } catch (e) { log(logId, '❌ Erreur: ' + e.message); }
+}
+
+// === TEST 3: MODELS ===
+async function testModelsSync() {
+    var logId = 'logModels';
+    log(logId, '📥 Lecture generator_models...');
+    try {
+        var r = await db.from('generator_models').select('*').eq('type', 'image').eq('is_active', true);
+        document.getElementById('currentModels').textContent = (r.data?.length || 0) + ' modèles';
+        log(logId, '✅ Actuel: ' + (r.data?.length || 0) + ' modèles image actifs');
+
+        // Insérer un modèle test
+        var testModel = { name: 'TEST_SYNC_MODEL', type: 'image', provider: 'test-provider', cost_points: 1, sort_order: 999, is_active: true };
+        var ins = await db.from('generator_models').insert(testModel).select('id').single();
+        if (ins.error) { log(logId, '❌ Insert failed: ' + ins.error.message); return; }
+        var testId = ins.data.id;
+        log(logId, '✏️ Modèle test créé: ' + testModel.name + ' (id=' + testId + ')');
+
+        setTimeout(async function() {
+            var r2 = await db.from('generator_models').select('*').eq('id', testId).single();
+            if (r2.data && r2.data.name === 'TEST_SYNC_MODEL') {
+                log(logId, '✅ SYNC OK: Modèle test lu correctement');
+                log(logId, 'ℹ️ index.html chargera ce modèle via loadDynamicConfig()');
+            } else {
+                log(logId, '❌ SYNC FAIL: Modèle test introuvable');
+            }
+            // Nettoyer
+            await db.from('generator_models').delete().eq('id', testId);
+            log(logId, '♻️ Modèle test supprimé');
+            var r3 = await db.from('generator_models').select('*').eq('type', 'image').eq('is_active', true);
+            document.getElementById('currentModels').textContent = (r3.data?.length || 0) + ' modèles';
+        }, 1000);
+    } catch (e) { log(logId, '❌ Erreur: ' + e.message); }
+}
+
+// === TEST 4: ADS ===
+async function testAdsSync() {
+    var logId = 'logAds';
+    log(logId, '📥 Lecture ad_networks...');
+    try {        var r = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+        if (!r.data) { log(logId, '❌ Clé ad_networks introuvable'); return; }
+        var networks = r.data.value || [];
+        document.getElementById('currentAds').textContent = networks.length + ' régies';
+        log(logId, '✅ Actuel: ' + networks.length + ' régies');
+
+        // Ajouter une régie test
+        var testAd = { name: 'TEST_SYNC_AD', type: 'video', link: 'https://test.com', points: 1, order: 999, active: true };
+        networks.push(testAd);
+        log(logId, '✏️ Ajout régie test: ' + testAd.name);
+
+        await db.from('admin_config').update({ value: networks, updated_at: new Date().toISOString() }).eq('key', 'ad_networks');
+        log(logId, '💾 Sauvegardé');
+
+        setTimeout(async function() {
+            var r2 = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+            var found = r2.data.value.find(function(n) { return n.name === 'TEST_SYNC_AD'; });
+            if (found) {
+                log(logId, '✅ SYNC OK: Régie test trouvée');
+                log(logId, 'ℹ️ earn.html chargera cette régie via loadDynamicConfig()');
+            } else {
+                log(logId, '❌ SYNC FAIL: Régie test introuvable');
+            }
+            // Nettoyer
+            networks = networks.filter(function(n) { return n.name !== 'TEST_SYNC_AD'; });
+            await db.from('admin_config').update({ value: networks, updated_at: new Date().toISOString() }).eq('key', 'ad_networks');
+            log(logId, '♻️ Régie test supprimée');
+            document.getElementById('currentAds').textContent = networks.length + ' régies';
+        }, 1000);
+    } catch (e) { log(logId, '❌ Erreur: ' + e.message); }
+}
+
+// === TEST 5: USER REALTIME ===
+async function testUserRealtime() {
+    var logId = 'logUser';
+    log(logId, '📥 Vérification user_data...');
+    try {
+        var user = await db.auth.getUser();
+        if (!user.data.user) { log(logId, '⚠️ Non connecté — connecte-toi d\'abord sur index.html'); return; }
+        var uid = user.data.user.id;
+
+        var r = await db.from('user_data').select('points').eq('user_id', uid).single();
+        var currentPoints = r.data?.points || 0;
+        document.getElementById('currentUserPoints').textContent = currentPoints + ' pts';
+        log(logId, '✅ Points actuels: ' + currentPoints);
+
+        // Écouter le realtime
+        log(logId, '📡 Écoute realtime sur user_data...');
+        var received = false;
+        var channel = db.channel('test-user-sync')            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'user_data', filter: 'user_id=eq.' + uid }, function(payload) {
+                received = true;
+                log(logId, '✅ REALTIME REÇU: points=' + payload.new.points);
+                document.getElementById('currentUserPoints').textContent = payload.new.points + ' pts';
+            })
+            .subscribe();
+
+        // Modifier les points
+        var newPoints = currentPoints + 1;
+        await db.from('user_data').update({ points: newPoints }).eq('user_id', uid);
+        log(logId, '✏️ Points modifiés: ' + currentPoints + ' → ' + newPoints);
+
+        setTimeout(function() {
+            if (!received) {
+                log(logId, '❌ REALTIME FAIL: Aucune notification reçue en 3s');
+                log(logId, 'ℹ️ Vérifie que Realtime est activé sur user_data dans Supabase → Database → Replication');
+            }
+            // Restaurer
+            db.from('user_data').update({ points: currentPoints }).eq('user_id', uid);
+            channel.unsubscribe();
+            log(logId, '♻️ Points restaurés à ' + currentPoints);
+            document.getElementById('currentUserPoints').textContent = currentPoints + ' pts';
+        }, 3000);
+    } catch (e) { log(logId, '❌ Erreur: ' + e.message); }
+}
+</script>
+</body>
+</html>
