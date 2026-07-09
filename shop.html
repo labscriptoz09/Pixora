@@ -2,13 +2,29 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pixora - Boutique</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif;--hdr:rgba(20,20,23,0.85)}
+        :root{
+            --bg:#050507;
+            --surf:rgba(24,24,27,0.6);
+            --elev:rgba(39,39,42,0.8);
+            --border:rgba(63,63,70,0.5);
+            --glow:rgba(139,92,246,0.25);
+            --prim:#8B5CF6;
+            --sec:#EC4899;
+            --gold:#FBBF24;
+            --success:#10B981;
+            --text:#FAFAFA;
+            --muted:#A1A1AA;
+            --dim:#71717A;
+            --font:'Inter',sans-serif;
+            --mono:'JetBrains Mono',monospace;
+            --hdr:rgba(20,20,23,0.85);
+        }
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
         .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
@@ -16,53 +32,111 @@
         .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}
         .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}
         @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
+        a{text-decoration:none;color:inherit}
+        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit}
 
         /* HEADER */
         .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
-        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
+        .header-logo{display:flex;align-items:center;gap:0.5rem}
         .header-logo svg{width:28px;height:28px}
         .logo-text{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
-        .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem; background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
+        .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
         .user-stats.show{display:flex}
         .stat-icon{color:var(--gold);font-size:0.75rem}
         .stat-points{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold)}
-        .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;color:white}
+        .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:white;cursor:pointer}
         .user-avatar.show{display:flex}
-        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem}
-        @media(max-width:767px){.user-stats{display:none}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
+        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem}        @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
 
         /* USER MENU */
-        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);border:1px solid var(--border);border-radius:16px;padding:0.6rem;opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s;z-index:1001}
+        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s;z-index:1001}
         .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
-        .menu-item{display:block;padding:0.6rem;color:var(--text);font-size:0.85rem;text-decoration:none;cursor:pointer}
-        .menu-item:hover{background:rgba(139,92,246,0.1)}
+        .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}
+        .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white}
+        .menu-info{flex:1;min-width:0}
+        .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
+        .menu-points-bar i{color:var(--gold);font-size:0.75rem}
+        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
+        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
+        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer}
+        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
+        .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem}
+        .menu-item.danger{color:var(--danger)}
+        .menu-item.danger i{color:var(--danger)}
+        .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}
 
         /* MOBILE NAV */
-        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem}
-        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;color:var(--muted)}
-        .nav-item.active{color:var(--prim)}
+        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
+        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;color:var(--muted);transition:all 0.3s}
+        .nav-item i{font-size:1.2rem}
+        .nav-item span{font-size:0.58rem;font-weight:600}
+        .nav-item[data-nav="studio"].active{color:var(--prim)}
         .nav-item[data-nav="gallery"].active{color:#3B82F6}
         .nav-item[data-nav="points"].active{color:var(--gold)}
         .nav-item[data-nav="profile"].active{color:var(--sec)}
 
         /* SHOP CONTENT */
-        .shop-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px}        .shop-hero{text-align:center;padding:1.5rem 1rem;margin-bottom:2rem}
-        .shop-hero h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--prim) 50%,var(--sec) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .shop-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
+        @media(min-width:768px){.shop-content{margin-top:60px;padding:1.5rem}}
+        .shop-hero{text-align:center;padding:1.5rem 1rem;margin-bottom:2rem}
+        .shop-hero h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--prim) 50%,var(--sec) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;letter-spacing:-0.03em}
         .shop-hero p{color:var(--muted);font-size:0.9rem}
-        .section-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;color:var(--dim);margin-bottom:1rem}
+        .section-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+        .section-label i{color:var(--prim)}
+
+        /* PACKS GRID */
         .packs-grid,.subs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.8rem;margin-bottom:2rem}
-        .pack-card{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:1.2rem;transition:transform 0.3s}
-        .pack-card:hover{transform:translateY(-3px)}
-        .pack-icon{width:48px;height:48px;background:var(--prim);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;margin-bottom:0.8rem}
+        .pack-card,.sub-card{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:1.3rem;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);position:relative;overflow:hidden}
+        .pack-card:hover,.sub-card:hover{transform:translateY(-3px);border-color:rgba(139,92,246,0.3);box-shadow:0 10px 40px rgba(139,92,246,0.15)}
+        .pack-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--prim),var(--sec));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;margin-bottom:0.8rem;box-shadow:0 8px 20px rgba(139,92,246,0.3)}
         .pack-name{font-size:1rem;font-weight:700;margin-bottom:0.2rem}
         .pack-points{font-family:var(--mono);font-size:1.3rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem}
-        .buy-btn{width:100%;padding:0.7rem;background:var(--prim);color:white;border-radius:12px;font-weight:600;margin-top:0.8rem}
+        .pack-desc{font-size:0.75rem;color:var(--muted);margin-bottom:1.2rem;min-height:32px}
+        .pack-price{display:flex;align-items:baseline;gap:0.3rem;margin-bottom:0.8rem}
+        .price-amount{font-size:1.8rem;font-weight:800}        .price-currency{font-size:0.9rem;color:var(--muted)}
+        .buy-btn{width:100%;padding:0.75rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:600;font-size:0.9rem;box-shadow:0 4px 15px rgba(139,92,246,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s}
+        .buy-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
+
+        /* SUBSCRIPTIONS */
+        .sub-card.featured{border-color:var(--prim);box-shadow:0 0 30px rgba(139,92,246,0.15)}
+        .sub-name{font-size:1.1rem;font-weight:700;margin-bottom:0.4rem}
+        .sub-price{display:flex;align-items:baseline;gap:0.3rem;margin-bottom:0.8rem}
+        .sub-price .price-amount{font-size:2rem}
+        .sub-period{color:var(--muted);font-size:0.85rem}
+        .sub-features{list-style:none;margin-bottom:1.2rem}
+        .sub-features li{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;font-size:0.8rem;color:var(--muted)}
+        .sub-features li i{color:var(--success);font-size:0.75rem}
+        .subscribe-btn{width:100%;padding:0.75rem;background:transparent;border:2px solid var(--prim);color:var(--prim);border-radius:12px;font-weight:600;font-size:0.9rem;cursor:pointer;transition:all 0.3s}
+        .subscribe-btn:hover{background:var(--prim);color:white}
+        .sub-card.featured .subscribe-btn{background:linear-gradient(135deg,var(--prim),var(--sec));border:none;color:white}
+
+        /* TRUST */
+        .trust-section{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;padding:1.5rem 1rem;border-top:1px solid var(--border);margin-top:1.5rem}
+        .trust-item{display:flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.75rem}
+        .trust-item i{color:var(--success)}
+
+        /* FOOTER */
+        .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
+        .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}
+        .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
+        .site-footer a:hover{color:var(--prim)}
+
+        /* NOTIFICATION */
+        .notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s;display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+        .notification.show{transform:translateX(-50%) translateY(0)}
+        .notification.success{border-color:var(--success)}.notification.success i{color:var(--success)}
+        .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}
+
+        @media(max-width:768px){.shop-hero h1{font-size:1.4rem}.packs-grid,.subs-grid{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
 
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
+<div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
 
 <!-- HEADER -->
 <header class="site-header">
@@ -71,74 +145,236 @@
         <span class="logo-text">Pixora</span>
     </a>
     <div class="header-right">
-        <div class="user-stats" id="user-stats">
-            <i class="fas fa-bolt stat-icon"></i>
+        <div class="user-stats" id="user-stats">            <i class="fas fa-bolt stat-icon"></i>
             <span class="stat-points" id="header-points">0</span>
         </div>
-        <div class="user-avatar" id="user-avatar" onclick="document.getElementById('menu').classList.toggle('show')">U</div>
+        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu()">U</div>
         <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'">Connexion</button>
+
+        <!-- USER MENU -->
+        <div class="user-menu" id="user-menu">
+            <div class="menu-header">
+                <div class="menu-avatar" id="menu-avatar">U</div>
+                <div class="menu-info">
+                    <div class="menu-name" id="menu-name">Utilisateur</div>
+                    <div class="menu-email" id="menu-email">email@example.com</div>
+                </div>
+            </div>
+            <div class="menu-points-bar">
+                <i class="fas fa-bolt"></i>
+                <span id="menu-points">0</span>
+                <small>points</small>
+            </div>
+            <div class="menu-item" onclick="window.location.href='profile.html'">
+                <i class="fas fa-user"></i><span>Mon profil</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='earn.html'">
+                <i class="fas fa-coins"></i><span>Gagner des points</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='shop.html'">
+                <i class="fas fa-shopping-bag"></i><span>Mes achats</span>
+            </div>
+            <div class="menu-divider"></div>
+            <div class="menu-item danger" onclick="doLogout()">
+                <i class="fas fa-sign-out-alt"></i><span>Déconnexion</span>
+            </div>
+        </div>
     </div>
 </header>
 
-<!-- USER MENU -->
-<div class="user-menu" id="menu">
-    <div class="menu-item" onclick="window.location.href='profile.html'">👤 Mon profil</div>
-    <div class="menu-item" onclick="window.location.href='earn.html'">⚡ Gagner des points</div>
-    <div class="menu-item" onclick="window.location.href='shop.html'">🛒 Mes achats</div>
-    <div class="menu-item" style="color:#EF4444" onclick="alert('Déconnexion')">🚪 Déconnexion</div>
-</div>
-
 <!-- MOBILE NAV -->
 <nav class="nav-mobile">
-    <a href="index.html" class="nav-item"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
-    <a href="gallery.html" class="nav-item"><i class="fas fa-images"></i><span>Galerie</span></a>
-    <a href="earn.html" class="nav-item"><i class="fas fa-coins"></i><span>Points</span></a>
-    <a href="#" class="nav-item" onclick="document.getElementById('menu').classList.toggle('show')"><i class="fas fa-user"></i></a>
+    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
+    <a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
+    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span>Points</span></a>
+    <a href="#" class="nav-item" data-nav="profile" onclick="event.preventDefault();toggleUserMenu()"><i class="fas fa-user"></i></a>
 </nav>
 
-<!-- MAIN --><main class="shop-content">
+<!-- MAIN CONTENT -->
+<main class="shop-content">
     <div class="shop-hero">
         <h1>Rechargez Pixora</h1>
-        <p>Obtenez des crédits pour générer des images et vidéos IA sans limite.</p>
+        <p>Obtenez des crédits pour générer des images et vidéos IA sans limite.</p>    </div>
+
+    <div class="section-label"><i class="fas fa-coins"></i><span>Packs de Points</span></div>
+    <div class="packs-grid" id="packsGrid">
+        <div style="text-align:center;padding:2rem;color:var(--muted);grid-column:1/-1"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:0.5rem"></i><p>Chargement...</p></div>
     </div>
 
-    <div class="section-label">Packs de Points</div>
-    <div class="packs-grid">
-        <div class="pack-card">
-            <div class="pack-icon"><i class="fas fa-bolt"></i></div>
-            <div class="pack-name">Starter</div>
-            <div class="pack-points">100 pts</div>
-            <div>~6 images</div>
-            <button class="buy-btn">Acheter 0,99€</button>
-        </div>
-        <div class="pack-card">
-            <div class="pack-icon"><i class="fas fa-bolt"></i></div>
-            <div class="pack-name">Popular</div>
-            <div class="pack-points">500 pts</div>
-            <div>~33 images</div>
-            <button class="buy-btn">Acheter 4,99€</button>
-        </div>
+    <div class="section-label"><i class="fas fa-crown"></i><span>Abonnements Mensuels</span></div>
+    <div class="subs-grid" id="subsGrid">
+        <div style="text-align:center;padding:2rem;color:var(--muted);grid-column:1/-1"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:0.5rem"></i><p>Chargement...</p></div>
     </div>
 
-    <div class="section-label">Abonnements</div>
-    <div class="subs-grid">
-        <div class="pack-card">
-            <div class="pack-icon"><i class="fas fa-crown"></i></div>
-            <div class="pack-name">Basic</div>
-            <div class="pack-points">2000 pts/mois</div>
-            <div>Vidéos incluses</div>
-            <button class="buy-btn">S'abonner 9,99€</button>
-        </div>
+    <div class="trust-section">
+        <div class="trust-item"><i class="fas fa-lock"></i><span>Paiement sécurisé</span></div>
+        <div class="trust-item"><i class="fas fa-credit-card"></i><span>Stripe & PayPal</span></div>
+        <div class="trust-item"><i class="fas fa-undo"></i><span>Remboursement 7j</span></div>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="index.html">Studio</a>
+            <a href="earn.html">Points</a>
+            <a href="gallery.html">Galerie</a>
+            <a href="profile.html">Profil</a>
+            <a href="privacy.html">Confidentialité</a>
+        </div>
+        <div>© 2026 Pixora. Tous droits réservés.</div>
+    </footer>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// Simule l'état connecté pour le test
-document.addEventListener('DOMContentLoaded', function() {
-    // Pour tester : décommente ceci
-    // document.getElementById('user-stats').classList.add('show');
-    // document.getElementById('user-avatar').textContent = 'J';
-    // document.getElementById('header-points').textContent = '150';
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// === NOTIFICATION ===
+function notify(m, t) {
+    t = t || 'success';
+    var n = document.getElementById('notif');
+    document.getElementById('notif-text').textContent = m;
+    n.className = 'notification show ' + t;
+    setTimeout(function() { n.classList.remove('show'); }, 3000);
+}
+
+// === USER MENU ===
+function toggleUserMenu() {
+    document.getElementById('user-menu').classList.toggle('show');
+}
+document.addEventListener('click', function(e) {    var menu = document.getElementById('user-menu');
+    var avatar = document.getElementById('user-avatar');
+    if (!menu.contains(e.target) && !avatar.contains(e.target)) menu.classList.remove('show');
+});
+
+async function doLogout() {
+    await db.auth.signOut();
+    toggleUserMenu();
+    updateUI();
+    notify('👋 Déconnecté', 'success');
+    setTimeout(function() { location.reload(); }, 800);
+}
+
+// === USER DATA ===
+async function getUserData() {
+    var u = await db.auth.getUser(); if (!u.data.user) return { points: 0, streak: 1, total_earned: 0 };
+    var r = await db.from('user_data').select('*').eq('user_id', u.data.user.id).single();
+    return r.data || { points: 0, streak: 1, total_earned: 0 };
+}
+
+// === UPDATE UI ===
+async function updateUI() {
+    var user = await db.auth.getUser();
+    var logged = user.data.user;
+
+    document.getElementById('user-stats').classList.toggle('show', !!logged);
+    document.getElementById('user-avatar').classList.toggle('show', !!logged);
+    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
+
+    if (logged) {
+        var d = await getUserData();
+        document.getElementById('header-points').textContent = d.points || 0;
+        document.getElementById('menu-points').textContent = d.points || 0;
+
+        var name = logged.user_metadata?.name || 'Utilisateur';
+        var initial = name.charAt(0).toUpperCase();
+        document.getElementById('user-avatar').textContent = initial;
+        document.getElementById('menu-avatar').textContent = initial;
+        document.getElementById('menu-name').textContent = name;
+        document.getElementById('menu-email').textContent = logged.email;
+    }
+}
+
+// === SHOP CONFIG ===
+async function loadShopConfig() {
+    try {
+        var configResult = await db.from('admin_config').select('*').eq('key', 'shop_config').single();
+        if (configResult.data && configResult.data.value) return configResult.data.value;
+    } catch (err) { console.error('Shop config error:', err); }
+    return {        packs: [
+            { name: 'Starter', points: 100, price: 0.99 },
+            { name: 'Popular', points: 500, price: 4.99 },
+            { name: 'Best Value', points: 1200, price: 9.99 },
+            { name: 'Pro', points: 2500, price: 19.99 }
+        ],
+        subs: [
+            { name: 'Basic', points: 2000, price: 9.99 },
+            { name: 'Pro', points: 5000, price: 19.99 },
+            { name: 'Elite', points: 12000, price: 39.99 }
+        ],
+        currency: 'EUR'
+    };
+}
+
+async function renderShop() {
+    var config = await loadShopConfig();
+    var currency = config.currency || 'EUR';
+
+    var packsHtml = (config.packs || []).map(function(p) {
+        return '<div class="pack-card">' +
+            '<div class="pack-icon"><i class="fas fa-bolt"></i></div>' +
+            '<div class="pack-name">' + p.name + '</div>' +
+            '<div class="pack-points">' + p.points + ' pts</div>' +
+            '<div class="pack-desc">~' + Math.floor(p.points / 15) + ' images</div>' +
+            '<div class="pack-price"><span class="price-amount">' + p.price + '</span><span class="price-currency">' + currency + '</span></div>' +
+            '<button class="buy-btn" onclick="buyPack(\'' + p.name.replace(/'/g, "\\'") + '\',' + p.points + ',' + p.price + ')"><i class="fas fa-shopping-cart"></i> Acheter</button>' +
+            '</div>';
+    }).join('');
+    document.getElementById('packsGrid').innerHTML = packsHtml;
+
+    var subsHtml = (config.subs || []).map(function(s) {
+        return '<div class="sub-card">' +
+            '<div class="sub-name">' + s.name + '</div>' +
+            '<div class="sub-price"><span class="price-amount">' + s.price + '</span><span class="sub-period">' + currency + '/mois</span></div>' +
+            '<ul class="sub-features">' +
+            '<li><i class="fas fa-check"></i> ' + s.points + ' pts/mois</li>' +
+            '<li><i class="fas fa-check"></i> Vidéos incluses</li>' +
+            '<li><i class="fas fa-check"></i> Support prioritaire</li>' +
+            '</ul>' +
+            '<button class="subscribe-btn" onclick="subscribe(\'' + s.name.replace(/'/g, "\\'") + '\',' + s.points + ',' + s.price + ')">S\'abonner</button>' +
+            '</div>';
+    }).join('');
+    document.getElementById('subsGrid').innerHTML = subsHtml;
+}
+
+// === BUY PACK ===
+async function buyPack(name, points, price) {
+    var user = await db.auth.getUser();
+    if (!user.data.user) { notify('Connectez-vous d\'abord', 'error'); return; }
+    await db.from('transactions').insert({ user_id: user.data.user.id, type: 'purchased', title: 'Pack ' + name, amount: points });
+
+    var data = await getUserData();
+    await db.from('user_data').update({
+        points: (data.points || 0) + points,
+        total_earned: (data.total_earned || 0) + points
+    }).eq('user_id', user.data.user.id);
+
+    await updateUI();
+    notify('✅ ' + points + ' points ajoutés !', 'success');
+}
+
+// === SUBSCRIBE ===
+async function subscribe(plan, points, price) {
+    var user = await db.auth.getUser();
+    if (!user.data.user) { notify('Connectez-vous d\'abord', 'error'); return; }
+
+    await db.from('transactions').insert({ user_id: user.data.user.id, type: 'purchased', title: 'Abonnement ' + plan, amount: points });
+
+    var data = await getUserData();
+    await db.from('user_data').update({
+        points: (data.points || 0) + points,
+        total_earned: (data.total_earned || 0) + points
+    }).eq('user_id', user.data.user.id);
+
+    await updateUI();
+    notify('✅ Abonnement activé !', 'success');
+}
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', async function() {
+    await updateUI();
+    await renderShop();
 });
 </script>
 </body>
