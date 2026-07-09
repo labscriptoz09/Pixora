@@ -140,7 +140,7 @@
             <div class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></div>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v2.2<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v3.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 
 <!-- NOTIFICATIONS PANEL -->
@@ -282,6 +282,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+// ⚠️ IMPORTANT: Ces clés DOIVENT être identiques à celles de index.html
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -290,29 +291,26 @@ var notifications = [];
 var unreadCount = 0;
 var ADMIN_EMAIL = '';
 
-// === AUTH ADMIN — CORRECTION FINALE (pas de JSON.parse) ===
-async function handleAdminLogin(e) {
-    e.preventDefault();    var email = document.getElementById('adminEmail').value.trim();
+// === AUTH ADMIN ROBUSTE ===
+async function handleAdminLogin(e) {    e.preventDefault();
+    var email = document.getElementById('adminEmail').value.trim();
     var pass = document.getElementById('adminPass').value;
     var btn = document.getElementById('btnAdminLogin');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
     try {
-        // 1. Charger la valeur brute de admin_email (string)
+        // 1. Récupérer l'email autorisé depuis la base (gestion propre du JSON string)
         var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
         var rawValue = adminEmailResult.data ? adminEmailResult.data.value : '"leonard@pixora.com"';
+        var allowedEmail = String(rawValue).replace(/^"|"$/g, '');
         
-        // 2. Nettoyer les guillemets s'ils existent
-        var allowedEmail = rawValue;
-        if (typeof rawValue === 'string') {
-            allowedEmail = rawValue.replace(/^"|"$/g, '');
-        }
-        
-        // 3. Auth Supabase
+        // 2. Authentification Supabase
         var result = await db.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw new Error(result.error.message);
         if (!result.data?.user) throw new Error('Utilisateur non trouvé');
-        if (email !== allowedEmail) throw new Error('Email non autorisé');
+        
+        // 3. Vérification stricte de l'email admin
+        if (email !== allowedEmail) throw new Error('Email non autorisé pour accès admin');
 
         ADMIN_EMAIL = email;
         document.getElementById('loginOverlay').classList.add('hidden');
@@ -339,9 +337,28 @@ function showSection(name) {
     var navItems = document.querySelectorAll('.nav-item');
     var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'gallery-admin':5, 'ad-networks':7, pricing:8, 'shop-config':9, 'social-links':11, 'site-settings':12, seo:13, legal:14, users:16, logs:17, security:18 };
     if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');
-    var loaders = { dashboard: loadDashboard, 'models-image': function(){loadModels('image')}, 'models-video': function(){loadModels('video')}, apis: loadApiKeys, 'gallery-admin': loadGalleryAdmin, 'ad-networks': loadAdNetworks, pricing: loadPricing, 'shop-config': loadShopConfig, 'social-links': loadSocialLinks, 'site-settings': loadSiteSettings, seo: loadSeo, legal: loadLegal, users: loadUsers, logs: loadLogs };
-    if (loaders[name]) try { loaders[name](); } catch(err) { console.error('Section load error:', err); }
+    
+    // Chargement différé des données pour éviter de bloquer l'UI
+    setTimeout(function() {
+        var loaders = { 
+            dashboard: loadDashboard,             'models-image': function(){loadModels('image')}, 
+            'models-video': function(){loadModels('video')}, 
+            apis: loadApiKeys, 
+            'gallery-admin': loadGalleryAdmin, 
+            'ad-networks': loadAdNetworks, 
+            pricing: loadPricing, 
+            'shop-config': loadShopConfig, 
+            'social-links': loadSocialLinks, 
+            'site-settings': loadSiteSettings, 
+            seo: loadSeo, 
+            legal: loadLegal, 
+            users: loadUsers, 
+            logs: loadLogs 
+        };
+        if (loaders[name]) try { loaders[name](); } catch(err) { console.error('Section load error:', err); }
+    }, 50);
 }
+
 // === NOTIFICATIONS ===
 function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('open'); }
 function addNotification(type, message) {
@@ -373,8 +390,7 @@ async function loadDashboard() {
         document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
 
         var txResult = await db.from('transactions').select('amount').eq('type', 'earned');
-        var totalPoints = 0;
-        if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; });
+        var totalPoints = 0;        if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; });
         document.getElementById('dashPointsDistributed').textContent = totalPoints.toLocaleString();
 
         var genResult = await db.from('user_data').select('total_generated');
@@ -382,15 +398,15 @@ async function loadDashboard() {
         if (genResult.data) genResult.data.forEach(function(u) { totalGen += (u.total_generated || 0); });
         document.getElementById('dashGenerations').textContent = totalGen.toLocaleString();
 
-        var recentTx = await db.from('transactions').select('*, user_data!inner(user_id)').order('created_at', { ascending: false }).limit(10);
+        var recentTx = await db.from('transactions').select('*').order('created_at', { ascending: false }).limit(10);
         var tbody = document.getElementById('dashRecentTx');
         if (recentTx.data && recentTx.data.length) {
             tbody.innerHTML = recentTx.data.map(function(t) {
-                var userEmail = t.user_data ? t.user_data.user_id.substring(0,8) + '...' : '-';
-                return '<tr><td>' + userEmail + '</td><td><span style="color:' + (t.type === 'earned' ? 'var(--success)' : t.type === 'spent' ? 'var(--danger)' : 'var(--accent)') + '">' + t.type + '</span></td><td>' + t.title + '</td><td style="font-family:var(--mono);color:' + (t.amount > 0 ? 'var(--success)' : 'var(--danger)') + '">' + (t.amount > 0 ? '+' : '') + t.amount + '</td><td style="font-size:0.75rem;color:var(--dim)">' + new Date(t.created_at).toLocaleString('fr-FR') + '</td></tr>';
+                return '<tr><td>' + (t.user_id ? t.user_id.substring(0,8) + '...' : '-') + '</td><td><span style="color:' + (t.type === 'earned' ? 'var(--success)' : t.type === 'spent' ? 'var(--danger)' : 'var(--accent)') + '">' + t.type + '</span></td><td>' + t.title + '</td><td style="font-family:var(--mono);color:' + (t.amount > 0 ? 'var(--success)' : 'var(--danger)') + '">' + (t.amount > 0 ? '+' : '') + t.amount + '</td><td style="font-size:0.75rem;color:var(--dim)">' + new Date(t.created_at).toLocaleString('fr-FR') + '</td></tr>';
             }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucune transaction</td></tr>'; }
-    } catch (err) { console.error('Dashboard error:', err); }}
+        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucune transaction récente</td></tr>'; }
+    } catch (err) { console.error('Dashboard error:', err); }
+}
 
 // === GALERIE ADMIN ===
 async function loadGalleryAdmin() {
@@ -423,13 +439,12 @@ async function loadGalleryAdmin() {
             grid.appendChild(div);
         });
     } catch (err) {
-        console.error('Gallery admin error:', err);
-        grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger);grid-column:1/-1"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:0.5rem"></i><p>Erreur: ' + err.message + '</p></div>';
+        console.error('Gallery admin error:', err);        grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger);grid-column:1/-1"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:0.5rem"></i><p>Erreur Storage: ' + err.message + '</p></div>';
     }
 }
 
 async function deleteGalleryFile(fileName) {
-    if (!confirm('Supprimer ' + fileName + ' ?')) return;
+    if (!confirm('Supprimer définitivement ' + fileName + ' ?')) return;
     try {
         await db.storage.from(BUCKET).remove([fileName]);
         addNotification('config', 'Fichier supprimé: ' + fileName);
@@ -439,13 +454,14 @@ async function deleteGalleryFile(fileName) {
 
 // === MODÈLES ===
 async function loadModels(type) {
-    try {        var result = await db.from('generator_models').select('*').eq('type', type).order('sort_order');
+    try {
+        var result = await db.from('generator_models').select('*').eq('type', type).order('sort_order');
         var tbody = document.getElementById(type === 'image' ? 'imgModelsTable' : 'vidModelsTable');
         if (result.data && result.data.length) {
             tbody.innerHTML = result.data.map(function(m) {
                 return '<tr><td>' + m.name + '</td><td>' + m.provider + '</td><td style="font-family:var(--mono);color:var(--gold)">' + m.cost_points + '</td><td>' + m.sort_order + '</td><td>' + (m.is_active ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td><td><button class="btn btn-sm btn-outline" onclick="editModel(\'' + type + '\',\'' + m.id + '\')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteModel(\'' + m.id + '\',\'' + type + '\')"><i class="fas fa-trash"></i></button></td></tr>';
             }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle ' + type + '</td></tr>'; }
+        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle ' + type + ' configuré</td></tr>'; }
     } catch (err) { console.error('Load models error:', err); }
 }
 
@@ -472,8 +488,7 @@ async function editModel(type, id) {
         var m = result.data;
         var prefix = type === 'image' ? 'img' : 'vid';
         document.getElementById(prefix + 'ModelForm').style.display = 'block';
-        document.getElementById(prefix + 'ModelId').value = m.id;
-        document.getElementById(prefix + 'ModelName').value = m.name;
+        document.getElementById(prefix + 'ModelId').value = m.id;        document.getElementById(prefix + 'ModelName').value = m.name;
         document.getElementById(prefix + 'ModelProvider').value = m.provider;
         document.getElementById(prefix + 'ModelEndpoint').value = m.api_endpoint || '';
         document.getElementById(prefix + 'ModelCost').value = m.cost_points;
@@ -488,7 +503,8 @@ async function saveModel(type) {
         var id = document.getElementById(prefix + 'ModelId').value;
         var data = {
             name: document.getElementById(prefix + 'ModelName').value.trim(),
-            type: type,            provider: document.getElementById(prefix + 'ModelProvider').value.trim(),
+            type: type,
+            provider: document.getElementById(prefix + 'ModelProvider').value.trim(),
             api_endpoint: document.getElementById(prefix + 'ModelEndpoint').value.trim(),
             cost_points: parseInt(document.getElementById(prefix + 'ModelCost').value) || 15,
             sort_order: parseInt(document.getElementById(prefix + 'ModelOrder').value) || 0,
@@ -515,10 +531,428 @@ async function deleteModel(id, type) {
     } catch (err) { alert('Erreur suppression: ' + err.message); }
 }
 
-// === AUTRES FONCTIONS — identiques, mais j'ai retiré les erreurs
+// === CLÉS API ===
+async function loadApiKeys() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'api_keys').single();
+        var keys = result.data ? result.data.value : {};
+        var providers = ['fal.ai', 'replicate', 'stability', 'kling', 'tencent', 'runway', 'pika', 'openai'];
+        var html = '<div class="form-row">';        providers.forEach(function(p) {
+            html += '<div class="form-group"><label class="form-label">' + p + '</label><input type="password" class="form-input api-key-input" data-provider="' + p + '" value="' + (keys[p] || '') + '" placeholder="Clé API ' + p + '"></div>';
+        });
+        html += '</div>';
+        document.getElementById('apiKeysContainer').innerHTML = html;
+    } catch (err) { console.error('Load API keys error:', err); }
+}
+
+async function saveApiKeys() {
+    try {
+        var keys = {};
+        document.querySelectorAll('.api-key-input').forEach(function(input) {
+            if (input.value.trim()) keys[input.dataset.provider] = input.value.trim();
+        });
+        await db.from('admin_config').upsert({ key: 'api_keys', value: keys, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        addNotification('config', 'Clés API sauvegardées');
+        alert('✅ Clés API sauvegardées !');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === RÉGIES PUB ===
+async function loadAdNetworks() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'ad_networks').single();
+        var networks = result.data ? result.data.value : [];
+        var tbody = document.getElementById('adNetworksTable');
+        if (networks.length) {
+            tbody.innerHTML = networks.map(function(n, i) {
+                return '<tr><td>' + n.name + '</td><td>' + n.type + '</td><td style="font-family:var(--mono);color:var(--gold)">' + n.points + '</td><td>' + n.order + '</td><td>' + (n.active ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td><td><button class="btn btn-sm btn-outline" onclick="editAdNetwork(' + i + ')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteAdNetwork(' + i + ')"><i class="fas fa-trash"></i></button></td></tr>';
+            }).join('');
+        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie configurée</td></tr>'; }
+        window._adNetworks = networks;
+    } catch (err) { console.error('Load ad networks error:', err); }
+}
+
+function openAdNetworkForm() {
+    document.getElementById('adNetworkForm').style.display = 'block';
+    document.getElementById('adNetId').value = '';
+    document.getElementById('adNetName').value = '';
+    document.getElementById('adNetLink').value = '';
+    document.getElementById('adNetPoints').value = 5;
+    document.getElementById('adNetOrder').value = 0;
+    document.getElementById('adNetActive').checked = true;
+}
+
+function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display = 'none'; }
+
+function editAdNetwork(index) {
+    var n = window._adNetworks[index];
+    if (!n) return;    document.getElementById('adNetworkForm').style.display = 'block';
+    document.getElementById('adNetId').value = index;
+    document.getElementById('adNetName').value = n.name;
+    document.getElementById('adNetType').value = n.type;
+    document.getElementById('adNetLink').value = n.link;
+    document.getElementById('adNetPoints').value = n.points;
+    document.getElementById('adNetOrder').value = n.order;
+    document.getElementById('adNetActive').checked = n.active;
+}
+
+async function saveAdNetwork() {
+    try {
+        var index = document.getElementById('adNetId').value;
+        var data = {
+            name: document.getElementById('adNetName').value.trim(),
+            type: document.getElementById('adNetType').value,
+            link: document.getElementById('adNetLink').value.trim(),
+            points: parseInt(document.getElementById('adNetPoints').value) || 0,
+            order: parseInt(document.getElementById('adNetOrder').value) || 0,
+            active: document.getElementById('adNetActive').checked
+        };
+        if (!data.name) { alert('Nom requis'); return; }
+        var networks = window._adNetworks || [];
+        if (index !== '') { networks[parseInt(index)] = data; } else { networks.push(data); }
+        networks.sort(function(a, b) { return a.order - b.order; });
+        await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        closeAdNetworkForm();
+        loadAdNetworks();
+        addNotification('config', 'Régie "' + data.name + '" sauvegardée');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+async function deleteAdNetwork(index) {
+    if (!confirm('Supprimer cette régie ?')) return;
+    try {
+        var networks = window._adNetworks || [];
+        networks.splice(index, 1);
+        await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        loadAdNetworks();
+        addNotification('config', 'Régie supprimée');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === PRICING (MERGESAFE) ===
+async function loadPricing() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'tiers').single();
+        if (result.data && result.data.value) {
+            var tiers = result.data.value;
+            [1, 2, 3].forEach(function(t) {                var tier = tiers[t];
+                if (!tier) return;
+                var cls = '.pricing-t' + t;
+                document.querySelectorAll(cls).forEach(function(input) {
+                    var parts = input.dataset.key.split('.');
+                    if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]];
+                });
+            });
+        }
+        var bonusResult = await db.from('admin_config').select('*').eq('key', 'signup_bonus').single();
+        if (bonusResult.data) document.getElementById('signupBonus').value = bonusResult.data.value;
+    } catch (err) { console.error('Load pricing error:', err); }
+}
+
+async function savePricing() {
+    try {
+        var existingResult = await db.from('admin_config').select('*').eq('key', 'tiers').single();
+        var tiers = existingResult.data ? existingResult.data.value : {};
+
+        [1, 2, 3].forEach(function(t) {
+            if (!tiers[t]) tiers[t] = { costs: {}, rewards: {}, limits: {} };
+            document.querySelectorAll('.pricing-t' + t).forEach(function(input) {
+                var parts = input.dataset.key.split('.');
+                if (!tiers[t][parts[0]]) tiers[t][parts[0]] = {};
+                tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0;
+            });
+        });
+
+        await db.from('admin_config').upsert({ key: 'tiers', value: tiers, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        await db.from('admin_config').upsert({ key: 'signup_bonus', value: parseInt(document.getElementById('signupBonus').value) || 50, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        addNotification('config', 'Pricing sauvegardé');
+        alert('✅ Pricing sauvegardé !');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === SHOP CONFIG ===
+async function loadShopConfig() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'shop_config').single();
+        var config = result.data ? result.data.value : { packs: [], subs: [], currency: 'EUR', stripe_key: '', paypal_client_id: '' };
+        document.getElementById('shopCurrency').value = config.currency || 'EUR';
+        document.getElementById('stripeKey').value = config.stripe_key || '';
+        document.getElementById('paypalClientId').value = config.paypal_client_id || '';
+        var packsHtml = '';
+        (config.packs || []).forEach(function(p) {
+            packsHtml += '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="' + p.name + '"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="' + p.points + '"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="' + p.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+        });
+        document.getElementById('packsContainer').innerHTML = packsHtml || '<div style="color:var(--dim);font-size:0.85rem">Aucun pack</div>';
+        var subsHtml = '';
+        (config.subs || []).forEach(function(s) {            subsHtml += '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="' + s.name + '"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="' + s.points + '"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="' + s.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+        });
+        document.getElementById('subsContainer').innerHTML = subsHtml || '<div style="color:var(--dim);font-size:0.85rem">Aucun abonnement</div>';
+    } catch (err) { console.error('Load shop config error:', err); }
+}
+
+function addPackField() {
+    var html = '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Pack Name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+    document.getElementById('packsContainer').insertAdjacentHTML('beforeend', html);
+}
+
+function addSubField() {
+    var html = '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Plan Name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+    document.getElementById('subsContainer').insertAdjacentHTML('beforeend', html);
+}
+
+async function saveShopConfig() {
+    try {
+        var packs = [];
+        document.querySelectorAll('.pack-row').forEach(function(row) {
+            var name = row.querySelector('.pack-name').value.trim();
+            if (name) packs.push({ name: name, points: parseInt(row.querySelector('.pack-points').value) || 0, price: parseFloat(row.querySelector('.pack-price').value) || 0 });
+        });
+        var subs = [];
+        document.querySelectorAll('.sub-row').forEach(function(row) {
+            var name = row.querySelector('.sub-name').value.trim();
+            if (name) subs.push({ name: name, points: parseInt(row.querySelector('.sub-points').value) || 0, price: parseFloat(row.querySelector('.sub-price').value) || 0 });
+        });
+        var config = {
+            packs: packs, subs: subs,
+            currency: document.getElementById('shopCurrency').value,
+            stripe_key: document.getElementById('stripeKey').value.trim(),
+            paypal_client_id: document.getElementById('paypalClientId').value.trim()
+        };
+        await db.from('admin_config').upsert({ key: 'shop_config', value: config, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        addNotification('config', 'Boutique sauvegardée');
+        alert('✅ Boutique sauvegardée !');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === SOCIAL LINKS ===
+async function loadSocialLinks() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'social_links').single();
+        var links = result.data ? result.data.value : [];
+        var html = '';
+        links.forEach(function(l) {
+            html += '<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" value="' + l.name + '"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" value="' + l.url + '"></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" value="' + (l.icon || '') + '" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+        });
+        document.getElementById('socialLinksContainer').innerHTML = html || '<div style="color:var(--dim);font-size:0.85rem">Aucun lien social</div>';    } catch (err) { console.error('Load social links error:', err); }
+}
+
+function addSocialField() {
+    var html = '<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" placeholder="Twitter"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" placeholder="https://twitter.com/..."></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+    document.getElementById('socialLinksContainer').insertAdjacentHTML('beforeend', html);
+}
+
+async function saveSocialLinks() {
+    try {
+        var links = [];
+        document.querySelectorAll('.social-row').forEach(function(row) {
+            var name = row.querySelector('.social-name').value.trim();
+            if (name) links.push({ name: name, url: row.querySelector('.social-url').value.trim(), icon: row.querySelector('.social-icon').value.trim() });
+        });
+        await db.from('admin_config').upsert({ key: 'social_links', value: links, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        addNotification('config', 'Réseaux sociaux sauvegardés');
+        alert('✅ Réseaux sociaux sauvegardés !');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === SITE SETTINGS ===
+async function loadSiteSettings() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'site_settings').single();
+        if (result.data && result.data.value) {
+            var s = result.data.value;
+            document.getElementById('settingSiteName').value = s.name || 'Pixora';
+            document.getElementById('settingLogoUrl').value = s.logo_url || '';
+            document.getElementById('settingFavicon').value = s.favicon || '';
+            document.getElementById('settingColorPrimary').value = s.color_primary || '#8B5CF6';
+            document.getElementById('settingColorSecondary').value = s.color_secondary || '#EC4899';
+            document.getElementById('settingLang').value = s.lang || 'fr';
+            document.getElementById('settingHeroText').value = s.hero_text || '';
+            document.getElementById('settingCopyright').value = s.copyright || '';
+            document.getElementById('settingMaintenance').checked = !!s.maintenance;
+        }
+    } catch (err) { console.error('Load site settings error:', err); }
+}
+
+async function saveSiteSettings() {
+    try {
+        var settings = {
+            name: document.getElementById('settingSiteName').value.trim(),
+            logo_url: document.getElementById('settingLogoUrl').value.trim(),
+            favicon: document.getElementById('settingFavicon').value.trim(),
+            color_primary: document.getElementById('settingColorPrimary').value,
+            color_secondary: document.getElementById('settingColorSecondary').value,
+            lang: document.getElementById('settingLang').value,
+            hero_text: document.getElementById('settingHeroText').value.trim(),            copyright: document.getElementById('settingCopyright').value.trim(),
+            maintenance: document.getElementById('settingMaintenance').checked
+        };
+        await db.from('admin_config').upsert({ key: 'site_settings', value: settings, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        addNotification('config', 'Paramètres site sauvegardés');
+        alert('✅ Paramètres sauvegardés !');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === SEO ===
+async function loadSeo() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'seo').single();
+        if (result.data && result.data.value) {
+            var s = result.data.value;
+            document.getElementById('seoTitle').value = s.title || '';
+            document.getElementById('seoDescription').value = s.description || '';
+            document.getElementById('seoOgImage').value = s.og_image || '';
+            document.getElementById('seoCanonical').value = s.canonical || '';
+            document.getElementById('seoRobots').value = s.robots || '';
+        }
+    } catch (err) { console.error('Load SEO error:', err); }
+}
+
+async function saveSeo() {
+    try {
+        var seo = {
+            title: document.getElementById('seoTitle').value.trim(),
+            description: document.getElementById('seoDescription').value.trim(),
+            og_image: document.getElementById('seoOgImage').value.trim(),
+            canonical: document.getElementById('seoCanonical').value.trim(),
+            robots: document.getElementById('seoRobots').value.trim()
+        };
+        await db.from('admin_config').upsert({ key: 'seo', value: seo, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        addNotification('config', 'SEO sauvegardé');
+        alert('✅ SEO sauvegardé !');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === LEGAL ===
+async function loadLegal() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'legal').single();
+        if (result.data && result.data.value) {
+            document.getElementById('legalCgu').value = result.data.value.cgu || '';
+            document.getElementById('legalPrivacy').value = result.data.value.privacy || '';
+            document.getElementById('legalMentions').value = result.data.value.mentions || '';
+        }
+    } catch (err) { console.error('Load legal error:', err); }
+}
+async function saveLegal() {
+    try {
+        var legal = {
+            cgu: document.getElementById('legalCgu').value,
+            privacy: document.getElementById('legalPrivacy').value,
+            mentions: document.getElementById('legalMentions').value
+        };
+        await db.from('admin_config').upsert({ key: 'legal', value: legal, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        addNotification('config', 'Contenu légal sauvegardé');
+        alert('✅ Contenu légal sauvegardé !');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === USERS ===
+async function loadUsers() {
+    try {
+        var result = await db.from('user_data').select('*');
+        var authUsers = await db.auth.admin.listUsers();
+        var usersMap = {};
+        if (result.data) result.data.forEach(function(d) { usersMap[d.user_id] = d; });
+        var allUsers = [];
+        if (authUsers.data && authUsers.data.users) {
+            authUsers.data.users.forEach(function(u) {
+                allUsers.push({ id: u.id, email: u.email, name: u.user_metadata?.name || '-', created_at: u.created_at });
+            });
+        }
+        window._allUsers = allUsers;
+        renderUsersTable(allUsers, usersMap);
+    } catch (err) { console.error('Load users error:', err); }
+}
+
+function renderUsersTable(users, usersMap) {
+    var tbody = document.getElementById('usersTable');
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun utilisateur inscrit</td></tr>'; return; }
+    tbody.innerHTML = users.map(function(u) {
+        var d = usersMap[u.id] || {};
+        return '<tr><td>' + (u.name || '-') + '</td><td style="font-size:0.8rem">' + u.email + '</td><td style="font-family:var(--mono);color:var(--gold)">' + (d.points || 0) + '</td><td>J' + (d.streak || 1) + '</td><td style="font-size:0.75rem;color:var(--dim)">' + (d.last_login || '-') + '</td><td><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\'' + u.id + '\')"><i class="fas fa-plus"></i> Pts</button> <button class="btn btn-sm btn-danger" onclick="banUser(\'' + u.id + '\')"><i class="fas fa-ban"></i></button></td></tr>';
+    }).join('');
+}
+
+function searchUsers() {
+    var q = document.getElementById('userSearch').value.toLowerCase();
+    var filtered = window._allUsers.filter(function(u) { return (u.email && u.email.toLowerCase().includes(q)) || (u.name && u.name.toLowerCase().includes(q)); });
+    db.from('user_data').select('*').then(function(result) {
+        var usersMap = {};
+        if (result.data) result.data.forEach(function(d) { usersMap[d.user_id] = d; });
+        renderUsersTable(filtered, usersMap);
+    });
+}
+async function addPointsToUser(userId) {
+    var amount = prompt('Combien de points ajouter ?');
+    if (!amount || isNaN(amount)) return;
+    amount = parseInt(amount);
+    try {
+        await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Ajout admin', amount: amount });
+        var data = await db.from('user_data').select('*').eq('user_id', userId).single();
+        if (data.data) {
+            await db.from('user_data').update({ points: data.data.points + amount, total_earned: (data.data.total_earned || 0) + amount }).eq('user_id', userId);
+        }
+        loadUsers();
+        addNotification('user', amount + ' points ajoutés à un utilisateur');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+async function banUser(userId) {
+    if (!confirm('Bannir cet utilisateur ?')) return;
+    try {
+        await db.from('user_data').update({ points: 0, streak: 0 }).eq('user_id', userId);
+        loadUsers();
+        addNotification('user', 'Utilisateur banni');
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === LOGS ===
+async function loadLogs() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'system_logs').single();
+        var logs = result.data ? result.data.value : [];
+        var tbody = document.getElementById('logsTable');
+        if (logs.length) {
+            tbody.innerHTML = logs.slice().reverse().slice(0, 50).map(function(l) {
+                var colors = { error: 'var(--danger)', warn: 'var(--warn)', info: 'var(--accent)', success: 'var(--success)' };
+                return '<tr><td style="font-size:0.75rem;font-family:var(--mono);white-space:nowrap">' + new Date(l.time).toLocaleString('fr-FR') + '</td><td style="color:' + (colors[l.type] || 'var(--text)') + ';font-weight:600">' + l.type.toUpperCase() + '</td><td>' + l.message + '</td><td style="font-size:0.75rem;color:var(--dim)">' + (l.details || '-') + '</td></tr>';
+            }).join('');
+        } else { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--dim)">Aucun log système</td></tr>'; }
+    } catch (err) { console.error('Load logs error:', err); }
+}
+
+// === SECURITY ===
+async function changeAdminPassword() {
+    var newPass = document.getElementById('newAdminPass').value;
+    var confirmPass = document.getElementById('confirmAdminPass').value;
+    if (newPass !== confirmPass) { alert('Les mots de passe ne correspondent pas'); return; }
+    if (newPass.length < 8) { alert('Minimum 8 caractères'); return; }
+    try {
+        await db.auth.updateUser({ password: newPass });
+        alert('✅ Mot de passe modifié !');
+        document.getElementById('newAdminPass').value = '';        document.getElementById('confirmAdminPass').value = '';
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
+
+// === REALTIME SUBSCRIPTION ===
+function subscribeRealtime() {
+    db.channel('admin-realtime-v3')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'user_data' }, function(payload) {
+            addNotification('user', 'Nouveau compte créé');
+        })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, function(payload) {
+            if (payload.new.type === 'purchased') addNotification('payment', 'Paiement : ' + payload.new.title + ' (' + payload.new.amount + ' pts)');
+            if (payload.new.type === 'earned' && payload.new.amount >= 50) addNotification('gen', 'Grosse récompense : ' + payload.new.title);
+        })
+        .subscribe();
+}
 
 // === INIT ===
 async function initAdmin() {
+    try {
+        var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
+        ADMIN_EMAIL = adminEmailResult.data ? String(adminEmailResult.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
+    } catch (err) { ADMIN_EMAIL = 'leonard@pixora.com'; }
+    subscribeRealtime();
     loadDashboard();
     updateNotifUI();
 }
@@ -528,13 +962,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     try {
         var result = await db.auth.getUser();
         if (result.data.user) {
-            // On ne vérifie pas admin_email ici — on laisse handleAdminLogin le faire
-            document.getElementById('loginOverlay').classList.remove('hidden');
+            var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
+            var allowedEmail = adminEmailResult.data ? String(adminEmailResult.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
+            if (result.data.user.email === allowedEmail) {
+                ADMIN_EMAIL = result.data.user.email;
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminEmailDisplay').textContent = result.data.user.email;
+                initAdmin();
+            } else {
+                document.getElementById('loginOverlay').classList.remove('hidden');
+            }
         } else {
             document.getElementById('loginOverlay').classList.remove('hidden');
         }
     } catch (err) { console.error('Init error:', err); }
 });
 </script>
-</body>
-</html>
+</body></html>
