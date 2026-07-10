@@ -11,7 +11,7 @@
         :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;padding:2rem}
-        .container{max-width:1000px;margin:0 auto}
+        .container{max-width:1200px;margin:0 auto}
         .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
         .title{font-size:1.8rem;font-weight:700}
         .btn-back{padding:0.6rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;text-decoration:none}
@@ -25,11 +25,12 @@
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
         .btn-danger{background:var(--danger);color:white}
         .btn-sm{padding:0.4rem 0.8rem;font-size:0.85rem}
-        .ad-list{margin-top:2rem}
-        .ad-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+        .page-section{margin-top:2rem}
+        .page-title{font-size:1.3rem;font-weight:700;margin-bottom:1rem;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:8px}
+        .ad-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
         .ad-info h4{margin-bottom:0.3rem}
         .ad-info p{color:var(--muted);font-size:0.85rem}
-        .ad-actions{display:flex;gap:0.5rem}
+        .ad-actions{display:flex;gap:0.5rem;align-items:center}
         .badge{display:inline-block;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:600}
         .badge-success{background:rgba(16,185,129,0.2);color:var(--success)}
         .badge-danger{background:rgba(239,68,68,0.2);color:var(--danger)}
@@ -40,63 +41,65 @@
         .access-denied{text-align:center;padding:4rem 2rem}
         .access-denied i{font-size:4rem;color:var(--danger);margin-bottom:1rem}
         .admin-badge{background:rgba(139,92,246,0.2);color:var(--accent);padding:0.3rem 0.8rem;border-radius:6px;font-size:0.8rem;font-weight:600}
-        .type-indicator{display:inline-block;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.7rem;font-weight:600;margin-left:0.5rem}
-        .type-link{background:rgba(139,92,246,0.2);color:var(--accent)}
-        .type-code{background:rgba(251,191,36,0.2);color:var(--gold)}
+        .empty-state{text-align:center;padding:2rem;color:var(--muted)}
     </style>
 </head>
 <body>
     <div class="container" id="mainContent" style="display:none">
-        <div class="header">            <div>
-                <h1 class="title">📊 Gestion des Publicités</h1>
+        <div class="header">
+            <div>                <h1 class="title">📊 Gestion des Publicités</h1>
                 <span class="admin-badge">Admin Only</span>
             </div>
             <a href="admin.html" class="btn-back">← Retour</a>
         </div>
 
         <div class="card">
-            <h2 style="margin-bottom:1rem"> Ajouter une nouvelle publicité</h2>
+            <h2 style="margin-bottom:1rem">➕ Ajouter une nouvelle publicité</h2>
             <form id="adForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Nom de l'offre</label>
-                        <input type="text" id="adName" placeholder="Ex: Smartlink, Bannière 300x250..." required>
+                        <label>Nom de la publicité</label>
+                        <input type="text" id="adName" placeholder="Ex: Social Bar, Bannière 300x250..." required>
                     </div>
                     <div class="form-group">
-                        <label>Type</label>
-                        <select id="adType" required onchange="toggleInputType()">
-                            <option value="smartlink">Smartlink (Lien)</option>
-                            <option value="video">Vidéo</option>
-                            <option value="banner">Bannière 300x250 (Code)</option>
-                            <option value="native">Native Banner (Code)</option>
-                            <option value="social_bar">Social Bar (Code)</option>
-                            <option value="popunder">Popunder</option>
+                        <label>Page cible</label>
+                        <select id="adPage" required>
+                            <option value="index">Index (Accueil)</option>
+                            <option value="profile">Profile (Profil)</option>
+                            <option value="shop">Shop (Boutique)</option>
+                            <option value="galerie">Galerie</option>
+                            <option value="earn">Earn (Gagner des points)</option>
                         </select>
                     </div>
                 </div>
-                
-                <!-- Champ pour lien (Smartlink) -->
-                <div class="form-group" id="linkGroup">
-                    <label>Lien Adsterra</label>
-                    <input type="url" id="adLink" placeholder="https://www.effectivecpmnetwork.com/...">
+                <div class="form-group">
+                    <label>Type de publicité</label>
+                    <select id="adType" required>
+                        <option value="social_bar">Social Bar (Notification)</option>
+                        <option value="native">Native Banner (Intégré)</option>
+                        <option value="banner">Bannière 300x250</option>
+                        <option value="banner_728">Bannière 728x90</option>
+                    </select>
                 </div>
-                
-                <!-- Champ pour code HTML (Bannières) -->
-                <div class="form-group" id="codeGroup" style="display:none">
-                    <label>Code HTML/JS de la bannière</label>
-                    <textarea id="adCode" placeholder="<script>..."></textarea>
-                    <small style="color:var(--muted);display:block;margin-top:0.5rem">Colle le code complet fourni par Adsterra</small>
+                <div class="form-group">
+                    <label>Code HTML/JS Adsterra</label>
+                    <textarea id="adCode" placeholder="<script>...</script><div>...</div>" required></textarea>
+                    <small style="color:var(--muted);display:block;margin-top:0.5rem">Collez le code complet fourni par Adsterra</small>
                 </div>
-                
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Points à gagner</label>
-                        <input type="number" id="adPoints" placeholder="25" min="1" required>
+                        <label>Position sur la page</label>
+                        <select id="adPosition" required>
+                            <option value="top">Haut de page</option>
+                            <option value="middle">Milieu de page</option>
+                            <option value="bottom">Bas de page</option>
+                            <option value="sidebar">Sidebar (colonne latérale)</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label>Statut</label>
+                    <div class="form-group">                        <label>Statut</label>
                         <select id="adActive">
-                            <option value="true">Actif</option>                            <option value="false">Inactif</option>
+                            <option value="true">Actif</option>
+                            <option value="false">Inactif</option>
                         </select>
                     </div>
                 </div>
@@ -104,10 +107,7 @@
             </form>
         </div>
 
-        <div class="ad-list">
-            <h2 style="margin-bottom:1rem"> Publicités existantes</h2>
-            <div id="adsList">Chargement...</div>
-        </div>
+        <div id="adsByPage"></div>
     </div>
 
     <div id="accessDenied" class="access-denied" style="display:none">
@@ -122,30 +122,14 @@
         const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const ADMIN_EMAIL = 'leonard@pixora.com';
-
-        function toggleInputType() {
-            const type = document.getElementById('adType').value;
-            const codeTypes = ['banner', 'native', 'social_bar'];
-            
-            if (codeTypes.includes(type)) {
-                document.getElementById('linkGroup').style.display = 'none';
-                document.getElementById('codeGroup').style.display = 'block';
-                document.getElementById('adLink').required = false;
-                document.getElementById('adCode').required = true;
-            } else {
-                document.getElementById('linkGroup').style.display = 'block';
-                document.getElementById('codeGroup').style.display = 'none';
-                document.getElementById('adLink').required = true;
-                document.getElementById('adCode').required = false;
-            }
-        }
+        const ADMIN_EMAIL = 'labscriptoz09@gmail.com';
 
         async function checkAdminAccess() {
             const { data: { user }, error } = await db.auth.getUser();
             
             if (error || !user) {
-                showAccessDenied();                return false;
+                showAccessDenied();
+                return false;
             }
 
             if (user.email !== ADMIN_EMAIL) {
@@ -155,27 +139,23 @@
 
             document.getElementById('mainContent').style.display = 'block';
             document.getElementById('accessDenied').style.display = 'none';
-            loadAds();
+            loadAllAds();
             return true;
         }
 
         function showAccessDenied() {
             document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('accessDenied').style.display = 'block';
-        }
+            document.getElementById('accessDenied').style.display = 'block';        }
 
         document.getElementById('adForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const type = document.getElementById('adType').value;
-            const codeTypes = ['banner', 'native', 'social_bar'];
-            
             const newAd = {
                 name: document.getElementById('adName').value,
-                type: type,
-                link: codeTypes.includes(type) ? '' : document.getElementById('adLink').value,
-                code: codeTypes.includes(type) ? document.getElementById('adCode').value : '',
-                points: parseInt(document.getElementById('adPoints').value),
+                page: document.getElementById('adPage').value,
+                type: document.getElementById('adType').value,
+                code: document.getElementById('adCode').value,
+                position: document.getElementById('adPosition').value,
                 active: document.getElementById('adActive').value === 'true'
             };
 
@@ -194,14 +174,14 @@
                     .upsert({ key: 'ad_networks', value: ads });
 
                 alert('✅ Publicité ajoutée !');
-                document.getElementById('adForm').reset();                toggleInputType();
-                loadAds();
+                document.getElementById('adForm').reset();
+                loadAllAds();
             } catch (e) {
                 alert('Erreur: ' + e.message);
             }
         });
 
-        async function loadAds() {
+        async function loadAllAds() {
             const { data: configData } = await db
                 .from('admin_config')
                 .select('value')
@@ -210,32 +190,48 @@
 
             const ads = configData?.value || [];
             
-            if (ads.length === 0) {
-                document.getElementById('adsList').innerHTML = '<p style="color:var(--muted)">Aucune publicité configurée</p>';
-                return;
-            }
+            const pages = ['index', 'profile', 'shop', 'galerie', 'earn'];
+            const pageNames = {
+                index: ' Index (Accueil)',
+                profile: '👤 Profile (Profil)',
+                shop: '🛍️ Shop (Boutique)',                galerie: '🖼️ Galerie',
+                earn: '💰 Earn (Gagner des points)'
+            };
 
-            document.getElementById('adsList').innerHTML = ads.map((ad, index) => {
-                const hasCode = ad.code && ad.code.length > 0;
-                const typeLabel = hasCode ? 'Code HTML' : 'Lien';
-                const typeClass = hasCode ? 'type-code' : 'type-link';
+            let html = '';
+            
+            pages.forEach(page => {
+                const pageAds = ads.filter(ad => ad.page === page);
                 
-                return `
-                <div class="ad-item">
-                    <div class="ad-info">
-                        <h4>${ad.name} 
-                            <span class="badge ${ad.active ? 'badge-success' : 'badge-danger'}">${ad.active ? 'Actif' : 'Inactif'}</span>
-                            <span class="type-indicator ${typeClass}">${typeLabel}</span>
-                        </h4>
-                        <p>${ad.type} • +${ad.points} pts</p>
-                        <p style="font-size:0.75rem;opacity:0.7">${hasCode ? 'Code HTML/JS enregistré' : ad.link}</p>
-                    </div>
-                    <div class="ad-actions">
-                        <div class="toggle ${ad.active ? 'active' : ''}" onclick="toggleAd(${index})"></div>
-                        <button class="btn btn-danger btn-sm" onclick="deleteAd(${index})">🗑️</button>
-                    </div>
-                </div>
-            `}).join('');
+                html += `<div class="page-section">`;
+                html += `<h3 class="page-title">${pageNames[page]}</h3>`;
+                
+                if (pageAds.length === 0) {
+                    html += `<div class="empty-state">Aucune publicité configurée pour cette page</div>`;
+                } else {
+                    pageAds.forEach((ad, index) => {
+                        const actualIndex = ads.findIndex(a => a.name === ad.name && a.page === ad.page);
+                        html += `
+                            <div class="ad-item">
+                                <div class="ad-info">
+                                    <h4>${ad.name} 
+                                        <span class="badge ${ad.active ? 'badge-success' : 'badge-danger'}">${ad.active ? 'Actif' : 'Inactif'}</span>
+                                    </h4>
+                                    <p>${ad.type} • Position: ${ad.position}</p>
+                                </div>
+                                <div class="ad-actions">
+                                    <div class="toggle ${ad.active ? 'active' : ''}" onclick="toggleAd(${actualIndex})"></div>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteAd(${actualIndex})">️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += `</div>`;
+            });
+
+            document.getElementById('adsByPage').innerHTML = html;
         }
 
         async function toggleAd(index) {
@@ -244,14 +240,14 @@
                 .select('value')
                 .eq('key', 'ad_networks')
                 .single();
+
             const ads = configData?.value || [];
             ads[index].active = !ads[index].active;
-
             await db
                 .from('admin_config')
                 .upsert({ key: 'ad_networks', value: ads });
 
-            loadAds();
+            loadAllAds();
         }
 
         async function deleteAd(index) {
@@ -270,7 +266,7 @@
                 .from('admin_config')
                 .upsert({ key: 'ad_networks', value: ads });
 
-            loadAds();
+            loadAllAds();
         }
 
         checkAdminAccess();
