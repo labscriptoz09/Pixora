@@ -75,8 +75,8 @@
         let adsData = [];
 
         const AD_CONFIG = {
-            video: { icon: '🎬', label: 'Regarder une vidéo', desc: 'Regardez une vidéo de 30 secondes' },
-            smartlink: { icon: '🔗', label: 'Smartlink', desc: 'Visitez un partenaire via notre lien' },
+            video: { icon: '', label: 'Regarder une vidéo', desc: 'Regardez une vidéo de 30 secondes' },
+            smartlink: { icon: '', label: 'Smartlink', desc: 'Visitez un partenaire via notre lien' },
             banner: { icon: '🖼️', label: 'Bannière 300x250', desc: 'Affichez une publicité pendant 30 secondes' },
             native: { icon: '', label: 'Contenu sponsorisé', desc: 'Lisez un article sponsorisé' },
             social_bar: { icon: '🔔', label: 'Notification', desc: 'Activez les notifications' },
@@ -164,38 +164,47 @@
         }
 
         function loadAdScript(container, htmlCode) {
-            // Parser le HTML pour extraire scripts et autres éléments
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlCode, 'text/html');
+            // Extraire les configurations atOptions
+            const atOptionsMatch = htmlCode.match(/atOptions\s*=\s*({[^}]+})/);
+            if (atOptionsMatch) {
+                eval(atOptionsMatch[0]);
+            }
             
-            // D'abord, extraire et exécuter les scripts inline (comme atOptions)
-            const inlineScripts = doc.querySelectorAll('script:not([src])');
-            inlineScripts.forEach(script => {
-                const newScript = document.createElement('script');
-                newScript.textContent = script.textContent;
-                container.appendChild(newScript);
-            });
+            // Extraire et créer le container div
+            const containerMatch = htmlCode.match(/<div[^>]*id="([^"]+)"[^>]*><\/div>/);
+            if (containerMatch) {
+                const div = document.createElement('div');
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(containerMatch[0], 'text/html');
+                const element = doc.querySelector('div');
+                if (element) {
+                    Array.from(element.attributes).forEach(attr => {
+                        div.setAttribute(attr.name, attr.value);
+                    });
+                    container.appendChild(div);
+                }
+            }
             
-            // Ensuite, insérer les divs/containers
-            const elements = Array.from(doc.body.childNodes).filter(node => 
-                node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'SCRIPT'
-            );
-            elements.forEach(el => {
-                container.appendChild(el.cloneNode(true));
-            });
-            
-            // Enfin, charger les scripts externes
-            const externalScripts = doc.querySelectorAll('script[src]');
-            externalScripts.forEach(oldScript => {
-                const newScript = document.createElement('script');
-                newScript.async = oldScript.async;
-                
-                // Copier tous les attributs
-                Array.from(oldScript.attributes).forEach(attr => {
-                    newScript.setAttribute(attr.name, attr.value);
+            // Charger les scripts externes
+            const scriptSrcMatches = htmlCode.match(/<script[^>]*src="([^"]+)"[^>]*><\/script>/g);
+            if (scriptSrcMatches) {
+                scriptSrcMatches.forEach(scriptTag => {
+                    const srcMatch = scriptTag.match(/src="([^"]+)"/);
+                    if (srcMatch) {
+                        const script = document.createElement('script');
+                        script.src = srcMatch[1];
+                        script.async = true;
+                                                // Copier les autres attributs
+                        const asyncMatch = scriptTag.match(/async="([^"]+)"/);
+                        if (asyncMatch) script.async = asyncMatch[1] === 'true';
+                        
+                        const cfasyncMatch = scriptTag.match(/data-cfasync="([^"]+)"/);
+                        if (cfasyncMatch) script.setAttribute('data-cfasync', cfasyncMatch[1]);
+                        
+                        container.appendChild(script);
+                    }
                 });
-                                container.appendChild(newScript);
-            });
+            }
         }
 
         async function startTask(adIndex) {
@@ -234,8 +243,7 @@
             const timer = setInterval(() => {
                 seconds--;
                 timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
-                
-                if (seconds <= 0) {
+                                if (seconds <= 0) {
                     clearInterval(timer);
                 }
             }, 1000);
@@ -243,7 +251,8 @@
             try {
                 const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
 
-                const { data: userData } = await db                    .from('user_data')
+                const { data: userData } = await db
+                    .from('user_data')
                     .select('points')
                     .eq('user_id', user.id)
                     .single();
@@ -283,8 +292,7 @@
                 console.error('Error:', e);
                 alert('Erreur: ' + e.message);
                 await loadAds();
-            }
-        }
+            }        }
 
         async function updatePoints() {
             const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
@@ -292,5 +300,6 @@
         }
 
         init();
-    </script></body>
+    </script>
+</body>
 </html>
