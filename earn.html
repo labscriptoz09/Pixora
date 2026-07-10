@@ -8,53 +8,318 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#0a0a0f;--surface:#13131a;--elevated:#1c1c26;--border:#2a2a35;--accent:#8B5CF6;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--warn:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
-        *{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
-        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-        header{padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
-        .logo{display:flex;align-items:center;gap:0.6rem}
-        .logo svg{width:28px;height:28px}
-        .logo span{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .balance{display:flex;align-items:center;gap:0.5rem;font-weight:600}
-        .balance-icon{color:var(--gold);font-size:1.2rem}
-        .balance-value{font-family:var(--mono);font-size:1.1rem}
-        main{flex:1;padding:2rem;overflow-y:auto}
-        .section-title{font-size:1.4rem;font-weight:700;margin-bottom:1.5rem;color:var(--accent)}
-        .earn-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
-        .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
-        .earn-card:hover{transform:translateY(-4px);border-color:var(--accent)}
-        .earn-card.waiting{opacity:0.7;pointer-events:none;border-color:var(--warn)}
-        .earn-icon{font-size:2rem;margin-bottom:1rem;color:var(--accent)}
-        .earn-info{flex:1}
-        .earn-title{font-weight:600;margin-bottom:0.5rem}
-        .earn-desc{font-size:0.85rem;color:var(--muted)}
-        .earn-points{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--gold);position:absolute;top:1.5rem;right:1.5rem}
-        .timer-bar{position:absolute;bottom:0;left:0;height:4px;background:var(--warn);width:0%;transition:width linear}
-        .empty-state{text-align:center;color:var(--dim);padding:3rem;grid-column:1/-1}
-        .empty-state i{font-size:3rem;margin-bottom:1rem;opacity:0.3}
-        footer{padding:1.5rem;text-align:center;color:var(--dim);border-top:1px solid var(--border);font-size:0.85rem}
-        @media(max-width:768px){.earn-container{grid-template-columns:1fr}header{padding:1rem}}
+        :root{
+            --bg:#0a0a0f;
+            --surface:#13131a;
+            --elevated:#1c1c26;
+            --border:#2a2a35;
+            --accent:#8B5CF6;
+            --gold:#FBBF24;
+            --success:#10B981;
+            --danger:#EF4444;
+            --warn:#F97316;
+            --text:#FAFAFA;
+            --muted:#A1A1AA;
+            --dim:#71717A;
+            --font:'Inter',sans-serif;
+            --mono:'JetBrains Mono',monospace;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background:var(--bg);
+            color:var(--text);
+            font-family:var(--font);
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+        }
+        ::-webkit-scrollbar{width:6px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+        header{
+            padding:1.5rem 2rem;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:1px solid var(--border);
+        }
+        .logo{
+            display:flex;
+            align-items:center;            gap:0.6rem;
+        }
+        .logo svg{
+            width:28px;
+            height:28px;
+        }
+        .logo span{
+            font-size:1.1rem;
+            font-weight:700;
+            background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .balance{
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+            font-weight:600;
+        }
+        .balance-icon{
+            color:var(--gold);
+            font-size:1.2rem;
+        }
+        .balance-value{
+            font-family:var(--mono);
+            font-size:1.1rem;
+        }
+
+        main{
+            flex:1;
+            padding:2rem;
+            overflow-y:auto;
+        }
+        .section-title{
+            font-size:1.4rem;
+            font-weight:700;
+            margin-bottom:1.5rem;
+            color:var(--accent);
+        }
+
+        .earn-container{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:1.5rem;
+        }
+
+        .earn-card{
+            background:var(--surface);
+            border:1px solid var(--border);
+            border-radius:12px;            padding:1.5rem;
+            cursor:pointer;
+            transition:all 0.3s;
+            position:relative;
+            overflow:hidden;
+            box-shadow:0 4px 12px rgba(139,92,246,0.1);
+        }
+        .earn-card:hover{
+            transform:translateY(-4px);
+            border-color:var(--accent);
+            box-shadow:0 6px 16px rgba(139,92,246,0.2);
+        }
+        .earn-card.waiting{
+            opacity:0.7;
+            pointer-events:none;
+            border-color:var(--warn);
+        }
+        .earn-icon{
+            font-size:2rem;
+            margin-bottom:1rem;
+            color:var(--accent);
+        }
+        .earn-info{
+            flex:1;
+        }
+        .earn-title{
+            font-weight:600;
+            margin-bottom:0.5rem;
+        }
+        .earn-desc{
+            font-size:0.85rem;
+            color:var(--muted);
+        }
+        .earn-points{
+            font-family:var(--mono);
+            font-size:1.4rem;
+            font-weight:700;
+            color:var(--gold);
+            position:absolute;
+            top:1.5rem;
+            right:1.5rem;
+        }
+        .timer-bar{
+            position:absolute;
+            bottom:0;
+            left:0;
+            height:4px;
+            background:var(--warn);
+            width:0%;
+            transition:width linear;        }
+        .timer-label{
+            position:absolute;
+            bottom:6px;
+            right:1.5rem;
+            font-size:0.7rem;
+            color:var(--dim);
+            font-family:var(--mono);
+        }
+
+        /* Modal de confirmation */
+        .modal{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.7);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index:1000;
+            opacity:0;
+            visibility:hidden;
+            transition:opacity 0.3s,visibility 0.3s;
+        }
+        .modal.active{
+            opacity:1;
+            visibility:visible;
+        }
+        .modal-content{
+            background:var(--surface);
+            border-radius:16px;
+            padding:2rem;
+            max-width:90%;
+            width:400px;
+            text-align:center;
+            border:1px solid var(--border);
+        }
+        .modal-title{
+            font-size:1.2rem;
+            font-weight:700;
+            margin-bottom:1rem;
+            color:var(--accent);
+        }
+        .modal-desc{
+            color:var(--muted);
+            margin-bottom:1.5rem;
+            line-height:1.6;
+        }
+        .modal-actions{
+            display:flex;
+            gap:0.8rem;        }
+        .btn{
+            padding:0.7rem 1.4rem;
+            border-radius:8px;
+            font-size:0.85rem;
+            font-weight:600;
+            cursor:pointer;
+            transition:all 0.2s;
+            display:inline-flex;
+            align-items:center;
+            gap:0.4rem;
+            border:none;
+        }
+        .btn-primary{
+            background:linear-gradient(135deg,var(--accent),var(--accent2));
+            color:white;
+        }
+        .btn-outline{
+            background:transparent;
+            border:1px solid var(--border);
+            color:var(--muted);
+        }
+        .btn-outline:hover{
+            border-color:var(--accent);
+            color:var(--accent);
+        }
+        .btn-danger{
+            background:var(--danger);
+            color:white;
+        }
+
+        /* État d'attente */
+        .waiting-overlay{
+            position:absolute;
+            inset:0;
+            background:rgba(0,0,0,0.8);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            border-radius:12px;
+            z-index:1;
+            opacity:0;
+            transition:opacity 0.3s;
+        }
+        .earn-card.waiting .waiting-overlay{
+            opacity:1;
+        }
+        .waiting-icon{
+            font-size:3rem;            color:var(--warn);
+            margin-bottom:1rem;
+        }
+        .waiting-text{
+            font-size:1.1rem;
+            font-weight:600;
+            margin-bottom:0.5rem;
+        }
+        .waiting-subtext{
+            color:var(--muted);
+            font-size:0.9rem;
+        }
+        .progress-circle{
+            width:60px;
+            height:60px;
+            border-radius:50%;
+            border:4px solid var(--border);
+            border-top:4px solid var(--warn);
+            animation:spin 30s linear;
+            margin:1rem auto;
+        }
+        @keyframes spin{
+            0%{transform:rotate(0deg);}
+            100%{transform:rotate(360deg);}
+        }
+
+        footer{
+            padding:1.5rem;
+            text-align:center;
+            color:var(--dim);
+            border-top:1px solid var(--border);
+            font-size:0.85rem;
+        }
+
+        @media(max-width:768px){
+            .earn-container{grid-template-columns:1fr;}
+            header{padding:1rem;}
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">
-            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="alg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#alg)"/></svg>
+            <svg viewBox="0 0 32 32" fill="none">
+                <defs><linearGradient id="alg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+                <path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#alg)"/>
+            </svg>
             <span>Pixora</span>
         </div>
-        <div class="balance">
-            <div class="balance-icon"><i class="fas fa-coins"></i></div>
+        <div class="balance">            <div class="balance-icon"><i class="fas fa-coins"></i></div>
             <div class="balance-value" id="userPoints">-</div>
         </div>
     </header>
+
     <main>
         <h2 class="section-title">🎯 Gagnez des points en quelques minutes</h2>
         <div class="earn-container" id="earnButtonsContainer">
-            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+            <div style="text-align:center;color:var(--dim);padding:3rem;grid-column:1/-1">
+                <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i>
+                <p>Chargement...</p>
+            </div>
         </div>
     </main>
 
     <footer>© 2026 Pixora. Tous droits réservés.</footer>
+
+    <!-- Modal de confirmation -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-title">✅ Confirmation requise</div>
+            <div class="modal-desc">Vous avez regardé la vidéo pendant 30 secondes. Confirmez pour recevoir vos <span id="confirmPoints">+30</span> points.</div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeConfirmModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="confirmReward()">Confirmer</button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
@@ -63,15 +328,73 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
         let userPoints = 0;
-        let isProcessing = false;
+        let activeTimer = null;
+        let currentAd = null;
 
+        // === MODAL ===
+        function openConfirmModal(points) {
+            document.getElementById('confirmPoints').textContent = '+' + points;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+        async function confirmReward() {
+            if (!currentAd || !currentUser) return;
+                        try {
+                // 1. Lire les points actuels
+                const currentData = await db.from('user_data')
+                    .select('points')
+                    .eq('user_id', currentUser.id)
+                    .single();
+                const currentPoints = currentData.data?.points || 0;
+                const newPoints = currentPoints + currentAd.points;
+
+                // 2. Mettre à jour les points
+                await db.from('user_data')
+                    .update({ points: newPoints })
+                    .eq('user_id', currentUser.id);
+
+                // 3. Créer la transaction
+                const titleMap = {
+                    video: 'Vidéo récompensée',
+                    cpa: 'Offre CPA',
+                    banner: 'Publicité vue',
+                    native: 'Article sponsorisé',
+                    direct: 'Lien partenaire',
+                    share: 'Partage réseau'
+                };
+                await db.from('transactions').insert({
+                    user_id: currentUser.id,
+                    type: 'earned',
+                    title: (titleMap[currentAd.type] || 'Récompense') + ' - ' + currentAd.name,
+                    amount: currentAd.points
+                });
+
+                // 4. Mettre à jour l'UI
+                userPoints = newPoints;
+                document.getElementById('userPoints').textContent = userPoints.toLocaleString();
+                closeConfirmModal();
+                alert(`✅ +${currentAd.points} points ajoutés !`);
+                loadEarnData(); // Rafraîchir les boutons
+            } catch (err) {
+                console.error('Credit error:', err);
+                alert('❌ Erreur lors du crédit. Veuillez réessayer.');
+            }
+        }
+
+        // === CHARGEMENT ===
         async function loadEarnData() {
             const container = document.getElementById('earnButtonsContainer');
             try {
                 // 1. Auth
                 const auth = await db.auth.getUser();
                 if (!auth.data?.user) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Veuillez vous connecter pour gagner des points</p></div>';
+                    container.innerHTML = `                        <div style="text-align:center;color:var(--dim);padding:3rem;grid-column:1/-1">
+                            <i class="fas fa-lock" style="font-size:3rem;margin-bottom:1rem;opacity:0.3"></i>
+                            <p>Veuillez vous connecter pour gagner des points</p>
+                        </div>
+                    `;
                     return;
                 }
                 currentUser = auth.data.user;
@@ -85,21 +408,27 @@
                 const adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
                 const ads = adsResult.data?.value || [];
 
-                // 4. Pricing (fallback)
+                // 4. Pricing fallback
                 const pricingResult = await db.from('admin_config').select('value').eq('key', 'pricing').single();
                 const pricing = pricingResult.data?.value || {};
 
                 renderEarnButtons(ads, pricing);
             } catch (err) {
                 console.error('Load earn error:', err);
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Erreur de chargement. Veuillez rafraîchir.</p></div>';
+                container.innerHTML = `
+                    <div style="text-align:center;color:var(--danger);padding:3rem;grid-column:1/-1">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem;margin-bottom:1rem"></i>
+                        <p>Erreur de chargement</p>
+                        <p style="font-size:0.85rem;color:var(--dim)">${err.message}</p>
+                    </div>
+                `;
             }
         }
 
-        function renderEarnButtons(ads, pricing) {            const container = document.getElementById('earnButtonsContainer');
+        function renderEarnButtons(ads, pricing) {
+            const container = document.getElementById('earnButtonsContainer');
             let html = '';
 
-            // Mapper les types aux icônes et labels
             const typeConfig = {
                 video: { icon: '🎬', label: 'Regarder une vidéo', desc: '30 secondes' },
                 cpa: { icon: '🎮', label: 'Installer un jeu mobile', desc: '2 minutes' },
@@ -110,90 +439,110 @@
             };
 
             ads.forEach(function(ad) {
-                if (!ad.active || !ad.link) return;
-                const config = typeConfig[ad.type] || typeConfig.direct;
+                if (!ad.active || !ad.link) return;                const config = typeConfig[ad.type] || typeConfig.direct;
                 const points = ad.points || pricing.rewardVideo || 30;
 
-                html += '<div class="earn-card" id="card-' + ad.name.replace(/\s/g,'') + '" onclick="handleAdClick(\'' + ad.link + '\', ' + points + ', \'' + ad.type + '\', \'' + ad.name + '\')">';
-                html += '  <div class="earn-icon">' + config.icon + '</div>';
-                html += '  <div class="earn-info">';
-                html += '    <div class="earn-title">' + config.label + '</div>';
-                html += '    <div class="earn-desc">' + ad.name + ' • ' + config.desc + '</div>';
-                html += '  </div>';
-                html += '  <div class="earn-points">+' + points + '</div>';
-                html += '  <div class="timer-bar" id="timer-' + ad.name.replace(/\s/g,'') + '"></div>';
-                html += '</div>';
+                html += `<div class="earn-card" data-link="${ad.link}" data-points="${points}" data-type="${ad.type}" data-name="${ad.name}">
+                    <div class="earn-icon">${config.icon}</div>
+                    <div class="earn-info">
+                        <div class="earn-title">${config.label}</div>
+                        <div class="earn-desc">${ad.name} • ${config.desc}</div>
+                    </div>
+                    <div class="earn-points">+${points}</div>
+                    <div class="timer-bar"></div>
+                    <div class="timer-label">00:30</div>
+                    <div class="waiting-overlay">
+                        <div class="waiting-icon"><i class="fas fa-clock"></i></div>
+                        <div class="waiting-text">Attente en cours</div>
+                        <div class="waiting-subtext">Ne fermez pas cette page</div>
+                        <div class="progress-circle"></div>
+                    </div>
+                </div>`;
             });
 
             if (!html) {
-                html = '<div class="empty-state"><i class="fas fa-ad"></i><p>Aucune régie configurée.<br>Contactez l\'administrateur.</p></div>';
+                html = `
+                    <div style="text-align:center;color:var(--dim);padding:3rem;grid-column:1/-1">
+                        <i class="fas fa-ad" style="font-size:3rem;margin-bottom:1rem;opacity:0.3"></i>
+                        <p>Aucune régie configurée</p>
+                        <p style="font-size:0.85rem">Ajoutez des régies dans l'admin → Régies Pub</p>
+                    </div>
+                `;
             }
 
             container.innerHTML = html;
+            attachCardListeners();
         }
 
-        async function handleAdClick(link, points, type, adName) {
-            if (isProcessing) return;
-            if (!link || link.trim() === '') {
-                alert('⚠️ Lien non configuré');
-                return;
-            }
+        function attachCardListeners() {
+            document.querySelectorAll('.earn-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (this.classList.contains('waiting')) return;
+                    
+                    const link = this.dataset.link;
+                    const points = parseInt(this.dataset.points);
+                    const type = this.dataset.type;
+                    const name = this.dataset.name;
 
-            isProcessing = true;
-            const cardId = 'card-' + adName.replace(/\s/g,'');
-            const timerId = 'timer-' + adName.replace(/\s/g,'');
-            const card = document.getElementById(cardId);
-            const timerBar = document.getElementById(timerId);
+                    if (!link || link.trim() === '') {
+                        alert('⚠️ Lien non configuré');
+                        return;
+                    }
+                    // Sauvegarder l'ad courant
+                    currentAd = { link, points, type, name };
 
-            // État visuel d'attente            card.classList.add('waiting');
-            timerBar.style.transition = 'width 30s linear';
-            timerBar.style.width = '100%';
+                    // Ouvrir le lien
+                    window.open(link, '_blank');
 
-            // Ouvrir le lien
-            window.open(link, '_blank');
+                    // Mettre en état d'attente
+                    this.classList.add('waiting');
+                    const timerBar = this.querySelector('.timer-bar');
+                    const timerLabel = this.querySelector('.timer-label');
+                    const progress = this.querySelector('.progress-circle');
 
-            // Attendre 30 secondes
-            setTimeout(async function() {
-                try {
-                    // 1. Lire les points actuels
-                    const currentData = await db.from('user_data')
-                        .select('points')
-                        .eq('user_id', currentUser.id)
-                        .single();
-                    const currentPoints = currentData.data?.points || 0;
-                    const newPoints = currentPoints + points;
+                    // Annuler tout timer précédent
+                    if (activeTimer) clearTimeout(activeTimer);
 
-                    // 2. Mettre à jour les points
-                    await db.from('user_data')
-                        .update({ points: newPoints })
-                        .eq('user_id', currentUser.id);
+                    // Timer de 30s avec décompte visuel
+                    let seconds = 30;
+                    timerLabel.textContent = `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
+                    timerBar.style.width = '100%';
 
-                    // 3. Créer la transaction
-                    var titleMap = { video: 'Vidéo récompensée', cpa: 'Offre CPA', banner: 'Publicité vue', native: 'Article sponsorisé', direct: 'Lien partenaire', share: 'Partage réseau' };
-                    await db.from('transactions').insert({
-                        user_id: currentUser.id,
-                        type: 'earned',
-                        title: (titleMap[type] || 'Récompense') + ' - ' + adName,
-                        amount: points
-                    });
+                    // Animation de la barre
+                    const startTime = Date.now();
+                    const duration = 30000;
+                    function updateProgress() {
+                        const elapsed = Date.now() - startTime;
+                        const progressPercent = Math.max(0, 100 - (elapsed / duration) * 100);
+                        timerBar.style.width = progressPercent + '%';
+                        seconds = Math.max(0, 30 - Math.floor(elapsed / 1000));
+                        timerLabel.textContent = `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
 
-                    // 4. Mettre à jour l'UI
-                    userPoints = newPoints;
-                    document.getElementById('userPoints').textContent = userPoints.toLocaleString();
-                    alert('✅ +' + points + ' points ajoutés !');
+                        if (seconds > 0) {
+                            requestAnimationFrame(updateProgress);
+                        } else {
+                            // Temps écoulé → ouvrir le modal
+                            openConfirmModal(points);
+                        }
+                    }
+                    requestAnimationFrame(updateProgress);
 
-                } catch (err) {
-                    console.error('Credit error:', err);
-                    alert('❌ Erreur lors du crédit. Veuillez réessayer.');
-                } finally {
-                    // Reset état visuel
-                    card.classList.remove('waiting');
-                    timerBar.style.transition = 'none';
-                    timerBar.style.width = '0%';
-                    isProcessing = false;
-                }
-            }, 30000);
+                    // Sécurité : annuler si l'utilisateur quitte la page
+                    const handleBeforeUnload = () => {
+                        this.classList.remove('waiting');
+                        timerBar.style.width = '0%';
+                        if (activeTimer) clearTimeout(activeTimer);
+                    };
+                    window.addEventListener('beforeunload', handleBeforeUnload);
+
+                    // Nettoyer au clic ou timeout
+                    setTimeout(() => {
+                        window.removeEventListener('beforeunload', handleBeforeUnload);                    }, 31000);
+                });
+            });
         }
+
+        // === INIT ===
         document.addEventListener('DOMContentLoaded', loadEarnData);
     </script>
 </body>
