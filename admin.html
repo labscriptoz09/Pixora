@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixora Admin v4.1</title>
+    <title>Pixora Admin v5.0 - Panneau de Contrôle</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -144,7 +144,7 @@
             <div class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></div>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v4.1<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v5.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 <div class="notif-panel" id="notifPanel">
     <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
@@ -153,6 +153,7 @@
 
 <main class="main">
 
+    <!-- DASHBOARD -->
     <div class="admin-section active" id="sec-dashboard">
         <div class="page-header"><div><div class="page-title">Dashboard</div><div class="page-subtitle">Vue d'ensemble en temps réel</div></div><button class="btn btn-outline btn-sm" onclick="loadDashboard()"><i class="fas fa-sync"></i> Actualiser</button></div>
         <div class="stats-grid">
@@ -164,6 +165,7 @@
         <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-receipt"></i> Transactions Récentes</div></div><div class="table-container"><table><thead><tr><th>User</th><th>Type</th><th>Titre</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentTx"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- API TESTER -->
     <div class="admin-section" id="sec-api-tester">
         <div class="page-header"><div><div class="page-title">🧪 Testeur API</div><div class="page-subtitle">Vérifie si tes clés API fonctionnent</div></div><button class="btn btn-primary btn-sm" onclick="runAllApiTests()"><i class="fas fa-play"></i> Tout Tester</button></div>
         <div class="api-test-grid">
@@ -192,9 +194,9 @@
                 <div class="card-title"><i class="fas fa-server"></i> Replicate</div>
                 <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Modèles Open Source</div>
                 <div id="status-replicate" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
-                <div id="log-replicate" class="api-log"></div>
-                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testReplicate()">Tester</button>
-            </div>            <div class="api-test-card">
+                <div id="log-replicate" class="api-log"></div>                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testReplicate()">Tester</button>
+            </div>
+            <div class="api-test-card">
                 <div class="card-title"><i class="fas fa-brain"></i> OpenAI (DALL-E)</div>
                 <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">DALL-E 3</div>
                 <div id="status-openai" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
@@ -204,6 +206,7 @@
         </div>
     </div>
 
+    <!-- GALERIE -->
     <div class="admin-section" id="sec-gallery-admin">
         <div class="page-header"><div><div class="page-title">Images Générées</div><div class="page-subtitle">Bucket pixora-gallery</div></div><button class="btn btn-outline btn-sm" onclick="loadGalleryAdmin()"><i class="fas fa-sync"></i> Actualiser</button></div>
         <div class="card">
@@ -212,6 +215,7 @@
         </div>
     </div>
 
+    <!-- MODÈLES IMAGE -->
     <div class="admin-section" id="sec-models-image">
         <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="modelImageForm" style="display:none">
@@ -225,11 +229,13 @@
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Coût</th><th>Ordre</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="imgModelsTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- CLÉS API -->
     <div class="admin-section" id="sec-apis">
         <div class="page-header"><div><div class="page-title">Clés API</div><div class="page-subtitle">Configurer les clés API</div></div><button class="btn btn-success btn-sm" onclick="saveApiKeys()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div id="apiKeysContainer"><div style="text-align:center;color:var(--dim);padding:1rem">Chargement...</div></div></div>
     </div>
 
+    <!-- RÉGIES PUB -->
     <div class="admin-section" id="sec-ad-networks">
         <div class="page-header"><div><div class="page-title">Régies Publicitaires</div><div class="page-subtitle">Ajouter autant de régies que nécessaire</div></div><button class="btn btn-primary btn-sm" onclick="openAdNetworkForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="adNetworkForm" style="display:none">
@@ -237,34 +243,66 @@
             <input type="hidden" id="adNetId">
             <div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input" id="adNetName" placeholder="ex: Adsterra"></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="adNetType"><option value="video">Vidéo Récompensée</option><option value="cpa">CPA / Offre</option><option value="banner">Banner</option><option value="native">Native</option><option value="direct">Direct Link</option></select></div></div>
             <div class="form-row"><div class="form-group"><label class="form-label">Lien / SDK ID</label><input type="text" class="form-input" id="adNetLink" placeholder="URL ou ID"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input" id="adNetPoints" value="5"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="adNetOrder" value="0"></div></div>
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="adNetActive" checked><span class="toggle-slider"></span></label></div>
-            <button class="btn btn-success" onclick="saveAdNetwork()"><i class="fas fa-save"></i> Sauvegarder</button>
+            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="adNetActive" checked><span class="toggle-slider"></span></label></div>            <button class="btn btn-success" onclick="saveAdNetwork()"><i class="fas fa-save"></i> Sauvegarder</button>
         </div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Type</th><th>Points</th><th>Ordre</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="adNetworksTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
-    <div class="admin-section" id="sec-pricing">        <div class="page-header"><div><div class="page-title">Points & Pricing</div><div class="page-subtitle">Modifier les coûts et récompenses</div></div><button class="btn btn-success btn-sm" onclick="savePricing()"><i class="fas fa-save"></i> Sauvegarder</button></div>
+    <!-- PRICING (TIERS 1, 2, 3) -->
+    <div class="admin-section" id="sec-pricing">
+        <div class="page-header"><div><div class="page-title">Points & Pricing</div><div class="page-subtitle">Modifier les coûts et récompenses par tier</div></div><button class="btn btn-success btn-sm" onclick="savePricing()"><i class="fas fa-save"></i> Sauvegarder</button></div>
+        
+        <!-- TIER 1 -->
         <div class="card">
-            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe"></i> Pricing Global</div>
+            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe"></i> Tier 1 (FR, US, DE, GB...)</div>
             <div class="form-row">
-                <div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input" id="costImage" value="15"></div>
-                <div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input" id="costVideo" value="90"></div>
-                <div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input" id="rewardVideo" value="30"></div>
-                <div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input" id="rewardSurvey" value="80"></div>
-                <div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input" id="rewardSponsor" value="5"></div>
-                <div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input" id="rewardStreak" value="10"></div>
-                <div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input" id="rewardShare" value="20"></div>
-                <div class="form-group"><label class="form-label">Limite Vidéo/jour</label><input type="number" class="form-input" id="limitVideo" value="3"></div>
-                <div class="form-group"><label class="form-label">Limite Sponsor/jour</label><input type="number" class="form-input" id="limitSponsor" value="5"></div>
-                <div class="form-group"><label class="form-label">Limite Partage/jour</label><input type="number" class="form-input" id="limitShare" value="1"></div>
+                <div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.image" value="15"></div>
+                <div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.video" value="90"></div>
+                <div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t1" data-key="rewards.video" value="30"></div>
+                <div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t1" data-key="rewards.survey" value="80"></div>
+                <div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t1" data-key="rewards.sponsor" value="5"></div>
+                <div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t1" data-key="rewards.streak" value="10"></div>
+                <div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t1" data-key="rewards.share" value="20"></div>
+                <div class="form-group"><label class="form-label">Limite Vidéo/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.video" value="3"></div>
+                <div class="form-group"><label class="form-label">Limite Sponsor/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.sponsor" value="5"></div>
+                <div class="form-group"><label class="form-label">Limite Partage/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.share" value="1"></div>
             </div>
         </div>
+
+        <!-- TIER 2 -->
+        <div class="card">
+            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-americas"></i> Tier 2 (BR, MX, AR...)</div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.image" value="25"></div>
+                <div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.video" value="130"></div>
+                <div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t2" data-key="rewards.video" value="15"></div>
+                <div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t2" data-key="rewards.survey" value="40"></div>
+                <div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t2" data-key="rewards.sponsor" value="3"></div>
+                <div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t2" data-key="rewards.streak" value="5"></div>
+                <div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t2" data-key="rewards.share" value="10"></div>
+            </div>
+        </div>
+
+        <!-- TIER 3 -->
+        <div class="card">
+            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-asia"></i> Tier 3 (IN, PH, NG...)</div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.image" value="35"></div>
+                <div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.video" value="190"></div>
+                <div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t3" data-key="rewards.video" value="8"></div>
+                <div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t3" data-key="rewards.survey" value="20"></div>
+                <div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t3" data-key="rewards.sponsor" value="2"></div>
+                <div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t3" data-key="rewards.streak" value="3"></div>                <div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t3" data-key="rewards.share" value="5"></div>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-gift"></i> Bonus Inscription</div>
             <div class="form-row"><div class="form-group"><label class="form-label">Points offerts</label><input type="number" class="form-input" id="signupBonus" value="50"></div></div>
         </div>
     </div>
 
+    <!-- BOUTIQUE -->
     <div class="admin-section" id="sec-shop-config">
         <div class="page-header"><div><div class="page-title">Configuration Boutique</div><div class="page-subtitle">Packs et abonnements</div></div><button class="btn btn-success btn-sm" onclick="saveShopConfig()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-box"></i> Packs</div><div id="packsContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addPackField()"><i class="fas fa-plus"></i> Ajouter</button></div>
@@ -272,6 +310,7 @@
         <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Devise</label><select class="form-select" id="shopCurrency"><option value="EUR">EUR (€)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option></select></div><div class="form-group"><label class="form-label">Stripe Key</label><input type="text" class="form-input" id="stripeKey" placeholder="pk_live_..."></div><div class="form-group"><label class="form-label">PayPal Client ID</label><input type="text" class="form-input" id="paypalClientId" placeholder="Client ID"></div></div></div>
     </div>
 
+    <!-- SITE SETTINGS -->
     <div class="admin-section" id="sec-site-settings">
         <div class="page-header"><div><div class="page-title">Paramètres du Site</div><div class="page-subtitle">Personnalisation globale</div></div><button class="btn btn-success btn-sm" onclick="saveSiteSettings()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card">
@@ -290,9 +329,11 @@
         </div>
     </div>
 
+    <!-- SEO -->
     <div class="admin-section" id="sec-seo">
         <div class="page-header"><div><div class="page-title">SEO & Métadonnées</div></div><button class="btn btn-success btn-sm" onclick="saveSeo()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card">            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div>
+        <div class="card">
+            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div>
             <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement.</textarea></div>
             <div class="form-row">
                 <div class="form-group"><label class="form-label">OG Image URL</label><input type="text" class="form-input" id="seoOgImage" placeholder="URL"></div>
@@ -300,7 +341,7 @@
             </div>
         </div>
     </div>
-
+    <!-- LEGAL -->
     <div class="admin-section" id="sec-legal">
         <div class="page-header"><div><div class="page-title">Contenu Légal</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-file-contract"></i> CGU</div><textarea class="form-textarea" id="legalCgu" style="min-height:200px"></textarea></div>
@@ -308,16 +349,19 @@
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
     </div>
 
+    <!-- UTILISATEURS -->
     <div class="admin-section" id="sec-users">
         <div class="page-header"><div><div class="page-title">Utilisateurs</div><div class="page-subtitle">Gérer les comptes</div></div><div style="display:flex;gap:0.5rem"><input type="text" class="form-input" placeholder="Rechercher email..." id="userSearch" style="width:250px" oninput="searchUsers()"><button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i></button></div></div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Pseudo</th><th>Email</th><th>Points</th><th>Streak</th><th>Actions</th></tr></thead><tbody id="usersTable"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- LOGS -->
     <div class="admin-section" id="sec-logs">
         <div class="page-header"><div><div class="page-title">Logs Système</div></div><button class="btn btn-outline btn-sm" onclick="loadLogs()"><i class="fas fa-sync"></i> Actualiser</button></div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Date</th><th>Type</th><th>Message</th><th>Détails</th></tr></thead><tbody id="logsTable"><tr><td colspan="4" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- SÉCURITÉ -->
     <div class="admin-section" id="sec-security">
         <div class="page-header"><div><div class="page-title">Sécurité Admin</div></div></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-key"></i> Changer le mot de passe</div><div class="form-row"><div class="form-group"><label class="form-label">Nouveau</label><input type="password" class="form-input" id="newAdminPass"></div><div class="form-group"><label class="form-label">Confirmer</label><input type="password" class="form-input" id="confirmAdminPass"></div></div><button class="btn btn-primary btn-sm" onclick="changeAdminPassword()"><i class="fas fa-save"></i> Modifier</button></div>
@@ -341,12 +385,12 @@ var API_KEYS = {};
 async function handleAdminLogin(e) {
     e.preventDefault();
     var email = document.getElementById('adminEmail').value.trim();
-    var pass = document.getElementById('adminPass').value;    var btn = document.getElementById('btnAdminLogin');
+    var pass = document.getElementById('adminPass').value;
+    var btn = document.getElementById('btnAdminLogin');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
     try {
-        var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
-        var rawValue = adminEmailResult.data ? adminEmailResult.data.value : '"leonard@pixora.com"';
+        var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();        var rawValue = adminEmailResult.data ? adminEmailResult.data.value : '"leonard@pixora.com"';
         var allowedEmail = String(rawValue).replace(/^"|"$/g, '');
         var result = await db.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw new Error(result.error.message);
@@ -390,12 +434,12 @@ function updateNotifUI() {
     var badge = document.getElementById('notifBadge');
     badge.textContent = unreadCount;
     badge.style.display = unreadCount > 0 ? 'block' : 'none';
-    var list = document.getElementById('notifList');    if (!notifications.length) { list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim)">Aucune notification</div>'; return; }
+    var list = document.getElementById('notifList');
+    if (!notifications.length) { list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim)">Aucune notification</div>'; return; }
     list.innerHTML = notifications.map(function(n) {
         var icons = { user: 'fa-user-plus', payment: 'fa-credit-card', error: 'fa-exclamation-triangle', gen: 'fa-sparkles', config: 'fa-cog' };
         return '<div class="notif-item ' + (n.read ? '' : 'unread') + '" onclick="markRead(this)"><div class="notif-type ' + n.type + '"><i class="fas ' + (icons[n.type] || 'fa-info-circle') + '"></i> ' + n.type.toUpperCase() + '</div><div>' + n.message + '</div><div class="notif-time">' + n.time.toLocaleTimeString('fr-FR') + '</div></div>';
-    }).join('');
-}
+    }).join('');}
 function markRead(el) { el.classList.remove('unread'); unreadCount = Math.max(0, unreadCount - 1); updateNotifUI(); }
 
 // === DASHBOARD ===
@@ -439,12 +483,12 @@ function setApiStatus(provider, status, msg) {
     if (status === 'ok') el.innerHTML = '<i class="fas fa-check-circle"></i> Connecté';
     if (status === 'ko') el.innerHTML = '<i class="fas fa-times-circle"></i> Erreur';
     if (status === 'wait') el.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Test...';
-    if (msg) log.textContent = msg;}
+    if (msg) log.textContent = msg;
+}
 
 async function testPollinations() {
     setApiStatus('pollinations', 'wait', 'Envoi requête...');
-    try {
-        var start = Date.now();
+    try {        var start = Date.now();
         var res = await fetch('https://image.pollinations.ai/prompt/test?width=64&height=64&nologo=true');
         var time = Date.now() - start;
         if (res.ok) setApiStatus('pollinations', 'ok', '✅ OK (' + time + 'ms)');
@@ -488,12 +532,12 @@ async function testReplicate() {
         else setApiStatus('replicate', 'ko', '❌ ' + res.status);
     } catch (e) { setApiStatus('replicate', 'ko', '❌ ' + e.message); }
 }
+
 async function testOpenAI() {
     var key = API_KEYS['openai'];
     if (!key) { setApiStatus('openai', 'ko', '❌ Clé manquante'); return; }
     setApiStatus('openai', 'wait', 'Test...');
-    try {
-        var res = await fetch('https://api.openai.com/v1/models', { headers: { 'Authorization': 'Bearer ' + key } });
+    try {        var res = await fetch('https://api.openai.com/v1/models', { headers: { 'Authorization': 'Bearer ' + key } });
         if (res.ok) setApiStatus('openai', 'ok', '✅ Clé valide');
         else setApiStatus('openai', 'ko', '❌ ' + res.status);
     } catch (e) { setApiStatus('openai', 'ko', '❌ ' + e.message); }
@@ -537,12 +581,12 @@ async function deleteGalleryFile(fileName) {
 async function loadModels(type) {
     try {
         var result = await db.from('generator_models').select('*').eq('type', type).order('sort_order');
-        var tbody = document.getElementById('imgModelsTable');        if (result.data && result.data.length) {
+        var tbody = document.getElementById('imgModelsTable');
+        if (result.data && result.data.length) {
             tbody.innerHTML = result.data.map(function(m) {
                 return '<tr><td>' + m.name + '</td><td>' + m.provider + '</td><td style="color:var(--gold)">' + m.cost_points + '</td><td>' + m.sort_order + '</td><td>' + (m.is_active ? '✅' : '❌') + '</td><td><button class="btn btn-sm btn-outline" onclick="editModel(\'' + type + '\',\'' + m.id + '\')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteModel(\'' + m.id + '\',\'' + type + '\')"><i class="fas fa-trash"></i></button></td></tr>';
             }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle</td></tr>'; }
-    } catch (err) { console.error(err); }
+        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle</td></tr>'; }    } catch (err) { console.error(err); }
 }
 
 function openModelForm(type) { document.getElementById('modelImageForm').style.display = 'block'; }
@@ -586,12 +630,12 @@ async function deleteModel(id, type) {
     loadModels(type);
 }
 
-// === CLÉS API ===async function loadApiKeys() {
+// === CLÉS API ===
+async function loadApiKeys() {
     try {
         var result = await db.from('admin_config').select('*').eq('key', 'api_keys').single();
         var keys = result.data ? result.data.value : {};
-        var providers = ['fal.ai', 'replicate', 'stability', 'kling', 'runway', 'pika', 'openai'];
-        var html = '<div class="form-row">';
+        var providers = ['fal.ai', 'replicate', 'stability', 'kling', 'runway', 'pika', 'openai'];        var html = '<div class="form-row">';
         providers.forEach(function(p) {
             html += '<div class="form-group"><label class="form-label">' + p + '</label><input type="password" class="form-input api-key-input" data-provider="' + p + '" value="' + (keys[p] || '') + '" placeholder="Clé API"></div>';
         });
@@ -635,12 +679,12 @@ function editAdNetwork(index) {
     document.getElementById('adNetName').value = n.name;
     document.getElementById('adNetType').value = n.type;
     document.getElementById('adNetLink').value = n.link;
-    document.getElementById('adNetPoints').value = n.points;    document.getElementById('adNetOrder').value = n.order;
+    document.getElementById('adNetPoints').value = n.points;
+    document.getElementById('adNetOrder').value = n.order;
     document.getElementById('adNetActive').checked = n.active;
 }
 
-async function saveAdNetwork() {
-    var index = document.getElementById('adNetId').value;
+async function saveAdNetwork() {    var index = document.getElementById('adNetId').value;
     var data = {
         name: document.getElementById('adNetName').value.trim(),
         type: document.getElementById('adNetType').value,
@@ -666,42 +710,39 @@ async function deleteAdNetwork(index) {
     loadAdNetworks();
 }
 
-// === PRICING (SANS TIERS) ===
+// === PRICING (TIERS 1, 2, 3) ===
 async function loadPricing() {
     try {
-        var result = await db.from('admin_config').select('*').eq('key', 'pricing').single();
+        var result = await db.from('admin_config').select('*').eq('key', 'tiers').single();
         if (result.data && result.data.value) {
-            var p = result.data.value;
-            document.getElementById('costImage').value = p.costImage || 15;
-            document.getElementById('costVideo').value = p.costVideo || 90;
-            document.getElementById('rewardVideo').value = p.rewardVideo || 30;
-            document.getElementById('rewardSurvey').value = p.rewardSurvey || 80;
-            document.getElementById('rewardSponsor').value = p.rewardSponsor || 5;
-            document.getElementById('rewardStreak').value = p.rewardStreak || 10;
-            document.getElementById('rewardShare').value = p.rewardShare || 20;
-            document.getElementById('limitVideo').value = p.limitVideo || 3;
-            document.getElementById('limitSponsor').value = p.limitSponsor || 5;
-            document.getElementById('limitShare').value = p.limitShare || 1;
+            var tiers = result.data.value;
+            [1, 2, 3].forEach(function(t) {
+                var tier = tiers[t];
+                if (!tier) return;
+                var cls = '.pricing-t' + t;
+                document.querySelectorAll(cls).forEach(function(input) {
+                    var parts = input.dataset.key.split('.');
+                    if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]];
+                });
+            });
         }
         var bonus = await db.from('admin_config').select('*').eq('key', 'signup_bonus').single();
-        if (bonus.data) document.getElementById('signupBonus').value = bonus.data.value;    } catch (err) { console.error(err); }
+        if (bonus.data) document.getElementById('signupBonus').value = bonus.data.value;
+    } catch (err) { console.error(err); }
 }
 
 async function savePricing() {
     try {
-        var pricing = {
-            costImage: parseInt(document.getElementById('costImage').value) || 15,
-            costVideo: parseInt(document.getElementById('costVideo').value) || 90,
-            rewardVideo: parseInt(document.getElementById('rewardVideo').value) || 30,
-            rewardSurvey: parseInt(document.getElementById('rewardSurvey').value) || 80,
-            rewardSponsor: parseInt(document.getElementById('rewardSponsor').value) || 5,
-            rewardStreak: parseInt(document.getElementById('rewardStreak').value) || 10,
-            rewardShare: parseInt(document.getElementById('rewardShare').value) || 20,
-            limitVideo: parseInt(document.getElementById('limitVideo').value) || 3,
-            limitSponsor: parseInt(document.getElementById('limitSponsor').value) || 5,
-            limitShare: parseInt(document.getElementById('limitShare').value) || 1
-        };
-        await db.from('admin_config').upsert({ key: 'pricing', value: pricing, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        var existing = await db.from('admin_config').select('*').eq('key', 'tiers').single();        var tiers = existing.data ? existing.data.value : {};
+        [1, 2, 3].forEach(function(t) {
+            if (!tiers[t]) tiers[t] = { costs: {}, rewards: {}, limits: {} };
+            document.querySelectorAll('.pricing-t' + t).forEach(function(input) {
+                var parts = input.dataset.key.split('.');
+                if (!tiers[t][parts[0]]) tiers[t][parts[0]] = {};
+                tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0;
+            });
+        });
+        await db.from('admin_config').upsert({ key: 'tiers', value: tiers, updated_at: new Date().toISOString() }, { onConflict: 'key' });
         await db.from('admin_config').upsert({ key: 'signup_bonus', value: parseInt(document.getElementById('signupBonus').value) || 50, updated_at: new Date().toISOString() }, { onConflict: 'key' });
         alert('✅ Pricing sauvegardé !');
     } catch (err) { alert('Erreur: ' + err.message); }
@@ -733,15 +774,15 @@ function addPackField() {
 }
 
 function addSubField() {
-    document.getElementById('subsContainer').insertAdjacentHTML('beforeend', '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Nom"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>');}
+    document.getElementById('subsContainer').insertAdjacentHTML('beforeend', '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Nom"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>');
+}
 
 async function saveShopConfig() {
     var packs = [], subs = [];
     document.querySelectorAll('.pack-row').forEach(function(row) {
         var name = row.querySelector('.pack-name').value.trim();
         if (name) packs.push({ name: name, points: parseInt(row.querySelector('.pack-points').value) || 0, price: parseFloat(row.querySelector('.pack-price').value) || 0 });
-    });
-    document.querySelectorAll('.sub-row').forEach(function(row) {
+    });    document.querySelectorAll('.sub-row').forEach(function(row) {
         var name = row.querySelector('.sub-name').value.trim();
         if (name) subs.push({ name: name, points: parseInt(row.querySelector('.sub-points').value) || 0, price: parseFloat(row.querySelector('.sub-price').value) || 0 });
     });
@@ -782,15 +823,15 @@ async function saveSiteSettings() {
         };
         await db.from('admin_config').upsert({ key: 'site_settings', value: settings, updated_at: new Date().toISOString() }, { onConflict: 'key' });
         alert('✅ Paramètres sauvegardés !');
-    } catch (err) { alert('Erreur: ' + err.message); }}
+    } catch (err) { alert('Erreur: ' + err.message); }
+}
 
 // === SEO ===
 async function loadSeo() {
     try {
         var result = await db.from('admin_config').select('*').eq('key', 'seo').single();
         if (result.data && result.data.value) {
-            var s = result.data.value;
-            document.getElementById('seoTitle').value = s.title || '';
+            var s = result.data.value;            document.getElementById('seoTitle').value = s.title || '';
             document.getElementById('seoDescription').value = s.description || '';
             document.getElementById('seoOgImage').value = s.og_image || '';
             document.getElementById('seoCanonical').value = s.canonical || '';
@@ -831,15 +872,15 @@ async function saveLegal() {
             mentions: document.getElementById('legalMentions').value
         };
         await db.from('admin_config').upsert({ key: 'legal', value: legal, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        alert('✅ Contenu légal sauvegardé !');    } catch (err) { alert('Erreur: ' + err.message); }
+        alert('✅ Contenu légal sauvegardé !');
+    } catch (err) { alert('Erreur: ' + err.message); }
 }
 
 // === USERS (CORRIGÉ) ===
 async function loadUsers() {
     try {
         // Récupère auth.users via Admin API
-        var authUsers = await db.auth.admin.listUsers();
-        var userDataResult = await db.from('user_data').select('*');
+        var authUsers = await db.auth.admin.listUsers();        var userDataResult = await db.from('user_data').select('*');
         var usersMap = {};
         if (userDataResult.data) userDataResult.data.forEach(function(d) { usersMap[d.user_id] = d; });
         var allUsers = [];
@@ -880,15 +921,15 @@ async function addPointsToUser(userId) {
     if (!amount || isNaN(amount)) return;
     amount = parseInt(amount);
     try {
-        await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Ajout admin', amount: amount });        var data = await db.from('user_data').select('*').eq('user_id', userId).single();
+        await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Ajout admin', amount: amount });
+        var data = await db.from('user_data').select('*').eq('user_id', userId).single();
         if (data.data) {
             await db.from('user_data').update({ points: data.data.points + amount, total_earned: (data.data.total_earned || 0) + amount }).eq('user_id', userId);
         } else {
             await db.from('user_data').insert({ user_id: userId, points: amount, streak: 1, total_generated: 0, total_earned: amount });
         }
         loadUsers();
-        addNotification('user', amount + ' points ajoutés');
-    } catch (err) { alert('Erreur: ' + err.message); }
+        addNotification('user', amount + ' points ajoutés');    } catch (err) { alert('Erreur: ' + err.message); }
 }
 
 async function banUser(userId) {
@@ -929,15 +970,15 @@ async function changeAdminPassword() {
     } catch (err) { alert('Erreur: ' + err.message); }
 }
 
-// === REALTIME ===function subscribeRealtime() {
-    db.channel('admin-realtime-v4')
+// === REALTIME ===
+function subscribeRealtime() {
+    db.channel('admin-realtime-v5')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'user_data' }, function() {
             addNotification('user', 'Nouveau compte créé');
         })
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, function(payload) {
             if (payload.new.type === 'purchased') addNotification('payment', 'Paiement: ' + payload.new.title);
-        })
-        .subscribe();
+        })        .subscribe();
 }
 
 // === INIT ===
