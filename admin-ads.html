@@ -110,7 +110,7 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ⚠️ REMPLACE CET EMAIL PAR TON EMAIL ADMIN
-        const ADMIN_EMAIL = 'ton-email@admin.com';
+        const ADMIN_EMAIL = 'leonard@pixora.com';
 
         async function checkAdminAccess() {
             const { data: { user }, error } = await db.auth.getUser();
