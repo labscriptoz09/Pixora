@@ -15,23 +15,19 @@
         .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none}
         .logo svg{width:28px;height:28px}
         .logo span{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .balance-pill{display:flex;align-items:center;gap:0.5rem;background:var(--surface);padding:0.5rem; border-radius:100px;border:1px solid var(--border);font-weight:600;font-size:0.9rem}
+        .balance-pill{display:flex;align-items:center;gap:0.5rem;background:var(--surface);padding:0.5rem 1rem;border-radius:100px;border:1px solid var(--border);font-weight:600;font-size:0.9rem}
         .balance-pill i{color:var(--gold)}
         .balance-pill span{font-family:var(--mono)}
 
         main{flex:1;padding:2rem 1.5rem;max-width:900px;margin:0 auto;width:100%}
-        .page-header{text-align:center;margin-bottom:2rem}
-        .page-title{font-size:1.8rem;font-weight:700;margin-bottom:0.5rem}
-        .page-subtitle{color:var(--muted);font-size:0.95rem}
-
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center}
-        .card-icon{font-size:2rem;color:var(--accent);margin-bottom:1rem}
-        .card-title{font-size:1.1rem;font-weight:700;margin-bottom:0.5rem}
-        .card-desc{color:var(--muted);font-size:0.85rem;line-height:1.5;margin-bottom:1.5rem}
-        .btn{padding:0.8rem 2rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center}
+        .card-icon{font-size:2.5rem;color:var(--accent);margin-bottom:1.2rem}
+        .card-title{font-size:1.3rem;font-weight:700;margin-bottom:0.6rem}
+        .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.5;margin-bottom:1.5rem}
+        .reward{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--gold);margin:1rem 0}
+        .btn{padding:0.9rem 2.2rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
         .btn-disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
-        .reward{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);margin-top:0.5rem}
     </style>
 </head>
 <body>
@@ -47,16 +43,11 @@
     </header>
 
     <main>
-        <div class="page-header">            <h1 class="page-title">Gagnez des Points</h1>
-            <p class="page-subtitle">Complétez une action unique pour alimenter votre compte.</p>
-        </div>
-
         <div class="card">
             <div class="card-icon"><i class="fas fa-link"></i></div>
             <h3 class="card-title">Adsterra Smartlink</h3>
-            <p class="card-desc">Cliquez une seule fois. La récompense sera créditée automatiquement après validation serveur.</p>
-            <div class="reward">+25 points</div>
-            <button id="startBtn" class="btn btn-primary">Commencer</button>
+            <p class="card-desc">Cliquez une seule fois. La récompense sera créditée automatiquement.</p>
+            <div class="reward">+25 points</div>            <button id="btn" class="btn btn-primary">Commencer</button>
         </div>
     </main>
 
@@ -66,6 +57,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let user = null;
+        let btn = document.getElementById('btn');
 
         async function init() {
             const { data: { user: u } } = await db.auth.getUser();
@@ -73,42 +65,38 @@
             user = u;
             updatePoints();
 
-            // Vérifier si l'utilisateur a déjà complété cette offre
-            const { data: existing } = await db.from('ad_rewards').select('id').eq('user_id', user.id).eq('ad_name', 'Adsterra Smartlink').single();
-            const btn = document.getElementById('startBtn');
-            if (existing) {
+            // 🔒 Vérification immédiate : si l'utilisateur a déjà reçu cette récompense, désactiver le bouton
+            const { data: userData } = await db.from('user_data').select('adsterra_used').eq('user_id', user.id).single();
+            if (userData?.adsterra_used) {
                 btn.textContent = '✅ Déjà complété';
                 btn.classList.remove('btn-primary');
                 btn.classList.add('btn-disabled');
                 btn.disabled = true;
-            } else {
-                btn.onclick = startTask;
+                return;
             }
+
+            btn.onclick = startTask;
         }
 
         async function startTask() {
-            const btn = document.getElementById('startBtn');
-            btn.textContent = '🔄 Validation...';
+            // 🔒 Bloquer immédiatement le bouton
             btn.disabled = true;
+            btn.textContent = '🔄 Validation...';
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-disabled');
 
             try {
-                // 1. Créer un enregistrement bloquant (avant de rediriger)
-                await db.from('ad_rewards').insert({
-                    user_id: user.id,                    ad_name: 'Adsterra Smartlink',
-                    created_at: new Date().toISOString()
-                });
+                // 1. Mettre à jour user_data avec flag adsterra_used = true (avant tout)
+                await db.from('user_data').update({ adsterra_used: true }).eq('user_id', user.id);
 
                 // 2. Rediriger vers Adsterra
                 window.open('https://www.effectivecpmnetwork.com/aie2bkhe?key=436233894ac7cc3768e497eb5bfd3cea', '_blank');
 
-                // 3. Après 30s, créditer les points (mais seulement si l'utilisateur est encore là)
+                // 3. Après 30s, créditer les points (si l'utilisateur est encore là)
                 setTimeout(async () => {
                     if (!document.hidden) {
                         try {
-                            const { data: current } = await db.from('user_data').select('points').eq('user_id', user.id).single();
-                            const newPoints = (current?.points || 0) + 25;
+                            const { data: current } = await db.from('user_data').select('points').eq('user_id', user.id).single();                            const newPoints = (current?.points || 0) + 25;
                             await db.from('user_data').update({ points: newPoints }).eq('user_id', user.id);
                             await db.from('transactions').insert({
                                 user_id: user.id,
@@ -118,17 +106,10 @@
                             });
                             alert('✅ +25 points ajoutés !');
                             updatePoints();
-                            btn.textContent = '✅ Complété';
-                            btn.disabled = true;
-                            btn.classList.remove('btn-primary');
-                            btn.classList.add('btn-disabled');
                         } catch (e) {
                             console.error(e);
                             alert('Erreur lors du crédit.');
                         }
-                    } else {
-                        // Si l'utilisateur a quitté, on ne fait rien — mais l'enregistrement existe, donc il ne pourra pas recliquer
-                        alert('⚠️ Vous avez quitté la page. La récompense n\'a pas été créditée.');
                     }
                 }, 30000);
 
@@ -137,7 +118,7 @@
                 btn.textContent = '❌ Erreur';
                 btn.classList.remove('btn-primary');
                 btn.classList.add('btn-disabled');
-                alert('Une erreur est survenue. Veuillez réessayer.');
+                alert('Une erreur est survenue.');
             }
         }
 
@@ -145,6 +126,7 @@
             const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
             document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
         }
+
         init();
     </script>
 </body>
