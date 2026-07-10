@@ -51,13 +51,11 @@
             <p class="page-subtitle">Complétez une action unique pour alimenter votre compte.</p>
         </div>
 
-        <div class="card">
-            <div class="card-icon"><i class="fas fa-link"></i></div>
-            <h3 class="card-title">Adsterra Smartlink</h3>
-            <p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p>
-            <div class="reward">+25 points</div>
-            <button id="btn" class="btn btn-primary">Commencer</button>
-            <div class="status" id="status"></div>
+        <div id="adsContainer">
+            <div style="text-align:center;color:var(--dim);padding:2rem">
+                <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i>
+                <p>Chargement...</p>
+            </div>
         </div>
     </main>
 
@@ -67,40 +65,100 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let user = null;
-        let btn = document.getElementById('btn');
-        let status = document.getElementById('status');
-
-        function generateToken() {
-            return 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
-        }
 
         async function init() {
             const { data: { user: u }, error } = await db.auth.getUser();
             if (error || !u) { window.location.href = '/index.html'; return; }
             user = u;
             await updatePoints();
-            await checkIfAlreadyCompleted();
+            await loadAds();
         }
 
-        async function checkIfAlreadyCompleted() {
-            const { data, error } = await db
-                .from('ad_clicks')
-                .select('status')
-                .eq('user_id', user.id)
-                .eq('status', 'paid')
-                .limit(1);
+        async function loadAds() {
+            const container = document.getElementById('adsContainer');
             
-            if (data && data.length > 0) {
-                btn.textContent = '✅ Déjà complété';
-                btn.classList.remove('btn-primary');
-                btn.classList.add('btn-disabled');
-                btn.disabled = true;
-                status.textContent = 'Vous avez déjà reçu votre récompense.';
-            } else {                btn.onclick = startTask;
+            try {
+                // Charger les régies depuis l'admin
+                const { data: configData } = await db
+                    .from('admin_config')
+                    .select('value')
+                    .eq('key', 'ad_networks')
+                    .single();
+
+                const ads = configData?.value || [];
+                const activeAds = ads.filter(ad => ad.active);
+
+                if (activeAds.length === 0) {
+                    container.innerHTML = `
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <h3 class="card-title">Aucune offre disponible</h3>
+                            <p class="card-desc">Revenez plus tard.</p>
+                        </div>
+                    `;
+                    return;                }
+
+                // Afficher chaque régie
+                container.innerHTML = activeAds.map(ad => `
+                    <div class="card" id="card-${ad.name.replace(/\s/g,'')}">
+                        <div class="card-icon">${getIcon(ad.type)}</div>
+                        <h3 class="card-title">${ad.name}</h3>
+                        <p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p>
+                        <div class="reward">+${ad.points} points</div>
+                        <button class="btn btn-primary" onclick="startTask('${ad.name}', ${ad.points}, '${ad.link}')">Commencer</button>
+                        <div class="status" id="status-${ad.name.replace(/\s/g,'')}"></div>
+                    </div>
+                `).join('');
+
+                // Vérifier quelles offres sont déjà complétées
+                await checkCompletedAds(activeAds);
+
+            } catch (e) {
+                console.error('Load ads error:', e);
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <h3 class="card-title">Erreur de chargement</h3>
+                        <p class="card-desc">${e.message}</p>
+                    </div>
+                `;
             }
         }
 
-        async function startTask() {
+        async function checkCompletedAds(ads) {
+            const { data } = await db
+                .from('ad_clicks')
+                .select('user_id')
+                .eq('user_id', user.id)
+                .eq('status', 'paid');
+
+            if (data) {
+                data.forEach(completed => {
+                    const card = document.getElementById(`card-${completed.ad_name?.replace(/\s/g,'') || ''}`);
+                    const btn = card?.querySelector('.btn');
+                    const status = card?.querySelector('.status');
+                    
+                    if (card && btn) {
+                        btn.textContent = '✅ Déjà complété';
+                        btn.classList.remove('btn-primary');
+                        btn.classList.add('btn-disabled');
+                        btn.disabled = true;
+                        btn.onclick = null;
+                        if (status) status.textContent = 'Vous avez déjà reçu cette récompense.';
+                    }                });
+            }
+        }
+
+        function getIcon(type) {
+            const icons = { video: '', cpa: '🎮', banner: '🖼️', native: '', direct: '🔗', share: '📤' };
+            return icons[type] || '🔗';
+        }
+
+        async function startTask(adName, points, link) {
+            const card = document.getElementById(`card-${adName.replace(/\s/g,'')}`);
+            const btn = card.querySelector('.btn');
+            const status = document.getElementById(`status-${adName.replace(/\s/g,'')}`);
+
             btn.disabled = true;
             btn.textContent = '🔄 Crédit en cours...';
             btn.classList.remove('btn-primary');
@@ -108,16 +166,16 @@
             status.textContent = 'Patientez...';
 
             try {
-                const token = generateToken();
+                const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
 
-                // 1. Créditer les points IMMÉDIATEMENT
+                // 1. Créditer les points
                 const { data: userData } = await db
                     .from('user_data')
                     .select('points')
                     .eq('user_id', user.id)
                     .single();
 
-                const newPoints = (userData?.points || 0) + 25;
+                const newPoints = (userData?.points || 0) + points;
 
                 await db.from('user_data').update({ points: newPoints }).eq('user_id', user.id);
 
@@ -125,27 +183,29 @@
                 await db.from('transactions').insert({
                     user_id: user.id,
                     type: 'earned',
-                    title: 'Adsterra Smartlink',
-                    amount: 25
+                    title: adName,
+                    amount: points
                 });
 
-                // 3. Marquer comme complété dans ad_clicks
+                // 3. Marquer comme complété
                 await db.from('ad_clicks').insert({
                     user_id: user.id,
+                    ad_name: adName,
                     token: token,
                     status: 'paid'
                 });
-
                 // 4. Mettre à jour l'affichage
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
                 
                 btn.textContent = '✅ Terminé';
-                status.innerHTML = '<span class="success">+25 points crédités !</span>';
+                status.innerHTML = '<span class="success">+' + points + ' points crédités !</span>';
 
-                // 5. Rediriger vers Adsterra (optionnel)
-                setTimeout(() => {
-                    const adsterraLink = `https://www.effectivecpmnetwork.com/aie2bkhe?key=436233894ac7cc3768e497eb5bfd3cea&click_id=${token}`;
-                    window.open(adsterraLink, '_blank');                }, 1500);
+                // 5. Rediriger vers le lien (optionnel)
+                if (link) {
+                    setTimeout(() => {
+                        window.open(link, '_blank');
+                    }, 1500);
+                }
 
             } catch (e) {
                 console.error('Error:', e);
