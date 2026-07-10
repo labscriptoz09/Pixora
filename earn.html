@@ -19,19 +19,27 @@
         .balance-pill i{color:var(--gold)}
         .balance-pill span{font-family:var(--mono)}
         main{flex:1;padding:2rem 1.5rem;max-width:900px;margin:0 auto;width:100%}
-        .page-header{text-align:center;margin-bottom:2rem}
-        .page-title{font-size:1.8rem;font-weight:700;margin-bottom:0.5rem}
-        .page-subtitle{color:var(--muted);font-size:0.95rem}
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center}
-        .card-icon{font-size:2.5rem;color:var(--accent);margin-bottom:1.2rem}
-        .card-title{font-size:1.3rem;font-weight:700;margin-bottom:0.6rem}
-        .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.5;margin-bottom:1.5rem}
-        .reward{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--gold);margin:1rem 0}
-        .btn{padding:0.9rem 2.2rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none}
+        .page-header{text-align:center;margin-bottom:2.5rem}
+        .page-title{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
+        .page-subtitle{color:var(--muted);font-size:1rem}
+        .earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+        .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all 0.3s}
+        .earn-card.completed{opacity:0.7}
+        .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+        .card-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(236,72,153,0.2));display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}
+        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
+        .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem}
+        .card-status{display:flex;align-items:center;gap:0.5rem;padding:1rem;background:rgba(16,185,129,0.1);border-radius:10px;margin-bottom:1rem}
+        .card-status i{color:var(--success);font-size:1.2rem}
+        .card-status span{font-size:0.9rem;font-weight:600;color:var(--success)}
+        .btn{width:100%;padding:1rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;display:flex;align-items:center;justify-content:center;gap:0.5rem}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(139,92,246,0.3)}
         .btn-disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
-        .status{margin-top:1rem;font-size:0.85rem;color:var(--muted)}
-        .success{color:var(--gold);font-weight:600}
+        .empty-state{text-align:center;padding:3rem;color:var(--dim);grid-column:1/-1}
+        .empty-state i{font-size:3rem;margin-bottom:1rem;opacity:0.3}
+        @media(max-width:768px){.earn-grid{grid-template-columns:1fr}.page-title{font-size:1.5rem}}
     </style>
 </head>
 <body>
@@ -39,22 +47,22 @@
         <a href="/index.html" class="logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
             <span>Pixora</span>
-        </a>
-        <div class="balance-pill">
+        </a>        <div class="balance-pill">
             <i class="fas fa-coins"></i>
             <span id="pointsDisplay">---</span>
         </div>
     </header>
 
     <main>
-        <div class="page-header">            <h1 class="page-title">Gagnez des Points</h1>
-            <p class="page-subtitle">Complétez une action unique pour alimenter votre compte.</p>
+        <div class="page-header">
+            <h1 class="page-title">Gagnez des Points</h1>
+            <p class="page-subtitle">Complétez des actions pour alimenter votre compte. Chaque action est unique.</p>
         </div>
 
-        <div id="adsContainer">
-            <div style="text-align:center;color:var(--dim);padding:2rem">
-                <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i>
-                <p>Chargement...</p>
+        <div class="earn-grid" id="adsContainer">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Chargement des offres...</p>
             </div>
         </div>
     </main>
@@ -65,6 +73,15 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let user = null;
+
+        const AD_CONFIG = {
+            video: { icon: '🎬', label: 'Regarder une vidéo', desc: 'Regardez une vidéo de 30 secondes' },
+            smartlink: { icon: '🔗', label: 'Smartlink', desc: 'Visitez un partenaire via notre lien' },
+            banner: { icon: '🖼️', label: 'Voir une bannière', desc: 'Affichez une publicité pendant 15 secondes' },
+            native: { icon: '📰', label: 'Contenu sponsorisé', desc: 'Lisez un article sponsorisé' },
+            social_bar: { icon: '', label: 'Notification', desc: 'Activez les notifications' },
+            popunder: { icon: '🪟', label: 'Popunder', desc: 'Ouvrez une fenêtre publicitaire' }
+        };
 
         async function init() {
             const { data: { user: u }, error } = await db.auth.getUser();
@@ -78,129 +95,120 @@
             const container = document.getElementById('adsContainer');
             
             try {
-                // 1. Charger les régies
-                const { data: configData, error: configError } = await db
-                    .from('admin_config')
-                    .select('value')
+                const { data: configData } = await db
+                    .from('admin_config')                    .select('value')
                     .eq('key', 'ad_networks')
                     .single();
-
-                if (configError) throw configError;
 
                 const ads = configData?.value || [];
                 const activeAds = ads.filter(ad => ad.active);
 
                 if (activeAds.length === 0) {
-                    container.innerHTML = '<div class="card"><div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div><h3 class="card-title">Aucune offre</h3></div>';
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>Aucune offre disponible pour le moment</p>
+                            <p style="font-size:0.85rem;margin-top:0.5rem">Revenez plus tard !</p>
+                        </div>
+                    `;
                     return;
                 }
 
-                // 2. VÉRIFIER les offres complétées
-                const { data: completedData, error: completedError } = await db                    .from('ad_clicks')
+                const { data: completedData } = await db
+                    .from('ad_clicks')
                     .select('ad_name')
                     .eq('user_id', user.id)
                     .eq('status', 'paid');
 
-                console.log('Completed ads:', completedData);
-                console.log('Completed error:', completedError);
+                const completedNames = new Set(completedData?.map(c => c.ad_name) || []);
 
-                const completedAdNames = new Set();
-                if (completedData && !completedError) {
-                    completedData.forEach(c => completedAdNames.add(c.ad_name));
-                }
-
-                // 3. Afficher les cartes
                 container.innerHTML = activeAds.map(ad => {
-                    const isCompleted = completedAdNames.has(ad.name);
-                    const icon = getIcon(ad.type);
+                    const config = AD_CONFIG[ad.type] || AD_CONFIG.smartlink;
+                    const isCompleted = completedNames.has(ad.name);
                     
-                    if (isCompleted) {
-                        return '<div class="card"><div class="card-icon">' + icon + '</div><h3 class="card-title">' + ad.name + '</h3><p class="card-desc">Vous avez déjà complété cette offre.</p><div class="reward">+' + ad.points + ' points</div><button class="btn btn-disabled" disabled>✅ Déjà complété</button><div class="status">Vous avez déjà reçu cette récompense.</div></div>';
-                    } else {
-                        return '<div class="card" id="card-' + ad.name.replace(/\s/g,'') + '"><div class="card-icon">' + icon + '</div><h3 class="card-title">' + ad.name + '</h3><p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p><div class="reward">+' + ad.points + ' points</div><button class="btn btn-primary" onclick="startTask(\'' + ad.name + '\', ' + ad.points + ', \'' + ad.link + '\')">Commencer</button><div class="status" id="status-' + ad.name.replace(/\s/g,'') + '"></div></div>';
-                    }
+                    return `
+                        <div class="earn-card ${isCompleted ? 'completed' : ''}" id="card-${ad.name.replace(/\s/g,'')}">
+                            <div class="card-header">
+                                <div class="card-icon">${config.icon}</div>
+                                <div class="card-badge">+${ad.points}</div>
+                            </div>
+                            <h3 class="card-title">${ad.name}</h3>
+                            <p class="card-desc">${config.desc}</p>
+                            
+                            ${isCompleted ? `
+                                <div class="card-status">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Déjà complété</span>
+                                </div>
+                                <button class="btn btn-disabled" disabled>
+                                    <i class="fas fa-check"></i> Terminé
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" onclick="startTask('${ad.name}', ${ad.points}, '${ad.link}')">
+                                    <i class="fas fa-play"></i> Commencer                                </button>
+                            `}
+                        </div>
+                    `;
                 }).join('');
 
             } catch (e) {
                 console.error('Load ads error:', e);
-                container.innerHTML = '<div class="card"><div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div><h3 class="card-title">Erreur</h3><p class="card-desc">' + e.message + '</p></div>';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i>
+                        <p style="color:var(--danger)">Erreur de chargement</p>
+                    </div>
+                `;
             }
         }
 
-        function getIcon(type) {
-            const icons = { video: '🎬', cpa: '🎮', banner: '️', native: '📰', direct: '🔗', share: '📤' };
-            return icons[type] || '🔗';
-        }
-
         async function startTask(adName, points, link) {
-            const card = document.getElementById('card-' + adName.replace(/\s/g,''));
+            const card = document.getElementById(`card-${adName.replace(/\s/g,'')}`);
             const btn = card.querySelector('.btn');
-            const status = document.getElementById('status-' + adName.replace(/\s/g,''));
 
             btn.disabled = true;
-            btn.textContent = '🔄 Crédit en cours...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-disabled');
-            status.textContent = 'Patientez...';
 
             try {
                 const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
-                // 1. Créditer les points
-                const { data: userData, error: userError } = await db
+
+                const { data: userData } = await db
                     .from('user_data')
                     .select('points')
                     .eq('user_id', user.id)
                     .single();
 
-                if (userError) throw userError;
+                const newPoints = (userData?.points || 0) + points;
 
-                const newPoints = (userData.points || 0) + points;
+                await Promise.all([
+                    db.from('user_data').update({ points: newPoints }).eq('user_id', user.id),
+                    db.from('transactions').insert({
+                        user_id: user.id,
+                        type: 'earned',
+                        title: adName,
+                        amount: points
+                    }),
+                    db.from('ad_clicks').insert({
+                        user_id: user.id,
+                        ad_name: adName,
+                        token: token,
+                        status: 'paid'                    })
+                ]);
 
-                const { error: updateError } = await db
-                    .from('user_data')
-                    .update({ points: newPoints })
-                    .eq('user_id', user.id);
-
-                if (updateError) throw updateError;
-
-                // 2. Créer la transaction
-                await db.from('transactions').insert({
-                    user_id: user.id,
-                    type: 'earned',
-                    title: adName,
-                    amount: points
-                });
-
-                // 3. Marquer comme complété (avec ad_name)
-                const { error: clickError } = await db.from('ad_clicks').insert({
-                    user_id: user.id,
-                    ad_name: adName,
-                    token: token,
-                    status: 'paid'
-                });
-
-                if (clickError) {
-                    console.error('Click insert error:', clickError);
-                    throw clickError;
-                }
-
-                // 4. Mettre à jour l'affichage
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
                 
-                btn.textContent = '✅ Terminé';
-                status.innerHTML = '<span class="success">+' + points + ' points crédités !</span>';
+                await loadAds();
 
-                // 5. Rediriger
                 if (link) {
-                    setTimeout(() => { window.open(link, '_blank'); }, 1500);
+                    setTimeout(() => { window.open(link, '_blank'); }, 1000);
                 }
+
             } catch (e) {
                 console.error('Error:', e);
-                btn.textContent = '❌ Erreur';
-                status.textContent = 'Erreur: ' + e.message;
-                btn.disabled = false;
-                btn.classList.remove('btn-disabled');
-                btn.classList.add('btn-primary');
+                alert('Erreur: ' + e.message);
+                await loadAds();
             }
         }
 
