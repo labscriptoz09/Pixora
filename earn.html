@@ -163,6 +163,38 @@
             }
         }
 
+        function executeScripts(container, htmlCode) {
+            // Créer un élément temporaire pour parser le HTML
+            const temp = document.createElement('div');
+            temp.innerHTML = htmlCode;
+            
+            // Insérer le HTML non-script d'abord
+            const nonScriptElements = Array.from(temp.childNodes).filter(node => node.tagName !== 'SCRIPT');
+            nonScriptElements.forEach(node => container.appendChild(node.cloneNode(true)));
+            
+            // Exécuter les scripts séparément
+            const scripts = temp.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                
+                // Copier les attributs
+                Array.from(oldScript.attributes).forEach(attr => {
+                    newScript.setAttribute(attr.name, attr.value);
+                });
+                
+                // Copier le contenu inline
+                if (oldScript.innerHTML) {
+                    newScript.innerHTML = oldScript.innerHTML;
+                }
+                
+                // Copier la source externe
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                }
+                
+                container.appendChild(newScript);
+            });
+        }
         async function startTask(adIndex) {
             const ad = adsData[adIndex];
             const card = document.getElementById(`card-${ad.name.replace(/\s/g,'')}`);
@@ -181,7 +213,8 @@
             adContainer.id = `ad-${ad.name.replace(/\s/g,'')}`;
             
             if (hasCode) {
-                adContainer.innerHTML = ad.code;
+                // Exécuter le code HTML avec les scripts
+                executeScripts(adContainer, ad.code);
             } else {
                 adContainer.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Chargement...</p>';
             }
@@ -192,8 +225,9 @@
             let seconds = 30;
             const timerDiv = document.createElement('div');
             timerDiv.className = 'timer';
-            timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
+            timerDiv.innerHTML = `️ ${seconds}s restantes`;
             card.insertBefore(timerDiv, adContainer);
+
             const timer = setInterval(() => {
                 seconds--;
                 timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
@@ -209,8 +243,7 @@
                 const { data: userData } = await db
                     .from('user_data')
                     .select('points')
-                    .eq('user_id', user.id)
-                    .single();
+                    .eq('user_id', user.id)                    .single();
 
                 const newPoints = (userData?.points || 0) + ad.points;
 
@@ -243,7 +276,8 @@
                     await loadAds();
                 }, 30000);
 
-            } catch (e) {                console.error('Error:', e);
+            } catch (e) {
+                console.error('Error:', e);
                 alert('Erreur: ' + e.message);
                 await loadAds();
             }
