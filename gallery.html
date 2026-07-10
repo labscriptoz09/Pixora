@@ -47,8 +47,7 @@
         .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
-        .menu-points-bar i{color:var(--gold);font-size:0.75rem}        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
-        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
+        .menu-points-bar i{color:var(--gold);font-size:0.75rem}        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
         .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
         .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
         .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
@@ -97,8 +96,7 @@
         .lightbox img{max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
         .lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;cursor:pointer;transition:all 0.2s}
         .lightbox-close:hover{background:var(--danger);transform:rotate(90deg)}        .lightbox-actions{display:flex;gap:1rem;margin-top:1.5rem}
-        .lb-btn{padding:0.7rem 1.3rem;background:var(--prim);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s}
-        .lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
+        .lb-btn{padding:0.7rem 1.3rem;background:var(--prim);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s}        .lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
         .lb-btn.sec{background:rgba(255,255,255,0.1)}
 
         /* FOOTER */
@@ -147,8 +145,7 @@
         <div class="user-menu" id="user-menu">
             <div class="menu-header">                <div class="menu-avatar" id="menu-avatar">U</div>
                 <div class="menu-info">
-                    <div class="menu-name" id="menu-name">Utilisateur</div>
-                    <div class="menu-email" id="menu-email">email@example.com</div>
+                    <div class="menu-name" id="menu-name">Utilisateur</div>                    <div class="menu-email" id="menu-email">email@example.com</div>
                 </div>
             </div>
             <div class="menu-points-bar">
@@ -197,8 +194,7 @@
     </div>
     <footer class="site-footer">
         <div class="footer-links">
-            <a href="index.html">Studio</a>
-            <a href="earn.html">Points</a>
+            <a href="index.html">Studio</a>            <a href="earn.html">Points</a>
             <a href="shop.html">Boutique</a>
             <a href="profile.html">Profil</a>
             <a href="privacy.html">Confidentialité</a>
@@ -208,6 +204,8 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- 🔥 CHARGEMENT DES PUBLICATIONS AUTOMATIQUE -->
+<script src="ads-loader.js"></script>
 <script>
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -245,8 +243,7 @@ async function getUserData() {
 }
 // === UPDATE UI ===
 async function updateUI() {
-    var logged = await db.auth.getUser().then(r => r.data.user);
-    
+    var logged = await db.auth.getUser().then(r => r.data.user);    
     document.getElementById('user-stats').classList.toggle('show', !!logged);
     document.getElementById('user-avatar').classList.toggle('show', !!logged);
     document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
@@ -295,8 +292,7 @@ async function loadGallery() {
         }        var now = Date.now();
         var validFiles = [];
         for (var i = 0; i < result.data.length; i++) {
-            var file = result.data[i];
-            var createdAt = new Date(file.created_at).getTime();
+            var file = result.data[i];            var createdAt = new Date(file.created_at).getTime();
             if ((now - createdAt) < 3600000) {
                 var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
                 validFiles.push({ url: urlData.data.publicUrl, name: file.name });
