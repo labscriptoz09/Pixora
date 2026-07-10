@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--gold:#FBBF24;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif}
+        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column}
         header{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50}
@@ -18,8 +18,10 @@
         .balance-pill{display:flex;align-items:center;gap:0.5rem;background:var(--surface);padding:0.5rem 1rem;border-radius:100px;border:1px solid var(--border);font-weight:600;font-size:0.9rem}
         .balance-pill i{color:var(--gold)}
         .balance-pill span{font-family:var(--mono)}
-
         main{flex:1;padding:2rem 1.5rem;max-width:900px;margin:0 auto;width:100%}
+        .page-header{text-align:center;margin-bottom:2rem}
+        .page-title{font-size:1.8rem;font-weight:700;margin-bottom:0.5rem}
+        .page-subtitle{color:var(--muted);font-size:0.95rem}
         .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center}
         .card-icon{font-size:2.5rem;color:var(--accent);margin-bottom:1.2rem}
         .card-title{font-size:1.3rem;font-weight:700;margin-bottom:0.6rem}
@@ -28,6 +30,7 @@
         .btn{padding:0.9rem 2.2rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
         .btn-disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+        .status{margin-top:1rem;font-size:0.85rem;color:var(--muted)}
     </style>
 </head>
 <body>
@@ -43,11 +46,17 @@
     </header>
 
     <main>
+        <div class="page-header">
+            <h1 class="page-title">Gagnez des Points</h1>            <p class="page-subtitle">Complétez une action unique pour alimenter votre compte.</p>
+        </div>
+
         <div class="card">
             <div class="card-icon"><i class="fas fa-link"></i></div>
             <h3 class="card-title">Adsterra Smartlink</h3>
-            <p class="card-desc">Cliquez une seule fois. La récompense sera créditée automatiquement.</p>
-            <div class="reward">+25 points</div>            <button id="btn" class="btn btn-primary">Commencer</button>
+            <p class="card-desc">Cliquez une seule fois. La récompense sera créditée automatiquement après validation serveur.</p>
+            <div class="reward">+25 points</div>
+            <button id="btn" class="btn btn-primary">Commencer</button>
+            <div class="status" id="status"></div>
         </div>
     </main>
 
@@ -58,67 +67,55 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let user = null;
         let btn = document.getElementById('btn');
+        let status = document.getElementById('status');
 
         async function init() {
             const { data: { user: u } } = await db.auth.getUser();
             if (!u) { window.location.href = '/index.html'; return; }
             user = u;
             updatePoints();
+            checkIfAlreadyCompleted();
+        }
 
-            // 🔒 Vérification immédiate : si l'utilisateur a déjà reçu cette récompense, désactiver le bouton
-            const { data: userData } = await db.from('user_data').select('adsterra_used').eq('user_id', user.id).single();
-            if (userData?.adsterra_used) {
+        async function checkIfAlreadyCompleted() {
+            const { data } = await db.from('ad_clicks').select('status').eq('user_id', user.id).eq('status', 'paid').limit(1);
+            if (data && data.length > 0) {
                 btn.textContent = '✅ Déjà complété';
                 btn.classList.remove('btn-primary');
                 btn.classList.add('btn-disabled');
                 btn.disabled = true;
-                return;
+                status.textContent = 'Vous avez déjà reçu votre récompense.';
+            } else {
+                btn.onclick = startTask;
             }
-
-            btn.onclick = startTask;
         }
 
         async function startTask() {
-            // 🔒 Bloquer immédiatement le bouton
             btn.disabled = true;
-            btn.textContent = '🔄 Validation...';
+            btn.textContent = '🔄 Génération du lien...';
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-disabled');
 
-            try {
-                // 1. Mettre à jour user_data avec flag adsterra_used = true (avant tout)
-                await db.from('user_data').update({ adsterra_used: true }).eq('user_id', user.id);
+            try {                const token = crypto.randomUUID();
 
-                // 2. Rediriger vers Adsterra
-                window.open('https://www.effectivecpmnetwork.com/aie2bkhe?key=436233894ac7cc3768e497eb5bfd3cea', '_blank');
+                const { error } = await db.from('ad_clicks').insert({
+                    user_id: user.id,
+                    token: token,
+                    status: 'pending'
+                });
 
-                // 3. Après 30s, créditer les points (si l'utilisateur est encore là)
-                setTimeout(async () => {
-                    if (!document.hidden) {
-                        try {
-                            const { data: current } = await db.from('user_data').select('points').eq('user_id', user.id).single();                            const newPoints = (current?.points || 0) + 25;
-                            await db.from('user_data').update({ points: newPoints }).eq('user_id', user.id);
-                            await db.from('transactions').insert({
-                                user_id: user.id,
-                                type: 'earned',
-                                title: 'Adsterra Smartlink',
-                                amount: 25
-                            });
-                            alert('✅ +25 points ajoutés !');
-                            updatePoints();
-                        } catch (e) {
-                            console.error(e);
-                            alert('Erreur lors du crédit.');
-                        }
-                    }
-                }, 30000);
+                if (error) throw error;
+
+                const webhookUrl = `https://pixora-gold-eight.vercel.app/api/webhook/adsterra?token=${token}`;
+                const adsterraLink = `https://www.effectivecpmnetwork.com/aie2bkhe?key=436233894ac7cc3768e497eb5bfd3cea&click_id=${token}`;
+
+                status.textContent = 'Redirection en cours...';
+                window.location.href = adsterraLink;
 
             } catch (e) {
                 console.error(e);
                 btn.textContent = '❌ Erreur';
-                btn.classList.remove('btn-primary');
-                btn.classList.add('btn-disabled');
-                alert('Une erreur est survenue.');
+                status.textContent = 'Une erreur est survenue.';
             }
         }
 
