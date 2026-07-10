@@ -36,6 +36,10 @@
         .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}
         @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
 
+        /* AD CONTAINERS - INVISIBLES PAR DÉFAUT */
+        .ad-slot{margin:1rem 0;text-align:center;min-height:0;overflow:hidden}
+        .ad-slot:empty{display:none}
+
         /* HEADER */
         .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
         .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
@@ -43,8 +47,7 @@
         .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
         .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
-        .user-stats.show{display:flex}
-        .stat-icon{color:var(--gold);font-size:0.75rem}
+        .user-stats.show{display:flex}        .stat-icon{color:var(--gold);font-size:0.75rem}
         .stat-points{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold)}
         .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;color:white;position:relative;flex-shrink:0}
         .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(139,92,246,0.5)}        .user-avatar.show{display:flex}
@@ -93,8 +96,7 @@
         .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
         @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}
 
-        /* HERO - COMPACT */
-        .hero{text-align:center;padding:0.8rem 0.5rem;margin-bottom:1.2rem}
+        /* HERO - COMPACT */        .hero{text-align:center;padding:0.8rem 0.5rem;margin-bottom:1.2rem}
         .hero h1{font-size:1.5rem;font-weight:800;line-height:1.2;letter-spacing:-0.03em;margin-bottom:0.3rem}
         .hero p{font-size:0.82rem;color:var(--muted);max-width:420px;margin:0 auto;line-height:1.5}
         /* GENERATOR - PROMPT VISIBLE */
@@ -143,8 +145,7 @@
 
         /* RESULTS GRID */
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
-        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
         .result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}        .result-card img,.result-card video{width:100%;height:100%;object-fit:cover;display:block}
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.6rem;gap:0.4rem;opacity:0;transition:opacity 0.3s}
         .result-card:hover .result-overlay{opacity:1}
@@ -193,8 +194,7 @@
         .auth-sub{color:var(--muted);font-size:0.82rem;margin-bottom:1.2rem}
         .auth-tabs{display:flex;gap:0.3rem;background:rgba(255,255,255,0.03);border-radius:14px;padding:0.3rem;margin-bottom:1.2rem}
         .auth-tab{flex:1;padding:0.6rem;border-radius:12px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all 0.2s}
-        .auth-tab.active{background:var(--prim);color:white}
-        .form-section{display:none}.form-section.active{display:block;animation:fadeIn 0.3s}        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        .auth-tab.active{background:var(--prim);color:white}        .form-section{display:none}.form-section.active{display:block;animation:fadeIn 0.3s}        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         .form-group{margin-bottom:0.85rem;text-align:left}
         .form-label{display:block;font-size:0.68rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.08em}
         .form-input{width:100%;padding:0.8rem 0.9rem;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--font);font-size:0.88rem;outline:none;transition:all 0.3s}
@@ -243,8 +243,7 @@
         </div>
         <div class="form-section active" id="sec-login">
             <form onsubmit="doLogin(event)">
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
-                <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>                <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
             </form>
         </div>
         <div class="form-section" id="sec-register">
@@ -293,8 +292,7 @@
                 <span id="menu-points">0</span>
                 <small>points</small>
             </div>            <a href="profile.html" class="menu-item" onclick="closeUserMenu()">
-                <i class="fas fa-user"></i><span>Mon profil</span>
-            </a>
+                <i class="fas fa-user"></i><span>Mon profil</span>            </a>
             <a href="earn.html" class="menu-item" onclick="closeUserMenu()">
                 <i class="fas fa-coins"></i><span>Gagner des points</span>
             </a>
@@ -327,6 +325,9 @@
         <p>Images et vidéos IA professionnelles. Gratuit. Sans limite.</p>
     </div>
 
+    <!-- 🔥 EMPLACEMENT PUB HAUT (Index) -->
+    <div class="ad-slot" id="ad-index-top"></div>
+
     <!-- STATS - CACHÉES AVANT CONNEXION -->
     <div class="quick-stats" id="quick-stats">
         <div class="stat-card">
@@ -340,8 +341,7 @@
             <div class="stat-lbl">Streak</div>
         </div>
         <div class="stat-card">
-            <div class="stat-card-icon"><i class="fas fa-image"></i></div>
-            <div class="stat-val" id="stat-generated">0</div>            <div class="stat-lbl">Créations</div>
+            <div class="stat-card-icon"><i class="fas fa-image"></i></div>            <div class="stat-val" id="stat-generated">0</div>            <div class="stat-lbl">Créations</div>
         </div>
         <div class="stat-card">
             <div class="stat-card-icon"><i class="fas fa-coins"></i></div>
@@ -375,17 +375,22 @@
         </button>
     </div>
 
+    <!-- 🔥 EMPLACEMENT PUB MILIEU (Index) -->
+    <div class="ad-slot" id="ad-index-middle"></div>
+
     <div class="section-label">
         Vos Créations
         <span>Auto-effacement après 1h</span>
     </div>
     <div class="results-grid" id="results-grid"></div>
 
+    <!-- 🔥 EMPLACEMENT PUB BAS (Index) -->
+    <div class="ad-slot" id="ad-index-bottom"></div>
+
     <footer class="site-footer">
         <div class="footer-links">
             <a href="earn.html">Gagner des Points</a>
-            <a href="gallery.html">Galerie</a>
-            <a href="shop.html">Boutique</a>
+            <a href="gallery.html">Galerie</a>            <a href="shop.html">Boutique</a>
             <a href="profile.html">Profil</a>
             <a href="privacy.html">Confidentialité</a>
         </div>
@@ -393,6 +398,8 @@
     </footer></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- 🔥 CHARGEMENT DES PUBLICATIONS -->
+<script src="ads-loader.js"></script>
 <script>
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -432,8 +439,7 @@ function notify(m, t) {
 
 async function getUser() { var r = await db.auth.getUser(); return r.data.user; }
 async function isLogged() { return !!await getUser(); }
-function openAuth() { document.getElementById('auth-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
-function closeAuth() { document.getElementById('auth-modal').classList.remove('active'); document.body.style.overflow = ''; }
+function openAuth() { document.getElementById('auth-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }function closeAuth() { document.getElementById('auth-modal').classList.remove('active'); document.body.style.overflow = ''; }
 document.getElementById('auth-modal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });
 function switchTab(m) {
     document.querySelectorAll('.auth-tab').forEach(function(t, i) { t.classList.toggle('active', i === (m === 'login' ? 0 : 1)); });
@@ -482,8 +488,7 @@ async function saveTransaction(type, title, amount) {
     await db.from('user_data').update(up).eq('user_id', u.id);
 }
 
-// === USER MENU ===
-function toggleUserMenu(e) {
+// === USER MENU ===function toggleUserMenu(e) {
     if (e) e.preventDefault();
     document.getElementById('user-menu').classList.toggle('show');
 }
@@ -532,8 +537,7 @@ async function updateUI() {
         var initial = name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent = initial;
         document.getElementById('menu-avatar').textContent = initial;
-        document.getElementById('menu-name').textContent = name;
-        document.getElementById('menu-email').textContent = user.email;
+        document.getElementById('menu-name').textContent = name;        document.getElementById('menu-email').textContent = user.email;
         document.getElementById('menu-points').textContent = d.points || 0;
     }
 }
@@ -582,8 +586,7 @@ async function loadStudio() {
                 var card = document.createElement('div'); card.className = 'result-card';
                 if (isVideo) {
                     card.innerHTML = '<video src="' + url + '" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
-                    var vid = card.querySelector('video'); vid.onmouseenter = function() { vid.play(); }; vid.onmouseleave = function() { vid.pause(); vid.currentTime = 0; };
-                } else {
+                    var vid = card.querySelector('video'); vid.onmouseenter = function() { vid.play(); }; vid.onmouseleave = function() { vid.pause(); vid.currentTime = 0; };                } else {
                     card.innerHTML = '<img src="' + url + '" alt="Création" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
                 }
                 card.onclick = function() { openLB(url, isVideo ? 'video' : 'image'); };                grid.appendChild(card);
@@ -632,8 +635,7 @@ async function generate() {
     function onLoad() {
         if (loaded) return; loaded = true; clearInterval(iv);
         var elapsed = ((Date.now() - st) / 1000).toFixed(1);
-        var to = card.querySelector('.timer-overlay'); if (to) to.remove();
-        media.style.opacity = '1';
+        var to = card.querySelector('.timer-overlay'); if (to) to.remove();        media.style.opacity = '1';
         if (curType === 'video') { media.onmouseenter = function() { media.play(); }; media.onmouseleave = function() { media.pause(); media.currentTime = 0; }; }
         card.onclick = function() { openLB(url, curType); };        uploadToStorage(url, curType);
         saveTransaction('spent', 'Génération ' + curType, -cost).then(function() { updateUI(); });
