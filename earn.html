@@ -47,8 +47,7 @@
         <a href="/index.html" class="logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
             <span>Pixora</span>
-        </a>        <div class="balance-pill">
-            <i class="fas fa-coins"></i>
+        </a>        <div class="balance-pill">            <i class="fas fa-coins"></i>
             <span id="pointsDisplay">---</span>
         </div>
     </header>
@@ -96,13 +95,15 @@
             const container = document.getElementById('adsContainer');
             
             try {
-                const { data: configData } = await db                    .from('admin_config')
-                    .select('value')
+                const { data: configData } = await db
+                    .from('admin_config')                    .select('value')
                     .eq('key', 'ad_networks')
                     .single();
 
                 adsData = configData?.value || [];
-                const activeAds = adsData.filter(ad => ad.active);
+                
+                // 🔥 CORRECTION : Filtrer uniquement les pubs de la page 'earn'
+                const activeAds = adsData.filter(ad => ad.active && ad.page === 'earn');
 
                 if (activeAds.length === 0) {
                     container.innerHTML = `
@@ -144,8 +145,8 @@
                                 </div>
                                 <button class="btn btn-disabled" disabled>
                                     <i class="fas fa-check"></i> Terminé
-                                </button>
-                            ` : `                                <button class="btn btn-primary" onclick="startTask(${actualIndex})">
+                                </button>                            ` : `
+                                <button class="btn btn-primary" onclick="startTask(${actualIndex})">
                                     <i class="fas fa-play"></i> Commencer
                                 </button>
                             `}
@@ -165,7 +166,6 @@
         }
 
         function loadAdScript(container, htmlCode) {
-            // Créer une vraie page HTML via Blob URL
             const fullHtml = `<!DOCTYPE html>
 <html>
 <head>
@@ -199,7 +199,6 @@ ${htmlCode}
             
             container.appendChild(iframe);
             
-            // Libérer le blob après chargement
             iframe.onload = () => {
                 setTimeout(() => URL.revokeObjectURL(url), 1000);
             };
@@ -244,8 +243,7 @@ ${htmlCode}
             try {
                 const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
                 const { data: userData } = await db
-                    .from('user_data')
-                    .select('points')
+                    .from('user_data')                    .select('points')
                     .eq('user_id', user.id)
                     .single();
 
@@ -292,6 +290,6 @@ ${htmlCode}
             document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
         }
 
-        init();    </script>
-</body>
-</html>
+        init();
+    </script>
+</body></html>
