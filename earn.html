@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#0a0a0f;--surface:#13131a;--elevated:#1c1c26;--border:#2a2a35;--accent:#8B5CF6;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+        :root{--bg:#0a0a0f;--surface:#13131a;--elevated:#1c1c26;--border:#2a2a35;--accent:#8B5CF6;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--warn:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
         *{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
         header{padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
@@ -21,23 +21,19 @@
         main{flex:1;padding:2rem;overflow-y:auto}
         .section-title{font-size:1.4rem;font-weight:700;margin-bottom:1.5rem;color:var(--accent)}
         .earn-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
-        .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;cursor:pointer;transition:all 0.3s;position:relative}
+        .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
         .earn-card:hover{transform:translateY(-4px);border-color:var(--accent)}
+        .earn-card.waiting{opacity:0.7;pointer-events:none;border-color:var(--warn)}
         .earn-icon{font-size:2rem;margin-bottom:1rem;color:var(--accent)}
         .earn-info{flex:1}
         .earn-title{font-weight:600;margin-bottom:0.5rem}
         .earn-desc{font-size:0.85rem;color:var(--muted)}
         .earn-points{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--gold);position:absolute;top:1.5rem;right:1.5rem}
-        .error-box{background:rgba(239,68,68,0.1);border:1px solid var(--danger);border-radius:12px;padding:1.5rem;margin:1rem 0}
-        .error-title{color:var(--danger);font-weight:600;margin-bottom:0.5rem}
-        .error-code{font-family:var(--mono);font-size:0.8rem;color:var(--muted);margin-top:0.5rem;word-break:break-all}
-        .debug-info{background:var(--elevated);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;max-height:200px;overflow-y:auto}
+        .timer-bar{position:absolute;bottom:0;left:0;height:4px;background:var(--warn);width:0%;transition:width linear}
+        .empty-state{text-align:center;color:var(--dim);padding:3rem;grid-column:1/-1}
+        .empty-state i{font-size:3rem;margin-bottom:1rem;opacity:0.3}
         footer{padding:1.5rem;text-align:center;color:var(--dim);border-top:1px solid var(--border);font-size:0.85rem}
-        .btn{padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;border:none}
-        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
-        .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
-        .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-        @media(max-width:768px){.earn-container{grid-template-columns:1fr}.header{padding:1rem}}
+        @media(max-width:768px){.earn-container{grid-template-columns:1fr}header{padding:1rem}}
     </style>
 </head>
 <body>
@@ -47,21 +43,18 @@
             <span>Pixora</span>
         </div>
         <div class="balance">
-            <div class="balance-icon"><i class="fas fa-coins"></i></div>            <div class="balance-value" id="userPoints">0</div>
+            <div class="balance-icon"><i class="fas fa-coins"></i></div>
+            <div class="balance-value" id="userPoints">-</div>
         </div>
     </header>
-
     <main>
         <h2 class="section-title">🎯 Gagnez des points en quelques minutes</h2>
-        <div id="debugContainer"></div>
         <div class="earn-container" id="earnButtonsContainer">
-            <div style="text-align:center;color:var(--dim);padding:2rem">Chargement...</div>
+            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
         </div>
     </main>
 
-    <footer>
-        © 2026 Pixora. Tous droits réservés.
-    </footer>
+    <footer>© 2026 Pixora. Tous droits réservés.</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
@@ -70,129 +63,138 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
         let userPoints = 0;
+        let isProcessing = false;
 
         async function loadEarnData() {
-            const debugDiv = document.getElementById('debugContainer');
-            let debugHtml = '<div class="debug-info"><strong>🔍 Debug:</strong><br>';
-
+            const container = document.getElementById('earnButtonsContainer');
             try {
-                // 1. Vérifier l'auth
-                debugHtml += '1️⃣ Vérification authentification...<br>';
+                // 1. Auth
                 const auth = await db.auth.getUser();
                 if (!auth.data?.user) {
-                    throw new Error('❌ Utilisateur non connecté');
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Veuillez vous connecter pour gagner des points</p></div>';
+                    return;
                 }
                 currentUser = auth.data.user;
-                debugHtml += `✅ Connecté: ${currentUser.email}<br>`;
 
-                // 2. Récupérer points
-                debugHtml += '2️⃣ Récupération des points...<br>';
+                // 2. Points utilisateur
                 const userData = await db.from('user_data').select('points').eq('user_id', currentUser.id).single();
                 userPoints = userData.data?.points || 0;
                 document.getElementById('userPoints').textContent = userPoints.toLocaleString();
-                debugHtml += `✅ Points: ${userPoints}<br>`;
 
-                // 3. Récupérer régies pub
-                debugHtml += '3️⃣ Récupération des régies (ad_networks)...<br>';
+                // 3. Régies pub
                 const adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
-                debugHtml += ` Résultat: ${JSON.stringify(adsResult)}<br>`;
-                                if (adsResult.error) {
-                    throw new Error(`❌ Erreur ad_networks: ${adsResult.error.message}`);
-                }
-
                 const ads = adsResult.data?.value || [];
-                debugHtml += `📦 Régies trouvées: ${ads.length}<br>`;
-                
-                if (ads.length === 0) {
-                    debugHtml += '⚠️ Aucune régie configurée dans admin_config<br>';
-                }
 
-                // 4. Afficher les boutons
-                renderEarnButtons(ads);
-                debugHtml += '✅ Affichage terminé';
-                
-                debugDiv.innerHTML = debugHtml + '</div>';
+                // 4. Pricing (fallback)
+                const pricingResult = await db.from('admin_config').select('value').eq('key', 'pricing').single();
+                const pricing = pricingResult.data?.value || {};
+
+                renderEarnButtons(ads, pricing);
             } catch (err) {
-                debugHtml += `❌ Erreur: ${err.message}<br>`;
-                debugDiv.innerHTML = `
-                    <div class="error-box">
-                        <div class="error-title">️ Erreur de chargement</div>
-                        <div>${err.message}</div>
-                        <div class="error-code">${err.stack || ''}</div>
-                    </div>
-                    <div class="debug-info">${debugHtml}</div>
-                `;
+                console.error('Load earn error:', err);
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Erreur de chargement. Veuillez rafraîchir.</p></div>';
             }
         }
 
-        function renderEarnButtons(ads) {
-            const container = document.getElementById('earnButtonsContainer');
+        function renderEarnButtons(ads, pricing) {            const container = document.getElementById('earnButtonsContainer');
             let html = '';
 
-            // Bouton Vidéo Récompensée
-            const videoAd = ads.find(a => a.active && a.type === 'video');
-            if (videoAd) {
-                html += `
-                    <div class="earn-card" onclick="handleAdClick('${videoAd.link}', ${videoAd.points}, 'video')">
-                        <div class="earn-icon">🎬</div>
-                        <div class="earn-info">
-                            <div class="earn-title">Regarder une vidéo</div>
-                            <div class="earn-desc">${videoAd.name || 'Adsterra'} • ${videoAd.points || 30} pts</div>
-                        </div>
-                        <div class="earn-points">+${videoAd.points || 30}</div>
-                    </div>
-                `;
-            }
+            // Mapper les types aux icônes et labels
+            const typeConfig = {
+                video: { icon: '🎬', label: 'Regarder une vidéo', desc: '30 secondes' },
+                cpa: { icon: '🎮', label: 'Installer un jeu mobile', desc: '2 minutes' },
+                banner: { icon: '🖼️', label: 'Voir une publicité', desc: '15 secondes' },
+                native: { icon: '📰', label: 'Lire un article sponsorisé', desc: '1 minute' },
+                direct: { icon: '🔗', label: 'Visiter un partenaire', desc: '30 secondes' },
+                share: { icon: '📤', label: 'Partager sur les réseaux', desc: 'Instantané' }
+            };
 
-            // Bouton Sponsor
-            const sponsorAd = ads.find(a => a.active && a.type === 'cpa');            if (sponsorAd) {
-                html += `
-                    <div class="earn-card" onclick="handleAdClick('${sponsorAd.link}', ${sponsorAd.points}, 'cpa')">
-                        <div class="earn-icon">🎮</div>
-                        <div class="earn-info">
-                            <div class="earn-title">Installer un jeu mobile</div>
-                            <div class="earn-desc">${sponsorAd.name || 'CPA Offer'} • ${sponsorAd.points || 5} pts</div>
-                        </div>
-                        <div class="earn-points">+${sponsorAd.points || 5}</div>
-                    </div>
-                `;
-            }
+            ads.forEach(function(ad) {
+                if (!ad.active || !ad.link) return;
+                const config = typeConfig[ad.type] || typeConfig.direct;
+                const points = ad.points || pricing.rewardVideo || 30;
+
+                html += '<div class="earn-card" id="card-' + ad.name.replace(/\s/g,'') + '" onclick="handleAdClick(\'' + ad.link + '\', ' + points + ', \'' + ad.type + '\', \'' + ad.name + '\')">';
+                html += '  <div class="earn-icon">' + config.icon + '</div>';
+                html += '  <div class="earn-info">';
+                html += '    <div class="earn-title">' + config.label + '</div>';
+                html += '    <div class="earn-desc">' + ad.name + ' • ' + config.desc + '</div>';
+                html += '  </div>';
+                html += '  <div class="earn-points">+' + points + '</div>';
+                html += '  <div class="timer-bar" id="timer-' + ad.name.replace(/\s/g,'') + '"></div>';
+                html += '</div>';
+            });
 
             if (!html) {
-                html = `
-                    <div class="error-box" style="grid-column:1/-1">
-                        <div class="error-title">⚠️ Aucune régie active</div>
-                        <div>Ajoutez des régies dans l'admin → Régies Pub</div>
-                        <div class="error-code">Régies chargées: ${JSON.stringify(ads)}</div>
-                    </div>
-                `;
+                html = '<div class="empty-state"><i class="fas fa-ad"></i><p>Aucune régie configurée.<br>Contactez l\'administrateur.</p></div>';
             }
 
             container.innerHTML = html;
         }
 
-        async function handleAdClick(link, points, type) {
+        async function handleAdClick(link, points, type, adName) {
+            if (isProcessing) return;
             if (!link || link.trim() === '') {
                 alert('⚠️ Lien non configuré');
                 return;
             }
 
+            isProcessing = true;
+            const cardId = 'card-' + adName.replace(/\s/g,'');
+            const timerId = 'timer-' + adName.replace(/\s/g,'');
+            const card = document.getElementById(cardId);
+            const timerBar = document.getElementById(timerId);
+
+            // État visuel d'attente            card.classList.add('waiting');
+            timerBar.style.transition = 'width 30s linear';
+            timerBar.style.width = '100%';
+
+            // Ouvrir le lien
             window.open(link, '_blank');
-            
-            setTimeout(async () => {
+
+            // Attendre 30 secondes
+            setTimeout(async function() {
                 try {
-                    await db.from('user_data').update({ points: db.raw(`points + ${points}`) }).eq('user_id', currentUser.id);
-                    await db.from('transactions').insert({ user_id: currentUser.id, type: 'earned', title: type === 'video' ? 'Vidéo récompensée' : 'Offre CPA', amount: points });
-                    userPoints += points;
+                    // 1. Lire les points actuels
+                    const currentData = await db.from('user_data')
+                        .select('points')
+                        .eq('user_id', currentUser.id)
+                        .single();
+                    const currentPoints = currentData.data?.points || 0;
+                    const newPoints = currentPoints + points;
+
+                    // 2. Mettre à jour les points
+                    await db.from('user_data')
+                        .update({ points: newPoints })
+                        .eq('user_id', currentUser.id);
+
+                    // 3. Créer la transaction
+                    var titleMap = { video: 'Vidéo récompensée', cpa: 'Offre CPA', banner: 'Publicité vue', native: 'Article sponsorisé', direct: 'Lien partenaire', share: 'Partage réseau' };
+                    await db.from('transactions').insert({
+                        user_id: currentUser.id,
+                        type: 'earned',
+                        title: (titleMap[type] || 'Récompense') + ' - ' + adName,
+                        amount: points
+                    });
+
+                    // 4. Mettre à jour l'UI
+                    userPoints = newPoints;
                     document.getElementById('userPoints').textContent = userPoints.toLocaleString();
-                    alert(`✅ +${points} points ajoutés !`);
-                    loadEarnData();
+                    alert('✅ +' + points + ' points ajoutés !');
+
                 } catch (err) {
-                    alert(' Erreur: ' + err.message);
+                    console.error('Credit error:', err);
+                    alert('❌ Erreur lors du crédit. Veuillez réessayer.');
+                } finally {
+                    // Reset état visuel
+                    card.classList.remove('waiting');
+                    timerBar.style.transition = 'none';
+                    timerBar.style.width = '0%';
+                    isProcessing = false;
                 }
             }, 30000);
         }
-
         document.addEventListener('DOMContentLoaded', loadEarnData);
-    </script></body>
+    </script>
+</body>
 </html>
