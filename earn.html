@@ -30,7 +30,8 @@
         .btn{padding:0.9rem 2.2rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
         .btn-disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
-        .status{margin-top:1rem;font-size:0.85rem;color:var(--muted)}
+        .status{margin-top:1rem;font-size:0.85rem;color:var(--muted);word-break:break-all}
+        .error-box{background:rgba(239,68,68,0.1);border:1px solid var(--danger);border-radius:8px;padding:1rem;margin-top:1rem;font-size:0.8rem;color:#fca5a5}
     </style>
 </head>
 <body>
@@ -46,8 +47,8 @@
     </header>
 
     <main>
-        <div class="page-header">
-            <h1 class="page-title">Gagnez des Points</h1>            <p class="page-subtitle">Complétez une action unique pour alimenter votre compte.</p>
+        <div class="page-header">            <h1 class="page-title">Gagnez des Points</h1>
+            <p class="page-subtitle">Complétez une action unique pour alimenter votre compte.</p>
         </div>
 
         <div class="card">
@@ -69,36 +70,47 @@
         let btn = document.getElementById('btn');
         let status = document.getElementById('status');
 
-        // Génère un token unique compatible tous navigateurs
         function generateToken() {
             return 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
         }
 
         async function init() {
             try {
+                console.log('1. Initialisation...');
+                status.textContent = 'Connexion...';
+                
                 const { data: { user: u }, error } = await db.auth.getUser();
                 if (error || !u) { 
+                    console.error('Auth error:', error);
                     window.location.href = '/index.html'; 
                     return; 
                 }
                 user = u;
+                console.log('User connecté:', user.id);
+                
                 await updatePoints();
                 await checkIfAlreadyCompleted();
             } catch (e) {
                 console.error('Init error:', e);
-                status.textContent = 'Erreur de connexion';
+                status.textContent = 'Erreur init: ' + e.message;
             }
         }
 
-        async function checkIfAlreadyCompleted() {
-            try {
+        async function checkIfAlreadyCompleted() {            try {
+                console.log('2. Vérification complétion...');
                 const { data, error } = await db
                     .from('ad_clicks')
                     .select('status')
                     .eq('user_id', user.id)
-                    .eq('status', 'paid')                    .limit(1);
+                    .eq('status', 'paid')
+                    .limit(1);
                 
-                if (error) throw error;
+                if (error) {
+                    console.error('Check error:', error);
+                    throw error;
+                }
+                
+                console.log('Résultat check:', data);
                 
                 if (data && data.length > 0) {
                     btn.textContent = '✅ Déjà complété';
@@ -108,46 +120,63 @@
                     status.textContent = 'Vous avez déjà reçu votre récompense.';
                 } else {
                     btn.onclick = startTask;
+                    console.log('3. Bouton activé');
                 }
             } catch (e) {
-                console.error('Check error:', e);
-                btn.onclick = startTask; // On laisse essayer quand même
+                console.error('Check failed:', e);
+                btn.onclick = startTask;
             }
         }
 
         async function startTask() {
+            console.log('4. Démarrage tâche...');
             btn.disabled = true;
             btn.textContent = '🔄 Préparation...';
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-disabled');
-            status.textContent = '';
+            status.textContent = 'Création du token...';
 
             try {
                 const token = generateToken();
+                console.log('Token généré:', token);
 
-                const { error } = await db
+                console.log('5. Insertion dans ad_clicks...');
+                status.textContent = 'Enregistrement...';
+                
+                const { data, error } = await db
                     .from('ad_clicks')
-                    .insert({
-                        user_id: user.id,
+                    .insert({                        user_id: user.id,
                         token: token,
                         status: 'pending'
-                    });
+                    })
+                    .select();
 
                 if (error) {
                     console.error('Insert error:', error);
-                    throw error;
+                    throw new Error('Erreur insertion: ' + error.message);
                 }
+
+                console.log('Insertion réussie:', data);
 
                 const adsterraLink = `https://www.effectivecpmnetwork.com/aie2bkhe?key=436233894ac7cc3768e497eb5bfd3cea&click_id=${token}`;
                 
-                status.textContent = 'Redirection...';
+                console.log('6. Redirection vers:', adsterraLink);
+                status.textContent = 'Redirection dans 2 secondes...';
+                
                 setTimeout(() => {
                     window.location.href = adsterraLink;
-                }, 1000);
+                }, 2000);
 
-            } catch (e) {                console.error('Start error:', e);
-                btn.textContent = '❌ Erreur';
-                status.textContent = 'Une erreur est survenue. Réessayez.';
+            } catch (e) {
+                console.error('Start error COMPLETE:', e);
+                btn.textContent = ' Erreur';
+                status.innerHTML = `
+                    <div class="error-box">
+                        <strong>Erreur:</strong><br>
+                        ${e.message}<br><br>
+                        <small>Détails: ${JSON.stringify(e)}</small>
+                    </div>
+                `;
                 btn.disabled = false;
                 btn.classList.remove('btn-disabled');
                 btn.classList.add('btn-primary');
@@ -165,11 +194,12 @@
                 if (error) throw error;
                 document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
             } catch (e) {
-                console.error('Points error:', e);
-            }
+                console.error('Points error:', e);            }
         }
 
         init();
     </script>
+</body>
+</html>
 </body>
 </html>
