@@ -3,69 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎯 Gagner des Points - Pixora</title>
+    <title>Gagner des Points | Pixora</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#0a0a0f;--surface:#13131a;--border:#2a2a35;--accent:#8B5CF6;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--warn:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
-        *{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
-        header{padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
-        .logo{display:flex;align-items:center;gap:0.6rem;font-weight:700;font-size:1.2rem;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .balance{display:flex;align-items:center;gap:0.5rem;background:var(--surface);padding:0.5rem 1rem;border-radius:20px;border:1px solid var(--border)}
-        .balance i{color:var(--gold)}
-        main{flex:1;padding:2rem;overflow-y:auto;max-width:1200px;margin:0 auto;width:100%}
-        h1{font-size:2rem;margin-bottom:0.5rem}
-        .subtitle{color:var(--muted);margin-bottom:2rem}
-        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+        :root{--bg:#0a0a0f;--surface:#13131a;--border:#2a2a35;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column}
         
-        /* CARTE PRO */
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all 0.3s ease;cursor:pointer}
-        .card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 10px 30px rgba(139,92,246,0.15)}
-        .card-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
-        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
-        .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.5}
-        .card-points{position:absolute;top:2rem;right:2rem;font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--gold)}
-        
-        /* ÉTAT D'ATTENTE SÉCURISÉ */
-        .card.processing{pointer-events:none;opacity:0.8}
-        .overlay{position:absolute;inset:0;background:rgba(10,10,15,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;opacity:0;transition:opacity 0.3s}
-        .card.processing .overlay{opacity:1}
-        .spinner{width:50px;height:50px;border:4px solid var(--border);border-top:4px solid var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:1rem}
-        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-        .timer-text{font-family:var(--mono);font-size:1.2rem;color:var(--accent)}
-        
-        /* MODAL SUCCÈS */
-        .modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
-        .modal.active{opacity:1;pointer-events:all}
-        .modal-box{background:var(--surface);padding:2rem;border-radius:16px;text-align:center;border:1px solid var(--success);max-width:400px;width:90%}
-        .modal-icon{font-size:3rem;color:var(--success);margin-bottom:1rem}
-        .btn-close{margin-top:1.5rem;padding:0.8rem 2rem;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;cursor:pointer}
-        .btn-close:hover{background:var(--border)}
+        /* HEADER IDENTIQUE AU SITE */
+        header{padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;background:rgba(10,10,15,0.8)}
+        .logo{display:flex;align-items:center;gap:0.6rem;text-decoration:none}
+        .logo svg{width:32px;height:32px}
+        .logo span{font-size:1.25rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .balance-pill{display:flex;align-items:center;gap:0.6rem;background:var(--surface);padding:0.6rem 1.2rem;border-radius:100px;border:1px solid var(--border);font-weight:600;transition:border-color 0.2s}
+        .balance-pill:hover{border-color:var(--accent)}
+        .balance-pill i{color:var(--gold);font-size:1rem}
+        .balance-pill span{font-family:var(--mono);font-size:1rem}
 
-        @media(max-width:768px){main{padding:1rem}.grid{grid-template-columns:1fr}}
+        /* MAIN CONTENT */
+        main{flex:1;padding:3rem 2rem;max-width:1200px;margin:0 auto;width:100%}
+        .page-header{margin-bottom:3rem;text-align:center}
+        .page-title{font-size:2.5rem;font-weight:800;margin-bottom:0.8rem;background:linear-gradient(to right,#fff,var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .page-subtitle{color:var(--muted);font-size:1.1rem;max-width:600px;margin:0 auto;line-height:1.6}
+
+        /* GRID PRO */
+        .earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem}
+        .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start}
+        .earn-card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 20px 40px rgba(139,92,246,0.1)}
+        .earn-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.3s}
+        .earn-card:hover::before{opacity:1}
+        
+        .card-icon-wrap{width:56px;height:56px;border-radius:14px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.5rem;color:var(--accent)}
+        .card-title{font-size:1.25rem;font-weight:700;margin-bottom:0.5rem;color:var(--text)}
+        .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.5;margin-bottom:1.5rem;flex:1}
+        .card-footer{display:flex;align-items:center;justify-content:space-between;width:100%;padding-top:1.5rem;border-top:1px solid var(--border)}
+        .card-points{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:0.4rem}
+        .card-action{font-size:0.85rem;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:0.3rem}
+
+        /* ÉTAT PROCESSING SÉCURISÉ */
+        .earn-card.processing{pointer-events:none;border-color:var(--warn)}
+        .processing-overlay{position:absolute;inset:0;background:rgba(10,10,15,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;opacity:0;transition:opacity 0.3s}
+        .earn-card.processing .processing-overlay{opacity:1}
+        .secure-timer{width:60px;height:60px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--warn);animation:spin 1s linear infinite;margin-bottom:1rem}
+        .secure-text{font-family:var(--mono);font-size:0.9rem;color:var(--warn);letter-spacing:0.05em}        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* MODAL SUCCÈS PREMIUM */
+        .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+        .modal-backdrop.active{opacity:1;pointer-events:all}
+        .modal-card{background:var(--surface);border:1px solid var(--success);border-radius:20px;padding:3rem;text-align:center;max-width:420px;width:90%;transform:scale(0.9);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+        .modal-backdrop.active .modal-card{transform:scale(1)}
+        .success-icon{width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,0.15);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1.5rem}
+        .modal-title{font-size:1.8rem;font-weight:800;margin-bottom:0.5rem}
+        .modal-points{font-family:var(--mono);font-size:2.5rem;font-weight:700;color:var(--gold);margin:1rem 0}
+        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;padding:1rem 2.5rem;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;width:100%}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(139,92,246,0.3)}
+
+        .empty-state{text-align:center;padding:4rem 2rem;color:var(--dim);grid-column:1/-1}
+        .empty-state i{font-size:3rem;margin-bottom:1rem;opacity:0.3}
+
+        @media(max-width:768px){
+            main{padding:2rem 1rem}
+            .page-title{font-size:1.8rem}
+            .earn-grid{grid-template-columns:1fr}
+            header{padding:1rem}
+        }
     </style>
 </head>
 <body>
-    <header>        <div class="logo"><i class="fas fa-cube"></i> PIXORA</div>
-        <div class="balance"><i class="fas fa-coins"></i> <span id="pointsDisplay">0</span></div>
+    <header>
+        <a href="/index.html" class="logo">
+            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
+            <span>Pixora</span>
+        </a>
+        <div class="balance-pill">
+            <i class="fas fa-coins"></i>
+            <span id="pointsDisplay">---</span>
+        </div>
     </header>
 
     <main>
-        <h1>Gagnez des Points</h1>
-        <p class="subtitle">Complétez des actions simples pour alimenter votre compte.</p>
-        <div class="grid" id="adsContainer">
-            <!-- Les cartes seront injectées ici -->
+        <div class="page-header">
+            <h1 class="page-title">Gagnez des Points</h1>
+            <p class="page-subtitle">Complétez des actions simples pour alimenter votre compte générateur. Sécurisé et instantané.</p>
+        </div>
+        <div class="earn-grid" id="adsContainer">
+            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement des offres...</p></div>
         </div>
     </main>
 
     <!-- Modal Succès -->
-    <div class="modal" id="successModal">
-        <div class="modal-box">
-            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
-            <h2>Récompense Reçue !</h2>
-            <p style="color:var(--muted);margin-top:0.5rem">Vous avez gagné <strong id="rewardAmount" style="color:var(--gold)">0</strong> points.</p>
-            <button class="btn-close" onclick="closeModal()">Continuer</button>
+    <div class="modal-backdrop" id="successModal">
+        <div class="modal-card">
+            <div class="success-icon"><i class="fas fa-check"></i></div>            <h2 class="modal-title">Récompense Validée</h2>
+            <p style="color:var(--muted)">Votre compte a été crédité avec succès.</p>
+            <div class="modal-points">+<span id="rewardAmount">0</span></div>
+            <button class="btn-primary" onclick="closeModal()">Continuer</button>
         </div>
     </div>
 
@@ -78,7 +112,6 @@
         let user = null;
         let isProcessing = false;
 
-        // 1. Initialisation
         async function init() {
             const { data: { user: u } } = await db.auth.getUser();
             if (!u) { window.location.href = '/index.html'; return; }
@@ -87,70 +120,65 @@
             loadAds();
         }
 
-        // 2. Charger les pubs depuis l'Admin
         async function loadAds() {
             const container = document.getElementById('adsContainer');
-            const { data } = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
-            const ads = data?.value || [];
-            
-            if (ads.length === 0) {
-                container.innerHTML = '<p style="color:var(--muted)">Aucune offre disponible pour le moment.</p>';
-                return;
+            try {
+                const { data } = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+                const ads = data?.value || [];
+                
+                if (ads.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune offre disponible pour le moment.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = ads.filter(ad => ad.active && ad.link).map(ad => `
+                    <div class="earn-card" onclick="startTask('${ad.link}', ${ad.points}, '${ad.name.replace(/'/g, "\\'")}')">
+                        <div class="card-icon-wrap">${getIcon(ad.type)}</div>
+                        <h3 class="card-title">${ad.name}</h3>
+                        <p class="card-desc">Interaction requise pendant 30 secondes. Restez sur cette page pour valider la récompense.</p>
+                        <div class="card-footer">
+                            <div class="card-points"><i class="fas fa-coins"></i> +${ad.points}</div>
+                            <div class="card-action">Commencer <i class="fas fa-arrow-right"></i></div>
+                        </div>
+                        
+                        <div class="processing-overlay">
+                            <div class="secure-timer"></div>
+                            <div class="secure-text">VALIDATION EN COURS...</div>
+                        </div>
+                    </div>                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div class="empty-state" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
             }
-            container.innerHTML = ads.map(ad => `
-                <div class="card" onclick="startTask('${ad.link}', ${ad.points}, '${ad.name}')">
-                    <span class="card-icon">${getIcon(ad.type)}</span>
-                    <h3 class="card-title">${ad.name}</h3>
-                    <p class="card-desc">Regardez ou interagissez pendant 30 secondes.</p>
-                    <span class="card-points">+${ad.points}</span>
-                    
-                    <div class="overlay">
-                        <div class="spinner"></div>
-                        <div class="timer-text">Attente...</div>
-                    </div>
-                </div>
-            `).join('');
         }
 
         function getIcon(type) {
-            if (type === 'video') return '🎬';
-            if (type === 'cpa') return '🎮';
-            return '🔗';
+            const icons = { video: 'fa-play', cpa: 'fa-gamepad', banner: 'fa-image', native: 'fa-newspaper', direct: 'fa-link', share: 'fa-share-nodes' };
+            return `<i class="fas ${icons[type] || 'fa-star'}"></i>`;
         }
 
-        // 3. Démarrer la tâche (SÉCURITÉ MAXIMALE)
         async function startTask(link, points, name) {
             if (isProcessing) return;
             isProcessing = true;
 
-            // Ouvrir la pub
             window.open(link, '_blank');
 
-            // Trouver la carte cliquée (visuellement)
-            const cards = document.querySelectorAll('.card');
+            const cards = document.querySelectorAll('.earn-card');
             let activeCard = null;
             cards.forEach(c => {
                 if (c.querySelector('.card-title').innerText === name) activeCard = c;
             });
             if (activeCard) activeCard.classList.add('processing');
 
-            // Timer de 30 secondes
-            let timeLeft = 30;
-            const interval = setInterval(() => {
-                timeLeft--;
-                if (timeLeft <= 0) clearInterval(interval);
-            }, 1000);
-
-            // Attendre 30s
+            // Sécurité : Timer de 30s avec vérification de présence
             setTimeout(async () => {
-                // VÉRIFICATION DE SÉCURITÉ : Est-ce que l'utilisateur est toujours là ?
+                // SI L'UTILISATEUR A QUITTÉ LA PAGE → ANNULATION
                 if (document.hidden) {
-                    alert("❌ Vous avez quitté la page. La récompense est annulée.");                    resetUI(activeCard);
+                    alert("⚠️ Validation échouée : vous avez quitté la page avant la fin du timer.");
+                    resetUI(activeCard);
                     return;
                 }
 
                 try {
-                    // Créditer les points
                     const { data: current } = await db.from('user_data').select('points').eq('user_id', user.id).single();
                     const newPoints = (current?.points || 0) + points;
                     
@@ -166,8 +194,7 @@
                     updatePoints();
                 } catch (e) {
                     console.error(e);
-                    alert("Erreur lors du crédit.");
-                } finally {
+                    alert("Erreur technique lors du crédit.");                } finally {
                     resetUI(activeCard);
                 }
             }, 30000);
@@ -180,11 +207,11 @@
 
         async function updatePoints() {
             const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
-            document.getElementById('pointsDisplay').innerText = data?.points || 0;
+            document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
         }
 
         function showSuccess(amount) {
-            document.getElementById('rewardAmount').innerText = amount;
+            document.getElementById('rewardAmount').innerText = amount.toLocaleString();
             document.getElementById('successModal').classList.add('active');
         }
 
@@ -194,4 +221,5 @@
 
         init();
     </script>
-</body></html>
+</body>
+</html>
