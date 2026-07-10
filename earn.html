@@ -30,7 +30,8 @@
         .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}
         .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
         .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem}
-        .ad-container{margin:1rem 0;padding:1rem;background:var(--bg);border-radius:10px;min-height:250px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .ad-container{margin:1rem 0;padding:0;background:var(--bg);border-radius:10px;min-height:270px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .ad-container iframe{width:100%;height:270px;border:none;background:transparent}
         .timer{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--gold);text-align:center;margin:1rem 0}
         .btn{width:100%;padding:1rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;display:flex;align-items:center;justify-content:center;gap:0.5rem}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
@@ -46,8 +47,8 @@
         <a href="/index.html" class="logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
             <span>Pixora</span>
-        </a>
-        <div class="balance-pill">            <i class="fas fa-coins"></i>
+        </a>        <div class="balance-pill">
+            <i class="fas fa-coins"></i>
             <span id="pointsDisplay">---</span>
         </div>
     </header>
@@ -95,8 +96,8 @@
             const container = document.getElementById('adsContainer');
             
             try {
-                const { data: configData } = await db
-                    .from('admin_config')                    .select('value')
+                const { data: configData } = await db                    .from('admin_config')
+                    .select('value')
                     .eq('key', 'ad_networks')
                     .single();
 
@@ -144,8 +145,8 @@
                                 <button class="btn btn-disabled" disabled>
                                     <i class="fas fa-check"></i> Terminé
                                 </button>
-                            ` : `
-                                <button class="btn btn-primary" onclick="startTask(${actualIndex})">                                    <i class="fas fa-play"></i> Commencer
+                            ` : `                                <button class="btn btn-primary" onclick="startTask(${actualIndex})">
+                                    <i class="fas fa-play"></i> Commencer
                                 </button>
                             `}
                         </div>
@@ -164,51 +165,36 @@
         }
 
         function loadAdScript(container, htmlCode) {
-            // Extraire les configurations atOptions
-            const atOptionsMatch = htmlCode.match(/atOptions\s*=\s*({[^}]+})/);
-            if (atOptionsMatch) {
-                eval(atOptionsMatch[0]);
-            }
+            // Créer un iframe pour isoler l'exécution
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '270px';
+            iframe.style.border = 'none';
+            iframe.style.background = 'transparent';
             
-            // Extraire et créer le container div
-            const containerMatch = htmlCode.match(/<div[^>]*id="([^"]+)"[^>]*><\/div>/);
-            if (containerMatch) {
-                const div = document.createElement('div');
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(containerMatch[0], 'text/html');
-                const element = doc.querySelector('div');
-                if (element) {
-                    Array.from(element.attributes).forEach(attr => {
-                        div.setAttribute(attr.name, attr.value);
-                    });
-                    container.appendChild(div);
-                }
-            }
+            container.appendChild(iframe);
             
-            // Charger les scripts externes
-            const scriptSrcMatches = htmlCode.match(/<script[^>]*src="([^"]+)"[^>]*><\/script>/g);
-            if (scriptSrcMatches) {
-                scriptSrcMatches.forEach(scriptTag => {
-                    const srcMatch = scriptTag.match(/src="([^"]+)"/);
-                    if (srcMatch) {
-                        const script = document.createElement('script');
-                        script.src = srcMatch[1];
-                        script.async = true;
-                                                // Copier les autres attributs
-                        const asyncMatch = scriptTag.match(/async="([^"]+)"/);
-                        if (asyncMatch) script.async = asyncMatch[1] === 'true';
-                        
-                        const cfasyncMatch = scriptTag.match(/data-cfasync="([^"]+)"/);
-                        if (cfasyncMatch) script.setAttribute('data-cfasync', cfasyncMatch[1]);
-                        
-                        container.appendChild(script);
-                    }
-                });
-            }
+            // Écrire le code HTML complet dans l'iframe
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { margin: 0; padding: 0; background: transparent; }
+                    </style>
+                </head>
+                <body>
+                    ${htmlCode}
+                </body>
+                </html>
+            `);
+            iframeDoc.close();
         }
 
-        async function startTask(adIndex) {
-            const ad = adsData[adIndex];
+        async function startTask(adIndex) {            const ad = adsData[adIndex];
             const card = document.getElementById(`card-${ad.name.replace(/\s/g,'')}`);
             const btn = card.querySelector('.btn');
 
@@ -225,7 +211,7 @@
             adContainer.id = `ad-${ad.name.replace(/\s/g,'')}`;
             
             if (hasCode) {
-                // Charger le code HTML avec les scripts dans le bon ordre
+                // Charger le code HTML avec les scripts dans l'iframe
                 loadAdScript(adContainer, ad.code);
             } else {
                 adContainer.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Chargement...</p>';
@@ -237,13 +223,14 @@
             let seconds = 30;
             const timerDiv = document.createElement('div');
             timerDiv.className = 'timer';
-            timerDiv.innerHTML = `️ ${seconds}s restantes`;
+            timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
             card.insertBefore(timerDiv, adContainer);
 
             const timer = setInterval(() => {
                 seconds--;
-                timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
-                                if (seconds <= 0) {
+                timerDiv.innerHTML = `️ ${seconds}s restantes`;
+                
+                if (seconds <= 0) {
                     clearInterval(timer);
                 }
             }, 1000);
@@ -256,7 +243,6 @@
                     .select('points')
                     .eq('user_id', user.id)
                     .single();
-
                 const newPoints = (userData?.points || 0) + ad.points;
 
                 await Promise.all([
@@ -292,7 +278,8 @@
                 console.error('Error:', e);
                 alert('Erreur: ' + e.message);
                 await loadAds();
-            }        }
+            }
+        }
 
         async function updatePoints() {
             const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
