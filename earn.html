@@ -30,8 +30,8 @@
         .btn{padding:0.9rem 2.2rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
         .btn-disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
-        .status{margin-top:1rem;font-size:0.85rem;color:var(--muted);word-break:break-all}
-        .error-box{background:rgba(239,68,68,0.1);border:1px solid var(--danger);border-radius:8px;padding:1rem;margin-top:1rem;font-size:0.8rem;color:#fca5a5}
+        .status{margin-top:1rem;font-size:0.85rem;color:var(--muted)}
+        .success{color:var(--gold);font-weight:600}
     </style>
 </head>
 <body>
@@ -54,7 +54,7 @@
         <div class="card">
             <div class="card-icon"><i class="fas fa-link"></i></div>
             <h3 class="card-title">Adsterra Smartlink</h3>
-            <p class="card-desc">Cliquez une seule fois. La récompense sera créditée automatiquement après validation serveur.</p>
+            <p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p>
             <div class="reward">+25 points</div>
             <button id="btn" class="btn btn-primary">Commencer</button>
             <div class="status" id="status"></div>
@@ -75,108 +75,82 @@
         }
 
         async function init() {
-            try {
-                console.log('1. Initialisation...');
-                status.textContent = 'Connexion...';
-                
-                const { data: { user: u }, error } = await db.auth.getUser();
-                if (error || !u) { 
-                    console.error('Auth error:', error);
-                    window.location.href = '/index.html'; 
-                    return; 
-                }
-                user = u;
-                console.log('User connecté:', user.id);
-                
-                await updatePoints();
-                await checkIfAlreadyCompleted();
-            } catch (e) {
-                console.error('Init error:', e);
-                status.textContent = 'Erreur init: ' + e.message;
-            }
+            const { data: { user: u }, error } = await db.auth.getUser();
+            if (error || !u) { window.location.href = '/index.html'; return; }
+            user = u;
+            await updatePoints();
+            await checkIfAlreadyCompleted();
         }
 
-        async function checkIfAlreadyCompleted() {            try {
-                console.log('2. Vérification complétion...');
-                const { data, error } = await db
-                    .from('ad_clicks')
-                    .select('status')
-                    .eq('user_id', user.id)
-                    .eq('status', 'paid')
-                    .limit(1);
-                
-                if (error) {
-                    console.error('Check error:', error);
-                    throw error;
-                }
-                
-                console.log('Résultat check:', data);
-                
-                if (data && data.length > 0) {
-                    btn.textContent = '✅ Déjà complété';
-                    btn.classList.remove('btn-primary');
-                    btn.classList.add('btn-disabled');
-                    btn.disabled = true;
-                    status.textContent = 'Vous avez déjà reçu votre récompense.';
-                } else {
-                    btn.onclick = startTask;
-                    console.log('3. Bouton activé');
-                }
-            } catch (e) {
-                console.error('Check failed:', e);
-                btn.onclick = startTask;
+        async function checkIfAlreadyCompleted() {
+            const { data, error } = await db
+                .from('ad_clicks')
+                .select('status')
+                .eq('user_id', user.id)
+                .eq('status', 'paid')
+                .limit(1);
+            
+            if (data && data.length > 0) {
+                btn.textContent = '✅ Déjà complété';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-disabled');
+                btn.disabled = true;
+                status.textContent = 'Vous avez déjà reçu votre récompense.';
+            } else {                btn.onclick = startTask;
             }
         }
 
         async function startTask() {
-            console.log('4. Démarrage tâche...');
             btn.disabled = true;
-            btn.textContent = '🔄 Préparation...';
+            btn.textContent = '🔄 Crédit en cours...';
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-disabled');
-            status.textContent = 'Création du token...';
+            status.textContent = 'Patientez...';
 
             try {
                 const token = generateToken();
-                console.log('Token généré:', token);
 
-                console.log('5. Insertion dans ad_clicks...');
-                status.textContent = 'Enregistrement...';
+                // 1. Créditer les points IMMÉDIATEMENT
+                const { data: userData } = await db
+                    .from('user_data')
+                    .select('points')
+                    .eq('user_id', user.id)
+                    .single();
+
+                const newPoints = (userData?.points || 0) + 25;
+
+                await db.from('user_data').update({ points: newPoints }).eq('user_id', user.id);
+
+                // 2. Créer la transaction
+                await db.from('transactions').insert({
+                    user_id: user.id,
+                    type: 'earned',
+                    title: 'Adsterra Smartlink',
+                    amount: 25
+                });
+
+                // 3. Marquer comme complété dans ad_clicks
+                await db.from('ad_clicks').insert({
+                    user_id: user.id,
+                    token: token,
+                    status: 'paid'
+                });
+
+                // 4. Mettre à jour l'affichage
+                document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
                 
-                const { data, error } = await db
-                    .from('ad_clicks')
-                    .insert({                        user_id: user.id,
-                        token: token,
-                        status: 'pending'
-                    })
-                    .select();
+                btn.textContent = '✅ Terminé';
+                status.innerHTML = '<span class="success">+25 points crédités !</span>';
 
-                if (error) {
-                    console.error('Insert error:', error);
-                    throw new Error('Erreur insertion: ' + error.message);
-                }
-
-                console.log('Insertion réussie:', data);
-
-                const adsterraLink = `https://www.effectivecpmnetwork.com/aie2bkhe?key=436233894ac7cc3768e497eb5bfd3cea&click_id=${token}`;
-                
-                console.log('6. Redirection vers:', adsterraLink);
-                status.textContent = 'Redirection dans 2 secondes...';
-                
+                // 5. Rediriger vers Adsterra (optionnel)
                 setTimeout(() => {
-                    window.location.href = adsterraLink;
-                }, 2000);
+                    const adsterraLink = `https://www.effectivecpmnetwork.com/aie2bkhe?key=436233894ac7cc3768e497eb5bfd3cea&click_id=${token}`;
+                    window.open(adsterraLink, '_blank');                }, 1500);
 
             } catch (e) {
-                console.error('Start error COMPLETE:', e);
-                btn.textContent = ' Erreur';
-                status.innerHTML = `
-                    <div class="error-box">
-                        <strong>Erreur:</strong><br>
-                        ${e.message}<br><br>
-                        <small>Détails: ${JSON.stringify(e)}</small>
-                    </div>
-                `;
+                console.error('Error:', e);
+                btn.textContent = '❌ Erreur';
+                status.textContent = 'Erreur: ' + e.message;
                 btn.disabled = false;
                 btn.classList.remove('btn-disabled');
                 btn.classList.add('btn-primary');
@@ -184,17 +158,8 @@
         }
 
         async function updatePoints() {
-            try {
-                const { data, error } = await db
-                    .from('user_data')
-                    .select('points')
-                    .eq('user_id', user.id)
-                    .single();
-                
-                if (error) throw error;
-                document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
-            } catch (e) {
-                console.error('Points error:', e);            }
+            const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+            document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
         }
 
         init();
