@@ -8,11 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#0a0a0f;--surface:#13131a;--border:#2a2a35;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--warn:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column}
         
-        header{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;background:var(--bg)}
+        header{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50}
         .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none}
         .logo svg{width:28px;height:28px}
         .logo span{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -27,9 +27,9 @@
 
         .earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem}
         .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;transition:all 0.3s;cursor:pointer}
-        .earn-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 20px rgba(139,92,246,0.1)}
+        .earn-card:hover:not(.completed):not(.processing){transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 20px rgba(139,92,246,0.1)}
         .earn-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.3s}
-        .earn-card:hover::before{opacity:1}
+        .earn-card:hover:not(.completed):not(.processing)::before{opacity:1}
         
         .card-icon-wrap{width:44px;height:44px;border-radius:10px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem;color:var(--accent)}
         .card-title{font-size:1.1rem;font-weight:700;margin-bottom:0.4rem}
@@ -38,16 +38,21 @@
         .card-points{font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:0.3rem}
         .card-action{font-size:0.8rem;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:0.3rem}
 
+        /* ÉTAT COMPLÉTÉ */
+        .earn-card.completed{opacity:0.5;pointer-events:none;border-color:var(--success)}
+        .earn-card.completed .card-action{color:var(--success)}
+        .earn-card.completed .card-action i{transform:rotate(0)}
+        
         .earn-card.processing{pointer-events:none;border-color:var(--warn)}
-        .processing-overlay{position:absolute;inset:0;background:rgba(10,10,15,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;opacity:0;transition:opacity 0.3s}
+        .processing-overlay{position:absolute;inset:0;background:rgba(5,5,8,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;opacity:0;transition:opacity 0.3s}
         .earn-card.processing .processing-overlay{opacity:1}
         .secure-timer{width:40px;height:40px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--warn);animation:spin 1s linear infinite;margin-bottom:0.8rem}
-        .secure-text{font-family:var(--mono);font-size:0.75rem;color:var(--warn);letter-spacing:0.05em}
-        @keyframes spin{to{transform:rotate(360deg)}}
+        .secure-text{font-family:var(--mono);font-size:0.75rem;color:var(--warn);letter-spacing:0.05em}        @keyframes spin{to{transform:rotate(360deg)}}
 
         .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
         .modal-backdrop.active{opacity:1;pointer-events:all}
-        .modal-card{background:var(--surface);border:1px solid var(--success);border-radius:16px;padding:2rem;text-align:center;max-width:360px;width:90%;transform:scale(0.9);transition:transform 0.3s}        .modal-backdrop.active .modal-card{transform:scale(1)}
+        .modal-card{background:var(--surface);border:1px solid var(--success);border-radius:16px;padding:2rem;text-align:center;max-width:360px;width:90%;transform:scale(0.9);transition:transform 0.3s}
+        .modal-backdrop.active .modal-card{transform:scale(1)}
         .success-icon{width:60px;height:60px;border-radius:50%;background:rgba(16,185,129,0.15);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 1rem}
         .modal-title{font-size:1.4rem;font-weight:700;margin-bottom:0.4rem}
         .modal-points{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--gold);margin:0.8rem 0}
@@ -91,11 +96,11 @@
         <div class="modal-card">
             <div class="success-icon"><i class="fas fa-check"></i></div>
             <h2 class="modal-title">Récompense Validée</h2>
-            <p style="color:var(--muted);font-size:0.9rem">Votre compte a été crédité.</p>
-            <div class="modal-points">+<span id="rewardAmount">0</span></div>
+            <p style="color:var(--muted);font-size:0.9rem">Votre compte a été crédité.</p>            <div class="modal-points">+<span id="rewardAmount">0</span></div>
             <button class="btn-primary" onclick="closeModal()">Continuer</button>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
         const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
@@ -103,13 +108,21 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let user = null;
         let isProcessing = false;
+        let completedAds = new Set();
 
         async function init() {
             const { data: { user: u } } = await db.auth.getUser();
             if (!u) { window.location.href = '/index.html'; return; }
             user = u;
             updatePoints();
+            await loadCompletedAds();
             loadAds();
+        }
+
+        // Charger les offres déjà complétées
+        async function loadCompletedAds() {
+            const { data } = await db.from('ad_rewards').select('ad_name').eq('user_id', user.id);
+            if (data) data.forEach(r => completedAds.add(r.ad_name));
         }
 
         async function loadAds() {
@@ -121,21 +134,23 @@
                     container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune offre disponible</p></div>';
                     return;
                 }
-                container.innerHTML = ads.filter(ad => ad.active && ad.link).map(ad => `
-                    <div class="earn-card" onclick="startTask('${ad.link}', ${ad.points}, '${ad.name.replace(/'/g, "\\'")}')">
-                        <div class="card-icon-wrap">${getIcon(ad.type)}</div>
-                        <h3 class="card-title">${ad.name}</h3>
-                        <p class="card-desc">Restez 30 secondes pour valider la récompense.</p>
-                        <div class="card-footer">
-                            <div class="card-points"><i class="fas fa-coins"></i> +${ad.points}</div>
-                            <div class="card-action">Commencer <i class="fas fa-arrow-right"></i></div>
+                container.innerHTML = ads.filter(ad => ad.active && ad.link).map(ad => {
+                    const isCompleted = completedAds.has(ad.name);
+                    return `
+                        <div class="earn-card ${isCompleted ? 'completed' : ''}" onclick="${isCompleted ? '' : `startTask('${ad.link}', ${ad.points}, '${ad.name.replace(/'/g, "\\'")}')`}">
+                            <div class="card-icon-wrap">${getIcon(ad.type)}</div>
+                            <h3 class="card-title">${ad.name}</h3>
+                            <p class="card-desc">${isCompleted ? '✅ Déjà complété aujourd\'hui' : 'Restez 30 secondes pour valider la récompense.'}</p>
+                            <div class="card-footer">
+                                <div class="card-points"><i class="fas fa-coins"></i> ${isCompleted ? 'Complété' : '+' + ad.points}</div>
+                                <div class="card-action">${isCompleted ? '<i class="fas fa-check"></i> Validé' : 'Commencer <i class="fas fa-arrow-right"></i>'}</div>
+                            </div>
+                            <div class="processing-overlay">                                <div class="secure-timer"></div>
+                                <div class="secure-text">VALIDATION...</div>
+                            </div>
                         </div>
-                        <div class="processing-overlay">
-                            <div class="secure-timer"></div>
-                            <div class="secure-text">VALIDATION...</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             } catch (e) {
                 container.innerHTML = '<div class="empty-state" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
             }
@@ -145,10 +160,17 @@
             const icons = { video: 'fa-play', cpa: 'fa-gamepad', banner: 'fa-image', native: 'fa-newspaper', direct: 'fa-link', share: 'fa-share-nodes' };
             return `<i class="fas ${icons[type] || 'fa-star'}"></i>`;
         }
+
         async function startTask(link, points, name) {
             if (isProcessing) return;
+            if (completedAds.has(name)) {
+                alert("⚠️ Vous avez déjà complété cette offre.");
+                return;
+            }
+            
             isProcessing = true;
             window.open(link, '_blank');
+            
             const cards = document.querySelectorAll('.earn-card');
             let activeCard = null;
             cards.forEach(c => { if (c.querySelector('.card-title').innerText === name) activeCard = c; });
@@ -161,13 +183,27 @@
                     return;
                 }
                 try {
+                    // Vérifier une dernière fois si déjà complété
+                    const { data: existing } = await db.from('ad_rewards').select('id').eq('user_id', user.id).eq('ad_name', name).single();
+                    if (existing) {
+                        alert("⚠️ Cette offre a déjà été complétée.");
+                        resetUI(activeCard);
+                        return;
+                    }
+
                     const { data: current } = await db.from('user_data').select('points').eq('user_id', user.id).single();
                     const newPoints = (current?.points || 0) + points;
                     await db.from('user_data').update({ points: newPoints }).eq('user_id', user.id);
-                    await db.from('transactions').insert({ user_id: user.id, type: 'earned', title: `Récompense: ${name}`, amount: points });
+                    await db.from('transactions').insert({ user_id: user.id, type: 'earned', title: `Récompense: ${name}`, amount: points });                    
+                    // Marquer comme complété
+                    await db.from('ad_rewards').insert({ user_id: user.id, ad_name: name });
+                    completedAds.add(name);
+                    
                     showSuccess(points);
                     updatePoints();
+                    loadAds(); // Rafraîchir pour afficher "Complété"
                 } catch (e) {
+                    console.error(e);
                     alert("Erreur lors du crédit.");
                 } finally {
                     resetUI(activeCard);
