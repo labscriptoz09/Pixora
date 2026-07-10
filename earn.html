@@ -78,88 +78,64 @@
             const container = document.getElementById('adsContainer');
             
             try {
-                // 1. Charger les régies depuis l'admin
-                const { data: configData } = await db
+                // 1. Charger les régies
+                const { data: configData, error: configError } = await db
                     .from('admin_config')
                     .select('value')
                     .eq('key', 'ad_networks')
                     .single();
 
+                if (configError) throw configError;
+
                 const ads = configData?.value || [];
                 const activeAds = ads.filter(ad => ad.active);
 
                 if (activeAds.length === 0) {
-                    container.innerHTML = `
-                        <div class="card">
-                            <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                            <h3 class="card-title">Aucune offre disponible</h3>
-                            <p class="card-desc">Revenez plus tard.</p>
-                        </div>
-                    `;
-                    return;                }
+                    container.innerHTML = '<div class="card"><div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div><h3 class="card-title">Aucune offre</h3></div>';
+                    return;
+                }
 
-                // 2. VÉRIFIER D'ABORD quelles offres sont déjà complétées
-                const { data: completedData } = await db
-                    .from('ad_clicks')
+                // 2. VÉRIFIER les offres complétées
+                const { data: completedData, error: completedError } = await db                    .from('ad_clicks')
                     .select('ad_name')
                     .eq('user_id', user.id)
                     .eq('status', 'paid');
 
+                console.log('Completed ads:', completedData);
+                console.log('Completed error:', completedError);
+
                 const completedAdNames = new Set();
-                if (completedData) {
+                if (completedData && !completedError) {
                     completedData.forEach(c => completedAdNames.add(c.ad_name));
                 }
 
-                // 3. Afficher les cartes avec vérification
+                // 3. Afficher les cartes
                 container.innerHTML = activeAds.map(ad => {
                     const isCompleted = completedAdNames.has(ad.name);
                     const icon = getIcon(ad.type);
                     
                     if (isCompleted) {
-                        return `
-                            <div class="card">
-                                <div class="card-icon">${icon}</div>
-                                <h3 class="card-title">${ad.name}</h3>
-                                <p class="card-desc">Vous avez déjà complété cette offre.</p>
-                                <div class="reward">+${ad.points} points</div>
-                                <button class="btn btn-disabled" disabled>✅ Déjà complété</button>
-                                <div class="status">Vous avez déjà reçu cette récompense.</div>
-                            </div>
-                        `;
+                        return '<div class="card"><div class="card-icon">' + icon + '</div><h3 class="card-title">' + ad.name + '</h3><p class="card-desc">Vous avez déjà complété cette offre.</p><div class="reward">+' + ad.points + ' points</div><button class="btn btn-disabled" disabled>✅ Déjà complété</button><div class="status">Vous avez déjà reçu cette récompense.</div></div>';
                     } else {
-                        return `
-                            <div class="card" id="card-${ad.name.replace(/\s/g,'')}">
-                                <div class="card-icon">${icon}</div>
-                                <h3 class="card-title">${ad.name}</h3>
-                                <p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p>
-                                <div class="reward">+${ad.points} points</div>
-                                <button class="btn btn-primary" onclick="startTask('${ad.name}', ${ad.points}, '${ad.link}')">Commencer</button>
-                                <div class="status" id="status-${ad.name.replace(/\s/g,'')}"></div>
-                            </div>
-                        `;
+                        return '<div class="card" id="card-' + ad.name.replace(/\s/g,'') + '"><div class="card-icon">' + icon + '</div><h3 class="card-title">' + ad.name + '</h3><p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p><div class="reward">+' + ad.points + ' points</div><button class="btn btn-primary" onclick="startTask(\'' + ad.name + '\', ' + ad.points + ', \'' + ad.link + '\')">Commencer</button><div class="status" id="status-' + ad.name.replace(/\s/g,'') + '"></div></div>';
                     }
                 }).join('');
 
             } catch (e) {
                 console.error('Load ads error:', e);
-                container.innerHTML = `
-                    <div class="card">
-                        <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                        <h3 class="card-title">Erreur de chargement</h3>                        <p class="card-desc">${e.message}</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="card"><div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div><h3 class="card-title">Erreur</h3><p class="card-desc">' + e.message + '</p></div>';
             }
         }
 
         function getIcon(type) {
-            const icons = { video: '🎬', cpa: '🎮', banner: '🖼️', native: '📰', direct: '', share: '📤' };
+            const icons = { video: '🎬', cpa: '🎮', banner: '️', native: '📰', direct: '🔗', share: '📤' };
             return icons[type] || '🔗';
         }
 
         async function startTask(adName, points, link) {
-            const card = document.getElementById(`card-${adName.replace(/\s/g,'')}`);
+            const card = document.getElementById('card-' + adName.replace(/\s/g,''));
             const btn = card.querySelector('.btn');
-            const status = document.getElementById(`status-${adName.replace(/\s/g,'')}`);
+            const status = document.getElementById('status-' + adName.replace(/\s/g,''));
 
             btn.disabled = true;
             btn.textContent = '🔄 Crédit en cours...';
@@ -169,17 +145,23 @@
 
             try {
                 const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
-
                 // 1. Créditer les points
-                const { data: userData } = await db
+                const { data: userData, error: userError } = await db
                     .from('user_data')
                     .select('points')
                     .eq('user_id', user.id)
                     .single();
 
-                const newPoints = (userData?.points || 0) + points;
+                if (userError) throw userError;
 
-                await db.from('user_data').update({ points: newPoints }).eq('user_id', user.id);
+                const newPoints = (userData.points || 0) + points;
+
+                const { error: updateError } = await db
+                    .from('user_data')
+                    .update({ points: newPoints })
+                    .eq('user_id', user.id);
+
+                if (updateError) throw updateError;
 
                 // 2. Créer la transaction
                 await db.from('transactions').insert({
@@ -189,12 +171,18 @@
                     amount: points
                 });
 
-                // 3. Marquer comme complété
-                await db.from('ad_clicks').insert({
+                // 3. Marquer comme complété (avec ad_name)
+                const { error: clickError } = await db.from('ad_clicks').insert({
                     user_id: user.id,
                     ad_name: adName,
                     token: token,
-                    status: 'paid'                });
+                    status: 'paid'
+                });
+
+                if (clickError) {
+                    console.error('Click insert error:', clickError);
+                    throw clickError;
+                }
 
                 // 4. Mettre à jour l'affichage
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
@@ -202,13 +190,10 @@
                 btn.textContent = '✅ Terminé';
                 status.innerHTML = '<span class="success">+' + points + ' points crédités !</span>';
 
-                // 5. Rediriger vers le lien
+                // 5. Rediriger
                 if (link) {
-                    setTimeout(() => {
-                        window.open(link, '_blank');
-                    }, 1500);
+                    setTimeout(() => { window.open(link, '_blank'); }, 1500);
                 }
-
             } catch (e) {
                 console.error('Error:', e);
                 btn.textContent = '❌ Erreur';
