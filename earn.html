@@ -30,7 +30,7 @@
         .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}
         .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
         .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem}
-        .ad-container{margin:1rem 0;padding:1rem;background:var(--bg);border-radius:10px;min-height:60px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .ad-container{margin:1rem 0;padding:1rem;background:var(--bg);border-radius:10px;min-height:250px;display:flex;align-items:center;justify-content:center;overflow:hidden}
         .timer{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--gold);text-align:center;margin:1rem 0}
         .btn{width:100%;padding:1rem;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;display:flex;align-items:center;justify-content:center;gap:0.5rem}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
@@ -78,9 +78,9 @@
             video: { icon: '🎬', label: 'Regarder une vidéo', desc: 'Regardez une vidéo de 30 secondes' },
             smartlink: { icon: '🔗', label: 'Smartlink', desc: 'Visitez un partenaire via notre lien' },
             banner: { icon: '🖼️', label: 'Bannière 300x250', desc: 'Affichez une publicité pendant 30 secondes' },
-            native: { icon: '📰', label: 'Contenu sponsorisé', desc: 'Lisez un article sponsorisé' },
+            native: { icon: '', label: 'Contenu sponsorisé', desc: 'Lisez un article sponsorisé' },
             social_bar: { icon: '🔔', label: 'Notification', desc: 'Activez les notifications' },
-            popunder: { icon: '🪟', label: 'Popunder', desc: 'Ouvrez une fenêtre publicitaire' }
+            popunder: { icon: '', label: 'Popunder', desc: 'Ouvrez une fenêtre publicitaire' }
         };
 
         async function init() {
@@ -163,38 +163,41 @@
             }
         }
 
-        function executeScripts(container, htmlCode) {
-            // Créer un élément temporaire pour parser le HTML
-            const temp = document.createElement('div');
-            temp.innerHTML = htmlCode;
+        function loadAdScript(container, htmlCode) {
+            // Parser le HTML pour extraire scripts et autres éléments
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlCode, 'text/html');
             
-            // Insérer le HTML non-script d'abord
-            const nonScriptElements = Array.from(temp.childNodes).filter(node => node.tagName !== 'SCRIPT');
-            nonScriptElements.forEach(node => container.appendChild(node.cloneNode(true)));
-            
-            // Exécuter les scripts séparément
-            const scripts = temp.querySelectorAll('script');
-            scripts.forEach(oldScript => {
+            // D'abord, extraire et exécuter les scripts inline (comme atOptions)
+            const inlineScripts = doc.querySelectorAll('script:not([src])');
+            inlineScripts.forEach(script => {
                 const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                container.appendChild(newScript);
+            });
+            
+            // Ensuite, insérer les divs/containers
+            const elements = Array.from(doc.body.childNodes).filter(node => 
+                node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'SCRIPT'
+            );
+            elements.forEach(el => {
+                container.appendChild(el.cloneNode(true));
+            });
+            
+            // Enfin, charger les scripts externes
+            const externalScripts = doc.querySelectorAll('script[src]');
+            externalScripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                newScript.async = oldScript.async;
                 
-                // Copier les attributs
+                // Copier tous les attributs
                 Array.from(oldScript.attributes).forEach(attr => {
                     newScript.setAttribute(attr.name, attr.value);
                 });
-                
-                // Copier le contenu inline
-                if (oldScript.innerHTML) {
-                    newScript.innerHTML = oldScript.innerHTML;
-                }
-                
-                // Copier la source externe
-                if (oldScript.src) {
-                    newScript.src = oldScript.src;
-                }
-                
-                container.appendChild(newScript);
+                                container.appendChild(newScript);
             });
         }
+
         async function startTask(adIndex) {
             const ad = adsData[adIndex];
             const card = document.getElementById(`card-${ad.name.replace(/\s/g,'')}`);
@@ -213,8 +216,8 @@
             adContainer.id = `ad-${ad.name.replace(/\s/g,'')}`;
             
             if (hasCode) {
-                // Exécuter le code HTML avec les scripts
-                executeScripts(adContainer, ad.code);
+                // Charger le code HTML avec les scripts dans le bon ordre
+                loadAdScript(adContainer, ad.code);
             } else {
                 adContainer.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Chargement...</p>';
             }
@@ -240,10 +243,10 @@
             try {
                 const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
 
-                const { data: userData } = await db
-                    .from('user_data')
+                const { data: userData } = await db                    .from('user_data')
                     .select('points')
-                    .eq('user_id', user.id)                    .single();
+                    .eq('user_id', user.id)
+                    .single();
 
                 const newPoints = (userData?.points || 0) + ad.points;
 
@@ -289,6 +292,5 @@
         }
 
         init();
-    </script>
-</body>
+    </script></body>
 </html>
