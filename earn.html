@@ -78,7 +78,7 @@
             const container = document.getElementById('adsContainer');
             
             try {
-                // Charger les régies depuis l'admin
+                // 1. Charger les régies depuis l'admin
                 const { data: configData } = await db
                     .from('admin_config')
                     .select('value')
@@ -98,59 +98,61 @@
                     `;
                     return;                }
 
-                // Afficher chaque régie
-                container.innerHTML = activeAds.map(ad => `
-                    <div class="card" id="card-${ad.name.replace(/\s/g,'')}">
-                        <div class="card-icon">${getIcon(ad.type)}</div>
-                        <h3 class="card-title">${ad.name}</h3>
-                        <p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p>
-                        <div class="reward">+${ad.points} points</div>
-                        <button class="btn btn-primary" onclick="startTask('${ad.name}', ${ad.points}, '${ad.link}')">Commencer</button>
-                        <div class="status" id="status-${ad.name.replace(/\s/g,'')}"></div>
-                    </div>
-                `).join('');
+                // 2. VÉRIFIER D'ABORD quelles offres sont déjà complétées
+                const { data: completedData } = await db
+                    .from('ad_clicks')
+                    .select('ad_name')
+                    .eq('user_id', user.id)
+                    .eq('status', 'paid');
 
-                // Vérifier quelles offres sont déjà complétées
-                await checkCompletedAds(activeAds);
+                const completedAdNames = new Set();
+                if (completedData) {
+                    completedData.forEach(c => completedAdNames.add(c.ad_name));
+                }
+
+                // 3. Afficher les cartes avec vérification
+                container.innerHTML = activeAds.map(ad => {
+                    const isCompleted = completedAdNames.has(ad.name);
+                    const icon = getIcon(ad.type);
+                    
+                    if (isCompleted) {
+                        return `
+                            <div class="card">
+                                <div class="card-icon">${icon}</div>
+                                <h3 class="card-title">${ad.name}</h3>
+                                <p class="card-desc">Vous avez déjà complété cette offre.</p>
+                                <div class="reward">+${ad.points} points</div>
+                                <button class="btn btn-disabled" disabled>✅ Déjà complété</button>
+                                <div class="status">Vous avez déjà reçu cette récompense.</div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="card" id="card-${ad.name.replace(/\s/g,'')}">
+                                <div class="card-icon">${icon}</div>
+                                <h3 class="card-title">${ad.name}</h3>
+                                <p class="card-desc">Cliquez une seule fois. Les points sont crédités instantanément.</p>
+                                <div class="reward">+${ad.points} points</div>
+                                <button class="btn btn-primary" onclick="startTask('${ad.name}', ${ad.points}, '${ad.link}')">Commencer</button>
+                                <div class="status" id="status-${ad.name.replace(/\s/g,'')}"></div>
+                            </div>
+                        `;
+                    }
+                }).join('');
 
             } catch (e) {
                 console.error('Load ads error:', e);
                 container.innerHTML = `
                     <div class="card">
                         <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                        <h3 class="card-title">Erreur de chargement</h3>
-                        <p class="card-desc">${e.message}</p>
+                        <h3 class="card-title">Erreur de chargement</h3>                        <p class="card-desc">${e.message}</p>
                     </div>
                 `;
             }
         }
 
-        async function checkCompletedAds(ads) {
-            const { data } = await db
-                .from('ad_clicks')
-                .select('user_id')
-                .eq('user_id', user.id)
-                .eq('status', 'paid');
-
-            if (data) {
-                data.forEach(completed => {
-                    const card = document.getElementById(`card-${completed.ad_name?.replace(/\s/g,'') || ''}`);
-                    const btn = card?.querySelector('.btn');
-                    const status = card?.querySelector('.status');
-                    
-                    if (card && btn) {
-                        btn.textContent = '✅ Déjà complété';
-                        btn.classList.remove('btn-primary');
-                        btn.classList.add('btn-disabled');
-                        btn.disabled = true;
-                        btn.onclick = null;
-                        if (status) status.textContent = 'Vous avez déjà reçu cette récompense.';
-                    }                });
-            }
-        }
-
         function getIcon(type) {
-            const icons = { video: '', cpa: '🎮', banner: '🖼️', native: '', direct: '🔗', share: '📤' };
+            const icons = { video: '🎬', cpa: '🎮', banner: '🖼️', native: '📰', direct: '', share: '📤' };
             return icons[type] || '🔗';
         }
 
@@ -192,15 +194,15 @@
                     user_id: user.id,
                     ad_name: adName,
                     token: token,
-                    status: 'paid'
-                });
+                    status: 'paid'                });
+
                 // 4. Mettre à jour l'affichage
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
                 
                 btn.textContent = '✅ Terminé';
                 status.innerHTML = '<span class="success">+' + points + ' points crédités !</span>';
 
-                // 5. Rediriger vers le lien (optionnel)
+                // 5. Rediriger vers le lien
                 if (link) {
                     setTimeout(() => {
                         window.open(link, '_blank');
