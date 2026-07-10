@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixora Admin - Panneau de Contrôle</title>
+    <title>Pixora Admin v4.0 - Panneau de Contrôle</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -84,10 +84,19 @@
         .gallery-item img{width:100%;height:100%;object-fit:cover}
         .gallery-item .overlay{position:absolute;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;gap:0.5rem;opacity:0;transition:opacity 0.2s}
         .gallery-item:hover .overlay{opacity:1}
+        
+        /* API TESTER STYLES */
+        .api-test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+        .api-test-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem}
+        .api-status{display:inline-flex;align-items:center;gap:0.4rem;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:700;margin-top:0.5rem}
+        .api-status.ok{background:rgba(16,185,129,0.15);color:var(--success)}
+        .api-status.ko{background:rgba(239,68,68,0.15);color:var(--danger)}
+        .api-status.wait{background:rgba(251,191,36,0.15);color:var(--gold)}
+        .api-log{font-family:var(--mono);font-size:0.7rem;color:var(--dim);margin-top:0.5rem;word-break:break-all}
+
         @media(max-width:768px){.sidebar{width:60px}.sidebar-logo span,.nav-section-title,.nav-item span,.sidebar-footer{display:none}.sidebar-logo{padding:1rem;justify-content:center}.nav-item{justify-content:center;padding:0.8rem}.main{margin-left:60px;padding:1rem}.notif-panel{width:100%}}
     </style>
-</head>
-<body>
+</head><body>
 
 <!-- LOGIN -->
 <div class="login-overlay" id="loginOverlay">
@@ -96,7 +105,8 @@
         <p>Accès réservé à l'administrateur</p>
         <form onsubmit="handleAdminLogin(event)">
             <div class="form-group" style="margin-bottom:1rem"><input type="email" class="form-input" placeholder="Email admin" required id="adminEmail"></div>
-            <div class="form-group" style="margin-bottom:1rem"><input type="password" class="form-input" placeholder="Mot de passe" required id="adminPass"></div>            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="btnAdminLogin"><i class="fas fa-sign-in-alt"></i> Accéder</button>
+            <div class="form-group" style="margin-bottom:1rem"><input type="password" class="form-input" placeholder="Mot de passe" required id="adminPass"></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="btnAdminLogin"><i class="fas fa-sign-in-alt"></i> Accéder</button>
         </form>
     </div>
 </div>
@@ -116,8 +126,8 @@
         <div class="nav-section">
             <div class="nav-section-title">Générateur</div>
             <div class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></div>
-            <div class="nav-item" onclick="showSection('models-video')"><i class="fas fa-video"></i><span>Modèles Vidéo</span></div>
             <div class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API</span></div>
+            <div class="nav-item" onclick="showSection('api-tester')"><i class="fas fa-vial"></i><span>🧪 Test API</span></div>
             <div class="nav-item" onclick="showSection('gallery-admin')"><i class="fas fa-images"></i><span>Images Générées</span></div>
         </div>
         <div class="nav-section">
@@ -128,7 +138,6 @@
         </div>
         <div class="nav-section">
             <div class="nav-section-title">Site</div>
-            <div class="nav-item" onclick="showSection('social-links')"><i class="fas fa-share-alt"></i><span>Réseaux Sociaux</span></div>
             <div class="nav-item" onclick="showSection('site-settings')"><i class="fas fa-cog"></i><span>Paramètres Site</span></div>
             <div class="nav-item" onclick="showSection('seo')"><i class="fas fa-search"></i><span>SEO & Meta</span></div>
             <div class="nav-item" onclick="showSection('legal')"><i class="fas fa-gavel"></i><span>Contenu Légal</span></div>
@@ -136,16 +145,16 @@
         <div class="nav-section">
             <div class="nav-section-title">Gestion</div>
             <div class="nav-item" onclick="showSection('users')"><i class="fas fa-users"></i><span>Utilisateurs</span></div>
-            <div class="nav-item" onclick="showSection('logs')"><i class="fas fa-terminal"></i><span>Logs Système</span></div>
-            <div class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></div>
+            <div class="nav-item" onclick="showSection('logs')"><i class="fas fa-terminal"></i><span>Logs Système</span></div>            <div class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></div>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v3.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v4.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 
 <!-- NOTIFICATIONS PANEL -->
 <div class="notif-panel" id="notifPanel">
-    <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>    <div class="notif-list" id="notifList"><div style="text-align:center;padding:2rem;color:var(--dim)">Chargement...</div></div>
+    <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
+    <div class="notif-list" id="notifList"><div style="text-align:center;padding:2rem;color:var(--dim)">Chargement...</div></div>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -161,6 +170,57 @@
             <div class="stat-card"><div class="stat-card-icon" style="background:rgba(236,72,153,0.15);color:var(--accent2)"><i class="fas fa-image"></i></div><div class="stat-card-value" id="dashGenerations">-</div><div class="stat-card-label">Générations Totales</div></div>
         </div>
         <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-receipt"></i> Transactions Récentes</div></div><div class="table-container"><table><thead><tr><th>User</th><th>Type</th><th>Titre</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentTx"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
+    </div>
+
+    <!-- 🧪 API TESTER (NOUVEAU) -->
+    <div class="admin-section" id="sec-api-tester">
+        <div class="page-header"><div><div class="page-title">🧪 Testeur API Connectées</div><div class="page-subtitle">Vérifie en temps réel si tes clés API fonctionnent</div></div><button class="btn btn-primary btn-sm" onclick="runAllApiTests()"><i class="fas fa-play"></i> Tout Tester</button></div>
+        
+        <div class="api-test-grid" id="apiTestGrid">
+            <!-- Pollinations (Gratuit / Sans clé) -->
+            <div class="api-test-card">
+                <div class="card-title"><i class="fas fa-image"></i> Pollinations AI</div>
+                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Génération Image Gratuite</div>
+                <div id="status-pollinations" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
+                <div id="log-pollinations" class="api-log"></div>
+                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testPollinations()">Tester</button>
+            </div>
+
+            <!-- Fal.ai -->
+            <div class="api-test-card">
+                <div class="card-title"><i class="fas fa-bolt"></i> Fal.ai</div>
+                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Flux Schnell / Vidéos</div>
+                <div id="status-fal" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
+                <div id="log-fal" class="api-log"></div>
+                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testFalAI()">Tester</button>
+            </div>
+            <!-- Stability AI -->
+            <div class="api-test-card">
+                <div class="card-title"><i class="fas fa-wand-magic-sparkles"></i> Stability AI</div>
+                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">SDXL / SD3</div>
+                <div id="status-stability" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
+                <div id="log-stability" class="api-log"></div>
+                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testStability()">Tester</button>
+            </div>
+
+            <!-- Replicate -->
+            <div class="api-test-card">
+                <div class="card-title"><i class="fas fa-server"></i> Replicate</div>
+                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Modèles Open Source</div>
+                <div id="status-replicate" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
+                <div id="log-replicate" class="api-log"></div>
+                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testReplicate()">Tester</button>
+            </div>
+            
+             <!-- OpenAI -->
+             <div class="api-test-card">
+                <div class="card-title"><i class="fas fa-brain"></i> OpenAI (DALL-E)</div>
+                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">DALL-E 3</div>
+                <div id="status-openai" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
+                <div id="log-openai" class="api-log"></div>
+                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testOpenAI()">Tester</button>
+            </div>
+        </div>
     </div>
 
     <!-- IMAGES GÉNÉRÉES -->
@@ -184,19 +244,6 @@
         </div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Coût</th><th>Ordre</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="imgModelsTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
-
-    <!-- MODÈLES VIDÉO -->
-    <div class="admin-section" id="sec-models-video">
-        <div class="page-header"><div><div class="page-title">Modèles Vidéo</div><div class="page-subtitle">Gérer les générateurs vidéo</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('video')"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card" id="modelVideoForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Vidéo</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
-            <input type="hidden" id="vidModelId">
-            <div class="form-row"><div class="form-group"><label class="form-label">Nom du modèle</label><input type="text" class="form-input" id="vidModelName" placeholder="ex: Wan 2.6 Flash"></div><div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="vidModelProvider" placeholder="ex: fal.ai"></div></div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Endpoint API</label><input type="text" class="form-input" id="vidModelEndpoint" placeholder="URL endpoint"></div><div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="vidModelCost" value="90"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="vidModelOrder" value="0"></div></div>
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="vidModelActive" checked><span class="toggle-slider"></span></label></div>
-            <button class="btn btn-success" onclick="saveModel('video')"><i class="fas fa-save"></i> Sauvegarder</button>
-        </div>        <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Coût</th><th>Ordre</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="vidModelsTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
-
     <!-- CLÉS API -->
     <div class="admin-section" id="sec-apis">
         <div class="page-header"><div><div class="page-title">Clés API</div><div class="page-subtitle">Configurer les clés API des providers</div></div><button class="btn btn-success btn-sm" onclick="saveApiKeys()"><i class="fas fa-save"></i> Sauvegarder</button></div>
@@ -220,8 +267,6 @@
     <div class="admin-section" id="sec-pricing">
         <div class="page-header"><div><div class="page-title">Points & Pricing</div><div class="page-subtitle">Modifier les coûts et récompenses par tier</div></div><button class="btn btn-success btn-sm" onclick="savePricing()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe"></i> Tier 1 (FR, US, DE, GB...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.image" value="15"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.video" value="90"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t1" data-key="rewards.video" value="30"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t1" data-key="rewards.survey" value="80"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t1" data-key="rewards.sponsor" value="5"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t1" data-key="rewards.streak" value="10"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t1" data-key="rewards.share" value="20"></div><div class="form-group"><label class="form-label">Limite Vidéo/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.video" value="3"></div><div class="form-group"><label class="form-label">Limite Sponsor/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.sponsor" value="5"></div><div class="form-group"><label class="form-label">Limite Partage/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.share" value="1"></div></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-americas"></i> Tier 2 (BR, MX, AR...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.image" value="25"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.video" value="130"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t2" data-key="rewards.video" value="15"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t2" data-key="rewards.survey" value="40"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t2" data-key="rewards.sponsor" value="3"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t2" data-key="rewards.streak" value="5"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t2" data-key="rewards.share" value="10"></div></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-asia"></i> Tier 3 (IN, PH, NG...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.image" value="35"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.video" value="190"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t3" data-key="rewards.video" value="8"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t3" data-key="rewards.survey" value="20"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t3" data-key="rewards.sponsor" value="2"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t3" data-key="rewards.streak" value="3"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t3" data-key="rewards.share" value="5"></div></div></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-gift"></i> Bonus Inscription</div><div class="form-row"><div class="form-group"><label class="form-label">Points offerts</label><input type="number" class="form-input" id="signupBonus" value="50"></div></div></div>
     </div>
 
@@ -233,48 +278,39 @@
         <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Devise</label><select class="form-select" id="shopCurrency"><option value="EUR">EUR (€)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option></select></div><div class="form-group"><label class="form-label">Stripe Key (publique)</label><input type="text" class="form-input" id="stripeKey" placeholder="pk_live_..."></div><div class="form-group"><label class="form-label">PayPal Client ID</label><input type="text" class="form-input" id="paypalClientId" placeholder="Client ID"></div></div></div>
     </div>
 
-    <!-- RÉSEAUX SOCIAUX -->
-    <div class="admin-section" id="sec-social-links">
-        <div class="page-header"><div><div class="page-title">Réseaux Sociaux</div><div class="page-subtitle">Liens affichés dans le footer et le profil</div></div><button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div id="socialLinksContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addSocialField()"><i class="fas fa-plus"></i> Ajouter un réseau</button></div>
-    </div>
-
     <!-- PARAMÈTRES SITE -->
     <div class="admin-section" id="sec-site-settings">
         <div class="page-header"><div><div class="page-title">Paramètres du Site</div><div class="page-subtitle">Personnalisation globale sans toucher au code</div></div><button class="btn btn-success btn-sm" onclick="saveSiteSettings()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Nom du site</label><input type="text" class="form-input" id="settingSiteName" value="Pixora"></div><div class="form-group"><label class="form-label">Logo URL</label><input type="text" class="form-input" id="settingLogoUrl" placeholder="URL logo SVG/PNG"></div><div class="form-group"><label class="form-label">Favicon URL</label><input type="text" class="form-input" id="settingFavicon" placeholder="URL favicon"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Couleur Primaire</label><input type="color" class="form-input" id="settingColorPrimary" value="#8B5CF6" style="height:40px"></div><div class="form-group"><label class="form-label">Couleur Secondaire</label><input type="color" class="form-input" id="settingColorSecondary" value="#EC4899" style="height:40px"></div><div class="form-group"><label class="form-label">Langue par défaut</label><select class="form-select" id="settingLang"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option></select></div></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Texte Hero Section</label><textarea class="form-textarea" id="settingHeroText">Générez des images et vidéos IA de haute qualité. Gagnez des points, créez sans limite.</textarea></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Footer Copyright</label><input type="text" class="form-input" id="settingCopyright" value="© 2026 Pixora. Tous droits réservés."></div><div class="form-group"><label class="form-label">Mode Maintenance</label><label class="toggle"><input type="checkbox" id="settingMaintenance"><span class="toggle-slider"></span></label><span style="font-size:0.75rem;color:var(--muted);margin-left:0.5rem">Affiche un bandeau sur toutes les pages</span></div></div>
+        <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Nom du site</label><input type="text" class="form-input" id="settingSiteName" value="Pixora"></div><div class="form-group"><label class="form-label">Logo URL</label><input type="text" class="form-input" id="settingLogoUrl" placeholder="URL logo SVG/PNG"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Couleur Primaire</label><input type="color" class="form-input" id="settingColorPrimary" value="#8B5CF6" style="height:40px"></div><div class="form-group"><label class="form-label">Couleur Secondaire</label><input type="color" class="form-input" id="settingColorSecondary" value="#EC4899" style="height:40px"></div></div><div class="form-group"><label class="form-label">Mode Maintenance</label><label class="toggle"><input type="checkbox" id="settingMaintenance"><span class="toggle-slider"></span></label></div></div>
     </div>
+
     <!-- SEO -->
     <div class="admin-section" id="sec-seo">
         <div class="page-header"><div><div class="page-title">SEO & Métadonnées</div><div class="page-subtitle">Optimisation pour les moteurs de recherche</div></div><button class="btn btn-success btn-sm" onclick="saveSeo()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title Tag</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement avec Pixora. Gagnez des points en regardant des publicités.</textarea></div><div class="form-row"><div class="form-group"><label class="form-label">OG Image URL</label><input type="text" class="form-input" id="seoOgImage" placeholder="URL image partage"></div><div class="form-group"><label class="form-label">Canonical URL</label><input type="text" class="form-input" id="seoCanonical" value="https://pixora-gold-eight.vercel.app/"></div></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Robots.txt</label><textarea class="form-textarea" id="seoRobots">User-agent: *\nAllow: /\nSitemap: https://pixora-gold-eight.vercel.app/sitemap.xml</textarea></div></div>
+        <div class="card"><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title Tag</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement avec Pixora.</textarea></div></div>
     </div>
 
     <!-- CONTENU LÉGAL -->
     <div class="admin-section" id="sec-legal">
-        <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité, Mentions Légales</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-file-contract"></i> Conditions Générales d'Utilisation</div><textarea class="form-textarea" id="legalCgu" style="min-height:200px"></textarea></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Politique de Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:200px"></textarea></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
+        <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-file-contract"></i> CGU</div><textarea class="form-textarea" id="legalCgu" style="min-height:150px"></textarea></div>
+        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:150px"></textarea></div>
     </div>
 
     <!-- UTILISATEURS -->
     <div class="admin-section" id="sec-users">
-        <div class="page-header"><div><div class="page-title">Utilisateurs</div><div class="page-subtitle">Gérer les comptes utilisateurs</div></div><div style="display:flex;gap:0.5rem"><input type="text" class="form-input" placeholder="Rechercher email/pseudo..." id="userSearch" style="width:250px" oninput="searchUsers()"><button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i></button></div></div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Pseudo</th><th>Email</th><th>Points</th><th>Streak</th><th>Dernière connexion</th><th>Actions</th></tr></thead><tbody id="usersTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
+        <div class="page-header"><div><div class="page-title">Utilisateurs</div><div class="page-subtitle">Gérer les comptes utilisateurs</div></div><div style="display:flex;gap:0.5rem"><input type="text" class="form-input" placeholder="Rechercher email..." id="userSearch" style="width:250px" oninput="searchUsers()"><button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i></button></div></div>
+        <div class="card"><div class="table-container"><table><thead><tr><th>Pseudo</th><th>Email</th><th>Points</th><th>Streak</th><th>Actions</th></tr></thead><tbody id="usersTable"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
     <!-- LOGS -->
     <div class="admin-section" id="sec-logs">
-        <div class="page-header"><div><div class="page-title">Logs Système</div><div class="page-subtitle">Erreurs, performances et activité</div></div><button class="btn btn-outline btn-sm" onclick="loadLogs()"><i class="fas fa-sync"></i> Actualiser</button></div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Date</th><th>Type</th><th>Message</th><th>Détails</th></tr></thead><tbody id="logsTable"><tr><td colspan="4" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
+        <div class="page-header"><div><div class="page-title">Logs Système</div><div class="page-subtitle">Erreurs et activité</div></div><button class="btn btn-outline btn-sm" onclick="loadLogs()"><i class="fas fa-sync"></i> Actualiser</button></div>
+        <div class="card"><div class="table-container"><table><thead><tr><th>Date</th><th>Type</th><th>Message</th></tr></thead><tbody id="logsTable"><tr><td colspan="3" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
     <!-- SÉCURITÉ -->
     <div class="admin-section" id="sec-security">
-        <div class="page-header"><div><div class="page-title">Sécurité Admin</div><div class="page-subtitle">Protection de l'accès administrateur</div></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-key"></i> Changer le mot de passe</div><div class="form-row"><div class="form-group"><label class="form-label">Nouveau mot de passe</label><input type="password" class="form-input" id="newAdminPass"></div><div class="form-group"><label class="form-label">Confirmer</label><input type="password" class="form-input" id="confirmAdminPass"></div></div><button class="btn btn-primary btn-sm" onclick="changeAdminPassword()"><i class="fas fa-save"></i> Modifier</button></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-history"></i> Logs Connexions Admin</div><div class="table-container"><table><thead><tr><th>Date</th><th>Email</th><th>IP</th><th>Statut</th></tr></thead><tbody id="adminLoginLogs"><tr><td colspan="4" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
+        <div class="page-header"><div><div class="page-title">Sécurité Admin</div></div></div>
         <div class="card"><button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Se déconnecter</button></div>
     </div>
 
@@ -282,7 +318,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// ⚠️ IMPORTANT: Ces clés DOIVENT être identiques à celles de index.html
+// ⚠️ CLÉS SUPABASE IDENTIQUES AU FRONT
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -290,80 +326,71 @@ var BUCKET = 'pixora-gallery';
 var notifications = [];
 var unreadCount = 0;
 var ADMIN_EMAIL = '';
+var API_KEYS = {};
 
 // === AUTH ADMIN ROBUSTE ===
-async function handleAdminLogin(e) {    e.preventDefault();
+async function handleAdminLogin(e) {
+    e.preventDefault();
     var email = document.getElementById('adminEmail').value.trim();
     var pass = document.getElementById('adminPass').value;
     var btn = document.getElementById('btnAdminLogin');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
     try {
-        // 1. Récupérer l'email autorisé depuis la base (gestion propre du JSON string)
         var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
         var rawValue = adminEmailResult.data ? adminEmailResult.data.value : '"leonard@pixora.com"';
         var allowedEmail = String(rawValue).replace(/^"|"$/g, '');
         
-        // 2. Authentification Supabase
-        var result = await db.auth.signInWithPassword({ email: email, password: pass });
-        if (result.error) throw new Error(result.error.message);
+        var result = await db.auth.signInWithPassword({ email: email, password: pass });        if (result.error) throw new Error(result.error.message);
         if (!result.data?.user) throw new Error('Utilisateur non trouvé');
-        
-        // 3. Vérification stricte de l'email admin
-        if (email !== allowedEmail) throw new Error('Email non autorisé pour accès admin');
+        if (email !== allowedEmail) throw new Error('Email non autorisé');
 
         ADMIN_EMAIL = email;
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('adminEmailDisplay').textContent = email;
         initAdmin();
     } catch (err) {
-        console.error('Admin login error:', err);
         alert('❌ ' + (err.message || 'Identifiants incorrects'));
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder';
     }
 }
 
-function logoutAdmin() {
-    db.auth.signOut();
-    location.reload();
-}
+function logoutAdmin() { db.auth.signOut(); location.reload(); }
 
 // === NAVIGATION ===
 function showSection(name) {
     document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
     document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
     document.getElementById('sec-' + name).classList.add('active');
-    var navItems = document.querySelectorAll('.nav-item');
-    var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'gallery-admin':5, 'ad-networks':7, pricing:8, 'shop-config':9, 'social-links':11, 'site-settings':12, seo:13, legal:14, users:16, logs:17, security:18 };
-    if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');
     
-    // Chargement différé des données pour éviter de bloquer l'UI
+    // Highlight nav
+    var map = { dashboard:0, 'models-image':2, apis:3, 'api-tester':4, 'gallery-admin':5, 'ad-networks':7, pricing:8, 'shop-config':9, 'site-settings':11, seo:12, legal:13, users:15, logs:16, security:17 };
+    var navItems = document.querySelectorAll('.nav-item');
+    if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');
+
+    // Load data
     setTimeout(function() {
-        var loaders = { 
-            dashboard: loadDashboard,             'models-image': function(){loadModels('image')}, 
-            'models-video': function(){loadModels('video')}, 
-            apis: loadApiKeys, 
-            'gallery-admin': loadGalleryAdmin, 
-            'ad-networks': loadAdNetworks, 
-            pricing: loadPricing, 
-            'shop-config': loadShopConfig, 
-            'social-links': loadSocialLinks, 
-            'site-settings': loadSiteSettings, 
-            seo: loadSeo, 
-            legal: loadLegal, 
-            users: loadUsers, 
-            logs: loadLogs 
-        };
-        if (loaders[name]) try { loaders[name](); } catch(err) { console.error('Section load error:', err); }
+        if (name === 'dashboard') loadDashboard();
+        if (name === 'models-image') loadModels('image');
+        if (name === 'apis') loadApiKeys();
+        if (name === 'api-tester') loadApiKeysForTest();
+        if (name === 'gallery-admin') loadGalleryAdmin();
+        if (name === 'ad-networks') loadAdNetworks();
+        if (name === 'pricing') loadPricing();
+        if (name === 'shop-config') loadShopConfig();
+        if (name === 'site-settings') loadSiteSettings();
+        if (name === 'seo') loadSeo();
+        if (name === 'legal') loadLegal();
+        if (name === 'users') loadUsers();
+        if (name === 'logs') loadLogs();
     }, 50);
 }
 
 // === NOTIFICATIONS ===
 function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('open'); }
 function addNotification(type, message) {
-    notifications.unshift({ type: type, message: message, time: new Date(), read: false });
-    unreadCount++;
+    notifications.unshift({ type: type, message: message, time: new Date(), read: false });    unreadCount++;
     updateNotifUI();
 }
 function updateNotifUI() {
@@ -390,7 +417,8 @@ async function loadDashboard() {
         document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
 
         var txResult = await db.from('transactions').select('amount').eq('type', 'earned');
-        var totalPoints = 0;        if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; });
+        var totalPoints = 0;
+        if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; });
         document.getElementById('dashPointsDistributed').textContent = totalPoints.toLocaleString();
 
         var genResult = await db.from('user_data').select('total_generated');
@@ -408,185 +436,232 @@ async function loadDashboard() {
     } catch (err) { console.error('Dashboard error:', err); }
 }
 
+// === 🧪 API TESTER FUNCTIONS ===
+async function loadApiKeysForTest() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'api_keys').single();        API_KEYS = result.data ? result.data.value : {};
+    } catch (err) { console.error('Load API keys error:', err); }
+}
+
+function setApiStatus(provider, status, msg) {
+    var el = document.getElementById('status-' + provider);
+    var log = document.getElementById('log-' + provider);
+    el.className = 'api-status ' + status;
+    if (status === 'ok') el.innerHTML = '<i class="fas fa-check-circle"></i> Connecté';
+    if (status === 'ko') el.innerHTML = '<i class="fas fa-times-circle"></i> Erreur';
+    if (status === 'wait') el.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Test...';
+    if (msg) log.textContent = msg;
+}
+
+async function testPollinations() {
+    setApiStatus('pollinations', 'wait', 'Envoi requête test...');
+    try {
+        var start = Date.now();
+        var res = await fetch('https://image.pollinations.ai/prompt/test?width=64&height=64&nologo=true');
+        var time = Date.now() - start;
+        if (res.ok) {
+            setApiStatus('pollinations', 'ok', '✅ OK (' + time + 'ms) - Gratuit');
+        } else {
+            setApiStatus('pollinations', 'ko', '❌ HTTP ' + res.status);
+        }
+    } catch (e) { setApiStatus('pollinations', 'ko', '❌ ' + e.message); }
+}
+
+async function testFalAI() {
+    var key = API_KEYS['fal.ai'];
+    if (!key) { setApiStatus('fal', 'ko', '❌ Clé manquante dans onglet "Clés API"'); return; }
+    setApiStatus('fal', 'wait', 'Test endpoint Flux...');
+    try {
+        var res = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
+            method: 'POST',
+            headers: { 'Authorization': 'Key ' + key, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: 'test', image_size: 'square_hd' })
+        });
+        if (res.ok || res.status === 200) {
+            setApiStatus('fal', 'ok', '✅ Clé valide - Endpoint accessible');
+        } else {
+            var err = await res.text();
+            setApiStatus('fal', 'ko', '❌ ' + res.status + ': ' + err.substring(0, 100));
+        }
+    } catch (e) { setApiStatus('fal', 'ko', '❌ ' + e.message); }
+}
+
+async function testStability() {
+    var key = API_KEYS['stability'];
+    if (!key) { setApiStatus('stability', 'ko', '❌ Clé manquante'); return; }    setApiStatus('stability', 'wait', 'Test account balance...');
+    try {
+        var res = await fetch('https://api.stability.ai/v1/user/balance', {
+            headers: { 'Authorization': 'Bearer ' + key }
+        });
+        if (res.ok) {
+            var data = await res.json();
+            setApiStatus('stability', 'ok', '✅ Crédits: ' + data.credits);
+        } else {
+            setApiStatus('stability', 'ko', '❌ ' + res.status + ' - Clé invalide?');
+        }
+    } catch (e) { setApiStatus('stability', 'ko', '❌ ' + e.message); }
+}
+
+async function testReplicate() {
+    var key = API_KEYS['replicate'];
+    if (!key) { setApiStatus('replicate', 'ko', '❌ Clé manquante'); return; }
+    setApiStatus('replicate', 'wait', 'Test models list...');
+    try {
+        var res = await fetch('https://api.replicate.com/v1/models', {
+            headers: { 'Authorization': 'Token ' + key }
+        });
+        if (res.ok) {
+            setApiStatus('replicate', 'ok', '✅ Clé valide - API accessible');
+        } else {
+            setApiStatus('replicate', 'ko', '❌ ' + res.status + ' - Vérifie ta clé');
+        }
+    } catch (e) { setApiStatus('replicate', 'ko', '❌ ' + e.message); }
+}
+
+async function testOpenAI() {
+    var key = API_KEYS['openai'];
+    if (!key) { setApiStatus('openai', 'ko', '❌ Clé manquante'); return; }
+    setApiStatus('openai', 'wait', 'Test models list...');
+    try {
+        var res = await fetch('https://api.openai.com/v1/models', {
+            headers: { 'Authorization': 'Bearer ' + key }
+        });
+        if (res.ok) {
+            setApiStatus('openai', 'ok', '✅ Clé valide - DALL-E accessible');
+        } else {
+            setApiStatus('openai', 'ko', '❌ ' + res.status + ' - Clé invalide?');
+        }
+    } catch (e) { setApiStatus('openai', 'ko', '❌ ' + e.message); }
+}
+
+function runAllApiTests() {
+    testPollinations();
+    testFalAI();
+    testStability();    testReplicate();
+    testOpenAI();
+}
+
 // === GALERIE ADMIN ===
 async function loadGalleryAdmin() {
     var grid = document.getElementById('galleryGrid');
-    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim);grid-column:1/-1"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:0.5rem"></i><p>Chargement...</p></div>';
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim);grid-column:1/-1"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>';
     try {
         var result = await db.storage.from(BUCKET).list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
         if (result.error) throw result.error;
         if (!result.data || result.data.length === 0) {
-            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim);grid-column:1/-1"><i class="fas fa-images" style="font-size:2rem;opacity:0.3;margin-bottom:0.5rem"></i><p>Aucune image dans le bucket</p></div>';
+            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim);grid-column:1/-1"><i class="fas fa-images" style="opacity:0.3"></i><p>Aucune image</p></div>';
             document.getElementById('galleryCount').textContent = '0';
             return;
         }
         document.getElementById('galleryCount').textContent = result.data.length;
         grid.innerHTML = '';
         result.data.forEach(function(file) {
-            var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
-            var url = urlData.data.publicUrl;
-            var isVideo = file.name.indexOf('_video_') !== -1;
+            var url = db.storage.from(BUCKET).getPublicUrl(file.name).data.publicUrl;
             var div = document.createElement('div');
             div.className = 'gallery-item';
-            if (isVideo) {
-                div.innerHTML = '<video src="' + url + '" muted loop playsinline style="width:100%;height:100%;object-fit:cover"></video><div class="overlay"><button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteGalleryFile(\'' + file.name + '\')"><i class="fas fa-trash"></i></button></div>';
-                var vid = div.querySelector('video');
-                vid.onmouseenter = function() { vid.play(); };
-                vid.onmouseleave = function() { vid.pause(); vid.currentTime = 0; };
-            } else {
-                div.innerHTML = '<img src="' + url + '" alt="' + file.name + '" loading="lazy"><div class="overlay"><a href="' + url + '" target="_blank" class="btn btn-sm btn-outline" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i></a><button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteGalleryFile(\'' + file.name + '\')"><i class="fas fa-trash"></i></button></div>';
-            }
+            div.innerHTML = '<img src="' + url + '" loading="lazy"><div class="overlay"><button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteGalleryFile(\'' + file.name + '\')"><i class="fas fa-trash"></i></button></div>';
             grid.appendChild(div);
         });
-    } catch (err) {
-        console.error('Gallery admin error:', err);        grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger);grid-column:1/-1"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:0.5rem"></i><p>Erreur Storage: ' + err.message + '</p></div>';
-    }
+    } catch (err) { grid.innerHTML = '<div style="color:var(--danger);grid-column:1/-1;text-align:center">Erreur Storage: ' + err.message + '</div>'; }
 }
 
 async function deleteGalleryFile(fileName) {
-    if (!confirm('Supprimer définitivement ' + fileName + ' ?')) return;
-    try {
-        await db.storage.from(BUCKET).remove([fileName]);
-        addNotification('config', 'Fichier supprimé: ' + fileName);
-        loadGalleryAdmin();
-    } catch (err) { alert('Erreur suppression: ' + err.message); }
+    if (!confirm('Supprimer ' + fileName + ' ?')) return;
+    await db.storage.from(BUCKET).remove([fileName]);
+    loadGalleryAdmin();
 }
 
 // === MODÈLES ===
 async function loadModels(type) {
     try {
         var result = await db.from('generator_models').select('*').eq('type', type).order('sort_order');
-        var tbody = document.getElementById(type === 'image' ? 'imgModelsTable' : 'vidModelsTable');
+        var tbody = document.getElementById('imgModelsTable');
         if (result.data && result.data.length) {
             tbody.innerHTML = result.data.map(function(m) {
-                return '<tr><td>' + m.name + '</td><td>' + m.provider + '</td><td style="font-family:var(--mono);color:var(--gold)">' + m.cost_points + '</td><td>' + m.sort_order + '</td><td>' + (m.is_active ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td><td><button class="btn btn-sm btn-outline" onclick="editModel(\'' + type + '\',\'' + m.id + '\')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteModel(\'' + m.id + '\',\'' + type + '\')"><i class="fas fa-trash"></i></button></td></tr>';
+                return '<tr><td>' + m.name + '</td><td>' + m.provider + '</td><td style="color:var(--gold)">' + m.cost_points + '</td><td>' + m.sort_order + '</td><td>' + (m.is_active ? '✅' : '❌') + '</td><td><button class="btn btn-sm btn-outline" onclick="editModel(\'' + type + '\',\'' + m.id + '\')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteModel(\'' + m.id + '\',\'' + type + '\')"><i class="fas fa-trash"></i></button></td></tr>';
             }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle ' + type + ' configuré</td></tr>'; }
-    } catch (err) { console.error('Load models error:', err); }
+        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle</td></tr>'; }
+    } catch (err) { console.error(err); }
 }
 
-function openModelForm(type) {
-    document.getElementById(type === 'image' ? 'modelImageForm' : 'modelVideoForm').style.display = 'block';
-    document.getElementById(type === 'image' ? 'imgModelId' : 'vidModelId').value = '';
-    document.getElementById(type === 'image' ? 'imgModelName' : 'vidModelName').value = '';
-    document.getElementById(type === 'image' ? 'imgModelProvider' : 'vidModelProvider').value = '';
-    document.getElementById(type === 'image' ? 'imgModelEndpoint' : 'vidModelEndpoint').value = '';
-    document.getElementById(type === 'image' ? 'imgModelCost' : 'vidModelCost').value = type === 'image' ? 15 : 90;
-    document.getElementById(type === 'image' ? 'imgModelOrder' : 'vidModelOrder').value = 0;
-    document.getElementById(type === 'image' ? 'imgModelActive' : 'vidModelActive').checked = true;
-}
-
-function closeModelForm() {
-    document.getElementById('modelImageForm').style.display = 'none';
-    document.getElementById('modelVideoForm').style.display = 'none';
-}
-
+function openModelForm(type) { document.getElementById('modelImageForm').style.display = 'block'; }
+function closeModelForm() { document.getElementById('modelImageForm').style.display = 'none'; }
 async function editModel(type, id) {
-    try {
-        var result = await db.from('generator_models').select('*').eq('id', id).single();
-        if (!result.data) return;
-        var m = result.data;
-        var prefix = type === 'image' ? 'img' : 'vid';
-        document.getElementById(prefix + 'ModelForm').style.display = 'block';
-        document.getElementById(prefix + 'ModelId').value = m.id;        document.getElementById(prefix + 'ModelName').value = m.name;
-        document.getElementById(prefix + 'ModelProvider').value = m.provider;
-        document.getElementById(prefix + 'ModelEndpoint').value = m.api_endpoint || '';
-        document.getElementById(prefix + 'ModelCost').value = m.cost_points;
-        document.getElementById(prefix + 'ModelOrder').value = m.sort_order;
-        document.getElementById(prefix + 'ModelActive').checked = m.is_active;
-    } catch (err) { console.error('Edit model error:', err); }
+    var r = await db.from('generator_models').select('*').eq('id', id).single();
+    if (!r.data) return;
+    document.getElementById('modelImageForm').style.display = 'block';
+    document.getElementById('imgModelId').value = r.data.id;
+    document.getElementById('imgModelName').value = r.data.name;
+    document.getElementById('imgModelProvider').value = r.data.provider;
+    document.getElementById('imgModelEndpoint').value = r.data.api_endpoint || '';
+    document.getElementById('imgModelCost').value = r.data.cost_points;
+    document.getElementById('imgModelOrder').value = r.data.sort_order;
+    document.getElementById('imgModelActive').checked = r.data.is_active;
 }
 
 async function saveModel(type) {
-    try {
-        var prefix = type === 'image' ? 'img' : 'vid';
-        var id = document.getElementById(prefix + 'ModelId').value;
-        var data = {
-            name: document.getElementById(prefix + 'ModelName').value.trim(),
-            type: type,
-            provider: document.getElementById(prefix + 'ModelProvider').value.trim(),
-            api_endpoint: document.getElementById(prefix + 'ModelEndpoint').value.trim(),
-            cost_points: parseInt(document.getElementById(prefix + 'ModelCost').value) || 15,
-            sort_order: parseInt(document.getElementById(prefix + 'ModelOrder').value) || 0,
-            is_active: document.getElementById(prefix + 'ModelActive').checked
-        };
-        if (!data.name || !data.provider) { alert('Nom et Provider requis'); return; }
-        if (id) {
-            await db.from('generator_models').update(data).eq('id', id);
-        } else {
-            await db.from('generator_models').insert(data);
-        }
-        closeModelForm();
-        loadModels(type);
-        addNotification('config', 'Modèle ' + type + ' "' + data.name + '" sauvegardé');
-    } catch (err) { alert('Erreur sauvegarde: ' + err.message); }
+    var id = document.getElementById('imgModelId').value;
+    var data = {
+        name: document.getElementById('imgModelName').value.trim(),
+        type: type,
+        provider: document.getElementById('imgModelProvider').value.trim(),
+        api_endpoint: document.getElementById('imgModelEndpoint').value.trim(),
+        cost_points: parseInt(document.getElementById('imgModelCost').value) || 15,
+        sort_order: parseInt(document.getElementById('imgModelOrder').value) || 0,
+        is_active: document.getElementById('imgModelActive').checked
+    };
+    if (id) await db.from('generator_models').update(data).eq('id', id);
+    else await db.from('generator_models').insert(data);
+    closeModelForm();
+    loadModels(type);
 }
 
 async function deleteModel(id, type) {
-    if (!confirm('Supprimer ce modèle ?')) return;
-    try {
-        await db.from('generator_models').delete().eq('id', id);
-        loadModels(type);
-        addNotification('config', 'Modèle supprimé');
-    } catch (err) { alert('Erreur suppression: ' + err.message); }
+    if (!confirm('Supprimer ?')) return;
+    await db.from('generator_models').delete().eq('id', id);
+    loadModels(type);
 }
 
 // === CLÉS API ===
 async function loadApiKeys() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'api_keys').single();
-        var keys = result.data ? result.data.value : {};
-        var providers = ['fal.ai', 'replicate', 'stability', 'kling', 'tencent', 'runway', 'pika', 'openai'];
-        var html = '<div class="form-row">';        providers.forEach(function(p) {
-            html += '<div class="form-group"><label class="form-label">' + p + '</label><input type="password" class="form-input api-key-input" data-provider="' + p + '" value="' + (keys[p] || '') + '" placeholder="Clé API ' + p + '"></div>';
-        });
-        html += '</div>';
-        document.getElementById('apiKeysContainer').innerHTML = html;
-    } catch (err) { console.error('Load API keys error:', err); }
+    var result = await db.from('admin_config').select('*').eq('key', 'api_keys').single();
+    var keys = result.data ? result.data.value : {};
+    var providers = ['fal.ai', 'replicate', 'stability', 'kling', 'runway', 'pika', 'openai'];
+    var html = '<div class="form-row">';
+    providers.forEach(function(p) {
+        html += '<div class="form-group"><label class="form-label">' + p + '</label><input type="password" class="form-input api-key-input" data-provider="' + p + '" value="' + (keys[p] || '') + '" placeholder="Clé API"></div>';
+    });
+    html += '</div>';
+    document.getElementById('apiKeysContainer').innerHTML = html;
 }
 
-async function saveApiKeys() {
-    try {
-        var keys = {};
-        document.querySelectorAll('.api-key-input').forEach(function(input) {
-            if (input.value.trim()) keys[input.dataset.provider] = input.value.trim();
-        });
-        await db.from('admin_config').upsert({ key: 'api_keys', value: keys, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        addNotification('config', 'Clés API sauvegardées');
-        alert('✅ Clés API sauvegardées !');
-    } catch (err) { alert('Erreur: ' + err.message); }
+async function saveApiKeys() {    var keys = {};
+    document.querySelectorAll('.api-key-input').forEach(function(input) {
+        if (input.value.trim()) keys[input.dataset.provider] = input.value.trim();
+    });
+    await db.from('admin_config').upsert({ key: 'api_keys', value: keys, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    alert('✅ Clés API sauvegardées !');
 }
 
 // === RÉGIES PUB ===
 async function loadAdNetworks() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'ad_networks').single();
-        var networks = result.data ? result.data.value : [];
-        var tbody = document.getElementById('adNetworksTable');
-        if (networks.length) {
-            tbody.innerHTML = networks.map(function(n, i) {
-                return '<tr><td>' + n.name + '</td><td>' + n.type + '</td><td style="font-family:var(--mono);color:var(--gold)">' + n.points + '</td><td>' + n.order + '</td><td>' + (n.active ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td><td><button class="btn btn-sm btn-outline" onclick="editAdNetwork(' + i + ')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteAdNetwork(' + i + ')"><i class="fas fa-trash"></i></button></td></tr>';
-            }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie configurée</td></tr>'; }
-        window._adNetworks = networks;
-    } catch (err) { console.error('Load ad networks error:', err); }
+    var result = await db.from('admin_config').select('*').eq('key', 'ad_networks').single();
+    var networks = result.data ? result.data.value : [];
+    var tbody = document.getElementById('adNetworksTable');
+    if (networks.length) {
+        tbody.innerHTML = networks.map(function(n, i) {
+            return '<tr><td>' + n.name + '</td><td>' + n.type + '</td><td style="color:var(--gold)">' + n.points + '</td><td>' + n.order + '</td><td>' + (n.active ? '✅' : '❌') + '</td><td><button class="btn btn-sm btn-outline" onclick="editAdNetwork(' + i + ')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteAdNetwork(' + i + ')"><i class="fas fa-trash"></i></button></td></tr>';
+        }).join('');
+    } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie</td></tr>'; }
+    window._adNetworks = networks;
 }
 
-function openAdNetworkForm() {
-    document.getElementById('adNetworkForm').style.display = 'block';
-    document.getElementById('adNetId').value = '';
-    document.getElementById('adNetName').value = '';
-    document.getElementById('adNetLink').value = '';
-    document.getElementById('adNetPoints').value = 5;
-    document.getElementById('adNetOrder').value = 0;
-    document.getElementById('adNetActive').checked = true;
-}
-
+function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display = 'block'; }
 function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display = 'none'; }
 
 function editAdNetwork(index) {
     var n = window._adNetworks[index];
-    if (!n) return;    document.getElementById('adNetworkForm').style.display = 'block';
+    document.getElementById('adNetworkForm').style.display = 'block';
     document.getElementById('adNetId').value = index;
     document.getElementById('adNetName').value = n.name;
     document.getElementById('adNetType').value = n.type;
@@ -597,278 +672,196 @@ function editAdNetwork(index) {
 }
 
 async function saveAdNetwork() {
-    try {
-        var index = document.getElementById('adNetId').value;
-        var data = {
-            name: document.getElementById('adNetName').value.trim(),
-            type: document.getElementById('adNetType').value,
-            link: document.getElementById('adNetLink').value.trim(),
-            points: parseInt(document.getElementById('adNetPoints').value) || 0,
-            order: parseInt(document.getElementById('adNetOrder').value) || 0,
-            active: document.getElementById('adNetActive').checked
-        };
-        if (!data.name) { alert('Nom requis'); return; }
-        var networks = window._adNetworks || [];
-        if (index !== '') { networks[parseInt(index)] = data; } else { networks.push(data); }
-        networks.sort(function(a, b) { return a.order - b.order; });
-        await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        closeAdNetworkForm();
-        loadAdNetworks();
-        addNotification('config', 'Régie "' + data.name + '" sauvegardée');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    var index = document.getElementById('adNetId').value;
+    var data = {
+        name: document.getElementById('adNetName').value.trim(),
+        type: document.getElementById('adNetType').value,
+        link: document.getElementById('adNetLink').value.trim(),
+        points: parseInt(document.getElementById('adNetPoints').value) || 0,
+        order: parseInt(document.getElementById('adNetOrder').value) || 0,
+        active: document.getElementById('adNetActive').checked
+    };
+    var networks = window._adNetworks || [];
+    if (index !== '') networks[parseInt(index)] = data; else networks.push(data);
+    await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    closeAdNetworkForm();    loadAdNetworks();
 }
 
 async function deleteAdNetwork(index) {
-    if (!confirm('Supprimer cette régie ?')) return;
-    try {
-        var networks = window._adNetworks || [];
-        networks.splice(index, 1);
-        await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        loadAdNetworks();
-        addNotification('config', 'Régie supprimée');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    if (!confirm('Supprimer ?')) return;
+    var networks = window._adNetworks || [];
+    networks.splice(index, 1);
+    await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    loadAdNetworks();
 }
 
-// === PRICING (MERGESAFE) ===
+// === PRICING ===
 async function loadPricing() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'tiers').single();
-        if (result.data && result.data.value) {
-            var tiers = result.data.value;
-            [1, 2, 3].forEach(function(t) {                var tier = tiers[t];
-                if (!tier) return;
-                var cls = '.pricing-t' + t;
-                document.querySelectorAll(cls).forEach(function(input) {
-                    var parts = input.dataset.key.split('.');
-                    if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]];
-                });
+    var result = await db.from('admin_config').select('*').eq('key', 'tiers').single();
+    if (result.data && result.data.value) {
+        var tiers = result.data.value;
+        [1, 2, 3].forEach(function(t) {
+            var tier = tiers[t]; if (!tier) return;
+            document.querySelectorAll('.pricing-t' + t).forEach(function(input) {
+                var parts = input.dataset.key.split('.');
+                if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]];
             });
-        }
-        var bonusResult = await db.from('admin_config').select('*').eq('key', 'signup_bonus').single();
-        if (bonusResult.data) document.getElementById('signupBonus').value = bonusResult.data.value;
-    } catch (err) { console.error('Load pricing error:', err); }
+        });
+    }
+    var bonus = await db.from('admin_config').select('*').eq('key', 'signup_bonus').single();
+    if (bonus.data) document.getElementById('signupBonus').value = bonus.data.value;
 }
 
 async function savePricing() {
-    try {
-        var existingResult = await db.from('admin_config').select('*').eq('key', 'tiers').single();
-        var tiers = existingResult.data ? existingResult.data.value : {};
-
-        [1, 2, 3].forEach(function(t) {
-            if (!tiers[t]) tiers[t] = { costs: {}, rewards: {}, limits: {} };
-            document.querySelectorAll('.pricing-t' + t).forEach(function(input) {
-                var parts = input.dataset.key.split('.');
-                if (!tiers[t][parts[0]]) tiers[t][parts[0]] = {};
-                tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0;
-            });
+    var existing = await db.from('admin_config').select('*').eq('key', 'tiers').single();
+    var tiers = existing.data ? existing.data.value : {};
+    [1, 2, 3].forEach(function(t) {
+        if (!tiers[t]) tiers[t] = { costs: {}, rewards: {}, limits: {} };
+        document.querySelectorAll('.pricing-t' + t).forEach(function(input) {
+            var parts = input.dataset.key.split('.');
+            if (!tiers[t][parts[0]]) tiers[t][parts[0]] = {};
+            tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0;
         });
-
-        await db.from('admin_config').upsert({ key: 'tiers', value: tiers, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        await db.from('admin_config').upsert({ key: 'signup_bonus', value: parseInt(document.getElementById('signupBonus').value) || 50, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        addNotification('config', 'Pricing sauvegardé');
-        alert('✅ Pricing sauvegardé !');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    });
+    await db.from('admin_config').upsert({ key: 'tiers', value: tiers, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    await db.from('admin_config').upsert({ key: 'signup_bonus', value: parseInt(document.getElementById('signupBonus').value) || 50, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    alert('✅ Pricing sauvegardé !');
 }
 
 // === SHOP CONFIG ===
 async function loadShopConfig() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'shop_config').single();
-        var config = result.data ? result.data.value : { packs: [], subs: [], currency: 'EUR', stripe_key: '', paypal_client_id: '' };
-        document.getElementById('shopCurrency').value = config.currency || 'EUR';
-        document.getElementById('stripeKey').value = config.stripe_key || '';
-        document.getElementById('paypalClientId').value = config.paypal_client_id || '';
-        var packsHtml = '';
-        (config.packs || []).forEach(function(p) {
-            packsHtml += '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="' + p.name + '"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="' + p.points + '"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="' + p.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-        });
-        document.getElementById('packsContainer').innerHTML = packsHtml || '<div style="color:var(--dim);font-size:0.85rem">Aucun pack</div>';
-        var subsHtml = '';
-        (config.subs || []).forEach(function(s) {            subsHtml += '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="' + s.name + '"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="' + s.points + '"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="' + s.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-        });
-        document.getElementById('subsContainer').innerHTML = subsHtml || '<div style="color:var(--dim);font-size:0.85rem">Aucun abonnement</div>';
-    } catch (err) { console.error('Load shop config error:', err); }
+    var result = await db.from('admin_config').select('*').eq('key', 'shop_config').single();
+    var config = result.data ? result.data.value : { packs: [], subs: [], currency: 'EUR' };
+    document.getElementById('shopCurrency').value = config.currency || 'EUR';
+    document.getElementById('stripeKey').value = config.stripe_key || '';    document.getElementById('paypalClientId').value = config.paypal_client_id || '';
+    
+    var packsHtml = '';
+    (config.packs || []).forEach(function(p) {
+        packsHtml += '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="' + p.name + '"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="' + p.points + '"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="' + p.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+    });
+    document.getElementById('packsContainer').innerHTML = packsHtml || '<div style="color:var(--dim)">Aucun pack</div>';
+
+    var subsHtml = '';
+    (config.subs || []).forEach(function(s) {
+        subsHtml += '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="' + s.name + '"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="' + s.points + '"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="' + s.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
+    });
+    document.getElementById('subsContainer').innerHTML = subsHtml || '<div style="color:var(--dim)">Aucun abonnement</div>';
 }
 
 function addPackField() {
-    var html = '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Pack Name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-    document.getElementById('packsContainer').insertAdjacentHTML('beforeend', html);
+    document.getElementById('packsContainer').insertAdjacentHTML('beforeend', '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>');
 }
 
 function addSubField() {
-    var html = '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Plan Name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-    document.getElementById('subsContainer').insertAdjacentHTML('beforeend', html);
+    document.getElementById('subsContainer').insertAdjacentHTML('beforeend', '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>');
 }
 
 async function saveShopConfig() {
-    try {
-        var packs = [];
-        document.querySelectorAll('.pack-row').forEach(function(row) {
-            var name = row.querySelector('.pack-name').value.trim();
-            if (name) packs.push({ name: name, points: parseInt(row.querySelector('.pack-points').value) || 0, price: parseFloat(row.querySelector('.pack-price').value) || 0 });
-        });
-        var subs = [];
-        document.querySelectorAll('.sub-row').forEach(function(row) {
-            var name = row.querySelector('.sub-name').value.trim();
-            if (name) subs.push({ name: name, points: parseInt(row.querySelector('.sub-points').value) || 0, price: parseFloat(row.querySelector('.sub-price').value) || 0 });
-        });
-        var config = {
-            packs: packs, subs: subs,
-            currency: document.getElementById('shopCurrency').value,
-            stripe_key: document.getElementById('stripeKey').value.trim(),
-            paypal_client_id: document.getElementById('paypalClientId').value.trim()
-        };
-        await db.from('admin_config').upsert({ key: 'shop_config', value: config, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        addNotification('config', 'Boutique sauvegardée');
-        alert('✅ Boutique sauvegardée !');
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-// === SOCIAL LINKS ===
-async function loadSocialLinks() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'social_links').single();
-        var links = result.data ? result.data.value : [];
-        var html = '';
-        links.forEach(function(l) {
-            html += '<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" value="' + l.name + '"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" value="' + l.url + '"></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" value="' + (l.icon || '') + '" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-        });
-        document.getElementById('socialLinksContainer').innerHTML = html || '<div style="color:var(--dim);font-size:0.85rem">Aucun lien social</div>';    } catch (err) { console.error('Load social links error:', err); }
-}
-
-function addSocialField() {
-    var html = '<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" placeholder="Twitter"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" placeholder="https://twitter.com/..."></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-    document.getElementById('socialLinksContainer').insertAdjacentHTML('beforeend', html);
-}
-
-async function saveSocialLinks() {
-    try {
-        var links = [];
-        document.querySelectorAll('.social-row').forEach(function(row) {
-            var name = row.querySelector('.social-name').value.trim();
-            if (name) links.push({ name: name, url: row.querySelector('.social-url').value.trim(), icon: row.querySelector('.social-icon').value.trim() });
-        });
-        await db.from('admin_config').upsert({ key: 'social_links', value: links, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        addNotification('config', 'Réseaux sociaux sauvegardés');
-        alert('✅ Réseaux sociaux sauvegardés !');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    var packs = [], subs = [];
+    document.querySelectorAll('.pack-row').forEach(function(row) {
+        var name = row.querySelector('.pack-name').value.trim();
+        if (name) packs.push({ name: name, points: parseInt(row.querySelector('.pack-points').value) || 0, price: parseFloat(row.querySelector('.pack-price').value) || 0 });
+    });
+    document.querySelectorAll('.sub-row').forEach(function(row) {
+        var name = row.querySelector('.sub-name').value.trim();
+        if (name) subs.push({ name: name, points: parseInt(row.querySelector('.sub-points').value) || 0, price: parseFloat(row.querySelector('.sub-price').value) || 0 });
+    });
+    await db.from('admin_config').upsert({ key: 'shop_config', value: { packs: packs, subs: subs, currency: document.getElementById('shopCurrency').value, stripe_key: document.getElementById('stripeKey').value.trim(), paypal_client_id: document.getElementById('paypalClientId').value.trim() }, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    alert('✅ Boutique sauvegardée !');
 }
 
 // === SITE SETTINGS ===
 async function loadSiteSettings() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'site_settings').single();
-        if (result.data && result.data.value) {
-            var s = result.data.value;
-            document.getElementById('settingSiteName').value = s.name || 'Pixora';
-            document.getElementById('settingLogoUrl').value = s.logo_url || '';
-            document.getElementById('settingFavicon').value = s.favicon || '';
-            document.getElementById('settingColorPrimary').value = s.color_primary || '#8B5CF6';
-            document.getElementById('settingColorSecondary').value = s.color_secondary || '#EC4899';
-            document.getElementById('settingLang').value = s.lang || 'fr';
-            document.getElementById('settingHeroText').value = s.hero_text || '';
-            document.getElementById('settingCopyright').value = s.copyright || '';
-            document.getElementById('settingMaintenance').checked = !!s.maintenance;
-        }
-    } catch (err) { console.error('Load site settings error:', err); }
+    var r = await db.from('admin_config').select('*').eq('key', 'site_settings').single();
+    if (r.data && r.data.value) {
+        var s = r.data.value;
+        document.getElementById('settingSiteName').value = s.name || 'Pixora';
+        document.getElementById('settingLogoUrl').value = s.logo_url || '';
+        document.getElementById('settingColorPrimary').value = s.color_primary || '#8B5CF6';
+        document.getElementById('settingColorSecondary').value = s.color_secondary || '#EC4899';
+        document.getElementById('settingMaintenance').checked = !!s.maintenance;
+    }
 }
-
 async function saveSiteSettings() {
-    try {
-        var settings = {
-            name: document.getElementById('settingSiteName').value.trim(),
-            logo_url: document.getElementById('settingLogoUrl').value.trim(),
-            favicon: document.getElementById('settingFavicon').value.trim(),
-            color_primary: document.getElementById('settingColorPrimary').value,
-            color_secondary: document.getElementById('settingColorSecondary').value,
-            lang: document.getElementById('settingLang').value,
-            hero_text: document.getElementById('settingHeroText').value.trim(),            copyright: document.getElementById('settingCopyright').value.trim(),
-            maintenance: document.getElementById('settingMaintenance').checked
-        };
-        await db.from('admin_config').upsert({ key: 'site_settings', value: settings, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        addNotification('config', 'Paramètres site sauvegardés');
-        alert('✅ Paramètres sauvegardés !');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    await db.from('admin_config').upsert({ key: 'site_settings', value: {
+        name: document.getElementById('settingSiteName').value.trim(),
+        logo_url: document.getElementById('settingLogoUrl').value.trim(),
+        color_primary: document.getElementById('settingColorPrimary').value,
+        color_secondary: document.getElementById('settingColorSecondary').value,
+        maintenance: document.getElementById('settingMaintenance').checked
+    }, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    alert('✅ Paramètres sauvegardés !');
 }
 
 // === SEO ===
 async function loadSeo() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'seo').single();
-        if (result.data && result.data.value) {
-            var s = result.data.value;
-            document.getElementById('seoTitle').value = s.title || '';
-            document.getElementById('seoDescription').value = s.description || '';
-            document.getElementById('seoOgImage').value = s.og_image || '';
-            document.getElementById('seoCanonical').value = s.canonical || '';
-            document.getElementById('seoRobots').value = s.robots || '';
-        }
-    } catch (err) { console.error('Load SEO error:', err); }
+    var r = await db.from('admin_config').select('*').eq('key', 'seo').single();
+    if (r.data && r.data.value) {
+        document.getElementById('seoTitle').value = r.data.value.title || '';
+        document.getElementById('seoDescription').value = r.data.value.description || '';
+    }
 }
 
 async function saveSeo() {
-    try {
-        var seo = {
-            title: document.getElementById('seoTitle').value.trim(),
-            description: document.getElementById('seoDescription').value.trim(),
-            og_image: document.getElementById('seoOgImage').value.trim(),
-            canonical: document.getElementById('seoCanonical').value.trim(),
-            robots: document.getElementById('seoRobots').value.trim()
-        };
-        await db.from('admin_config').upsert({ key: 'seo', value: seo, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        addNotification('config', 'SEO sauvegardé');
-        alert('✅ SEO sauvegardé !');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    await db.from('admin_config').upsert({ key: 'seo', value: {
+        title: document.getElementById('seoTitle').value.trim(),
+        description: document.getElementById('seoDescription').value.trim()
+    }, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    alert('✅ SEO sauvegardé !');
 }
 
 // === LEGAL ===
 async function loadLegal() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'legal').single();
-        if (result.data && result.data.value) {
-            document.getElementById('legalCgu').value = result.data.value.cgu || '';
-            document.getElementById('legalPrivacy').value = result.data.value.privacy || '';
-            document.getElementById('legalMentions').value = result.data.value.mentions || '';
-        }
-    } catch (err) { console.error('Load legal error:', err); }
-}
-async function saveLegal() {
-    try {
-        var legal = {
-            cgu: document.getElementById('legalCgu').value,
-            privacy: document.getElementById('legalPrivacy').value,
-            mentions: document.getElementById('legalMentions').value
-        };
-        await db.from('admin_config').upsert({ key: 'legal', value: legal, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        addNotification('config', 'Contenu légal sauvegardé');
-        alert('✅ Contenu légal sauvegardé !');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    var r = await db.from('admin_config').select('*').eq('key', 'legal').single();
+    if (r.data && r.data.value) {
+        document.getElementById('legalCgu').value = r.data.value.cgu || '';
+        document.getElementById('legalPrivacy').value = r.data.value.privacy || '';
+    }
 }
 
-// === USERS ===
+async function saveLegal() {
+    await db.from('admin_config').upsert({ key: 'legal', value: {
+        cgu: document.getElementById('legalCgu').value,
+        privacy: document.getElementById('legalPrivacy').value
+    }, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    alert('✅ Contenu légal sauvegardé !');
+}
+
+// === USERS (CORRIGÉ - JOINTURE PROPRE) ===
 async function loadUsers() {
     try {
-        var result = await db.from('user_data').select('*');
-        var authUsers = await db.auth.admin.listUsers();
+        // Récupère auth.users via Admin API
+        var authUsers = await db.auth.admin.listUsers();        var userDataResult = await db.from('user_data').select('*');
+        
         var usersMap = {};
-        if (result.data) result.data.forEach(function(d) { usersMap[d.user_id] = d; });
+        if (userDataResult.data) userDataResult.data.forEach(function(d) { usersMap[d.user_id] = d; });
+        
         var allUsers = [];
         if (authUsers.data && authUsers.data.users) {
             authUsers.data.users.forEach(function(u) {
-                allUsers.push({ id: u.id, email: u.email, name: u.user_metadata?.name || '-', created_at: u.created_at });
+                allUsers.push({ 
+                    id: u.id, 
+                    email: u.email, 
+                    name: u.user_metadata?.name || '-', 
+                    created_at: u.created_at 
+                });
             });
         }
+        
         window._allUsers = allUsers;
         renderUsersTable(allUsers, usersMap);
-    } catch (err) { console.error('Load users error:', err); }
+    } catch (err) { 
+        console.error('Load users error:', err);
+        document.getElementById('usersTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--danger)">Erreur: ' + err.message + '</td></tr>';
+    }
 }
 
 function renderUsersTable(users, usersMap) {
     var tbody = document.getElementById('usersTable');
-    if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun utilisateur inscrit</td></tr>'; return; }
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun utilisateur</td></tr>'; return; }
     tbody.innerHTML = users.map(function(u) {
         var d = usersMap[u.id] || {};
-        return '<tr><td>' + (u.name || '-') + '</td><td style="font-size:0.8rem">' + u.email + '</td><td style="font-family:var(--mono);color:var(--gold)">' + (d.points || 0) + '</td><td>J' + (d.streak || 1) + '</td><td style="font-size:0.75rem;color:var(--dim)">' + (d.last_login || '-') + '</td><td><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\'' + u.id + '\')"><i class="fas fa-plus"></i> Pts</button> <button class="btn btn-sm btn-danger" onclick="banUser(\'' + u.id + '\')"><i class="fas fa-ban"></i></button></td></tr>';
+        return '<tr><td>' + (u.name || '-') + '</td><td style="font-size:0.8rem">' + u.email + '</td><td style="font-family:var(--mono);color:var(--gold)">' + (d.points || 0) + '</td><td>J' + (d.streak || 1) + '</td><td><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\'' + u.id + '\')"><i class="fas fa-plus"></i> Pts</button> <button class="btn btn-sm btn-danger" onclick="banUser(\'' + u.id + '\')"><i class="fas fa-ban"></i></button></td></tr>';
     }).join('');
 }
 
@@ -881,67 +874,49 @@ function searchUsers() {
         renderUsersTable(filtered, usersMap);
     });
 }
+
 async function addPointsToUser(userId) {
     var amount = prompt('Combien de points ajouter ?');
     if (!amount || isNaN(amount)) return;
     amount = parseInt(amount);
-    try {
-        await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Ajout admin', amount: amount });
-        var data = await db.from('user_data').select('*').eq('user_id', userId).single();
-        if (data.data) {
-            await db.from('user_data').update({ points: data.data.points + amount, total_earned: (data.data.total_earned || 0) + amount }).eq('user_id', userId);
-        }
-        loadUsers();
-        addNotification('user', amount + ' points ajoutés à un utilisateur');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Ajout admin', amount: amount });
+    var data = await db.from('user_data').select('*').eq('user_id', userId).single();    if (data.data) {
+        await db.from('user_data').update({ points: data.data.points + amount, total_earned: (data.data.total_earned || 0) + amount }).eq('user_id', userId);
+    } else {
+        // Créer la ligne si elle n'existe pas
+        await db.from('user_data').insert({ user_id: userId, points: amount, streak: 1, total_generated: 0, total_earned: amount });
+    }
+    loadUsers();
+    addNotification('user', amount + ' points ajoutés');
 }
 
 async function banUser(userId) {
     if (!confirm('Bannir cet utilisateur ?')) return;
-    try {
-        await db.from('user_data').update({ points: 0, streak: 0 }).eq('user_id', userId);
-        loadUsers();
-        addNotification('user', 'Utilisateur banni');
-    } catch (err) { alert('Erreur: ' + err.message); }
+    await db.from('user_data').update({ points: 0, streak: 0 }).eq('user_id', userId);
+    loadUsers();
+    addNotification('user', 'Utilisateur banni');
 }
 
 // === LOGS ===
 async function loadLogs() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'system_logs').single();
-        var logs = result.data ? result.data.value : [];
-        var tbody = document.getElementById('logsTable');
-        if (logs.length) {
-            tbody.innerHTML = logs.slice().reverse().slice(0, 50).map(function(l) {
-                var colors = { error: 'var(--danger)', warn: 'var(--warn)', info: 'var(--accent)', success: 'var(--success)' };
-                return '<tr><td style="font-size:0.75rem;font-family:var(--mono);white-space:nowrap">' + new Date(l.time).toLocaleString('fr-FR') + '</td><td style="color:' + (colors[l.type] || 'var(--text)') + ';font-weight:600">' + l.type.toUpperCase() + '</td><td>' + l.message + '</td><td style="font-size:0.75rem;color:var(--dim)">' + (l.details || '-') + '</td></tr>';
-            }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--dim)">Aucun log système</td></tr>'; }
-    } catch (err) { console.error('Load logs error:', err); }
+    var result = await db.from('admin_config').select('*').eq('key', 'system_logs').single();
+    var logs = result.data ? result.data.value : [];
+    var tbody = document.getElementById('logsTable');
+    if (logs.length) {
+        tbody.innerHTML = logs.slice().reverse().slice(0, 50).map(function(l) {
+            return '<tr><td style="font-size:0.75rem;font-family:var(--mono)">' + new Date(l.time).toLocaleString('fr-FR') + '</td><td style="color:' + (l.type === 'error' ? 'var(--danger)' : 'var(--accent)') + '">' + l.type + '</td><td>' + l.message + '</td></tr>';
+        }).join('');
+    } else { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">Aucun log</td></tr>'; }
 }
 
-// === SECURITY ===
-async function changeAdminPassword() {
-    var newPass = document.getElementById('newAdminPass').value;
-    var confirmPass = document.getElementById('confirmAdminPass').value;
-    if (newPass !== confirmPass) { alert('Les mots de passe ne correspondent pas'); return; }
-    if (newPass.length < 8) { alert('Minimum 8 caractères'); return; }
-    try {
-        await db.auth.updateUser({ password: newPass });
-        alert('✅ Mot de passe modifié !');
-        document.getElementById('newAdminPass').value = '';        document.getElementById('confirmAdminPass').value = '';
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-// === REALTIME SUBSCRIPTION ===
+// === REALTIME ===
 function subscribeRealtime() {
-    db.channel('admin-realtime-v3')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'user_data' }, function(payload) {
+    db.channel('admin-realtime-v4')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'user_data' }, function() {
             addNotification('user', 'Nouveau compte créé');
         })
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, function(payload) {
-            if (payload.new.type === 'purchased') addNotification('payment', 'Paiement : ' + payload.new.title + ' (' + payload.new.amount + ' pts)');
-            if (payload.new.type === 'earned' && payload.new.amount >= 50) addNotification('gen', 'Grosse récompense : ' + payload.new.title);
+            if (payload.new.type === 'purchased') addNotification('payment', 'Paiement: ' + payload.new.title);
         })
         .subscribe();
 }
@@ -949,33 +924,28 @@ function subscribeRealtime() {
 // === INIT ===
 async function initAdmin() {
     try {
-        var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
-        ADMIN_EMAIL = adminEmailResult.data ? String(adminEmailResult.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
+        var r = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
+        ADMIN_EMAIL = r.data ? String(r.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
     } catch (err) { ADMIN_EMAIL = 'leonard@pixora.com'; }
     subscribeRealtime();
     loadDashboard();
-    updateNotifUI();
-}
+    updateNotifUI();}
 
-// Vérifier session au chargement
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         var result = await db.auth.getUser();
         if (result.data.user) {
-            var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
-            var allowedEmail = adminEmailResult.data ? String(adminEmailResult.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
+            var r = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
+            var allowedEmail = r.data ? String(r.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
             if (result.data.user.email === allowedEmail) {
                 ADMIN_EMAIL = result.data.user.email;
                 document.getElementById('loginOverlay').classList.add('hidden');
                 document.getElementById('adminEmailDisplay').textContent = result.data.user.email;
                 initAdmin();
-            } else {
-                document.getElementById('loginOverlay').classList.remove('hidden');
             }
-        } else {
-            document.getElementById('loginOverlay').classList.remove('hidden');
         }
     } catch (err) { console.error('Init error:', err); }
 });
 </script>
-</body></html>
+</body>
+</html>
