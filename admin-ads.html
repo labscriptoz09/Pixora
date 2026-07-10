@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Pubs | Pixora Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;padding:2rem}
+        .container{max-width:1000px;margin:0 auto}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+        .title{font-size:1.8rem;font-weight:700}
+        .btn-back{padding:0.6rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;text-decoration:none}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+        .form-group{margin-bottom:1rem}
+        label{display:block;margin-bottom:0.5rem;font-weight:600;font-size:0.9rem}
+        input,select{width:100%;padding:0.8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:var(--font)}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+        .btn{padding:0.8rem 1.5rem;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s}
+        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+        .btn-danger{background:var(--danger);color:white}
+        .btn-sm{padding:0.4rem 0.8rem;font-size:0.85rem}
+        .ad-list{margin-top:2rem}
+        .ad-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+        .ad-info h4{margin-bottom:0.3rem}
+        .ad-info p{color:var(--muted);font-size:0.85rem}
+        .ad-actions{display:flex;gap:0.5rem}
+        .badge{display:inline-block;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:600}
+        .badge-success{background:rgba(16,185,129,0.2);color:var(--success)}
+        .badge-danger{background:rgba(239,68,68,0.2);color:var(--danger)}
+        .toggle{position:relative;width:50px;height:26px;background:var(--border);border-radius:13px;cursor:pointer;transition:background 0.3s}
+        .toggle.active{background:var(--success)}
+        .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform 0.3s}
+        .toggle.active::after{transform:translateX(24px)}
+        .access-denied{text-align:center;padding:4rem 2rem}
+        .access-denied i{font-size:4rem;color:var(--danger);margin-bottom:1rem}
+        .admin-badge{background:rgba(139,92,246,0.2);color:var(--accent);padding:0.3rem 0.8rem;border-radius:6px;font-size:0.8rem;font-weight:600}
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContent" style="display:none">
+        <div class="header">
+            <div>
+                <h1 class="title"> Gestion des Publicités</h1>
+                <span class="admin-badge">Admin Only</span>
+            </div>            <a href="admin.html" class="btn-back">← Retour</a>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-bottom:1rem">Ajouter une nouvelle publicité</h2>
+            <form id="adForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nom de l'offre</label>
+                        <input type="text" id="adName" placeholder="Ex: Smartlink Adsterra" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="adType" required>
+                            <option value="smartlink">Smartlink</option>
+                            <option value="video">Vidéo</option>
+                            <option value="banner">Bannière</option>
+                            <option value="native">Native Banner</option>
+                            <option value="social_bar">Social Bar</option>
+                            <option value="popunder">Popunder</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Lien Adsterra</label>
+                    <input type="url" id="adLink" placeholder="https://..." required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Points à gagner</label>
+                        <input type="number" id="adPoints" placeholder="25" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Statut</label>
+                        <select id="adActive">
+                            <option value="true">Actif</option>
+                            <option value="false">Inactif</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary"> Sauvegarder</button>
+            </form>
+        </div>
+
+        <div class="ad-list">
+            <h2 style="margin-bottom:1rem">Publicités existantes</h2>
+            <div id="adsList">Chargement...</div>
+        </div>
+    </div>
+    <div id="accessDenied" class="access-denied" style="display:none">
+        <i class="fas fa-lock"></i>
+        <h2 style="margin-bottom:1rem">Accès Refusé</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Cette page est réservée à l'administrateur.</p>
+        <a href="/index.html" class="btn btn-primary">Retour à l'accueil</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ⚠️ REMPLACE CET EMAIL PAR TON EMAIL ADMIN
+        const ADMIN_EMAIL = 'ton-email@admin.com';
+
+        async function checkAdminAccess() {
+            const { data: { user }, error } = await db.auth.getUser();
+            
+            if (error || !user) {
+                showAccessDenied();
+                return false;
+            }
+
+            // Vérifier que c'est bien l'admin
+            if (user.email !== ADMIN_EMAIL) {
+                console.warn('Tentative d\'accès non autorisé:', user.email);
+                showAccessDenied();
+                return false;
+            }
+
+            // Accès autorisé
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('accessDenied').style.display = 'none';
+            loadAds();
+            return true;
+        }
+
+        function showAccessDenied() {
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('accessDenied').style.display = 'block';
+        }
+
+        document.getElementById('adForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newAd = {
+                name: document.getElementById('adName').value,
+                type: document.getElementById('adType').value,
+                link: document.getElementById('adLink').value,                points: parseInt(document.getElementById('adPoints').value),
+                active: document.getElementById('adActive').value === 'true'
+            };
+
+            try {
+                const { data: configData } = await db
+                    .from('admin_config')
+                    .select('value')
+                    .eq('key', 'ad_networks')
+                    .single();
+
+                const ads = configData?.value || [];
+                ads.push(newAd);
+
+                await db
+                    .from('admin_config')
+                    .upsert({ key: 'ad_networks', value: ads });
+
+                alert('✅ Publicité ajoutée !');
+                document.getElementById('adForm').reset();
+                loadAds();
+            } catch (e) {
+                alert('Erreur: ' + e.message);
+            }
+        });
+
+        async function loadAds() {
+            const { data: configData } = await db
+                .from('admin_config')
+                .select('value')
+                .eq('key', 'ad_networks')
+                .single();
+
+            const ads = configData?.value || [];
+            
+            if (ads.length === 0) {
+                document.getElementById('adsList').innerHTML = '<p style="color:var(--muted)">Aucune publicité configurée</p>';
+                return;
+            }
+
+            document.getElementById('adsList').innerHTML = ads.map((ad, index) => `
+                <div class="ad-item">
+                    <div class="ad-info">
+                        <h4>${ad.name} <span class="badge ${ad.active ? 'badge-success' : 'badge-danger'}">${ad.active ? 'Actif' : 'Inactif'}</span></h4>
+                        <p>${ad.type} • +${ad.points} pts</p>
+                        <p style="font-size:0.75rem;opacity:0.7">${ad.link}</p>
+                    </div>
+                    <div class="ad-actions">
+                        <div class="toggle ${ad.active ? 'active' : ''}" onclick="toggleAd(${index})"></div>
+                        <button class="btn btn-danger btn-sm" onclick="deleteAd(${index})">🗑️</button>                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function toggleAd(index) {
+            const { data: configData } = await db
+                .from('admin_config')
+                .select('value')
+                .eq('key', 'ad_networks')
+                .single();
+
+            const ads = configData?.value || [];
+            ads[index].active = !ads[index].active;
+
+            await db
+                .from('admin_config')
+                .upsert({ key: 'ad_networks', value: ads });
+
+            loadAds();
+        }
+
+        async function deleteAd(index) {
+            if (!confirm('Supprimer cette publicité ?')) return;
+
+            const { data: configData } = await db
+                .from('admin_config')
+                .select('value')
+                .eq('key', 'ad_networks')
+                .single();
+
+            const ads = configData?.value || [];
+            ads.splice(index, 1);
+
+            await db
+                .from('admin_config')
+                .upsert({ key: 'ad_networks', value: ads });
+
+            loadAds();
+        }
+
+        // Vérification au chargement
+        checkAdminAccess();
+    </script>
+</body>
+</html>
