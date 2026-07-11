@@ -3,1010 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixora Admin v5.0 - Panneau de Contrôle</title>
+    <title>Pixora Admin | Centre de Commandement</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#0a0a0f;--surface:#13131a;--elevated:#1c1c26;--border:#2a2a35;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--warn:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
-        *{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;overflow:hidden}
-        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-        .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100vh;position:fixed;left:0;top:0;z-index:100}
-        .sidebar-logo{padding:1.2rem 1.5rem;display:flex;align-items:center;gap:0.6rem;border-bottom:1px solid var(--border)}
-        .sidebar-logo svg{width:28px;height:28px}
-        .sidebar-logo span{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .sidebar-nav{flex:1;overflow-y:auto;padding:0.8rem}
-        .nav-section{margin-bottom:0.5rem}
-        .nav-section-title{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);padding:0.5rem 0.8rem;margin-bottom:0.2rem}
-        .nav-item{display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;border-radius:10px;font-size:0.85rem;color:var(--muted);cursor:pointer;transition:all 0.2s;position:relative}
-        .nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
-        .nav-item.active{background:rgba(139,92,246,0.15);color:var(--accent)}
-        .nav-item i{width:20px;text-align:center;font-size:0.9rem}
-        .nav-badge{position:absolute;right:0.6rem;background:var(--danger);color:white;font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:8px;font-family:var(--mono)}
-        .sidebar-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);font-size:0.75rem;color:var(--dim)}
-        .main{margin-left:260px;flex:1;height:100vh;overflow-y:auto;padding:2rem}
-        .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
-        .page-title{font-size:1.5rem;font-weight:700}
-        .page-subtitle{font-size:0.85rem;color:var(--muted);margin-top:0.2rem}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
-        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem}
-        .stat-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:0.8rem}
-        .stat-card-value{font-family:var(--mono);font-size:1.8rem;font-weight:700;margin-bottom:0.2rem}
-        .stat-card-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
-        .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-        .card-title{font-size:1rem;font-weight:600;display:flex;align-items:center;gap:0.5rem}
-        .card-title i{color:var(--accent)}
-        .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem}
-        .form-group{display:flex;flex-direction:column;gap:0.3rem}
-        .form-label{font-size:0.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
-        .form-input,.form-select,.form-textarea{width:100%;padding:0.7rem 0.9rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:0.85rem;outline:none;transition:border-color 0.2s}
-        .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
-        .form-textarea{min-height:80px;resize:vertical}
-        .form-select{cursor:pointer}
-        .btn{padding:0.6rem 1.2rem;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;border:none}
-        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
-        .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
-        .btn-success{background:var(--success);color:white}        .btn-danger{background:var(--danger);color:white}
-        .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
-        .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-        .btn-sm{padding:0.4rem 0.8rem;font-size:0.75rem}
-        .table-container{overflow-x:auto}
-        table{width:100%;border-collapse:collapse;font-size:0.85rem}
-        th{text-align:left;padding:0.8rem;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border)}
-        td{padding:0.8rem;border-bottom:1px solid var(--border);color:var(--text)}
-        tr:last-child td{border-bottom:none}
-        tr:hover td{background:rgba(255,255,255,0.02)}
-        .toggle{position:relative;width:40px;height:22px;cursor:pointer}
-        .toggle input{opacity:0;width:0;height:0}
-        .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:0.3s}
-        .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s}
-        .toggle input:checked+.toggle-slider{background:var(--success)}
-        .toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
-        .notif-panel{position:fixed;top:0;right:-400px;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:200;transition:right 0.3s ease;display:flex;flex-direction:column}
-        .notif-panel.open{right:0}
-        .notif-header{padding:1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-        .notif-list{flex:1;overflow-y:auto;padding:0.5rem}
-        .notif-item{padding:0.8rem;border-radius:8px;margin-bottom:0.4rem;background:var(--bg);border:1px solid var(--border);font-size:0.8rem;cursor:pointer;transition:all 0.2s}
-        .notif-item:hover{border-color:var(--accent)}
-        .notif-item.unread{border-left:3px solid var(--accent)}
-        .notif-time{font-size:0.65rem;color:var(--dim);margin-top:0.3rem;font-family:var(--mono)}
-        .notif-type{font-weight:600;margin-bottom:0.2rem}
-        .notif-type.user{color:var(--accent)}.notif-type.payment{color:var(--gold)}.notif-type.error{color:var(--danger)}.notif-type.gen{color:var(--success)}
-        .login-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
-        .login-overlay.hidden{display:none}
-        .login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;text-align:center}
-        .login-box h2{margin-bottom:0.5rem}.login-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem}
-        .admin-section{display:none}.admin-section.active{display:block;animation:fadeIn 0.3s}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.8rem}
-        .gallery-item{aspect-ratio:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative}
-        .gallery-item img{width:100%;height:100%;object-fit:cover}
-        .gallery-item .overlay{position:absolute;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;gap:0.5rem;opacity:0;transition:opacity 0.2s}
-        .gallery-item:hover .overlay{opacity:1}
-        .api-test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
-        .api-test-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem}
-        .api-status{display:inline-flex;align-items:center;gap:0.4rem;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:700;margin-top:0.5rem}
-        .api-status.ok{background:rgba(16,185,129,0.15);color:var(--success)}
-        .api-status.ko{background:rgba(239,68,68,0.15);color:var(--danger)}
-        .api-status.wait{background:rgba(251,191,36,0.15);color:var(--gold)}
-        .api-log{font-family:var(--mono);font-size:0.7rem;color:var(--dim);margin-top:0.5rem;word-break:break-all}
-        @media(max-width:768px){.sidebar{width:60px}.sidebar-logo span,.nav-section-title,.nav-item span,.sidebar-footer{display:none}.sidebar-logo{padding:1rem;justify-content:center}.nav-item{justify-content:center;padding:0.8rem}.main{margin-left:60px;padding:1rem}.notif-panel{width:100%}}
+        :root{--bg:#050508;--surface:#0f0f14;--surface2:#16161e;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--info:#3B82F6;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex}
+        
+        /* Sidebar */
+        .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:1.5rem;display:flex;flex-direction:column;position:fixed;height:100vh;z-index:50}
+        .logo{display:flex;align-items:center;gap:0.7rem;margin-bottom:2.5rem;text-decoration:none}
+        .logo svg{width:32px;height:32px}
+        .logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .nav-item{display:flex;align-items:center;gap:0.8rem;padding:0.8rem 1rem;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:500;transition:all 0.2s;margin-bottom:0.3rem;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-size:0.95rem}
+        .nav-item:hover,.nav-item.active{background:rgba(139,92,246,0.1);color:var(--text)}
+        .nav-item.active{border-left:3px solid var(--accent)}
+        .nav-item i{width:20px;text-align:center}
+        .nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:10px;font-weight:700}
+        .sidebar-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border)}
+        
+        /* Main Content */
+        .main{margin-left:260px;flex:1;padding:2rem;max-width:1400px}
+        .page-header{margin-bottom:2rem}
+        .page-title{font-size:1.8rem;font-weight:800;margin-bottom:0.3rem}
+        .page-subtitle{color:var(--muted);font-size:0.95rem}
+        
+        /* Stats Grid */
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;position:relative;overflow:hidden}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+        .stat-card.purple::before{background:var(--accent)}
+        .stat-card.pink::before{background:var(--accent2)}
+        .stat-card.gold::before{background:var(--gold)}
+        .stat-card.green::before{background:var(--success)}
+        .stat-card.blue::before{background:var(--info)}
+        .stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem}
+        .stat-card.purple .stat-icon{background:rgba(139,92,246,0.15);color:var(--accent)}
+        .stat-card.pink .stat-icon{background:rgba(236,72,153,0.15);color:var(--accent2)}
+        .stat-card.gold .stat-icon{background:rgba(251,191,36,0.15);color:var(--gold)}
+        .stat-card.green .stat-icon{background:rgba(16,185,129,0.15);color:var(--success)}
+        .stat-card.blue .stat-icon{background:rgba(59,130,246,0.15);color:var(--info)}
+        .stat-value{font-size:2rem;font-weight:800;font-family:var(--mono);line-height:1}
+        .stat-label{color:var(--muted);font-size:0.8rem;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.5px}
+                /* Quick Actions */
+        .section-title{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+        .actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
+        .action-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text)}
+        .action-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.1)}
+        .action-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+        .action-info h3{font-size:0.95rem;font-weight:700;margin-bottom:0.2rem}
+        .action-info p{font-size:0.8rem;color:var(--muted)}
+        
+        /* Recent Activity */
+        .activity-list{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+        .activity-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border);transition:background 0.2s}
+        .activity-item:last-child{border-bottom:none}
+        .activity-item:hover{background:rgba(255,255,255,0.02)}
+        .activity-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
+        .activity-icon.earned{background:rgba(16,185,129,0.15);color:var(--success)}
+        .activity-icon.user{background:rgba(59,130,246,0.15);color:var(--info)}
+        .activity-icon.payment{background:rgba(251,191,36,0.15);color:var(--gold)}
+        .activity-content{flex:1;min-width:0}
+        .activity-title{font-size:0.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .activity-meta{font-size:0.75rem;color:var(--muted);margin-top:0.15rem}
+        .activity-amount{font-family:var(--mono);font-weight:700;font-size:0.9rem;color:var(--gold);flex-shrink:0}
+        
+        /* User Management Mini */
+        .user-search{display:flex;gap:0.8rem;margin-bottom:1rem}
+        .user-search input{flex:1;padding:0.7rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.9rem}
+        .user-search button{padding:0.7rem 1.2rem;background:var(--accent);border:none;border-radius:10px;color:white;font-weight:600;cursor:pointer}
+        .user-result{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;display:none;align-items:center;gap:1rem}
+        .user-result.visible{display:flex}
+        .user-avatar{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem}
+        .user-details{flex:1}
+        .user-email{font-weight:600;font-size:0.9rem}
+        .user-points{font-family:var(--mono);color:var(--gold);font-size:0.85rem}
+        .btn-modify{padding:0.5rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:0.8rem;font-weight:600}
+        .btn-modify:hover{border-color:var(--accent)}
+        
+        /* Access Denied */
+        .access-denied{text-align:center;padding:4rem 2rem;display:none}
+        .access-denied i{font-size:4rem;color:var(--danger);margin-bottom:1rem}
+        
+        /* Responsive */
+        @media(max-width:768px){
+            .sidebar{width:100%;height:auto;position:relative;border-right:none;border-bottom:1px solid var(--border)}
+            .main{margin-left:0;padding:1rem}
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
+            .page-title{font-size:1.4rem}
+        }
     </style>
 </head>
-<body>
-
-<div class="login-overlay" id="loginOverlay">    <div class="login-box">
-        <h2>🔐 Admin Pixora</h2>
-        <p>Accès réservé à l'administrateur</p>
-        <form onsubmit="handleAdminLogin(event)">
-            <div class="form-group" style="margin-bottom:1rem"><input type="email" class="form-input" placeholder="Email admin" required id="adminEmail"></div>
-            <div class="form-group" style="margin-bottom:1rem"><input type="password" class="form-input" placeholder="Mot de passe" required id="adminPass"></div>
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="btnAdminLogin"><i class="fas fa-sign-in-alt"></i> Accéder</button>
-        </form>
-    </div>
-</div>
-
-<aside class="sidebar">
-    <div class="sidebar-logo">
-        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="alg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#alg)"/></svg>
-        <span>Pixora Admin</span>
-    </div>
-    <nav class="sidebar-nav">
-        <div class="nav-section">
-            <div class="nav-section-title">Principal</div>
-            <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
-            <div class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></div>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Générateur</div>
-            <div class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></div>
-            <div class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API</span></div>
-            <div class="nav-item" onclick="showSection('api-tester')"><i class="fas fa-vial"></i><span>🧪 Test API</span></div>
-            <div class="nav-item" onclick="showSection('gallery-admin')"><i class="fas fa-images"></i><span>Images Générées</span></div>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Monétisation</div>
-            <div class="nav-item" onclick="showSection('ad-networks')"><i class="fas fa-ad"></i><span>Régies Pub</span></div>
-            <div class="nav-item" onclick="showSection('pricing')"><i class="fas fa-coins"></i><span>Points & Pricing</span></div>
-            <div class="nav-item" onclick="showSection('shop-config')"><i class="fas fa-shopping-bag"></i><span>Boutique</span></div>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Site</div>
-            <div class="nav-item" onclick="showSection('site-settings')"><i class="fas fa-cog"></i><span>Paramètres Site</span></div>
-            <div class="nav-item" onclick="showSection('seo')"><i class="fas fa-search"></i><span>SEO & Meta</span></div>
-            <div class="nav-item" onclick="showSection('legal')"><i class="fas fa-gavel"></i><span>Contenu Légal</span></div>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Gestion</div>
-            <div class="nav-item" onclick="showSection('users')"><i class="fas fa-users"></i><span>Utilisateurs</span></div>
-            <div class="nav-item" onclick="showSection('logs')"><i class="fas fa-terminal"></i><span>Logs Système</span></div>
-            <div class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></div>
+<body>    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <a href="/index.html" class="logo">
+            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
+            <span>Pixora Admin</span>
+        </a>
+        
+        <button class="nav-item active" onclick="showSection('dashboard')">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </button>
+        <a href="admin-ads.html" class="nav-item">
+            <i class="fas fa-ad"></i> Publicités
+            <span class="nav-badge" id="adsCount">-</span>
+        </a>
+        <button class="nav-item" onclick="showSection('users')">
+            <i class="fas fa-users"></i> Utilisateurs
+        </button>
+        <button class="nav-item" onclick="showSection('settings')">
+            <i class="fas fa-cog"></i> Paramètres
+        </button>
+        
+        <div class="sidebar-footer">
+            <button class="nav-item" onclick="logout()" style="color:var(--danger)">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v5.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
-</aside>
-<div class="notif-panel" id="notifPanel">
-    <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
-    <div class="notif-list" id="notifList"></div>
-</div>
 
-<main class="main">
-
-    <!-- DASHBOARD -->
-    <div class="admin-section active" id="sec-dashboard">
-        <div class="page-header"><div><div class="page-title">Dashboard</div><div class="page-subtitle">Vue d'ensemble en temps réel</div></div><button class="btn btn-outline btn-sm" onclick="loadDashboard()"><i class="fas fa-sync"></i> Actualiser</button></div>
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-card-icon" style="background:rgba(139,92,246,0.15);color:var(--accent)"><i class="fas fa-users"></i></div><div class="stat-card-value" id="dashTotalUsers">-</div><div class="stat-card-label">Users Total</div></div>
-            <div class="stat-card"><div class="stat-card-icon" style="background:rgba(16,185,129,0.15);color:var(--success)"><i class="fas fa-user-check"></i></div><div class="stat-card-value" id="dashActiveToday">-</div><div class="stat-card-label">Actifs Aujourd'hui</div></div>
-            <div class="stat-card"><div class="stat-card-icon" style="background:rgba(251,191,36,0.15);color:var(--gold)"><i class="fas fa-bolt"></i></div><div class="stat-card-value" id="dashPointsDistributed">-</div><div class="stat-card-label">Points Distribués</div></div>
-            <div class="stat-card"><div class="stat-card-icon" style="background:rgba(236,72,153,0.15);color:var(--accent2)"><i class="fas fa-image"></i></div><div class="stat-card-value" id="dashGenerations">-</div><div class="stat-card-label">Générations Totales</div></div>
-        </div>
-        <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-receipt"></i> Transactions Récentes</div></div><div class="table-container"><table><thead><tr><th>User</th><th>Type</th><th>Titre</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentTx"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
-
-    <!-- API TESTER -->
-    <div class="admin-section" id="sec-api-tester">
-        <div class="page-header"><div><div class="page-title">🧪 Testeur API</div><div class="page-subtitle">Vérifie si tes clés API fonctionnent</div></div><button class="btn btn-primary btn-sm" onclick="runAllApiTests()"><i class="fas fa-play"></i> Tout Tester</button></div>
-        <div class="api-test-grid">
-            <div class="api-test-card">
-                <div class="card-title"><i class="fas fa-image"></i> Pollinations AI</div>
-                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Génération Image Gratuite</div>
-                <div id="status-pollinations" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
-                <div id="log-pollinations" class="api-log"></div>
-                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testPollinations()">Tester</button>
-            </div>
-            <div class="api-test-card">
-                <div class="card-title"><i class="fas fa-bolt"></i> Fal.ai</div>
-                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Flux Schnell / Vidéos</div>
-                <div id="status-fal" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
-                <div id="log-fal" class="api-log"></div>
-                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testFalAI()">Tester</button>
-            </div>
-            <div class="api-test-card">
-                <div class="card-title"><i class="fas fa-wand-magic-sparkles"></i> Stability AI</div>
-                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">SDXL / SD3</div>
-                <div id="status-stability" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
-                <div id="log-stability" class="api-log"></div>
-                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testStability()">Tester</button>
-            </div>
-            <div class="api-test-card">
-                <div class="card-title"><i class="fas fa-server"></i> Replicate</div>
-                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Modèles Open Source</div>
-                <div id="status-replicate" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
-                <div id="log-replicate" class="api-log"></div>                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testReplicate()">Tester</button>
-            </div>
-            <div class="api-test-card">
-                <div class="card-title"><i class="fas fa-brain"></i> OpenAI (DALL-E)</div>
-                <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">DALL-E 3</div>
-                <div id="status-openai" class="api-status wait"><i class="fas fa-clock"></i> En attente</div>
-                <div id="log-openai" class="api-log"></div>
-                <button class="btn btn-sm btn-outline" style="margin-top:0.8rem" onclick="testOpenAI()">Tester</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- GALERIE -->
-    <div class="admin-section" id="sec-gallery-admin">
-        <div class="page-header"><div><div class="page-title">Images Générées</div><div class="page-subtitle">Bucket pixora-gallery</div></div><button class="btn btn-outline btn-sm" onclick="loadGalleryAdmin()"><i class="fas fa-sync"></i> Actualiser</button></div>
-        <div class="card">
-            <div class="card-header"><div class="card-title"><i class="fas fa-images"></i> Galerie (<span id="galleryCount">0</span> fichiers)</div></div>
-            <div class="gallery-grid" id="galleryGrid"><div style="text-align:center;padding:2rem;color:var(--dim);grid-column:1/-1">Chargement...</div></div>
-        </div>
-    </div>
-
-    <!-- MODÈLES IMAGE -->
-    <div class="admin-section" id="sec-models-image">
-        <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card" id="modelImageForm" style="display:none">
-            <div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
-            <input type="hidden" id="imgModelId">
-            <div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input" id="imgModelName" placeholder="ex: Flux Schnell"></div><div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="imgModelProvider" placeholder="ex: fal.ai"></div></div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Endpoint API</label><input type="text" class="form-input" id="imgModelEndpoint" placeholder="URL endpoint"></div><div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="imgModelCost" value="15"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="imgModelOrder" value="0"></div></div>
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="imgModelActive" checked><span class="toggle-slider"></span></label></div>
-            <button class="btn btn-success" onclick="saveModel('image')"><i class="fas fa-save"></i> Sauvegarder</button>
-        </div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Coût</th><th>Ordre</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="imgModelsTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
-
-    <!-- CLÉS API -->
-    <div class="admin-section" id="sec-apis">
-        <div class="page-header"><div><div class="page-title">Clés API</div><div class="page-subtitle">Configurer les clés API</div></div><button class="btn btn-success btn-sm" onclick="saveApiKeys()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div id="apiKeysContainer"><div style="text-align:center;color:var(--dim);padding:1rem">Chargement...</div></div></div>
-    </div>
-
-    <!-- RÉGIES PUB -->
-    <div class="admin-section" id="sec-ad-networks">
-        <div class="page-header"><div><div class="page-title">Régies Publicitaires</div><div class="page-subtitle">Ajouter autant de régies que nécessaire</div></div><button class="btn btn-primary btn-sm" onclick="openAdNetworkForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card" id="adNetworkForm" style="display:none">
-            <div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire</div><button class="btn btn-sm btn-outline" onclick="closeAdNetworkForm()">Annuler</button></div>
-            <input type="hidden" id="adNetId">
-            <div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input" id="adNetName" placeholder="ex: Adsterra"></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="adNetType"><option value="video">Vidéo Récompensée</option><option value="cpa">CPA / Offre</option><option value="banner">Banner</option><option value="native">Native</option><option value="direct">Direct Link</option></select></div></div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Lien / SDK ID</label><input type="text" class="form-input" id="adNetLink" placeholder="URL ou ID"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input" id="adNetPoints" value="5"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="adNetOrder" value="0"></div></div>
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="adNetActive" checked><span class="toggle-slider"></span></label></div>            <button class="btn btn-success" onclick="saveAdNetwork()"><i class="fas fa-save"></i> Sauvegarder</button>
-        </div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Type</th><th>Points</th><th>Ordre</th><th>Actif</th><th>Actions</th></tr></thead><tbody id="adNetworksTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
-
-    <!-- PRICING (TIERS 1, 2, 3) -->
-    <div class="admin-section" id="sec-pricing">
-        <div class="page-header"><div><div class="page-title">Points & Pricing</div><div class="page-subtitle">Modifier les coûts et récompenses par tier</div></div><button class="btn btn-success btn-sm" onclick="savePricing()"><i class="fas fa-save"></i> Sauvegarder</button></div>
+    <!-- Main Content -->
+    <main class="main" id="mainContent" style="display:none">
         
-        <!-- TIER 1 -->
-        <div class="card">
-            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe"></i> Tier 1 (FR, US, DE, GB...)</div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.image" value="15"></div>
-                <div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.video" value="90"></div>
-                <div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t1" data-key="rewards.video" value="30"></div>
-                <div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t1" data-key="rewards.survey" value="80"></div>
-                <div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t1" data-key="rewards.sponsor" value="5"></div>
-                <div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t1" data-key="rewards.streak" value="10"></div>
-                <div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t1" data-key="rewards.share" value="20"></div>
-                <div class="form-group"><label class="form-label">Limite Vidéo/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.video" value="3"></div>
-                <div class="form-group"><label class="form-label">Limite Sponsor/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.sponsor" value="5"></div>
-                <div class="form-group"><label class="form-label">Limite Partage/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.share" value="1"></div>
+        <!-- DASHBOARD SECTION -->
+        <div id="section-dashboard">
+            <div class="page-header">
+                <h1 class="page-title">Centre de Commandement</h1>
+                <p class="page-subtitle">Vue d'ensemble en temps réel de Pixora</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card purple">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-value" id="totalUsers">-</div>
+                    <div class="stat-label">Utilisateurs Total</div>
+                </div>
+                <div class="stat-card gold">
+                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                    <div class="stat-value" id="totalPoints">-</div>
+                    <div class="stat-label">Points Distribués</div>
+                </div>
+                <div class="stat-card green">                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-value" id="totalTasks">-</div>
+                    <div class="stat-label">Tâches Complétées</div>
+                </div>
+                <div class="stat-card pink">
+                    <div class="stat-icon"><i class="fas fa-ad"></i></div>
+                    <div class="stat-value" id="activeAds">-</div>
+                    <div class="stat-label">Pubs Actives</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                    <div class="stat-value" id="todayEarners">-</div>
+                    <div class="stat-label">Gagnants Aujourd'hui</div>
+                </div>
+            </div>
+
+            <h2 class="section-title"><i class="fas fa-bolt" style="color:var(--gold)"></i> Actions Rapides</h2>
+            <div class="actions-grid">
+                <a href="admin-ads.html" class="action-card">
+                    <div class="action-icon" style="background:rgba(139,92,246,0.15);color:var(--accent)"><i class="fas fa-plus-circle"></i></div>
+                    <div class="action-info">
+                        <h3>Ajouter une Pub</h3>
+                        <p>Smartlink, Native, Bannière...</p>
+                    </div>
+                </a>
+                <div class="action-card" onclick="showSection('users')">
+                    <div class="action-icon" style="background:rgba(251,191,36,0.15);color:var(--gold)"><i class="fas fa-user-edit"></i></div>
+                    <div class="action-info">
+                        <h3>Modifier Points</h3>
+                        <p>Ajuster le solde d'un utilisateur</p>
+                    </div>
+                </div>
+                <div class="action-card" onclick="refreshData()">
+                    <div class="action-icon" style="background:rgba(16,185,129,0.15);color:var(--success)"><i class="fas fa-sync-alt"></i></div>
+                    <div class="action-info">
+                        <h3>Actualiser les Données</h3>
+                        <p>Recharger toutes les statistiques</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title"><i class="fas fa-stream" style="color:var(--info)"></i> Activité Récente</h2>
+            <div class="activity-list" id="activityList">
+                <div class="activity-item" style="justify-content:center;color:var(--muted);padding:2rem">
+                    <i class="fas fa-spinner fa-spin" style="margin-right:0.5rem"></i> Chargement...
+                </div>
             </div>
         </div>
 
-        <!-- TIER 2 -->
-        <div class="card">
-            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-americas"></i> Tier 2 (BR, MX, AR...)</div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.image" value="25"></div>
-                <div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.video" value="130"></div>
-                <div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t2" data-key="rewards.video" value="15"></div>
-                <div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t2" data-key="rewards.survey" value="40"></div>
-                <div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t2" data-key="rewards.sponsor" value="3"></div>
-                <div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t2" data-key="rewards.streak" value="5"></div>
-                <div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t2" data-key="rewards.share" value="10"></div>
+        <!-- USERS SECTION -->        <div id="section-users" style="display:none">
+            <div class="page-header">
+                <h1 class="page-title">Gestion Utilisateurs</h1>
+                <p class="page-subtitle">Rechercher et modifier les points des utilisateurs</p>
+            </div>
+
+            <div class="user-search">
+                <input type="email" id="userSearchEmail" placeholder="Entrez l'email de l'utilisateur...">
+                <button onclick="searchUser()"><i class="fas fa-search"></i> Rechercher</button>
+            </div>
+
+            <div class="user-result" id="userResult">
+                <div class="user-avatar" id="userAvatar">?</div>
+                <div class="user-details">
+                    <div class="user-email" id="userEmail">-</div>
+                    <div class="user-points" id="userPointsDisplay">- points</div>
+                </div>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                    <input type="number" id="newPoints" placeholder="Nouveau solde" style="width:120px;padding:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono)">
+                    <button class="btn-modify" onclick="updateUserPoints()" style="background:var(--accent);border-color:var(--accent)">💾 Sauver</button>
+                </div>
+            </div>
+
+            <div id="userNotFound" style="display:none;text-align:center;padding:2rem;color:var(--muted)">
+                <i class="fas fa-user-slash" style="font-size:2rem;margin-bottom:0.5rem;display:block"></i>
+                Aucun utilisateur trouvé avec cet email
             </div>
         </div>
 
-        <!-- TIER 3 -->
-        <div class="card">
-            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-asia"></i> Tier 3 (IN, PH, NG...)</div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.image" value="35"></div>
-                <div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.video" value="190"></div>
-                <div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t3" data-key="rewards.video" value="8"></div>
-                <div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t3" data-key="rewards.survey" value="20"></div>
-                <div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t3" data-key="rewards.sponsor" value="2"></div>
-                <div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t3" data-key="rewards.streak" value="3"></div>                <div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t3" data-key="rewards.share" value="5"></div>
+        <!-- SETTINGS SECTION -->
+        <div id="section-settings" style="display:none">
+            <div class="page-header">
+                <h1 class="page-title">Paramètres</h1>
+                <p class="page-subtitle">Configuration globale de Pixora</p>
             </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-gift"></i> Bonus Inscription</div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Points offerts</label><input type="number" class="form-input" id="signupBonus" value="50"></div></div>
-        </div>
-    </div>
-
-    <!-- BOUTIQUE -->
-    <div class="admin-section" id="sec-shop-config">
-        <div class="page-header"><div><div class="page-title">Configuration Boutique</div><div class="page-subtitle">Packs et abonnements</div></div><button class="btn btn-success btn-sm" onclick="saveShopConfig()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-box"></i> Packs</div><div id="packsContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addPackField()"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-crown"></i> Abonnements</div><div id="subsContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addSubField()"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Devise</label><select class="form-select" id="shopCurrency"><option value="EUR">EUR (€)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option></select></div><div class="form-group"><label class="form-label">Stripe Key</label><input type="text" class="form-input" id="stripeKey" placeholder="pk_live_..."></div><div class="form-group"><label class="form-label">PayPal Client ID</label><input type="text" class="form-input" id="paypalClientId" placeholder="Client ID"></div></div></div>
-    </div>
-
-    <!-- SITE SETTINGS -->
-    <div class="admin-section" id="sec-site-settings">
-        <div class="page-header"><div><div class="page-title">Paramètres du Site</div><div class="page-subtitle">Personnalisation globale</div></div><button class="btn btn-success btn-sm" onclick="saveSiteSettings()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card">
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Nom du site</label><input type="text" class="form-input" id="settingSiteName" value="Pixora"></div>
-                <div class="form-group"><label class="form-label">Logo URL</label><input type="text" class="form-input" id="settingLogoUrl" placeholder="URL logo"></div>
-                <div class="form-group"><label class="form-label">Favicon URL</label><input type="text" class="form-input" id="settingFavicon" placeholder="URL favicon"></div>
+            
+            <div class="stat-card" style="margin-bottom:1rem">
+                <h3 style="margin-bottom:1rem"><i class="fas fa-gift" style="color:var(--gold);margin-right:0.5rem"></i> Bonus de Bienvenue</h3>
+                <div style="display:flex;gap:1rem;align-items:center">
+                    <label style="font-size:0.9rem;color:var(--muted)">Points offerts à l'inscription :</label>
+                    <input type="number" id="welcomeBonus" value="20" style="width:100px;padding:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono)">
+                    <button class="btn-modify" onclick="saveWelcomeBonus()" style="background:var(--accent);border-color:var(--accent)">Sauvegarder</button>
+                </div>
             </div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Couleur Primaire</label><input type="color" class="form-input" id="settingColorPrimary" value="#8B5CF6" style="height:40px"></div>
-                <div class="form-group"><label class="form-label">Couleur Secondaire</label><input type="color" class="form-input" id="settingColorSecondary" value="#EC4899" style="height:40px"></div>
-                <div class="form-group"><label class="form-label">Langue</label><select class="form-select" id="settingLang"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option></select></div>
-            </div>
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Hero Text</label><textarea class="form-textarea" id="settingHeroText">Générez des images et vidéos IA de haute qualité.</textarea></div>
-            <div class="form-group"><label class="form-label">Mode Maintenance</label><label class="toggle"><input type="checkbox" id="settingMaintenance"><span class="toggle-slider"></span></label></div>
-        </div>
+
+            <div class="stat-card">
+                <h3 style="margin-bottom:1rem"><i class="fas fa-database" style="color:var(--info);margin-right:0.5rem"></i> Base de Données</h3>
+                <p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.5rem">Supabase Project : <code style="color:var(--text)">cfwzilhetkclpytjsopu</code></p>
+                <p style="color:var(--muted);font-size:0.85rem">Tables utilisées : <code style="color:var(--text)">user_data, transactions, ad_clicks, admin_config</code></p>
+            </div>        </div>
+
+    </main>
+
+    <!-- Access Denied -->
+    <div class="access-denied" id="accessDenied">
+        <i class="fas fa-lock"></i>
+        <h2 style="margin-bottom:1rem">Accès Refusé</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Cette page est réservée à l'administrateur.</p>
+        <a href="/index.html" style="padding:0.7rem 1.5rem;background:var(--accent);border-radius:10px;color:white;text-decoration:none;font-weight:600">Retour à l'accueil</a>
     </div>
 
-    <!-- SEO -->
-    <div class="admin-section" id="sec-seo">
-        <div class="page-header"><div><div class="page-title">SEO & Métadonnées</div></div><button class="btn btn-success btn-sm" onclick="saveSeo()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card">
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div>
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement.</textarea></div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">OG Image URL</label><input type="text" class="form-input" id="seoOgImage" placeholder="URL"></div>
-                <div class="form-group"><label class="form-label">Canonical URL</label><input type="text" class="form-input" id="seoCanonical" value="https://pixora-gold-eight.vercel.app/"></div>
-            </div>
-        </div>
-    </div>
-    <!-- LEGAL -->
-    <div class="admin-section" id="sec-legal">
-        <div class="page-header"><div><div class="page-title">Contenu Légal</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-file-contract"></i> CGU</div><textarea class="form-textarea" id="legalCgu" style="min-height:200px"></textarea></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:200px"></textarea></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const ADMIN_EMAIL = 'leonard@pixora.com';
 
-    <!-- UTILISATEURS -->
-    <div class="admin-section" id="sec-users">
-        <div class="page-header"><div><div class="page-title">Utilisateurs</div><div class="page-subtitle">Gérer les comptes</div></div><div style="display:flex;gap:0.5rem"><input type="text" class="form-input" placeholder="Rechercher email..." id="userSearch" style="width:250px" oninput="searchUsers()"><button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i></button></div></div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Pseudo</th><th>Email</th><th>Points</th><th>Streak</th><th>Actions</th></tr></thead><tbody id="usersTable"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
+        let currentUserId = null;
 
-    <!-- LOGS -->
-    <div class="admin-section" id="sec-logs">
-        <div class="page-header"><div><div class="page-title">Logs Système</div></div><button class="btn btn-outline btn-sm" onclick="loadLogs()"><i class="fas fa-sync"></i> Actualiser</button></div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Date</th><th>Type</th><th>Message</th><th>Détails</th></tr></thead><tbody id="logsTable"><tr><td colspan="4" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
-
-    <!-- SÉCURITÉ -->
-    <div class="admin-section" id="sec-security">
-        <div class="page-header"><div><div class="page-title">Sécurité Admin</div></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-key"></i> Changer le mot de passe</div><div class="form-row"><div class="form-group"><label class="form-label">Nouveau</label><input type="password" class="form-input" id="newAdminPass"></div><div class="form-group"><label class="form-label">Confirmer</label><input type="password" class="form-input" id="confirmAdminPass"></div></div><button class="btn btn-primary btn-sm" onclick="changeAdminPassword()"><i class="fas fa-save"></i> Modifier</button></div>
-        <div class="card"><button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Se déconnecter</button></div>
-    </div>
-
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-var BUCKET = 'pixora-gallery';
-var notifications = [];
-var unreadCount = 0;
-var ADMIN_EMAIL = '';
-var API_KEYS = {};
-
-// === AUTH ===
-async function handleAdminLogin(e) {
-    e.preventDefault();
-    var email = document.getElementById('adminEmail').value.trim();
-    var pass = document.getElementById('adminPass').value;
-    var btn = document.getElementById('btnAdminLogin');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-    try {
-        var adminEmailResult = await db.from('admin_config').select('value').eq('key', 'admin_email').single();        var rawValue = adminEmailResult.data ? adminEmailResult.data.value : '"leonard@pixora.com"';
-        var allowedEmail = String(rawValue).replace(/^"|"$/g, '');
-        var result = await db.auth.signInWithPassword({ email: email, password: pass });
-        if (result.error) throw new Error(result.error.message);
-        if (!result.data?.user) throw new Error('Utilisateur non trouvé');
-        if (email !== allowedEmail) throw new Error('Email non autorisé');
-        ADMIN_EMAIL = email;
-        document.getElementById('loginOverlay').classList.add('hidden');
-        document.getElementById('adminEmailDisplay').textContent = email;
-        initAdmin();
-    } catch (err) {
-        alert('❌ ' + (err.message || 'Identifiants incorrects'));
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder';
-    }
-}
-
-function logoutAdmin() { db.auth.signOut(); location.reload(); }
-
-// === NAV ===
-function showSection(name) {
-    document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
-    document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
-    document.getElementById('sec-' + name).classList.add('active');
-    var navItems = document.querySelectorAll('.nav-item');
-    var map = { dashboard:0, 'models-image':2, apis:3, 'api-tester':4, 'gallery-admin':5, 'ad-networks':7, pricing:8, 'shop-config':9, 'site-settings':11, seo:12, legal:13, users:15, logs:16, security:17 };
-    if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');
-    setTimeout(function() {
-        var loaders = { dashboard: loadDashboard, 'models-image': function(){loadModels('image')}, apis: loadApiKeys, 'api-tester': loadApiKeysForTest, 'gallery-admin': loadGalleryAdmin, 'ad-networks': loadAdNetworks, pricing: loadPricing, 'shop-config': loadShopConfig, 'site-settings': loadSiteSettings, seo: loadSeo, legal: loadLegal, users: loadUsers, logs: loadLogs };
-        if (loaders[name]) try { loaders[name](); } catch(err) { console.error('Load error:', err); }
-    }, 50);
-}
-
-// === NOTIFICATIONS ===
-function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('open'); }
-function addNotification(type, message) {
-    notifications.unshift({ type: type, message: message, time: new Date(), read: false });
-    unreadCount++;
-    updateNotifUI();
-}
-function updateNotifUI() {
-    var badge = document.getElementById('notifBadge');
-    badge.textContent = unreadCount;
-    badge.style.display = unreadCount > 0 ? 'block' : 'none';
-    var list = document.getElementById('notifList');
-    if (!notifications.length) { list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim)">Aucune notification</div>'; return; }
-    list.innerHTML = notifications.map(function(n) {
-        var icons = { user: 'fa-user-plus', payment: 'fa-credit-card', error: 'fa-exclamation-triangle', gen: 'fa-sparkles', config: 'fa-cog' };
-        return '<div class="notif-item ' + (n.read ? '' : 'unread') + '" onclick="markRead(this)"><div class="notif-type ' + n.type + '"><i class="fas ' + (icons[n.type] || 'fa-info-circle') + '"></i> ' + n.type.toUpperCase() + '</div><div>' + n.message + '</div><div class="notif-time">' + n.time.toLocaleTimeString('fr-FR') + '</div></div>';
-    }).join('');}
-function markRead(el) { el.classList.remove('unread'); unreadCount = Math.max(0, unreadCount - 1); updateNotifUI(); }
-
-// === DASHBOARD ===
-async function loadDashboard() {
-    try {
-        var usersResult = await db.from('user_data').select('user_id', { count: 'exact', head: true });
-        document.getElementById('dashTotalUsers').textContent = usersResult.count || 0;
-        var today = new Date().toISOString().split('T')[0];
-        var activeResult = await db.from('daily_usage').select('user_id', { count: 'exact', head: true }).eq('date', today);
-        document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
-        var txResult = await db.from('transactions').select('amount').eq('type', 'earned');
-        var totalPoints = 0;
-        if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; });
-        document.getElementById('dashPointsDistributed').textContent = totalPoints.toLocaleString();
-        var genResult = await db.from('user_data').select('total_generated');
-        var totalGen = 0;
-        if (genResult.data) genResult.data.forEach(function(u) { totalGen += (u.total_generated || 0); });
-        document.getElementById('dashGenerations').textContent = totalGen.toLocaleString();
-        var recentTx = await db.from('transactions').select('*').order('created_at', { ascending: false }).limit(10);
-        var tbody = document.getElementById('dashRecentTx');
-        if (recentTx.data && recentTx.data.length) {
-            tbody.innerHTML = recentTx.data.map(function(t) {
-                return '<tr><td>' + (t.user_id ? t.user_id.substring(0,8) + '...' : '-') + '</td><td><span style="color:' + (t.type === 'earned' ? 'var(--success)' : t.type === 'spent' ? 'var(--danger)' : 'var(--accent)') + '">' + t.type + '</span></td><td>' + t.title + '</td><td style="font-family:var(--mono);color:' + (t.amount > 0 ? 'var(--success)' : 'var(--danger)') + '">' + (t.amount > 0 ? '+' : '') + t.amount + '</td><td style="font-size:0.75rem;color:var(--dim)">' + new Date(t.created_at).toLocaleString('fr-FR') + '</td></tr>';
-            }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucune transaction récente</td></tr>'; }
-    } catch (err) { console.error('Dashboard error:', err); }
-}
-
-// === API TESTER ===
-async function loadApiKeysForTest() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'api_keys').single();
-        API_KEYS = result.data ? result.data.value : {};
-    } catch (err) { console.error('Load API keys error:', err); }
-}
-
-function setApiStatus(provider, status, msg) {
-    var el = document.getElementById('status-' + provider);
-    var log = document.getElementById('log-' + provider);
-    el.className = 'api-status ' + status;
-    if (status === 'ok') el.innerHTML = '<i class="fas fa-check-circle"></i> Connecté';
-    if (status === 'ko') el.innerHTML = '<i class="fas fa-times-circle"></i> Erreur';
-    if (status === 'wait') el.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Test...';
-    if (msg) log.textContent = msg;
-}
-
-async function testPollinations() {
-    setApiStatus('pollinations', 'wait', 'Envoi requête...');
-    try {        var start = Date.now();
-        var res = await fetch('https://image.pollinations.ai/prompt/test?width=64&height=64&nologo=true');
-        var time = Date.now() - start;
-        if (res.ok) setApiStatus('pollinations', 'ok', '✅ OK (' + time + 'ms)');
-        else setApiStatus('pollinations', 'ko', '❌ HTTP ' + res.status);
-    } catch (e) { setApiStatus('pollinations', 'ko', '❌ ' + e.message); }
-}
-
-async function testFalAI() {
-    var key = API_KEYS['fal.ai'];
-    if (!key) { setApiStatus('fal', 'ko', '❌ Clé manquante'); return; }
-    setApiStatus('fal', 'wait', 'Test endpoint...');
-    try {
-        var res = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
-            method: 'POST',
-            headers: { 'Authorization': 'Key ' + key, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: 'test', image_size: 'square_hd' })
-        });
-        if (res.ok || res.status === 200) setApiStatus('fal', 'ok', '✅ Clé valide');
-        else { var err = await res.text(); setApiStatus('fal', 'ko', '❌ ' + res.status); }
-    } catch (e) { setApiStatus('fal', 'ko', '❌ ' + e.message); }
-}
-
-async function testStability() {
-    var key = API_KEYS['stability'];
-    if (!key) { setApiStatus('stability', 'ko', '❌ Clé manquante'); return; }
-    setApiStatus('stability', 'wait', 'Test balance...');
-    try {
-        var res = await fetch('https://api.stability.ai/v1/user/balance', { headers: { 'Authorization': 'Bearer ' + key } });
-        if (res.ok) { var data = await res.json(); setApiStatus('stability', 'ok', '✅ Crédits: ' + data.credits); }
-        else setApiStatus('stability', 'ko', '❌ ' + res.status);
-    } catch (e) { setApiStatus('stability', 'ko', '❌ ' + e.message); }
-}
-
-async function testReplicate() {
-    var key = API_KEYS['replicate'];
-    if (!key) { setApiStatus('replicate', 'ko', '❌ Clé manquante'); return; }
-    setApiStatus('replicate', 'wait', 'Test...');
-    try {
-        var res = await fetch('https://api.replicate.com/v1/models', { headers: { 'Authorization': 'Token ' + key } });
-        if (res.ok) setApiStatus('replicate', 'ok', '✅ Clé valide');
-        else setApiStatus('replicate', 'ko', '❌ ' + res.status);
-    } catch (e) { setApiStatus('replicate', 'ko', '❌ ' + e.message); }
-}
-
-async function testOpenAI() {
-    var key = API_KEYS['openai'];
-    if (!key) { setApiStatus('openai', 'ko', '❌ Clé manquante'); return; }
-    setApiStatus('openai', 'wait', 'Test...');
-    try {        var res = await fetch('https://api.openai.com/v1/models', { headers: { 'Authorization': 'Bearer ' + key } });
-        if (res.ok) setApiStatus('openai', 'ok', '✅ Clé valide');
-        else setApiStatus('openai', 'ko', '❌ ' + res.status);
-    } catch (e) { setApiStatus('openai', 'ko', '❌ ' + e.message); }
-}
-
-function runAllApiTests() {
-    testPollinations(); testFalAI(); testStability(); testReplicate(); testOpenAI();
-}
-
-// === GALERIE ===
-async function loadGalleryAdmin() {
-    var grid = document.getElementById('galleryGrid');
-    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim);grid-column:1/-1"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>';
-    try {
-        var result = await db.storage.from(BUCKET).list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
-        if (result.error) throw result.error;
-        if (!result.data || result.data.length === 0) {
-            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim);grid-column:1/-1"><i class="fas fa-images" style="opacity:0.3"></i><p>Aucune image</p></div>';
-            document.getElementById('galleryCount').textContent = '0';
-            return;
+        async function checkAdmin() {
+            const { data: { user }, error } = await db.auth.getUser();
+            if (error || !user || user.email !== ADMIN_EMAIL) {
+                document.getElementById('mainContent').style.display = 'none';
+                document.getElementById('sidebar').style.display = 'none';
+                document.getElementById('accessDenied').style.display = 'block';
+                return;
+            }
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('sidebar').style.display = 'flex';
+            await refreshData();
         }
-        document.getElementById('galleryCount').textContent = result.data.length;
-        grid.innerHTML = '';
-        result.data.forEach(function(file) {
-            var url = db.storage.from(BUCKET).getPublicUrl(file.name).data.publicUrl;
-            var div = document.createElement('div');
-            div.className = 'gallery-item';
-            div.innerHTML = '<img src="' + url + '" loading="lazy"><div class="overlay"><button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteGalleryFile(\'' + file.name + '\')"><i class="fas fa-trash"></i></button></div>';
-            grid.appendChild(div);
-        });
-    } catch (err) { grid.innerHTML = '<div style="color:var(--danger);grid-column:1/-1;text-align:center">Erreur: ' + err.message + '</div>'; }
-}
 
-async function deleteGalleryFile(fileName) {
-    if (!confirm('Supprimer ' + fileName + ' ?')) return;
-    await db.storage.from(BUCKET).remove([fileName]);
-    loadGalleryAdmin();
-}
+        function showSection(section) {
+            ['dashboard', 'users', 'settings'].forEach(s => {
+                document.getElementById('section-' + s).style.display = s === section ? 'block' : 'none';
+            });
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event?.currentTarget?.classList.add('active');
+        }
 
-// === MODÈLES ===
-async function loadModels(type) {
-    try {
-        var result = await db.from('generator_models').select('*').eq('type', type).order('sort_order');
-        var tbody = document.getElementById('imgModelsTable');
-        if (result.data && result.data.length) {
-            tbody.innerHTML = result.data.map(function(m) {
-                return '<tr><td>' + m.name + '</td><td>' + m.provider + '</td><td style="color:var(--gold)">' + m.cost_points + '</td><td>' + m.sort_order + '</td><td>' + (m.is_active ? '✅' : '❌') + '</td><td><button class="btn btn-sm btn-outline" onclick="editModel(\'' + type + '\',\'' + m.id + '\')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteModel(\'' + m.id + '\',\'' + type + '\')"><i class="fas fa-trash"></i></button></td></tr>';
-            }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle</td></tr>'; }    } catch (err) { console.error(err); }
-}
+        async function refreshData() {
+            try {
+                // Load all stats in parallel
+                const [usersRes, adsRes, txRes, clicksRes] = await Promise.all([
+                    db.from('user_data').select('points'),
+                    db.from('admin_config').select('value').eq('key', 'ad_networks').single(),
+                    db.from('transactions').select('id, created_at, amount, title').order('created_at', { ascending: false }).limit(15),
+                    db.from('ad_clicks').select('id, created_at, ad_name').order('created_at', { ascending: false }).limit(15)                ]);
 
-function openModelForm(type) { document.getElementById('modelImageForm').style.display = 'block'; }
-function closeModelForm() { document.getElementById('modelImageForm').style.display = 'none'; }
+                const users = usersRes.data || [];
+                const ads = adsRes.data?.value || [];
+                const transactions = txRes.data || [];
+                const clicks = clicksRes.data || [];
 
-async function editModel(type, id) {
-    var r = await db.from('generator_models').select('*').eq('id', id).single();
-    if (!r.data) return;
-    document.getElementById('modelImageForm').style.display = 'block';
-    document.getElementById('imgModelId').value = r.data.id;
-    document.getElementById('imgModelName').value = r.data.name;
-    document.getElementById('imgModelProvider').value = r.data.provider;
-    document.getElementById('imgModelEndpoint').value = r.data.api_endpoint || '';
-    document.getElementById('imgModelCost').value = r.data.cost_points;
-    document.getElementById('imgModelOrder').value = r.data.sort_order;
-    document.getElementById('imgModelActive').checked = r.data.is_active;
-}
+                // Stats
+                document.getElementById('totalUsers').textContent = users.length.toLocaleString();
+                document.getElementById('totalPoints').textContent = users.reduce((sum, u) => sum + (u.points || 0), 0).toLocaleString();
+                document.getElementById('totalTasks').textContent = clicks.length.toLocaleString();
+                document.getElementById('activeAds').textContent = ads.filter(a => a.active).length;
+                document.getElementById('adsCount').textContent = ads.length;
 
-async function saveModel(type) {
-    var id = document.getElementById('imgModelId').value;
-    var data = {
-        name: document.getElementById('imgModelName').value.trim(),
-        type: type,
-        provider: document.getElementById('imgModelProvider').value.trim(),
-        api_endpoint: document.getElementById('imgModelEndpoint').value.trim(),
-        cost_points: parseInt(document.getElementById('imgModelCost').value) || 15,
-        sort_order: parseInt(document.getElementById('imgModelOrder').value) || 0,
-        is_active: document.getElementById('imgModelActive').checked
-    };
-    if (!data.name || !data.provider) { alert('Nom et Provider requis'); return; }
-    if (id) await db.from('generator_models').update(data).eq('id', id);
-    else await db.from('generator_models').insert(data);
-    closeModelForm();
-    loadModels(type);
-    addNotification('config', 'Modèle "' + data.name + '" sauvegardé');
-}
+                // Today earners
+                const today = new Date().toISOString().split('T')[0];
+                const todayTx = transactions.filter(t => t.created_at?.startsWith(today));
+                const uniqueEarners = new Set(todayTx.map(t => t.id)).size;
+                document.getElementById('todayEarners').textContent = uniqueEarners;
 
-async function deleteModel(id, type) {
-    if (!confirm('Supprimer ?')) return;
-    await db.from('generator_models').delete().eq('id', id);
-    loadModels(type);
-}
+                // Welcome bonus
+                const bonusConfig = await db.from('admin_config').select('value').eq('key', 'welcome_bonus').single();
+                if (bonusConfig.data) {
+                    document.getElementById('welcomeBonus').value = bonusConfig.data.value || 20;
+                }
 
-// === CLÉS API ===
-async function loadApiKeys() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'api_keys').single();
-        var keys = result.data ? result.data.value : {};
-        var providers = ['fal.ai', 'replicate', 'stability', 'kling', 'runway', 'pika', 'openai'];        var html = '<div class="form-row">';
-        providers.forEach(function(p) {
-            html += '<div class="form-group"><label class="form-label">' + p + '</label><input type="password" class="form-input api-key-input" data-provider="' + p + '" value="' + (keys[p] || '') + '" placeholder="Clé API"></div>';
-        });
-        html += '</div>';
-        document.getElementById('apiKeysContainer').innerHTML = html;
-    } catch (err) { console.error(err); }
-}
-
-async function saveApiKeys() {
-    var keys = {};
-    document.querySelectorAll('.api-key-input').forEach(function(input) {
-        if (input.value.trim()) keys[input.dataset.provider] = input.value.trim();
-    });
-    await db.from('admin_config').upsert({ key: 'api_keys', value: keys, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    alert('✅ Clés API sauvegardées !');
-}
-
-// === RÉGIES ===
-async function loadAdNetworks() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'ad_networks').single();
-        var networks = result.data ? result.data.value : [];
-        var tbody = document.getElementById('adNetworksTable');
-        if (networks.length) {
-            tbody.innerHTML = networks.map(function(n, i) {
-                return '<tr><td>' + n.name + '</td><td>' + n.type + '</td><td style="color:var(--gold)">' + n.points + '</td><td>' + n.order + '</td><td>' + (n.active ? '✅' : '❌') + '</td><td><button class="btn btn-sm btn-outline" onclick="editAdNetwork(' + i + ')"><i class="fas fa-edit"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteAdNetwork(' + i + ')"><i class="fas fa-trash"></i></button></td></tr>';
-            }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie</td></tr>'; }
-        window._adNetworks = networks;
-    } catch (err) { console.error(err); }
-}
-
-function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display = 'block'; }
-function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display = 'none'; }
-
-function editAdNetwork(index) {
-    var n = window._adNetworks[index];
-    if (!n) return;
-    document.getElementById('adNetworkForm').style.display = 'block';
-    document.getElementById('adNetId').value = index;
-    document.getElementById('adNetName').value = n.name;
-    document.getElementById('adNetType').value = n.type;
-    document.getElementById('adNetLink').value = n.link;
-    document.getElementById('adNetPoints').value = n.points;
-    document.getElementById('adNetOrder').value = n.order;
-    document.getElementById('adNetActive').checked = n.active;
-}
-
-async function saveAdNetwork() {    var index = document.getElementById('adNetId').value;
-    var data = {
-        name: document.getElementById('adNetName').value.trim(),
-        type: document.getElementById('adNetType').value,
-        link: document.getElementById('adNetLink').value.trim(),
-        points: parseInt(document.getElementById('adNetPoints').value) || 0,
-        order: parseInt(document.getElementById('adNetOrder').value) || 0,
-        active: document.getElementById('adNetActive').checked
-    };
-    if (!data.name) { alert('Nom requis'); return; }
-    var networks = window._adNetworks || [];
-    if (index !== '') networks[parseInt(index)] = data; else networks.push(data);
-    networks.sort(function(a, b) { return a.order - b.order; });
-    await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    closeAdNetworkForm();
-    loadAdNetworks();
-}
-
-async function deleteAdNetwork(index) {
-    if (!confirm('Supprimer ?')) return;
-    var networks = window._adNetworks || [];
-    networks.splice(index, 1);
-    await db.from('admin_config').upsert({ key: 'ad_networks', value: networks, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    loadAdNetworks();
-}
-
-// === PRICING (TIERS 1, 2, 3) ===
-async function loadPricing() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'tiers').single();
-        if (result.data && result.data.value) {
-            var tiers = result.data.value;
-            [1, 2, 3].forEach(function(t) {
-                var tier = tiers[t];
-                if (!tier) return;
-                var cls = '.pricing-t' + t;
-                document.querySelectorAll(cls).forEach(function(input) {
-                    var parts = input.dataset.key.split('.');
-                    if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]];
+                // Activity feed (merge transactions + clicks)
+                const activity = [];
+                transactions.forEach(t => {
+                    activity.push({
+                        type: 'earned',
+                        title: t.title || 'Points gagnés',
+                        meta: new Date(t.created_at).toLocaleString('fr-FR'),
+                        amount: '+' + (t.amount || 0)
+                    });
                 });
-            });
-        }
-        var bonus = await db.from('admin_config').select('*').eq('key', 'signup_bonus').single();
-        if (bonus.data) document.getElementById('signupBonus').value = bonus.data.value;
-    } catch (err) { console.error(err); }
-}
+                clicks.forEach(c => {
+                    activity.push({
+                        type: 'task',
+                        title: '✅ ' + (c.ad_name || 'Offre complétée'),
+                        meta: new Date(c.created_at).toLocaleString('fr-FR'),
+                        amount: ''
+                    });
+                });
+                activity.sort((a, b) => new Date(b.meta.split('/').reverse().join('-')) - new Date(a.meta.split('/').reverse().join('-')));
 
-async function savePricing() {
-    try {
-        var existing = await db.from('admin_config').select('*').eq('key', 'tiers').single();        var tiers = existing.data ? existing.data.value : {};
-        [1, 2, 3].forEach(function(t) {
-            if (!tiers[t]) tiers[t] = { costs: {}, rewards: {}, limits: {} };
-            document.querySelectorAll('.pricing-t' + t).forEach(function(input) {
-                var parts = input.dataset.key.split('.');
-                if (!tiers[t][parts[0]]) tiers[t][parts[0]] = {};
-                tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0;
-            });
-        });
-        await db.from('admin_config').upsert({ key: 'tiers', value: tiers, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        await db.from('admin_config').upsert({ key: 'signup_bonus', value: parseInt(document.getElementById('signupBonus').value) || 50, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        alert('✅ Pricing sauvegardé !');
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
+                const actList = document.getElementById('activityList');
+                if (activity.length === 0) {
+                    actList.innerHTML = '<div class="activity-item" style="justify-content:center;color:var(--muted);padding:2rem">Aucune activité récente</div>';
+                } else {                    actList.innerHTML = activity.slice(0, 10).map(a => `
+                        <div class="activity-item">
+                            <div class="activity-icon ${a.type === 'earned' ? 'earned' : 'user'}">
+                                <i class="fas fa-${a.type === 'earned' ? 'coins' : 'check'}"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">${a.title}</div>
+                                <div class="activity-meta">${a.meta}</div>
+                            </div>
+                            ${a.amount ? `<div class="activity-amount">${a.amount}</div>` : ''}
+                        </div>
+                    `).join('');
+                }
 
-// === SHOP ===
-async function loadShopConfig() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'shop_config').single();
-        var config = result.data ? result.data.value : { packs: [], subs: [], currency: 'EUR', stripe_key: '', paypal_client_id: '' };
-        document.getElementById('shopCurrency').value = config.currency || 'EUR';
-        document.getElementById('stripeKey').value = config.stripe_key || '';
-        document.getElementById('paypalClientId').value = config.paypal_client_id || '';
-        var packsHtml = '';
-        (config.packs || []).forEach(function(p) {
-            packsHtml += '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="' + p.name + '"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="' + p.points + '"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="' + p.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-        });
-        document.getElementById('packsContainer').innerHTML = packsHtml || '<div style="color:var(--dim)">Aucun pack</div>';
-        var subsHtml = '';
-        (config.subs || []).forEach(function(s) {
-            subsHtml += '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="' + s.name + '"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="' + s.points + '"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="' + s.price + '" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>';
-        });
-        document.getElementById('subsContainer').innerHTML = subsHtml || '<div style="color:var(--dim)">Aucun abonnement</div>';
-    } catch (err) { console.error(err); }
-}
-
-function addPackField() {
-    document.getElementById('packsContainer').insertAdjacentHTML('beforeend', '<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Nom"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>');
-}
-
-function addSubField() {
-    document.getElementById('subsContainer').insertAdjacentHTML('beforeend', '<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Nom"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>');
-}
-
-async function saveShopConfig() {
-    var packs = [], subs = [];
-    document.querySelectorAll('.pack-row').forEach(function(row) {
-        var name = row.querySelector('.pack-name').value.trim();
-        if (name) packs.push({ name: name, points: parseInt(row.querySelector('.pack-points').value) || 0, price: parseFloat(row.querySelector('.pack-price').value) || 0 });
-    });    document.querySelectorAll('.sub-row').forEach(function(row) {
-        var name = row.querySelector('.sub-name').value.trim();
-        if (name) subs.push({ name: name, points: parseInt(row.querySelector('.sub-points').value) || 0, price: parseFloat(row.querySelector('.sub-price').value) || 0 });
-    });
-    var config = { packs: packs, subs: subs, currency: document.getElementById('shopCurrency').value, stripe_key: document.getElementById('stripeKey').value.trim(), paypal_client_id: document.getElementById('paypalClientId').value.trim() };
-    await db.from('admin_config').upsert({ key: 'shop_config', value: config, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    alert('✅ Boutique sauvegardée !');
-}
-
-// === SITE SETTINGS ===
-async function loadSiteSettings() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'site_settings').single();
-        if (result.data && result.data.value) {
-            var s = result.data.value;
-            document.getElementById('settingSiteName').value = s.name || 'Pixora';
-            document.getElementById('settingLogoUrl').value = s.logo_url || '';
-            document.getElementById('settingFavicon').value = s.favicon || '';
-            document.getElementById('settingColorPrimary').value = s.color_primary || '#8B5CF6';
-            document.getElementById('settingColorSecondary').value = s.color_secondary || '#EC4899';
-            document.getElementById('settingLang').value = s.lang || 'fr';
-            document.getElementById('settingHeroText').value = s.hero_text || '';
-            document.getElementById('settingMaintenance').checked = !!s.maintenance;
-        }
-    } catch (err) { console.error(err); }
-}
-
-async function saveSiteSettings() {
-    try {
-        var settings = {
-            name: document.getElementById('settingSiteName').value.trim(),
-            logo_url: document.getElementById('settingLogoUrl').value.trim(),
-            favicon: document.getElementById('settingFavicon').value.trim(),
-            color_primary: document.getElementById('settingColorPrimary').value,
-            color_secondary: document.getElementById('settingColorSecondary').value,
-            lang: document.getElementById('settingLang').value,
-            hero_text: document.getElementById('settingHeroText').value.trim(),
-            maintenance: document.getElementById('settingMaintenance').checked
-        };
-        await db.from('admin_config').upsert({ key: 'site_settings', value: settings, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        alert('✅ Paramètres sauvegardés !');
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-// === SEO ===
-async function loadSeo() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'seo').single();
-        if (result.data && result.data.value) {
-            var s = result.data.value;            document.getElementById('seoTitle').value = s.title || '';
-            document.getElementById('seoDescription').value = s.description || '';
-            document.getElementById('seoOgImage').value = s.og_image || '';
-            document.getElementById('seoCanonical').value = s.canonical || '';
-        }
-    } catch (err) { console.error(err); }
-}
-
-async function saveSeo() {
-    try {
-        var seo = {
-            title: document.getElementById('seoTitle').value.trim(),
-            description: document.getElementById('seoDescription').value.trim(),
-            og_image: document.getElementById('seoOgImage').value.trim(),
-            canonical: document.getElementById('seoCanonical').value.trim()
-        };
-        await db.from('admin_config').upsert({ key: 'seo', value: seo, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        alert('✅ SEO sauvegardé !');
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-// === LEGAL ===
-async function loadLegal() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'legal').single();
-        if (result.data && result.data.value) {
-            document.getElementById('legalCgu').value = result.data.value.cgu || '';
-            document.getElementById('legalPrivacy').value = result.data.value.privacy || '';
-            document.getElementById('legalMentions').value = result.data.value.mentions || '';
-        }
-    } catch (err) { console.error(err); }
-}
-
-async function saveLegal() {
-    try {
-        var legal = {
-            cgu: document.getElementById('legalCgu').value,
-            privacy: document.getElementById('legalPrivacy').value,
-            mentions: document.getElementById('legalMentions').value
-        };
-        await db.from('admin_config').upsert({ key: 'legal', value: legal, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        alert('✅ Contenu légal sauvegardé !');
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-// === USERS (CORRIGÉ) ===
-async function loadUsers() {
-    try {
-        // Récupère auth.users via Admin API
-        var authUsers = await db.auth.admin.listUsers();        var userDataResult = await db.from('user_data').select('*');
-        var usersMap = {};
-        if (userDataResult.data) userDataResult.data.forEach(function(d) { usersMap[d.user_id] = d; });
-        var allUsers = [];
-        if (authUsers.data && authUsers.data.users) {
-            authUsers.data.users.forEach(function(u) {
-                allUsers.push({ id: u.id, email: u.email, name: u.user_metadata?.name || '-', created_at: u.created_at });
-            });
-        }
-        window._allUsers = allUsers;
-        renderUsersTable(allUsers, usersMap);
-    } catch (err) {
-        console.error('Load users error:', err);
-        document.getElementById('usersTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--danger)">Erreur: ' + err.message + '</td></tr>';
-    }
-}
-
-function renderUsersTable(users, usersMap) {
-    var tbody = document.getElementById('usersTable');
-    if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun utilisateur</td></tr>'; return; }
-    tbody.innerHTML = users.map(function(u) {
-        var d = usersMap[u.id] || {};
-        return '<tr><td>' + (u.name || '-') + '</td><td style="font-size:0.8rem">' + u.email + '</td><td style="font-family:var(--mono);color:var(--gold)">' + (d.points || 0) + '</td><td>J' + (d.streak || 1) + '</td><td><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\'' + u.id + '\')"><i class="fas fa-plus"></i> Pts</button> <button class="btn btn-sm btn-danger" onclick="banUser(\'' + u.id + '\')"><i class="fas fa-ban"></i></button></td></tr>';
-    }).join('');
-}
-
-function searchUsers() {
-    var q = document.getElementById('userSearch').value.toLowerCase();
-    var filtered = window._allUsers.filter(function(u) { return (u.email && u.email.toLowerCase().includes(q)) || (u.name && u.name.toLowerCase().includes(q)); });
-    db.from('user_data').select('*').then(function(result) {
-        var usersMap = {};
-        if (result.data) result.data.forEach(function(d) { usersMap[d.user_id] = d; });
-        renderUsersTable(filtered, usersMap);
-    });
-}
-
-async function addPointsToUser(userId) {
-    var amount = prompt('Combien de points ajouter ?');
-    if (!amount || isNaN(amount)) return;
-    amount = parseInt(amount);
-    try {
-        await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Ajout admin', amount: amount });
-        var data = await db.from('user_data').select('*').eq('user_id', userId).single();
-        if (data.data) {
-            await db.from('user_data').update({ points: data.data.points + amount, total_earned: (data.data.total_earned || 0) + amount }).eq('user_id', userId);
-        } else {
-            await db.from('user_data').insert({ user_id: userId, points: amount, streak: 1, total_generated: 0, total_earned: amount });
-        }
-        loadUsers();
-        addNotification('user', amount + ' points ajoutés');    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-async function banUser(userId) {
-    if (!confirm('Bannir cet utilisateur ?')) return;
-    try {
-        await db.from('user_data').update({ points: 0, streak: 0 }).eq('user_id', userId);
-        loadUsers();
-        addNotification('user', 'Utilisateur banni');
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-// === LOGS ===
-async function loadLogs() {
-    try {
-        var result = await db.from('admin_config').select('*').eq('key', 'system_logs').single();
-        var logs = result.data ? result.data.value : [];
-        var tbody = document.getElementById('logsTable');
-        if (logs.length) {
-            tbody.innerHTML = logs.slice().reverse().slice(0, 50).map(function(l) {
-                var colors = { error: 'var(--danger)', warn: 'var(--warn)', info: 'var(--accent)', success: 'var(--success)' };
-                return '<tr><td style="font-size:0.75rem;font-family:var(--mono)">' + new Date(l.time).toLocaleString('fr-FR') + '</td><td style="color:' + (colors[l.type] || 'var(--text)') + '">' + l.type.toUpperCase() + '</td><td>' + l.message + '</td><td style="font-size:0.75rem;color:var(--dim)">' + (l.details || '-') + '</td></tr>';
-            }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--dim)">Aucun log</td></tr>'; }
-    } catch (err) { console.error(err); }
-}
-
-// === SECURITY ===
-async function changeAdminPassword() {
-    var newPass = document.getElementById('newAdminPass').value;
-    var confirmPass = document.getElementById('confirmAdminPass').value;
-    if (newPass !== confirmPass) { alert('Mots de passe différents'); return; }
-    if (newPass.length < 8) { alert('Minimum 8 caractères'); return; }
-    try {
-        await db.auth.updateUser({ password: newPass });
-        alert('✅ Mot de passe modifié !');
-        document.getElementById('newAdminPass').value = '';
-        document.getElementById('confirmAdminPass').value = '';
-    } catch (err) { alert('Erreur: ' + err.message); }
-}
-
-// === REALTIME ===
-function subscribeRealtime() {
-    db.channel('admin-realtime-v5')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'user_data' }, function() {
-            addNotification('user', 'Nouveau compte créé');
-        })
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, function(payload) {
-            if (payload.new.type === 'purchased') addNotification('payment', 'Paiement: ' + payload.new.title);
-        })        .subscribe();
-}
-
-// === INIT ===
-async function initAdmin() {
-    try {
-        var r = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
-        ADMIN_EMAIL = r.data ? String(r.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
-    } catch (err) { ADMIN_EMAIL = 'leonard@pixora.com'; }
-    subscribeRealtime();
-    loadDashboard();
-    updateNotifUI();
-}
-
-document.addEventListener('DOMContentLoaded', async function() {
-    try {
-        var result = await db.auth.getUser();
-        if (result.data.user) {
-            var r = await db.from('admin_config').select('value').eq('key', 'admin_email').single();
-            var allowedEmail = r.data ? String(r.data.value).replace(/^"|"$/g, '') : 'leonard@pixora.com';
-            if (result.data.user.email === allowedEmail) {
-                ADMIN_EMAIL = result.data.user.email;
-                document.getElementById('loginOverlay').classList.add('hidden');
-                document.getElementById('adminEmailDisplay').textContent = result.data.user.email;
-                initAdmin();
+            } catch (e) {
+                console.error('Refresh error:', e);
             }
         }
-    } catch (err) { console.error('Init error:', err); }
-});
-</script>
+
+        async function searchUser() {
+            const email = document.getElementById('userSearchEmail').value.trim().toLowerCase();
+            if (!email) return;
+
+            document.getElementById('userResult').classList.remove('visible');
+            document.getElementById('userNotFound').style.display = 'none';
+
+            const { data: profiles } = await db.from('profiles').select('id, email').ilike('email', email);
+            
+            if (!profiles || profiles.length === 0) {
+                document.getElementById('userNotFound').style.display = 'block';
+                return;
+            }
+
+            const profile = profiles[0];
+            const { data: userData } = await db.from('user_data').select('points').eq('user_id', profile.id).single();
+
+            currentUserId = profile.id;
+            document.getElementById('userAvatar').textContent = (profile.email || '?')[0].toUpperCase();
+            document.getElementById('userEmail').textContent = profile.email;
+            document.getElementById('userPointsDisplay').textContent = (userData?.points || 0).toLocaleString() + ' points';
+            document.getElementById('newPoints').value = userData?.points || 0;
+            document.getElementById('userResult').classList.add('visible');
+        }
+
+        async function updateUserPoints() {
+            if (!currentUserId) return;
+            const newPts = parseInt(document.getElementById('newPoints').value);
+            if (isNaN(newPts)) { alert('Entrez un nombre valide'); return; }
+
+            const { error } = await db.from('user_data').update({ points: newPts }).eq('user_id', currentUserId);            
+            if (error) { alert('Erreur: ' + error.message); return; }
+            
+            alert('✅ Points mis à jour !');
+            document.getElementById('userPointsDisplay').textContent = newPts.toLocaleString() + ' points';
+            await refreshData();
+        }
+
+        async function saveWelcomeBonus() {
+            const val = parseInt(document.getElementById('welcomeBonus').value) || 20;
+            await db.from('admin_config').upsert({ key: 'welcome_bonus', value: val });
+            alert('✅ Bonus de bienvenue sauvegardé : ' + val + ' points');
+        }
+
+        async function logout() {
+            await db.auth.signOut();
+            window.location.href = '/index.html';
+        }
+
+        checkAdmin();
+    </script>
 </body>
 </html>
