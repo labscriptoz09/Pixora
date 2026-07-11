@@ -39,15 +39,19 @@
         .btn-disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
         .empty-state{text-align:center;padding:3rem;color:var(--dim);grid-column:1/-1}
         .empty-state i{font-size:3rem;margin-bottom:1rem;opacity:0.3}
+        .smartlink-info{background:rgba(139,92,246,0.1);border:1px solid var(--accent);border-radius:10px;padding:1rem;margin:1rem 0;text-align:center}
+        .smartlink-info i{color:var(--accent);font-size:1.5rem;margin-bottom:0.5rem}
+        .smartlink-info p{font-size:0.85rem;color:var(--muted);margin-top:0.5rem}
         @media(max-width:768px){.earn-grid{grid-template-columns:1fr}.page-title{font-size:1.5rem}}
     </style>
 </head>
 <body>
     <header>
-        <a href="/index.html" class="logo">
-            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
+        <a href="/index.html" class="logo">            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
             <span>Pixora</span>
-        </a>        <div class="balance-pill">            <i class="fas fa-coins"></i>
+        </a>
+        <div class="balance-pill">
+            <i class="fas fa-coins"></i>
             <span id="pointsDisplay">---</span>
         </div>
     </header>
@@ -75,7 +79,7 @@
         let adsData = [];
 
         const AD_CONFIG = {
-            video: { icon: '', label: 'Regarder une vidéo', desc: 'Regardez une vidéo de 30 secondes' },
+            video: { icon: '🎬', label: 'Regarder une vidéo', desc: 'Regardez une vidéo de 30 secondes' },
             smartlink: { icon: '🔗', label: 'Smartlink', desc: 'Visitez un partenaire via notre lien' },
             banner: { icon: '🖼️', label: 'Bannière 300x250', desc: 'Affichez une publicité pendant 30 secondes' },
             native: { icon: '📰', label: 'Contenu sponsorisé', desc: 'Lisez un article sponsorisé' },
@@ -83,12 +87,16 @@
             popunder: { icon: '🪟', label: 'Popunder', desc: 'Ouvrez une fenêtre publicitaire' }
         };
 
+        // Détecte si c'est une URL (Smartlink) ou du code HTML
+        function isURL(str) {
+            return str && (str.startsWith('http://') || str.startsWith('https://'));
+        }
+
         async function init() {
             const { data: { user: u }, error } = await db.auth.getUser();
             if (error || !u) { window.location.href = '/index.html'; return; }
             user = u;
-            await updatePoints();
-            await loadAds();
+            await updatePoints();            await loadAds();
         }
 
         async function loadAds() {
@@ -96,13 +104,12 @@
             
             try {
                 const { data: configData } = await db
-                    .from('admin_config')                    .select('value')
+                    .from('admin_config')
+                    .select('value')
                     .eq('key', 'ad_networks')
                     .single();
 
                 adsData = configData?.value || [];
-                
-                // 🔥 CORRECTION : Filtrer uniquement les pubs de la page 'earn'
                 const activeAds = adsData.filter(ad => ad.active && ad.page === 'earn');
 
                 if (activeAds.length === 0) {
@@ -133,19 +140,19 @@
                         <div class="earn-card ${isCompleted ? 'completed' : ''}" id="card-${ad.name.replace(/\s/g,'')}">
                             <div class="card-header">
                                 <div class="card-icon">${config.icon}</div>
-                                <div class="card-badge">+${ad.points}</div>
+                                <div class="card-badge">+${ad.points || 10}</div>
                             </div>
                             <h3 class="card-title">${ad.name}</h3>
                             <p class="card-desc">${config.desc}</p>
                             
-                            ${isCompleted ? `
-                                <div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center">
+                            ${isCompleted ? `                                <div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center">
                                     <i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i>
                                     <p style="margin-top:0.5rem;font-weight:600">Déjà complété</p>
                                 </div>
                                 <button class="btn btn-disabled" disabled>
                                     <i class="fas fa-check"></i> Terminé
-                                </button>                            ` : `
+                                </button>
+                            ` : `
                                 <button class="btn btn-primary" onclick="startTask(${actualIndex})">
                                     <i class="fas fa-play"></i> Commencer
                                 </button>
@@ -187,14 +194,14 @@
 ${htmlCode}
 </body>
 </html>`;
-
             const blob = new Blob([fullHtml], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             
             const iframe = document.createElement('iframe');
             iframe.src = url;
             iframe.style.width = '100%';
-            iframe.style.height = '270px';            iframe.style.border = 'none';
+            iframe.style.height = '270px';
+            iframe.style.border = 'none';
             iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
             
             container.appendChild(iframe);
@@ -215,24 +222,35 @@ ${htmlCode}
             btn.classList.add('btn-disabled');
 
             const hasCode = ad.code && ad.code.length > 0;
+            const isSmartlink = isURL(ad.code);
 
-            const adContainer = document.createElement('div');
-            adContainer.className = 'ad-container';
-            adContainer.id = `ad-${ad.name.replace(/\s/g,'')}`;
-            
-            if (hasCode) {
-                loadAdScript(adContainer, ad.code);
-            } else {
-                adContainer.style.display = 'none';
+            // Si c'est un Smartlink (URL), on ouvre dans un nouvel onglet
+            if (isSmartlink) {
+                const smartlinkInfo = document.createElement('div');
+                smartlinkInfo.className = 'smartlink-info';
+                smartlinkInfo.innerHTML = `
+                    <i class="fas fa-external-link-alt"></i>
+                    <p><strong>Une nouvelle fenêtre s'est ouverte !</strong></p>
+                    <p>Visitez le site partenaire, puis revenez ici.</p>
+                    <p style="margin-top:0.5rem;font-size:0.75rem;color:var(--dim)">Vos points seront crédités automatiquement.</p>
+                `;
+                card.insertBefore(smartlinkInfo, btn);
+
+                // Ouvre le Smartlink dans un nouvel onglet
+                window.open(ad.code, '_blank', 'noopener,noreferrer');
+            } else if (hasCode) {
+                // Sinon, affiche le code HTML dans une iframe
+                const adContainer = document.createElement('div');
+                adContainer.className = 'ad-container';
+                adContainer.id = `ad-${ad.name.replace(/\s/g,'')}`;
+                loadAdScript(adContainer, ad.code);                card.insertBefore(adContainer, btn);
             }
-            
-            card.insertBefore(adContainer, btn);
 
             let seconds = 30;
             const timerDiv = document.createElement('div');
             timerDiv.className = 'timer';
-            timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
-            card.insertBefore(timerDiv, adContainer);
+            timerDiv.innerHTML = `️ ${seconds}s restantes`;
+            card.insertBefore(timerDiv, btn);
 
             const timer = setInterval(() => {
                 seconds--;
@@ -243,11 +261,12 @@ ${htmlCode}
             try {
                 const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
                 const { data: userData } = await db
-                    .from('user_data')                    .select('points')
+                    .from('user_data')
+                    .select('points')
                     .eq('user_id', user.id)
                     .single();
 
-                const newPoints = (userData?.points || 0) + ad.points;
+                const newPoints = (userData?.points || 0) + (ad.points || 10);
 
                 await Promise.all([
                     db.from('user_data').update({ points: newPoints }).eq('user_id', user.id),
@@ -255,7 +274,7 @@ ${htmlCode}
                         user_id: user.id,
                         type: 'earned',
                         title: ad.name,
-                        amount: ad.points
+                        amount: ad.points || 10
                     }),
                     db.from('ad_clicks').insert({
                         user_id: user.id,
@@ -270,16 +289,10 @@ ${htmlCode}
                 setTimeout(async () => {
                     timerDiv.innerHTML = '✅ Terminé !';
                     timerDiv.style.color = 'var(--success)';
-                    
-                    if (!hasCode && ad.link) {
-                        setTimeout(() => { window.open(ad.link, '_blank'); }, 1000);
-                    }
-                    
                     await loadAds();
                 }, 30000);
 
-            } catch (e) {
-                console.error('Error:', e);
+            } catch (e) {                console.error('Error:', e);
                 alert('Erreur: ' + e.message);
                 await loadAds();
             }
@@ -292,4 +305,5 @@ ${htmlCode}
 
         init();
     </script>
-</body></html>
+</body>
+</html>
