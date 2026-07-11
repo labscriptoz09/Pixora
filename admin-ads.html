@@ -3,123 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Publicités | Pixora Admin</title>
+    <title>Gestion Publicités Avancée | Pixora Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif}
+        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--warning:#F59E0B;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;padding:2rem}
-        .container{max-width:1200px;margin:0 auto}
-        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-        .title{font-size:1.8rem;font-weight:700}
-        .btn-back{padding:0.6rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;text-decoration:none}
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;padding:1rem}
+        .container{max-width:1400px;margin:0 auto}
+        
+        /* Header */
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:1rem}
+        .title-group h1{font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
+        .badge-admin{background:rgba(139,92,246,0.2);color:var(--accent);padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:700;text-transform:uppercase}
+        .btn-back{padding:0.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-size:0.9rem;transition:all 0.2s}
+        .btn-back:hover{border-color:var(--accent)}
+
+        /* Stats Bar */
+        .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:0.8rem;margin-bottom:1.5rem}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.8rem;text-align:center}
+        .stat-val{font-size:1.4rem;font-weight:700;color:var(--accent)}
+        .stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;margin-top:0.2rem}
+
+        /* Controls */
+        .controls{display:flex;gap:0.8rem;margin-bottom:1.5rem;flex-wrap:wrap}
+        .search-box{flex:1;min-width:200px;position:relative}
+        .search-box input{width:100%;padding:0.7rem 0.7rem 0.7rem 2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem}
+        .search-box i{position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);color:var(--muted)}
+        .filter-select{padding:0.7rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;min-width:150px}
+        .btn-add{padding:0.7rem 1.2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;color:white;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.5rem;font-size:0.9rem}
+
+        /* Table */
+        .table-container{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+        table{width:100%;border-collapse:collapse}
+        th{background:rgba(139,92,246,0.1);padding:0.8rem;text-align:left;font-size:0.75rem;text-transform:uppercase;color:var(--muted);font-weight:600}
+        td{padding:0.8rem;border-bottom:1px solid var(--border);font-size:0.85rem;vertical-align:middle}
+        tr:last-child td{border-bottom:none}
+        tr:hover{background:rgba(255,255,255,0.02)}
+        
+        .ad-name{font-weight:600;color:var(--text)}
+        .ad-type{font-family:'JetBrains Mono',monospace;font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.2rem 0.5rem;border-radius:4px;color:var(--muted)}
+        .ad-points{color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace}
+        .ad-page{text-transform:capitalize}
+        
+        .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:0.4rem}        .status-active{background:var(--success)}
+        .status-inactive{background:var(--danger)}
+
+        .actions{display:flex;gap:0.4rem}
+        .btn-action{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-size:0.8rem}
+        .btn-edit:hover{border-color:var(--accent);color:var(--accent)}
+        .btn-dup:hover{border-color:var(--warning);color:var(--warning)}
+        .btn-del:hover{border-color:var(--danger);color:var(--danger)}
+
+        /* Modal */
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;padding:1.5rem}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+        .modal-title{font-size:1.2rem;font-weight:700}
+        .btn-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer}
+        
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
         .form-group{margin-bottom:1rem}
-        label{display:block;margin-bottom:0.5rem;font-weight:600;font-size:0.9rem}
-        input,select,textarea{width:100%;padding:0.8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:var(--font)}
-        textarea{min-height:120px;font-family:monospace;font-size:0.85rem}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-        .btn{padding:0.8rem 1.5rem;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s}
-        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
-        .btn-danger{background:var(--danger);color:white}
-        .btn-sm{padding:0.4rem 0.8rem;font-size:0.85rem}
-        .page-section{margin-top:2rem}
-        .page-title{font-size:1.3rem;font-weight:700;margin-bottom:1rem;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:8px}
-        .ad-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
-        .ad-info h4{margin-bottom:0.3rem}
-        .ad-info p{color:var(--muted);font-size:0.85rem}
-        .ad-actions{display:flex;gap:0.5rem;align-items:center}
-        .badge{display:inline-block;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:600}
-        .badge-success{background:rgba(16,185,129,0.2);color:var(--success)}
-        .badge-danger{background:rgba(239,68,68,0.2);color:var(--danger)}
-        .toggle{position:relative;width:50px;height:26px;background:var(--border);border-radius:13px;cursor:pointer;transition:background 0.3s}
-        .toggle.active{background:var(--success)}
-        .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform 0.3s}
-        .toggle.active::after{transform:translateX(24px)}
-        .access-denied{text-align:center;padding:4rem 2rem}
-        .access-denied i{font-size:4rem;color:var(--danger);margin-bottom:1rem}
-        .admin-badge{background:rgba(139,92,246,0.2);color:var(--accent);padding:0.3rem 0.8rem;border-radius:6px;font-size:0.8rem;font-weight:600}
-        .empty-state{text-align:center;padding:2rem;color:var(--muted)}
+        .form-group.full{grid-column:1/-1}
+        label{display:block;margin-bottom:0.4rem;font-size:0.8rem;font-weight:600;color:var(--muted)}
+        input,select,textarea{width:100%;padding:0.7rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;font-family:var(--font)}
+        textarea{min-height:100px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;resize:vertical}
+        input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+        
+        .btn-save{width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;color:white;font-weight:700;font-size:1rem;cursor:pointer;margin-top:0.5rem}
+        .btn-save:disabled{opacity:0.5;cursor:not-allowed}
+
+        .empty-state{text-align:center;padding:3rem;color:var(--muted)}
+        .empty-state i{font-size:2.5rem;margin-bottom:1rem;opacity:0.3}
+
+        @media(max-width:768px){
+            .form-grid{grid-template-columns:1fr}
+            .table-container{overflow-x:auto}
+            table{min-width:700px}
+            .stats-bar{grid-template-columns:repeat(3,1fr)}
+        }
     </style>
 </head>
 <body>
     <div class="container" id="mainContent" style="display:none">
         <div class="header">
-            <div>                <h1 class="title"> Gestion des Publicités</h1>
-                <span class="admin-badge">Admin Only</span>
+            <div class="title-group">
+                <h1><i class="fas fa-ad"></i> Gestion Publicités <span class="badge-admin">Admin</span></h1>
             </div>
-            <a href="admin.html" class="btn-back">← Retour</a>
+            <a href="admin.html" class="btn-back"><i class="fas fa-arrow-left"></i> Retour</a>
         </div>
 
-        <div class="card">
-            <h2 style="margin-bottom:1rem">➕ Ajouter une nouvelle publicité</h2>
-            <form id="adForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nom de la publicité</label>
-                        <input type="text" id="adName" placeholder="Ex: Smartlink Jeu, Bannière 300x250..." required>
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-card"><div class="stat-val" id="statTotal">-</div><div class="stat-label">Total</div></div>            <div class="stat-card"><div class="stat-val" id="statActive">-</div><div class="stat-label">Actives</div></div>
+            <div class="stat-card"><div class="stat-val" id="statEarn">-</div><div class="stat-label">Earn</div></div>
+            <div class="stat-card"><div class="stat-val" id="statIndex">-</div><div class="stat-label">Index</div></div>
+            <div class="stat-card"><div class="stat-val" id="statGalerie">-</div><div class="stat-label">Galerie</div></div>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher une publicité...">
+            </div>
+            <select class="filter-select" id="pageFilter">
+                <option value="all">Toutes les pages</option>
+                <option value="earn">Earn</option>
+                <option value="index">Index</option>
+                <option value="galerie">Galerie</option>
+                <option value="profile">Profile</option>
+                <option value="shop">Shop</option>
+            </select>
+            <button class="btn-add" onclick="openModal()"><i class="fas fa-plus"></i> Nouvelle Pub</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Statut</th>
+                        <th>Nom</th>
+                        <th>Page</th>
+                        <th>Type</th>
+                        <th>Position</th>
+                        <th>Points</th>
+                        <th style="text-align:right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adsTableBody">
+                    <tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Édition / Création -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Nouvelle Publicité</h2>
+                <button class="btn-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="adForm">                <input type="hidden" id="editIndex" value="-1">
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Nom de la publicité *</label>
+                        <input type="text" id="adName" placeholder="Ex: Monetag Earn #1" required>
                     </div>
                     <div class="form-group">
-                        <label>Page cible</label>
+                        <label>Page cible *</label>
                         <select id="adPage" required>
-                            <option value="index">Index (Accueil)</option>
-                            <option value="profile">Profile (Profil)</option>
-                            <option value="shop">Shop (Boutique)</option>
-                            <option value="galerie">Galerie</option>
                             <option value="earn">Earn (Gagner des points)</option>
+                            <option value="index">Index (Accueil)</option>
+                            <option value="galerie">Galerie</option>
+                            <option value="profile">Profile</option>
+                            <option value="shop">Shop</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Type de publicité</label>
-                    <select id="adType" required>
-                        <option value="social_bar">Social Bar (Notification)</option>
-                        <option value="native">Native Banner (Intégré)</option>
-                        <option value="banner">Bannière 300x250</option>
-                        <option value="banner_728">Bannière 728x90</option>
-                        <option value="smartlink">Smartlink (Lien CPA)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Code HTML/JS ou Lien</label>
-                    <textarea id="adCode" placeholder="Collez le code Adsterra ou le lien Smartlink..." required></textarea>
-                    <small style="color:var(--muted);display:block;margin-top:0.5rem">Pour Smartlink : collez juste l'URL (ex: https://smrtlnks.net/xxx)</small>
-                </div>
-                <div class="form-row">
                     <div class="form-group">
-                        <label>Position sur la page</label>
-                        <select id="adPosition" required>
+                        <label>Type *</label>
+                        <select id="adType" required>
+                            <option value="smartlink">Smartlink / Direct Link (CPA)</option>
+                            <option value="native">Native Banner (CPM)</option>
+                            <option value="banner">Bannière 300x250 (CPM)</option>
+                            <option value="banner_728">Bannière 728x90 (CPM)</option>
+                            <option value="popunder">Popunder (CPM)</option>
+                            <option value="social_bar">Social Bar (CPM)</option>
+                            <option value="video">Vidéo Récompensée (CPA)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Position</label>
+                        <select id="adPosition">
                             <option value="top">Haut de page</option>
                             <option value="middle">Milieu de page</option>
                             <option value="bottom">Bas de page</option>
-                            <option value="sidebar">Sidebar (colonne latérale)</option>
+                            <option value="sidebar">Sidebar</option>
+                            <option value="auto">Auto (Popunder)</option>
                         </select>
-                    </div>                    <div class="form-group">
-                        <label>Points (pour earn.html)</label>
-                        <input type="number" id="adPoints" placeholder="15" value="15" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Points récompense</label>
+                        <input type="number" id="adPoints" value="15" min="0">
+                    </div>
+                    <div class="form-group full">
+                        <label>Code HTML / JS / Lien *</label>
+                        <textarea id="adCode" placeholder="Collez le code ou l'URL ici..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Statut</label>
+                        <select id="adActive">
+                            <option value="true">✅ Actif</option>                            <option value="false">❌ Inactif</option>
+                        </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Statut</label>
-                    <select id="adActive">
-                        <option value="true">Actif</option>
-                        <option value="false">Inactif</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">💾 Sauvegarder</button>
+                <button type="submit" class="btn-save" id="btnSave"><i class="fas fa-save"></i> Sauvegarder</button>
             </form>
         </div>
-
-        <div id="adsByPage"></div>
     </div>
 
-    <div id="accessDenied" class="access-denied" style="display:none">
-        <i class="fas fa-lock"></i>
-        <h2 style="margin-bottom:1rem">Accès Refusé</h2>
-        <p style="color:var(--muted);margin-bottom:1.5rem">Cette page est réservée à l'administrateur.</p>
-        <a href="/index.html" class="btn btn-primary">Retour à l'accueil</a>
+    <div id="accessDenied" style="display:none;text-align:center;padding:4rem 2rem">
+        <i class="fas fa-lock" style="font-size:4rem;color:var(--danger);margin-bottom:1rem"></i>
+        <h2>Accès Refusé</h2>
+        <p style="color:var(--muted);margin:1rem 0">Réservé à l'administrateur.</p>
+        <a href="/index.html" class="btn-back">Retour accueil</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -129,153 +217,182 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const ADMIN_EMAIL = 'leonard@pixora.com';
 
-        async function checkAdminAccess() {
-            const { data: { user }, error } = await db.auth.getUser();
-            
-            if (error || !user) {
-                showAccessDenied();
-                return false;
-            }
+        let allAds = [];
+        let filteredAds = [];
 
-            if (user.email !== ADMIN_EMAIL) {
-                showAccessDenied();
-                return false;
+        // --- AUTH ---
+        async function checkAdmin() {
+            const { data: { user } } = await db.auth.getUser();
+            if (!user || user.email !== ADMIN_EMAIL) {
+                document.getElementById('mainContent').style.display = 'none';
+                document.getElementById('accessDenied').style.display = 'block';
+                return;
             }
-
             document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('accessDenied').style.display = 'none';
-            loadAllAds();
-            return true;        }
-
-        function showAccessDenied() {
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('accessDenied').style.display = 'block';
+            await loadAds();
         }
 
-        document.getElementById('adForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // --- LOAD ---
+        async function loadAds() {
+            const { data } = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+            allAds = data?.value || [];
+            applyFilters();
+            updateStats();
+        }
+
+        // --- SAVE ---
+        async function saveAds() {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true;            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
             
-            const newAd = {
-                name: document.getElementById('adName').value,
-                page: document.getElementById('adPage').value,
-                type: document.getElementById('adType').value,
-                code: document.getElementById('adCode').value,
-                position: document.getElementById('adPosition').value,
-                points: parseInt(document.getElementById('adPoints').value) || 15,
-                active: document.getElementById('adActive').value === 'true'
-            };
-
-            try {
-                const { data: configData } = await db
-                    .from('admin_config')
-                    .select('value')
-                    .eq('key', 'ad_networks')
-                    .single();
-
-                const ads = configData?.value || [];
-                ads.push(newAd);
-
-                await db
-                    .from('admin_config')
-                    .upsert({ key: 'ad_networks', value: ads });
-
-                alert('✅ Publicité ajoutée !');
-                document.getElementById('adForm').reset();
-                loadAllAds();
-            } catch (e) {
-                alert('Erreur: ' + e.message);
-            }
-        });
-
-        async function loadAllAds() {
-            const { data: configData } = await db
-                .from('admin_config')
-                .select('value')
-                .eq('key', 'ad_networks')
-                .single();
-
-            const ads = configData?.value || [];            
-            const pages = ['index', 'profile', 'shop', 'galerie', 'earn'];
-            const pageNames = {
-                index: ' Index (Accueil)',
-                profile: '👤 Profile (Profil)',
-                shop: '🛍️ Shop (Boutique)',
-                galerie: '🖼️ Galerie',
-                earn: '💰 Earn (Gagner des points)'
-            };
-
-            let html = '';
+            const { error } = await db.from('admin_config').upsert({ key: 'ad_networks', value: allAds });
             
-            pages.forEach(page => {
-                const pageAds = ads.filter(ad => ad.page === page);
-                
-                html += `<div class="page-section">`;
-                html += `<h3 class="page-title">${pageNames[page]}</h3>`;
-                
-                if (pageAds.length === 0) {
-                    html += `<div class="empty-state">Aucune publicité configurée pour cette page</div>`;
-                } else {
-                    pageAds.forEach((ad, index) => {
-                        const actualIndex = ads.findIndex(a => a.name === ad.name && a.page === ad.page);
-                        html += `
-                            <div class="ad-item">
-                                <div class="ad-info">
-                                    <h4>${ad.name} 
-                                        <span class="badge ${ad.active ? 'badge-success' : 'badge-danger'}">${ad.active ? 'Actif' : 'Inactif'}</span>
-                                    </h4>
-                                    <p>${ad.type} • Position: ${ad.position}${ad.points ? ' • +' + ad.points + ' pts' : ''}</p>
-                                </div>
-                                <div class="ad-actions">
-                                    <div class="toggle ${ad.active ? 'active' : ''}" onclick="toggleAd(${actualIndex})"></div>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteAd(${actualIndex})">🗑️</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                
-                html += `</div>`;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Sauvegarder';
+            
+            if (error) { alert('Erreur: ' + error.message); return; }
+            
+            closeModal();
+            await loadAds();
+        }
+
+        // --- FILTERS & SEARCH ---
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const page = document.getElementById('pageFilter').value;
+            
+            filteredAds = allAds.filter((ad, idx) => {
+                const matchSearch = ad.name.toLowerCase().includes(search) || (ad.type || '').toLowerCase().includes(search);
+                const matchPage = page === 'all' || ad.page === page;
+                ad._origIndex = idx; // Keep track of original index
+                return matchSearch && matchPage;
             });
-
-            document.getElementById('adsByPage').innerHTML = html;
+            
+            renderTable();
         }
 
+        function updateStats() {
+            document.getElementById('statTotal').textContent = allAds.length;
+            document.getElementById('statActive').textContent = allAds.filter(a => a.active).length;
+            document.getElementById('statEarn').textContent = allAds.filter(a => a.page === 'earn').length;
+            document.getElementById('statIndex').textContent = allAds.filter(a => a.page === 'index').length;
+            document.getElementById('statGalerie').textContent = allAds.filter(a => a.page === 'galerie').length;
+        }
+
+        // --- RENDER TABLE ---
+        function renderTable() {
+            const tbody = document.getElementById('adsTableBody');
+            
+            if (filteredAds.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>Aucune publicité trouvée</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filteredAds.map(ad => `
+                <tr>
+                    <td>
+                        <span class="status-dot ${ad.active ? 'status-active' : 'status-inactive'}"></span>
+                        ${ad.active ? 'Actif' : 'Inactif'}                    </td>
+                    <td class="ad-name">${ad.name}</td>
+                    <td class="ad-page">${ad.page}</td>
+                    <td><span class="ad-type">${ad.type || 'smartlink'}</span></td>
+                    <td>${ad.position || 'top'}</td>
+                    <td class="ad-points">${ad.points != null ? '+' + ad.points : '-'}</td>
+                    <td style="text-align:right">
+                        <div class="actions" style="justify-content:flex-end">
+                            <button class="btn-action btn-edit" title="Modifier" onclick="editAd(${ad._origIndex})"><i class="fas fa-pen"></i></button>
+                            <button class="btn-action btn-dup" title="Dupliquer" onclick="duplicateAd(${ad._origIndex})"><i class="fas fa-copy"></i></button>
+                            <button class="btn-action" title="${ad.active ? 'Désactiver' : 'Activer'}" onclick="toggleAd(${ad._origIndex})"><i class="fas fa-${ad.active ? 'pause' : 'play'}"></i></button>
+                            <button class="btn-action btn-del" title="Supprimer" onclick="deleteAd(${ad._origIndex})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- MODAL ---
+        function openModal(index = -1) {
+            const modal = document.getElementById('modalOverlay');
+            const title = document.getElementById('modalTitle');
+            
+            if (index >= 0) {
+                const ad = allAds[index];
+                title.textContent = '✏️ Modifier : ' + ad.name;
+                document.getElementById('editIndex').value = index;
+                document.getElementById('adName').value = ad.name || '';
+                document.getElementById('adPage').value = ad.page || 'earn';
+                document.getElementById('adType').value = ad.type || 'smartlink';
+                document.getElementById('adPosition').value = ad.position || 'top';
+                document.getElementById('adPoints').value = ad.points != null ? ad.points : 15;
+                document.getElementById('adCode').value = ad.code || '';
+                document.getElementById('adActive').value = ad.active !== false ? 'true' : 'false';
+            } else {
+                title.textContent = '➕ Nouvelle Publicité';
+                document.getElementById('editIndex').value = -1;
+                document.getElementById('adForm').reset();
+                document.getElementById('adPoints').value = 15;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function editAd(index) { openModal(index); }
+        // --- ACTIONS ---
         async function toggleAd(index) {
-            const { data: configData } = await db
-                .from('admin_config')
-                .select('value')                .eq('key', 'ad_networks')
-                .single();
+            allAds[index].active = !allAds[index].active;
+            await saveAds();
+        }
 
-            const ads = configData?.value || [];
-            ads[index].active = !ads[index].active;
-
-            await db
-                .from('admin_config')
-                .upsert({ key: 'ad_networks', value: ads });
-
-            loadAllAds();
+        function duplicateAd(index) {
+            const copy = JSON.parse(JSON.stringify(allAds[index]));
+            copy.name = copy.name + ' (copie)';
+            copy.active = false;
+            allAds.push(copy);
+            saveAds();
         }
 
         async function deleteAd(index) {
-            if (!confirm('Supprimer cette publicité ?')) return;
-
-            const { data: configData } = await db
-                .from('admin_config')
-                .select('value')
-                .eq('key', 'ad_networks')
-                .single();
-
-            const ads = configData?.value || [];
-            ads.splice(index, 1);
-
-            await db
-                .from('admin_config')
-                .upsert({ key: 'ad_networks', value: ads });
-
-            loadAllAds();
+            if (!confirm('⚠️ Supprimer "' + allAds[index].name + '" ?\nCette action est irréversible.')) return;
+            allAds.splice(index, 1);
+            await saveAds();
         }
 
-        checkAdminAccess();
+        // --- FORM SUBMIT ---
+        document.getElementById('adForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const editIdx = parseInt(document.getElementById('editIndex').value);
+            const newAd = {
+                name: document.getElementById('adName').value.trim(),
+                page: document.getElementById('adPage').value,
+                type: document.getElementById('adType').value,
+                position: document.getElementById('adPosition').value,
+                points: parseInt(document.getElementById('adPoints').value) || 0,
+                code: document.getElementById('adCode').value.trim(),
+                active: document.getElementById('adActive').value === 'true'
+            };
+
+            if (editIdx >= 0) {
+                allAds[editIdx] = newAd;
+            } else {
+                allAds.push(newAd);
+            }
+            
+            await saveAds();
+        });
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('pageFilter').addEventListener('change', applyFilters);
+        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+        // --- INIT ---
+        checkAdmin();
     </script>
 </body>
 </html>
