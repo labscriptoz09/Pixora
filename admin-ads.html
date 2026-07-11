@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Pubs | Pixora Admin</title>
+    <title>Gestion des Publicités | Pixora Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -47,7 +47,7 @@
 <body>
     <div class="container" id="mainContent" style="display:none">
         <div class="header">
-            <div>                <h1 class="title">📊 Gestion des Publicités</h1>
+            <div>                <h1 class="title"> Gestion des Publicités</h1>
                 <span class="admin-badge">Admin Only</span>
             </div>
             <a href="admin.html" class="btn-back">← Retour</a>
@@ -59,7 +59,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nom de la publicité</label>
-                        <input type="text" id="adName" placeholder="Ex: Social Bar, Bannière 300x250..." required>
+                        <input type="text" id="adName" placeholder="Ex: Smartlink Jeu, Bannière 300x250..." required>
                     </div>
                     <div class="form-group">
                         <label>Page cible</label>
@@ -79,12 +79,13 @@
                         <option value="native">Native Banner (Intégré)</option>
                         <option value="banner">Bannière 300x250</option>
                         <option value="banner_728">Bannière 728x90</option>
+                        <option value="smartlink">Smartlink (Lien CPA)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Code HTML/JS Adsterra</label>
-                    <textarea id="adCode" placeholder="<script>...</script><div>...</div>" required></textarea>
-                    <small style="color:var(--muted);display:block;margin-top:0.5rem">Collez le code complet fourni par Adsterra</small>
+                    <label>Code HTML/JS ou Lien</label>
+                    <textarea id="adCode" placeholder="Collez le code Adsterra ou le lien Smartlink..." required></textarea>
+                    <small style="color:var(--muted);display:block;margin-top:0.5rem">Pour Smartlink : collez juste l'URL (ex: https://smrtlnks.net/xxx)</small>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -95,13 +96,17 @@
                             <option value="bottom">Bas de page</option>
                             <option value="sidebar">Sidebar (colonne latérale)</option>
                         </select>
+                    </div>                    <div class="form-group">
+                        <label>Points (pour earn.html)</label>
+                        <input type="number" id="adPoints" placeholder="15" value="15" min="1">
                     </div>
-                    <div class="form-group">                        <label>Statut</label>
-                        <select id="adActive">
-                            <option value="true">Actif</option>
-                            <option value="false">Inactif</option>
-                        </select>
-                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select id="adActive">
+                        <option value="true">Actif</option>
+                        <option value="false">Inactif</option>
+                    </select>
                 </div>
                 <button type="submit" class="btn btn-primary">💾 Sauvegarder</button>
             </form>
@@ -122,7 +127,7 @@
         const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const ADMIN_EMAIL = 'leonard@pixora.com';
+        const ADMIN_EMAIL = 'labscriptoz09@gmail.com';
 
         async function checkAdminAccess() {
             const { data: { user }, error } = await db.auth.getUser();
@@ -140,12 +145,12 @@
             document.getElementById('mainContent').style.display = 'block';
             document.getElementById('accessDenied').style.display = 'none';
             loadAllAds();
-            return true;
-        }
+            return true;        }
 
         function showAccessDenied() {
             document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('accessDenied').style.display = 'block';        }
+            document.getElementById('accessDenied').style.display = 'block';
+        }
 
         document.getElementById('adForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -156,6 +161,7 @@
                 type: document.getElementById('adType').value,
                 code: document.getElementById('adCode').value,
                 position: document.getElementById('adPosition').value,
+                points: parseInt(document.getElementById('adPoints').value) || 15,
                 active: document.getElementById('adActive').value === 'true'
             };
 
@@ -188,13 +194,13 @@
                 .eq('key', 'ad_networks')
                 .single();
 
-            const ads = configData?.value || [];
-            
+            const ads = configData?.value || [];            
             const pages = ['index', 'profile', 'shop', 'galerie', 'earn'];
             const pageNames = {
                 index: ' Index (Accueil)',
                 profile: '👤 Profile (Profil)',
-                shop: '🛍️ Shop (Boutique)',                galerie: '🖼️ Galerie',
+                shop: '🛍️ Shop (Boutique)',
+                galerie: '🖼️ Galerie',
                 earn: '💰 Earn (Gagner des points)'
             };
 
@@ -217,11 +223,11 @@
                                     <h4>${ad.name} 
                                         <span class="badge ${ad.active ? 'badge-success' : 'badge-danger'}">${ad.active ? 'Actif' : 'Inactif'}</span>
                                     </h4>
-                                    <p>${ad.type} • Position: ${ad.position}</p>
+                                    <p>${ad.type} • Position: ${ad.position}${ad.points ? ' • +' + ad.points + ' pts' : ''}</p>
                                 </div>
                                 <div class="ad-actions">
                                     <div class="toggle ${ad.active ? 'active' : ''}" onclick="toggleAd(${actualIndex})"></div>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteAd(${actualIndex})">️</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteAd(${actualIndex})">🗑️</button>
                                 </div>
                             </div>
                         `;
@@ -237,12 +243,12 @@
         async function toggleAd(index) {
             const { data: configData } = await db
                 .from('admin_config')
-                .select('value')
-                .eq('key', 'ad_networks')
+                .select('value')                .eq('key', 'ad_networks')
                 .single();
 
             const ads = configData?.value || [];
             ads[index].active = !ads[index].active;
+
             await db
                 .from('admin_config')
                 .upsert({ key: 'ad_networks', value: ads });
