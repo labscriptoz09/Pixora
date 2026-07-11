@@ -47,8 +47,7 @@
         .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
-        .menu-points-bar i{color:var(--gold);font-size:0.75rem}        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
-        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
+        .menu-points-bar i{color:var(--gold);font-size:0.75rem}        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
         .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
         .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
         .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
@@ -97,8 +96,7 @@
         .stat-val{font-family:var(--mono);font-size:1.2rem;font-weight:700;margin-bottom:0.15rem}
         .stat-lbl{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
         /* TABS */
-        .tabs-container{margin-bottom:1.2rem}
-        .tabs{display:flex;gap:0.4rem;background:var(--surf);padding:0.35rem;border-radius:14px;border:1px solid var(--border);overflow-x:auto}
+        .tabs-container{margin-bottom:1.2rem}        .tabs{display:flex;gap:0.4rem;background:var(--surf);padding:0.35rem;border-radius:14px;border:1px solid var(--border);overflow-x:auto}
         .tab{flex:1;padding:0.65rem 0.9rem;background:transparent;border:none;border-radius:10px;color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.4rem}
         .tab.active{background:var(--prim);color:white}
         .tab-content{display:none}
@@ -147,8 +145,7 @@
         .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}
         /* AUTH MODAL */
         .auth-overlay{position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
-        .auth-overlay.active{display:flex}
-        .auth-modal{background:var(--surf);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:24px;padding:2rem 1.5rem;width:100%;max-width:400px;text-align:center;position:relative;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
+        .auth-overlay.active{display:flex}        .auth-modal{background:var(--surf);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:24px;padding:2rem 1.5rem;width:100%;max-width:400px;text-align:center;position:relative;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
         @keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
         .auth-close{position:absolute;top:0.8rem;right:0.8rem;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1rem;background:rgba(255,255,255,0.05);transition:all 0.2s}
         .auth-close:hover{background:rgba(255,255,255,0.1);color:var(--text)}
@@ -197,8 +194,7 @@
             <button class="auth-tab" onclick="switchTab('register')">Inscription</button>        </div>
         <div class="form-section active" id="sec-login">
             <form onsubmit="doLogin(event)">
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
-                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
             </form>
         </div>
@@ -247,8 +243,7 @@
                 <span id="menu-points">0</span>
                 <small>points</small>
             </div>
-            <a href="profile.html" class="menu-item" onclick="closeUserMenu()">
-                <i class="fas fa-user"></i><span>Mon profil</span>
+            <a href="profile.html" class="menu-item" onclick="closeUserMenu()">                <i class="fas fa-user"></i><span>Mon profil</span>
             </a>
             <a href="earn.html" class="menu-item" onclick="closeUserMenu()">
                 <i class="fas fa-coins"></i><span>Gagner des points</span>
@@ -297,8 +292,7 @@
         <div class="stat-card">
             <div class="stat-card-icon"><i class="fas fa-image"></i></div>
             <div class="stat-val" id="stat-generated">0</div>
-            <div class="stat-lbl">Créations</div>
-        </div>
+            <div class="stat-lbl">Créations</div>        </div>
         <div class="stat-card">
             <div class="stat-card-icon"><i class="fas fa-coins"></i></div>
             <div class="stat-val" id="stat-earned">0</div>
@@ -347,8 +341,7 @@
                     <div class="settings-label">Confidentialité</div>
                 </div>
                 <div class="settings-right"><i class="fas fa-chevron-right"></i></div>
-            </div>
-            <div class="settings-item">
+            </div>            <div class="settings-item">
                 <div class="settings-left">
                     <div class="settings-icon"><i class="fas fa-info-circle"></i></div>
                     <div class="settings-label">À propos</div>
@@ -372,6 +365,8 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- 🔥 CHARGEMENT DES PUBLICATIONS AUTOMATIQUE -->
+<script src="ads-loader.js"></script>
 <script>
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -396,7 +391,6 @@ function switchTab(m) {
     document.getElementById('sec-login').classList.toggle('active', m === 'login');
     document.getElementById('sec-register').classList.toggle('active', m !== 'login');
 }
-
 async function doLogin(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-login');
@@ -446,7 +440,6 @@ async function doLogout() {
     notify('👋 Déconnecté', 'success');
     setTimeout(function() { location.reload(); }, 800);
 }
-
 // === USER DATA ===
 async function getUserData() {
     var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
@@ -495,8 +488,7 @@ async function loadPurchases(userId) {
             list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat.</p><a href="shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">Visiter la boutique</a></div>';
             return;
         }
-        var html = '';
-        for (var i = 0; i < purchases.length; i++) {
+        var html = '';        for (var i = 0; i < purchases.length; i++) {
             var p = purchases[i];
             var dateStr = p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : '';
             var icon = p.type === 'subscription' ? 'fa-crown' : 'fa-bolt';
@@ -545,8 +537,7 @@ async function updateUI() {
         var initial = name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent = initial;
         document.getElementById('menu-avatar').textContent = initial;
-        document.getElementById('menu-name').textContent = name;
-        document.getElementById('menu-email').textContent = user.email;
+        document.getElementById('menu-name').textContent = name;        document.getElementById('menu-email').textContent = user.email;
 
         // Profile card
         document.getElementById('profile-name').textContent = name;
@@ -595,8 +586,7 @@ db.auth.onAuthStateChange(function(event) {
     }
 });
 
-// === INIT ===
-document.addEventListener('DOMContentLoaded', updateUI);
+// === INIT ===document.addEventListener('DOMContentLoaded', updateUI);
 </script>
 </body>
 </html>
