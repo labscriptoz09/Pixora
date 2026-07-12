@@ -110,7 +110,6 @@
     </header>
 
     <main>
-        <!-- Banner validation cross-page -->
         <div class="validation-banner" id="validationBanner" style="display:none">
             <i class="fas fa-check-circle"></i>
             <span id="validationMessage">Tâche validée ! Points crédités.</span>
@@ -145,8 +144,8 @@
         <!-- 👥 PARRAINAGE -->
         <div class="section-title"><i class="fas fa-user-friends"></i> Parrainage</div>
         <div class="referral-card">
-            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>            <p style="font-size:0.85rem;color:var(--muted)">Partagez votre lien unique. Vos points sont crédités quand votre filleul s'inscrit et génère sa première création.</p>
-            <div class="referral-link-box">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
+            <p style="font-size:0.85rem;color:var(--muted)">Partagez votre lien unique. Vos points sont crédités quand votre filleul s'inscrit et génère sa première création.</p>            <div class="referral-link-box">
                 <input type="text" class="referral-input" id="referralLink" readonly value="Chargement...">
                 <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copier</button>
             </div>
@@ -194,8 +193,8 @@
         async function init() {
             const { data: { user: u }, error } = await db.auth.getUser();
             if (error || !u) { window.location.href = '/index.html'; return; }
-            user = u;            await updatePoints();
-            await detectTier();
+            user = u;
+            await updatePoints();            await detectTier();
             await checkValidationReturn();
             await loadDailyBonus();
             await loadTasks();
@@ -214,7 +213,7 @@
         }
 
         // =============================================
-        // AJOUT F : DÉTECTION VALIDATION CROSS-PAGE
+        // VALIDATION CROSS-PAGE
         // =============================================
         async function checkValidationReturn() {
             const params = new URLSearchParams(window.location.search);
@@ -243,13 +242,12 @@
                     }
                 } else if (validated === 'profile') {
                     const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
-                    if (userData?.profile_complete) {                        await creditTaskPoints('Compléter son profil', 'profile', 3);
-                        message.textContent = '✅ Profil complété ! +3 points crédités.';
+                    if (userData?.profile_complete) {
+                        await creditTaskPoints('Compléter son profil', 'profile', 3);                        message.textContent = '✅ Profil complété ! +3 points crédités.';
                         banner.style.display = 'flex';
                     }
                 }
 
-                // Nettoyer l'URL
                 window.history.replaceState({}, document.title, window.location.pathname);
                 setTimeout(() => { banner.style.display = 'none'; }, 5000);
             } catch(e) { console.error('Validation error:', e); }
@@ -293,8 +291,8 @@
                 const lastLogin = userData?.last_login;
                 const today = new Date().toISOString().split('T')[0];
                 const alreadyClaimed = lastLogin === today;
-                let bonusPts = tierData.bonus_login || 5;
-                let streakPts = tierData.streak_j1_3 || 3;
+
+                let bonusPts = tierData.bonus_login || 5;                let streakPts = tierData.streak_j1_3 || 3;
                 if (streak >= 7) streakPts = tierData.streak_j7 || 10;
                 else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
                 const totalDaily = bonusPts + streakPts;
@@ -341,8 +339,8 @@
                 if (streak >= 7) streakPts = tierData.streak_j7 || 10;
                 else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
                 const totalDaily = bonusPts + streakPts;
-                const newPoints = (userData?.points || 0) + totalDaily;
 
+                const newPoints = (userData?.points || 0) + totalDaily;
                 await Promise.all([
                     db.from('user_data').update({ points: newPoints, streak: streak, last_login: today }).eq('user_id', user.id),
                     db.from('transactions').insert({ user_id: user.id, type: 'earned', title: `Bonus Jour ${streak}`, amount: totalDaily })
@@ -354,7 +352,7 @@
         }
 
         // =============================================
-        // INTERNAL TASKS (CORRIGÉ + AJOUTS A/B/C/E/F)
+        // INTERNAL TASKS
         // =============================================
         async function loadTasks() {
             const container = document.getElementById('tasksContainer');
@@ -365,13 +363,11 @@
 
                 if (activeTasks.length === 0) { container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Aucune tâche disponible</p></div>'; return; }
 
-                // Charger les complétions du jour depuis task_completions (AJOUT E)
                 const today = new Date().toISOString().split('T')[0];
                 const { data: completed } = await db.from('task_completions').select('task_name').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
                 const completedMap = {};
                 (completed || []).forEach(c => { completedMap[c.task_name] = (completedMap[c.task_name] || 0) + 1; });
 
-                // AJOUT C : Vérifier badge créateur automatiquement
                 const { data: todayGens } = await db.from('transactions').select('id').eq('user_id', user.id).eq('type', 'spent').gte('created_at', today + 'T00:00:00');
                 const genCount = todayGens?.length || 0;
 
@@ -380,7 +376,6 @@
                     const isMaxed = doneCount >= t.limit;
                     const icon = TASK_ICONS[t.type] || 'fa-check';
 
-                    // AJOUT C : Badge créateur = vérification auto
                     if (t.type === 'badge') {
                         const badgeDone = genCount >= 5;
                         return `
@@ -390,12 +385,12 @@
                                     <div class="task-points">+${t.points}</div>
                                 </div>
                                 <div class="task-name">${t.name}</div>
-                                <div class="task-desc">${t.desc || ''}</div>                                <div class="task-progress">${genCount}/5 générations aujourd'hui</div>
+                                <div class="task-desc">${t.desc || ''}</div>
+                                <div class="task-progress">${genCount}/5 générations aujourd'hui</div>
                                 <button class="btn-task ${badgeDone ? 'done' : ''}" onclick="checkBadge()" ${badgeDone ? 'disabled' : ''}>
                                     ${badgeDone ? '<i class="fas fa-check"></i> Débloqué' : '<i class="fas fa-sync"></i> Vérifier'}
                                 </button>
-                            </div>
-                        `;
+                            </div>                        `;
                     }
 
                     return `
@@ -416,13 +411,11 @@
             } catch(e) { console.error('Tasks error:', e); container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement tâches</p></div>'; }
         }
 
-        // BUG #1 CORRIGÉ : doTask redirige au lieu de créditer
         async function doTask(taskName, taskType, points, limit) {
             const today = new Date().toISOString().split('T')[0];
             const { data: completed } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', taskName).gte('created_at', today + 'T00:00:00');
             if ((completed?.length || 0) >= limit) { alert('Limite atteinte pour aujourd\'hui'); await loadTasks(); return; }
 
-            // AJOUT A : Redirection vers la page concernée
             if (taskType === 'vote') {
                 window.location.href = '/gallery.html?task=vote';
             } else if (taskType === 'comment') {
@@ -430,16 +423,15 @@
             } else if (taskType === 'profile') {
                 window.location.href = '/profile.html?task=profile';
             } else if (taskType === 'share') {
-                // AJOUT B : Partage natif ou copie lien
                 await doShareTask(taskName, points);
             } else {
                 alert('Cette tâche sera disponible prochainement.');
             }
         }
 
-        // AJOUT B : Tâche partage avec Web Share API
         async function doShareTask(taskName, points) {
-            const shareUrl = window.location.origin + '/?ref=' + user.id;            const shareText = 'Découvrez Pixora - Générateur IA gratuit !';
+            const shareUrl = window.location.origin + '/?ref=' + user.id;
+            const shareText = 'Découvrez Pixora - Générateur IA gratuit !';
 
             try {
                 if (navigator.share) {
@@ -447,8 +439,7 @@
                     await creditTaskPoints(taskName, 'share', points);
                     alert('✅ Partage confirmé ! +' + points + ' points');
                     await loadTasks();
-                } else {
-                    await navigator.clipboard.writeText(shareUrl);
+                } else {                    await navigator.clipboard.writeText(shareUrl);
                     if (confirm('Lien copié ! Confirmez-vous avoir partagé Pixora ?')) {
                         await creditTaskPoints(taskName, 'share', points);
                         alert('✅ Partage confirmé ! +' + points + ' points');
@@ -463,7 +454,6 @@
             }
         }
 
-        // AJOUT C : Vérification badge créateur
         async function checkBadge() {
             const today = new Date().toISOString().split('T')[0];
             const { data: todayGens } = await db.from('transactions').select('id').eq('user_id', user.id).eq('type', 'spent').gte('created_at', today + 'T00:00:00');
@@ -489,6 +479,7 @@
 
                 const link = window.location.origin + '/?ref=' + user.id;
                 document.getElementById('referralLink').value = link;
+
                 const { data: refs } = await db.from('referrals').select('validated,points').eq('sponsor_id', user.id);
                 const validated = (refs || []).filter(r => r.validated);
                 document.getElementById('refCount').textContent = validated.length;
@@ -497,8 +488,7 @@
         }
 
         function copyReferralLink() {
-            const input = document.getElementById('referralLink');
-            input.select();
+            const input = document.getElementById('referralLink');            input.select();
             navigator.clipboard.writeText(input.value).then(() => {
                 const btn = document.querySelector('.btn-copy');
                 btn.innerHTML = '<i class="fas fa-check"></i> Copié !';
@@ -507,7 +497,7 @@
         }
 
         // =============================================
-        // CPA ADS (BUG #2 ET #3 CORRIGÉS + AJOUT D)
+        // CPA ADS (CORRIGÉ : TIMER 20s PUIS BOUTON J'AI TERMINÉ)
         // =============================================
         async function loadAds() {
             const container = document.getElementById('adsContainer');
@@ -537,7 +527,8 @@
                             <h3 class="card-title">${ad.name}</h3>
                             <p class="card-desc">${config.desc}</p>
                             ${isCompleted ? `
-                                <div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center">                                    <i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i>
+                                <div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center">
+                                    <i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i>
                                     <p style="margin-top:0.5rem;font-weight:600">Déjà complété</p>
                                 </div>
                                 <button class="btn btn-disabled" disabled><i class="fas fa-check"></i> Terminé</button>
@@ -546,8 +537,7 @@
                             `}
                         </div>
                     `;
-                }).join('');
-            } catch (e) {
+                }).join('');            } catch (e) {
                 console.error('Load ads error:', e);
                 container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p style="color:var(--danger)">Erreur de chargement</p></div>';
             }
@@ -567,43 +557,59 @@
             iframe.onload = () => { setTimeout(() => URL.revokeObjectURL(url), 1000); };
         }
 
-        // BUG #2/#3 CORRIGÉS + AJOUT D : Bouton "J'ai terminé" au lieu du crédit auto
         async function startAd(adIndex) {
             const ad = adsData[adIndex];
             const card = document.getElementById(`card-${ad.name.replace(/\s/g,'')}`);
             const btn = card.querySelector('.btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-disabled');
 
             const hasCode = ad.code && ad.code.length > 0;
             const isSmartlink = isURL(ad.code);
 
+            // Ouvrir le contenu pub
             if (isSmartlink) {
                 const smartlinkInfo = document.createElement('div');
                 smartlinkInfo.className = 'smartlink-info';
-                smartlinkInfo.innerHTML = '<i class="fas fa-external-link-alt"></i><p><strong>Une nouvelle fenêtre va s\'ouvrir.</strong></p><p>Visitez le site partenaire, puis revenez ici et cliquez sur "J\'ai terminé".</p>';
+                smartlinkInfo.innerHTML = '<i class="fas fa-external-link-alt"></i><p><strong>Une nouvelle fenêtre s\'est ouverte.</strong></p><p>Visitez le site partenaire, puis revenez ici.</p>';
                 card.insertBefore(smartlinkInfo, btn);
                 window.open(ad.code, '_blank', 'noopener,noreferrer');
-            } else if (hasCode) {                const adContainer = document.createElement('div');
+            } else if (hasCode) {
+                const adContainer = document.createElement('div');
                 adContainer.className = 'ad-container';
                 adContainer.id = `ad-${ad.name.replace(/\s/g,'')}`;
                 loadAdScript(adContainer, ad.code);
                 card.insertBefore(adContainer, btn);
             }
 
-            // AJOUT D : Remplacer le bouton par "J'ai terminé"
-            btn.outerHTML = `<button class="btn btn-success" onclick="confirmAd(${adIndex})" id="btn-confirm-${ad.name.replace(/\s/g,'')}"><i class="fas fa-check"></i> J'ai terminé</button>`;
+            // Désactiver le bouton + timer 20 secondes
+            btn.disabled = true;
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-disabled');
+            let seconds = 20;
+            btn.innerHTML = `<i class="fas fa-clock"></i> Patientez ${seconds}s...`;
+            const timer = setInterval(() => {
+                seconds--;
+                if (seconds > 0) {
+                    btn.innerHTML = `<i class="fas fa-clock"></i> Patientez ${seconds}s...`;
+                } else {
+                    clearInterval(timer);
+                    // Timer fini → bouton "J'ai terminé" activé
+                    btn.disabled = false;
+                    btn.classList.remove('btn-disabled');
+                    btn.classList.add('btn-success');
+                    btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';
+                    btn.onclick = function() { confirmAd(adIndex); };
+                }
+            }, 1000);
         }
 
-        // Crédit uniquement après confirmation explicite
         async function confirmAd(adIndex) {
             const ad = adsData[adIndex];
-            const confirmBtn = document.getElementById(`btn-confirm-${ad.name.replace(/\s/g,'')}`);
-            if (confirmBtn) {
-                confirmBtn.disabled = true;
-                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...';
+            const card = document.getElementById(`card-${ad.name.replace(/\s/g,'')}`);
+            const btn = card.querySelector('.btn');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...';
             }
 
             try {
@@ -629,10 +635,10 @@
         }
 
         async function updatePoints() {
-            const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
-            document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
+            const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();            document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
         }
 
         init();
     </script>
-</body></html>
+</body>
+</html>
