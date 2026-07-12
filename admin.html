@@ -12,8 +12,6 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;overflow:hidden}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-
-        /* SIDEBAR - Style admin-ads */
         .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:100}
         .sidebar-logo{padding:1.2rem 1.5rem;display:flex;align-items:center;gap:0.7rem;border-bottom:1px solid var(--border)}
         .sidebar-logo svg{width:32px;height:32px}
@@ -27,14 +25,10 @@
         .nav-item i{width:20px;text-align:center;font-size:0.9rem}
         .nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:0.6rem;padding:0.15rem 0.5rem;border-radius:10px;font-weight:700;font-family:var(--mono)}
         .sidebar-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--dim)}
-
-        /* MAIN */
         .main{margin-left:260px;flex:1;height:100vh;overflow-y:auto;padding:2rem}
         .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
         .page-title{font-size:1.6rem;font-weight:800}
         .page-subtitle{font-size:0.85rem;color:var(--muted);margin-top:0.2rem}
-
-        /* STATS - Style admin-ads avec barre latérale */
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
         .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.3rem;position:relative;overflow:hidden}
         .stat-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
@@ -48,20 +42,16 @@
         .stat-card.warn .stat-icon{background:rgba(249,115,22,0.15);color:var(--warn)}
         .stat-value{font-size:2rem;font-weight:800;font-family:var(--mono);line-height:1}
         .stat-label{color:var(--muted);font-size:0.7rem;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.5px}
-        /* CARDS & FORMS */
         .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
         .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
         .card-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
         .card-title i{color:var(--accent)}
         .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem}
-        .form-group{display:flex;flex-direction:column;gap:0.3rem}
-        .form-label{font-size:0.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+        .form-group{display:flex;flex-direction:column;gap:0.3rem}        .form-label{font-size:0.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
         .form-input,.form-select,.form-textarea{width:100%;padding:0.7rem 0.9rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:0.85rem;outline:none;transition:border-color 0.2s}
         .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
         .form-textarea{min-height:80px;resize:vertical;font-family:var(--mono);font-size:0.8rem}
         .form-select{cursor:pointer}
-
-        /* BUTTONS - Style admin-ads arrondis */
         .btn{padding:0.6rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;border:none}
         .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
         .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.3)}
@@ -74,8 +64,6 @@
         .btn-test{background:var(--info);color:white}
         .btn-test:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
         .btn-test.testing{opacity:0.7;cursor:wait}
-
-        /* TABLE */
         .table-container{overflow-x:auto}
         table{width:100%;border-collapse:collapse;font-size:0.85rem}
         th{text-align:left;padding:0.8rem;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border)}
@@ -83,45 +71,35 @@
         tr:last-child td{border-bottom:none}
         tr:hover td{background:rgba(255,255,255,0.02)}
         .action-btns{display:flex;gap:0.3rem;justify-content:flex-end}
-
-        /* TOGGLE */
         .toggle{position:relative;width:40px;height:22px;cursor:pointer;display:inline-block}
         .toggle input{opacity:0;width:0;height:0}
         .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:0.3s}
         .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s}
         .toggle input:checked+.toggle-slider{background:var(--success)}
         .toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
-
-        /* NOTIF PANEL */
         .notif-panel{position:fixed;top:0;right:-400px;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:200;transition:right 0.3s ease;display:flex;flex-direction:column}
         .notif-panel.open{right:0}
         .notif-header{padding:1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-        .notif-list{flex:1;overflow-y:auto;padding:0.5rem}        .notif-item{padding:0.8rem;border-radius:10px;margin-bottom:0.4rem;background:var(--bg);border:1px solid var(--border);font-size:0.8rem;cursor:pointer;transition:all 0.2s}
+        .notif-list{flex:1;overflow-y:auto;padding:0.5rem}
+        .notif-item{padding:0.8rem;border-radius:10px;margin-bottom:0.4rem;background:var(--bg);border:1px solid var(--border);font-size:0.8rem;cursor:pointer;transition:all 0.2s}
         .notif-item:hover{border-color:var(--accent)}
         .notif-item.unread{border-left:3px solid var(--accent)}
         .notif-time{font-size:0.65rem;color:var(--dim);margin-top:0.3rem;font-family:var(--mono)}
         .notif-type{font-weight:600;margin-bottom:0.2rem}
         .notif-type.user{color:var(--accent)}.notif-type.payment{color:var(--gold)}.notif-type.error{color:var(--danger)}.notif-type.gen{color:var(--success)}.notif-type.config{color:var(--info)}
-
-        /* LOGIN */
         .login-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
         .login-overlay.hidden{display:none}
         .login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;text-align:center}
         .login-box h2{margin-bottom:0.5rem;font-weight:800}.login-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem}
-
-        /* SECTIONS */
         .admin-section{display:none}.admin-section.active{display:block;animation:fadeIn 0.3s}
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-        /* API TEST RESULT */
         .api-test-result{margin-top:0.5rem;padding:0.6rem;border-radius:8px;font-size:0.8rem;font-family:var(--mono);display:none}
         .api-test-result.success{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
         .api-test-result.error{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
-
-        /* INLINE EDIT */
-        .inline-points-edit{display:flex;gap:0.3rem;align-items:center}
-        .inline-points-edit input{width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--gold)}
-
+        .inline-points-edit{display:flex;gap:0.3rem;align-items:center}        .inline-points-edit input{width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--gold)}
+        /* RETENTION SECTION STYLE */
+        .retention-card{border-left:4px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(251,191,36,0.03) 100%)}
+        .retention-card .card-title i{color:var(--gold)}
         @media(max-width:768px){
             .sidebar{width:60px}
             .sidebar-logo span,.nav-section-title,.nav-item span,.sidebar-footer{display:none}
@@ -145,7 +123,8 @@
             <div class="form-group" style="margin-bottom:1rem"><input type="email" class="form-input" placeholder="Email admin" required id="adminEmail"></div>
             <div class="form-group" style="margin-bottom:1rem"><input type="password" class="form-input" placeholder="Mot de passe" required id="adminPass"></div>
             <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="btnAdminLogin"><i class="fas fa-sign-in-alt"></i> Accéder</button>
-        </form>    </div>
+        </form>
+    </div>
 </div>
 
 <!-- SIDEBAR -->
@@ -166,8 +145,7 @@
             <button class="nav-item" onclick="showSection('models-video')"><i class="fas fa-video"></i><span>Modèles Vidéo</span></button>
             <button class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API + Test</span></button>
         </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Monétisation</div>
+        <div class="nav-section">            <div class="nav-section-title">Monétisation</div>
             <button class="nav-item" onclick="showSection('ad-networks')"><i class="fas fa-ad"></i><span>Régies Pub</span></button>
             <button class="nav-item" onclick="showSection('pricing')"><i class="fas fa-coins"></i><span>Points & Pricing</span></button>
             <button class="nav-item" onclick="showSection('shop-config')"><i class="fas fa-shopping-bag"></i><span>Boutique</span></button>
@@ -186,7 +164,7 @@
             <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v3.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v3.1<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 
 <!-- NOTIFICATIONS -->
@@ -194,6 +172,7 @@
     <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
     <div class="notif-list" id="notifList"><div style="text-align:center;padding:2rem;color:var(--dim)">Chargement...</div></div>
 </div>
+
 <!-- MAIN CONTENT -->
 <main class="main">
 
@@ -215,8 +194,7 @@
     <div class="admin-section" id="sec-models-image">
         <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="modelImageForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Image</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
-            <input type="hidden" id="imgModelId">
-            <div class="form-row"><div class="form-group"><label class="form-label">Nom du modèle</label><input type="text" class="form-input" id="imgModelName" placeholder="ex: Flux Schnell"></div><div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="imgModelProvider" placeholder="ex: fal.ai"></div></div>
+            <input type="hidden" id="imgModelId">            <div class="form-row"><div class="form-group"><label class="form-label">Nom du modèle</label><input type="text" class="form-input" id="imgModelName" placeholder="ex: Flux Schnell"></div><div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="imgModelProvider" placeholder="ex: fal.ai"></div></div>
             <div class="form-row"><div class="form-group"><label class="form-label">Endpoint API</label><input type="text" class="form-input" id="imgModelEndpoint" placeholder="URL endpoint"></div><div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="imgModelCost" value="15"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="imgModelOrder" value="0"></div></div>
             <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="imgModelActive" checked><span class="toggle-slider"></span></label></div>
             <button class="btn btn-success" onclick="saveModel('image')"><i class="fas fa-save"></i> Sauvegarder</button>
@@ -237,13 +215,14 @@
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Coût</th><th>Ordre</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="vidModelsTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
-    <!-- CLÉS API + TEST (NOUVEAU) -->
+    <!-- CLÉS API + TEST -->
     <div class="admin-section" id="sec-apis">
         <div class="page-header"><div><div class="page-title">Clés API + Test</div><div class="page-subtitle">Configurer et tester les clés API des providers IA</div></div><button class="btn btn-success btn-sm" onclick="saveApiKeys()"><i class="fas fa-save"></i> Sauvegarder Tout</button></div>
         <div class="card"><div id="apiKeysContainer"><div style="text-align:center;color:var(--dim);padding:1rem"><i class="fas fa-spinner fa-spin"></i> Chargement...</div></div></div>
     </div>
 
-    <!-- RÉGIES PUB -->    <div class="admin-section" id="sec-ad-networks">
+    <!-- RÉGIES PUB -->
+    <div class="admin-section" id="sec-ad-networks">
         <div class="page-header"><div><div class="page-title">Régies Publicitaires</div><div class="page-subtitle">Gérer les offres CPA et pubs CPM</div></div><button class="btn btn-primary btn-sm" onclick="openAdNetworkForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="adNetworkForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Régie</div><button class="btn btn-sm btn-outline" onclick="closeAdNetworkForm()">Annuler</button></div>
             <input type="hidden" id="adNetId">
@@ -256,13 +235,49 @@
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Page</th><th>Type</th><th>Points</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="adNetworksTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
-    <!-- POINTS & PRICING -->
+    <!-- POINTS & PRICING + RÉTENTION QUOTIDIENNE -->
     <div class="admin-section" id="sec-pricing">
-        <div class="page-header"><div><div class="page-title">Points & Pricing</div><div class="page-subtitle">Modifier les coûts et récompenses par tier</div></div><button class="btn btn-success btn-sm" onclick="savePricing()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe"></i> Tier 1 (FR, US, DE, GB...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.image" value="15"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.video" value="90"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t1" data-key="rewards.video" value="30"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t1" data-key="rewards.survey" value="80"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t1" data-key="rewards.sponsor" value="5"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t1" data-key="rewards.streak" value="10"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t1" data-key="rewards.share" value="20"></div><div class="form-group"><label class="form-label">Limite Vidéo/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.video" value="3"></div><div class="form-group"><label class="form-label">Limite Sponsor/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.sponsor" value="5"></div><div class="form-group"><label class="form-label">Limite Partage/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.share" value="1"></div></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-americas"></i> Tier 2 (BR, MX, AR...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.image" value="25"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.video" value="130"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t2" data-key="rewards.video" value="15"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t2" data-key="rewards.survey" value="40"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t2" data-key="rewards.sponsor" value="3"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t2" data-key="rewards.streak" value="5"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t2" data-key="rewards.share" value="10"></div></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-asia"></i> Tier 3 (IN, PH, NG...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.image" value="35"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.video" value="190"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t3" data-key="rewards.video" value="8"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t3" data-key="rewards.survey" value="20"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t3" data-key="rewards.sponsor" value="2"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t3" data-key="rewards.streak" value="3"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t3" data-key="rewards.share" value="5"></div></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-gift"></i> Bonus Inscription</div><div class="form-row"><div class="form-group"><label class="form-label">Points offerts</label><input type="number" class="form-input" id="signupBonus" value="50"></div></div></div>
+        <div class="page-header"><div><div class="page-title">Points & Pricing</div><div class="page-subtitle">Modifier les coûts, récompenses et rétention quotidienne par tier</div></div><button class="btn btn-success btn-sm" onclick="savePricing()"><i class="fas fa-save"></i> Sauvegarder Tout</button></div>
+
+        <!-- TIER 1 -->
+        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe"></i> Tier 1 (FR, US, DE, GB...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.image" value="4"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.video" value="18"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t1" data-key="rewards.video" value="8"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t1" data-key="rewards.survey" value="20"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t1" data-key="rewards.sponsor" value="2"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t1" data-key="rewards.streak" value="3"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t1" data-key="rewards.share" value="5"></div><div class="form-group"><label class="form-label">Limite Vidéo/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.video" value="3"></div><div class="form-group"><label class="form-label">Limite Sponsor/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.sponsor" value="5"></div><div class="form-group"><label class="form-label">Limite Partage/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.share" value="1"></div></div></div>
+
+        <!-- TIER 2 -->
+        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-americas"></i> Tier 2 (BR, MX, AR...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.image" value="6"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t2" data-key="costs.video" value="25"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t2" data-key="rewards.video" value="5"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t2" data-key="rewards.survey" value="12"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t2" data-key="rewards.sponsor" value="1"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t2" data-key="rewards.streak" value="2"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t2" data-key="rewards.share" value="3"></div></div></div>
+        <!-- TIER 3 -->
+        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe-asia"></i> Tier 3 (IN, PH, NG...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.image" value="8"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t3" data-key="costs.video" value="35"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t3" data-key="rewards.video" value="3"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t3" data-key="rewards.survey" value="6"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t3" data-key="rewards.sponsor" value="1"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t3" data-key="rewards.streak" value="1"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t3" data-key="rewards.share" value="2"></div></div></div>
+
+        <!-- BONUS INSCRIPTION -->
+        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-gift"></i> Bonus Inscription</div><div class="form-row"><div class="form-group"><label class="form-label">Points offerts</label><input type="number" class="form-input" id="signupBonus" value="15"></div></div></div>
+
+        <!-- 🔥 RÉTENTION QUOTIDIENNE (NOUVEAU) -->
+        <div class="card retention-card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-fire"></i> Rétention Quotidienne (Bonus + Streak)</div>
+            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">Configure les points distribués automatiquement à la connexion quotidienne. Le streak se réinitialise si l'utilisateur manque un jour.</p>
+
+            <div class="card-title" style="margin-bottom:0.8rem;font-size:0.9rem"><i class="fas fa-globe" style="font-size:0.8rem"></i> Tier 1</div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t1" data-rkey="bonus_login" value="5"></div>
+                <div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t1" data-rkey="streak_j1_3" value="3"></div>
+                <div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t1" data-rkey="streak_j4_6" value="7"></div>
+                <div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t1" data-rkey="streak_j7" value="10"></div>
+            </div>
+
+            <div class="card-title" style="margin-bottom:0.8rem;font-size:0.9rem"><i class="fas fa-globe-americas" style="font-size:0.8rem"></i> Tier 2</div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t2" data-rkey="bonus_login" value="3"></div>
+                <div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t2" data-rkey="streak_j1_3" value="2"></div>
+                <div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t2" data-rkey="streak_j4_6" value="4"></div>
+                <div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t2" data-rkey="streak_j7" value="6"></div>
+            </div>
+
+            <div class="card-title" style="margin-bottom:0.8rem;font-size:0.9rem"><i class="fas fa-globe-asia" style="font-size:0.8rem"></i> Tier 3</div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t3" data-rkey="bonus_login" value="2"></div>
+                <div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t3" data-rkey="streak_j1_3" value="1"></div>
+                <div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t3" data-rkey="streak_j4_6" value="3"></div>
+                <div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t3" data-rkey="streak_j7" value="4"></div>
+            </div>
+        </div>
     </div>
 
     <!-- BOUTIQUE -->
@@ -278,7 +293,6 @@
         <div class="page-header"><div><div class="page-title">Réseaux Sociaux</div><div class="page-subtitle">Liens affichés dans le footer et le profil</div></div><button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div id="socialLinksContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addSocialField()"><i class="fas fa-plus"></i> Ajouter un réseau</button></div>
     </div>
-
     <!-- PARAMÈTRES SITE -->
     <div class="admin-section" id="sec-site-settings">
         <div class="page-header"><div><div class="page-title">Paramètres du Site</div><div class="page-subtitle">Personnalisation globale sans toucher au code</div></div><button class="btn btn-success btn-sm" onclick="saveSiteSettings()"><i class="fas fa-save"></i> Sauvegarder</button></div>
@@ -292,7 +306,8 @@
     </div>
 
     <!-- CONTENU LÉGAL -->
-    <div class="admin-section" id="sec-legal">        <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité, Mentions Légales</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
+    <div class="admin-section" id="sec-legal">
+        <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité, Mentions Légales</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-file-contract"></i> Conditions Générales d'Utilisation</div><textarea class="form-textarea" id="legalCgu" style="min-height:200px"></textarea></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Politique de Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:200px"></textarea></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
@@ -327,7 +342,6 @@ var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var ADMIN_EMAIL = 'leonard@pixora.com';
 var notifications = [];
 var unreadCount = 0;
-
 // === AUTH ===
 async function handleAdminLogin(e) {
     e.preventDefault();
@@ -341,7 +355,8 @@ async function handleAdminLogin(e) {
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('adminEmailDisplay').textContent = email;
         initAdmin();
-    } catch (err) { alert('❌ Accès refusé : ' + err.message); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder'; }}
+    } catch (err) { alert('❌ Accès refusé : ' + err.message); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder'; }
+}
 function logoutAdmin() { db.auth.signOut(); location.reload(); }
 
 // === NAVIGATION ===
@@ -375,8 +390,7 @@ async function loadDashboard() {
     try {
         var usersResult = await db.from('users').select('id', { count:'exact' });
         document.getElementById('dashTotalUsers').textContent = usersResult.count || 0;
-        var today = new Date().toISOString().split('T')[0];
-        var activeResult = await db.from('daily_usage').select('user_id', { count:'exact' }).eq('date', today);
+        var today = new Date().toISOString().split('T')[0];        var activeResult = await db.from('daily_usage').select('user_id', { count:'exact' }).eq('date', today);
         document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
         var txResult = await db.from('transactions').select('amount').eq('type', 'earned');
         var totalPoints = 0; if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; });
@@ -390,7 +404,8 @@ async function loadDashboard() {
         var todayTx = await db.from('transactions').select('user_id').eq('type','earned').gte('created_at', today+'T00:00:00');
         var uniqueEarners = new Set((todayTx.data||[]).map(function(t){return t.user_id})).size;
         document.getElementById('dashTodayEarners').textContent = uniqueEarners;
-        var recentTx = await db.from('transactions').select('*, users(email)').order('created_at',{ascending:false}).limit(8);        var recentClicks = await db.from('ad_clicks').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
+        var recentTx = await db.from('transactions').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
+        var recentClicks = await db.from('ad_clicks').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
         var activity = [];
         (recentTx.data||[]).forEach(function(t){activity.push({type:t.type,detail:t.title,user:t.users?t.users.email:'-',points:t.amount,date:t.created_at})});
         (recentClicks.data||[]).forEach(function(c){activity.push({type:'task',detail:'✅ '+(c.ad_name||'Offre'),user:c.users?c.users.email:'-',points:0,date:c.created_at})});
@@ -415,18 +430,17 @@ async function loadModels(type) {
         }).join('');
     } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle '+type+'</td></tr>'; }
 }
-function openModelForm(type) { document.getElementById(type==='image'?'modelImageForm':'modelVideoForm').style.display='block'; document.getElementById(type==='image'?'imgModelId':'vidModelId').value=''; document.getElementById(type==='image'?'imgModelName':'vidModelName').value=''; document.getElementById(type==='image'?'imgModelProvider':'vidModelProvider').value=''; document.getElementById(type==='image'?'imgModelEndpoint':'vidModelEndpoint').value=''; document.getElementById(type==='image'?'imgModelCost':'vidModelCost').value=type==='image'?15:90; document.getElementById(type==='image'?'imgModelOrder':'vidModelOrder').value=0; document.getElementById(type==='image'?'imgModelActive':'vidModelActive').checked=true; }
+function openModelForm(type) { document.getElementById(type==='image'?'modelImageForm':'modelVideoForm').style.display='block'; document.getElementById(type==='image'?'imgModelId':'vidModelId').value=''; document.getElementById(type==='image'?'imgModelName':'vidModelName').value=''; document.getElementById(type==='image'?'imgModelProvider':'vidModelProvider').value=''; document.getElementById(type==='image'?'imgModelEndpoint':'vidModelEndpoint').value=''; document.getElementById(type==='image'?'imgModelCost':'vidModelCost').value=type==='image'?4:18; document.getElementById(type==='image'?'imgModelOrder':'vidModelOrder').value=0; document.getElementById(type==='image'?'imgModelActive':'vidModelActive').checked=true; }
 function closeModelForm() { document.getElementById('modelImageForm').style.display='none'; document.getElementById('modelVideoForm').style.display='none'; }
 async function editModel(type,id) { var r=await db.from('generator_models').select('*').eq('id',id).single(); if(!r.data)return; var m=r.data,p=type==='image'?'img':'vid'; document.getElementById(p+'ModelForm').style.display='block'; document.getElementById(p+'ModelId').value=m.id; document.getElementById(p+'ModelName').value=m.name; document.getElementById(p+'ModelProvider').value=m.provider; document.getElementById(p+'ModelEndpoint').value=m.api_endpoint||''; document.getElementById(p+'ModelCost').value=m.cost_points; document.getElementById(p+'ModelOrder').value=m.sort_order; document.getElementById(p+'ModelActive').checked=m.is_active; }
-async function saveModel(type) { var p=type==='image'?'img':'vid',id=document.getElementById(p+'ModelId').value; var data={name:document.getElementById(p+'ModelName').value.trim(),type:type,provider:document.getElementById(p+'ModelProvider').value.trim(),api_endpoint:document.getElementById(p+'ModelEndpoint').value.trim(),cost_points:parseInt(document.getElementById(p+'ModelCost').value)||15,sort_order:parseInt(document.getElementById(p+'ModelOrder').value)||0,is_active:document.getElementById(p+'ModelActive').checked}; if(!data.name||!data.provider){alert('Nom et Provider requis');return} if(id){await db.from('generator_models').update(data).eq('id',id)}else{await db.from('generator_models').insert(data)} closeModelForm();loadModels(type);addNotification('config','Modèle '+type+' sauvegardé'); }
+async function saveModel(type) { var p=type==='image'?'img':'vid',id=document.getElementById(p+'ModelId').value; var data={name:document.getElementById(p+'ModelName').value.trim(),type:type,provider:document.getElementById(p+'ModelProvider').value.trim(),api_endpoint:document.getElementById(p+'ModelEndpoint').value.trim(),cost_points:parseInt(document.getElementById(p+'ModelCost').value)||4,sort_order:parseInt(document.getElementById(p+'ModelOrder').value)||0,is_active:document.getElementById(p+'ModelActive').checked}; if(!data.name||!data.provider){alert('Nom et Provider requis');return} if(id){await db.from('generator_models').update(data).eq('id',id)}else{await db.from('generator_models').insert(data)} closeModelForm();loadModels(type);addNotification('config','Modèle '+type+' sauvegardé'); }
 async function deleteModel(id,type) { if(!confirm('Supprimer ce modèle ?'))return; await db.from('generator_models').delete().eq('id',id); loadModels(type); addNotification('config','Modèle supprimé'); }
 
-// === CLÉS API + TEST (NOUVEAU) ===
+// === CLÉS API + TEST ===
 async function loadApiKeys() {
     var result = await db.from('admin_config').select('*').eq('key','api_keys').single();
-    var keys = result.data ? result.data.value : {};
-    var providers = [
-        {id:'fal.ai',name:'fal.ai',testUrl:'https://rest.alpha.fal.ai/models'},
+    var keys = result.data ? result.data.value : {};    var providers = [
+        {id:'fal.ai',name:'fal.ai (Flux + Wan 2.1)',testUrl:'https://rest.alpha.fal.ai/models'},
         {id:'replicate',name:'Replicate',testUrl:'https://api.replicate.com/v1/models'},
         {id:'stability',name:'Stability AI',testUrl:'https://api.stability.ai/v2beta/stable-image/generate/core'},
         {id:'kling',name:'Kling AI',testUrl:''},
@@ -439,45 +453,30 @@ async function loadApiKeys() {
     providers.forEach(function(p) {
         html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
     });
-    document.getElementById('apiKeysContainer').innerHTML = html;}
-
+    document.getElementById('apiKeysContainer').innerHTML = html;
+}
 async function testApiKey(provider, testUrl) {
     var btn = document.getElementById('btn-test-'+provider);
     var resultDiv = document.getElementById('test-result-'+provider);
     var keyInput = document.querySelector('.api-key-input[data-provider="'+provider+'"]');
     var key = keyInput.value.trim();
-
     if (!key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Aucune clé saisie'; resultDiv.style.display='block'; return; }
     if (!testUrl) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-info-circle"></i> Test auto non disponible pour '+provider+'. Vérifiez manuellement.'; resultDiv.style.display='block'; return; }
-
     btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Test...';
     resultDiv.style.display='none';
-
     try {
         var headers = {'Content-Type':'application/json'};
         if (provider==='fal.ai') headers['Authorization'] = 'Key '+key;
         else if (provider==='replicate') headers['Authorization'] = 'Bearer '+key;
         else if (provider==='stability') headers['Authorization'] = 'Bearer '+key;
         else if (provider==='openai') headers['Authorization'] = 'Bearer '+key;
-
         var response = await fetch(testUrl, {method:'GET',headers:headers});
         btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester';
-
-        if (response.ok) {
-            resultDiv.className='api-test-result success';
-            resultDiv.innerHTML='<i class="fas fa-check"></i> ✅ Clé valide ! Connexion réussie ('+response.status+')';
-        } else {
-            resultDiv.className='api-test-result error';
-            resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Clé invalide ou expirée ('+response.status+')';
-        }
-    } catch(err) {
-        btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester';
-        resultDiv.className='api-test-result error';
-        resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur réseau : '+err.message;
-    }
+        if (response.ok) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-check"></i> ✅ Clé valide ! Connexion réussie ('+response.status+')'; }
+        else { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Clé invalide ou expirée ('+response.status+')'; }
+    } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur réseau : '+err.message; }
     resultDiv.style.display='block';
 }
-
 async function saveApiKeys() {
     var keys = {};
     document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
@@ -488,15 +487,15 @@ async function saveApiKeys() {
 // === RÉGIES PUB ===
 async function loadAdNetworks() {
     var result = await db.from('admin_config').select('*').eq('key','ad_networks').single();
-    var networks = result.data ? result.data.value : [];    window._adNetworks = networks;
-    var tbody = document.getElementById('adNetworksTable');
+    var networks = result.data ? result.data.value : [];
+    window._adNetworks = networks;    var tbody = document.getElementById('adNetworksTable');
     if (networks.length) {
         tbody.innerHTML = networks.map(function(n,i){
             return '<tr><td>'+n.name+'</td><td style="text-transform:capitalize">'+(n.page||'-')+'</td><td><span style="font-family:var(--mono);font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.2rem 0.5rem;border-radius:4px;color:var(--muted)">'+(n.type||'smartlink')+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+n.points+'</td><td>'+(n.active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editAdNetwork('+i+')" title="Modifier"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline" onclick="duplicateAdNetwork('+i+')" title="Dupliquer"><i class="fas fa-copy"></i></button><button class="btn btn-sm btn-outline" onclick="toggleAdNetwork('+i+')" title="'+(n.active?'Désactiver':'Activer')+'"><i class="fas fa-'+(n.active?'pause':'play')+'"></i></button><button class="btn btn-sm btn-danger" onclick="deleteAdNetwork('+i+')" title="Supprimer"><i class="fas fa-trash"></i></button></div></td></tr>';
         }).join('');
     } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie configurée</td></tr>'; }
 }
-function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=15; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }
+function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=5; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }
 function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }
 function editAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=i; document.getElementById('adNetName').value=n.name; document.getElementById('adNetType').value=n.type||'smartlink'; document.getElementById('adNetPage').value=n.page||'earn'; document.getElementById('adNetPosition').value=n.position||'top'; document.getElementById('adNetLink').value=n.link||n.code||''; document.getElementById('adNetPoints').value=n.points; document.getElementById('adNetOrder').value=n.order||0; document.getElementById('adNetActive').checked=n.active!==false; }
 async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; var c=JSON.parse(JSON.stringify(n)); c.name+=' (copie)'; c.active=false; window._adNetworks.push(c); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie dupliquée'); }
@@ -504,9 +503,63 @@ async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetw
 async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }
 async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie supprimée'); }
 
-// === PRICING ===
-async function loadPricing() { var r=await db.from('admin_config').select('*').eq('key','tiers').single(); if(r.data&&r.data.value){var tiers=r.data.value;[1,2,3].forEach(function(t){var tier=tiers[t];if(!tier)return;document.querySelectorAll('.pricing-t'+t).forEach(function(input){var parts=input.dataset.key.split('.');if(tier[parts[0]]&&tier[parts[0]][parts[1]]!==undefined)input.value=tier[parts[0]][parts[1]]})})} var b=await db.from('admin_config').select('*').eq('key','signup_bonus').single(); if(b.data)document.getElementById('signupBonus').value=b.data.value; }
-async function savePricing() { var tiers={};[1,2,3].forEach(function(t){tiers[t]={costs:{},rewards:{},limits:{}};document.querySelectorAll('.pricing-t'+t).forEach(function(input){var parts=input.dataset.key.split('.');tiers[t][parts[0]][parts[1]]=parseInt(input.value)||0})}); await db.from('admin_config').upsert({key:'tiers',value:tiers,updated_at:new Date().toISOString()},{onConflict:'key'}); await db.from('admin_config').upsert({key:'signup_bonus',value:parseInt(document.getElementById('signupBonus').value)||50,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Pricing sauvegardé'); alert('✅ Pricing sauvegardé !'); }
+// === PRICING + RÉTENTION QUOTIDIENNE ===
+async function loadPricing() {
+    // Charger les tiers classiques
+    var r = await db.from('admin_config').select('*').eq('key','tiers').single();
+    if (r.data && r.data.value) {
+        var tiers = r.data.value;
+        [1,2,3].forEach(function(t) {
+            var tier = tiers[t]; if (!tier) return;
+            document.querySelectorAll('.pricing-t'+t).forEach(function(input) {
+                var parts = input.dataset.key.split('.');
+                if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]];
+            });
+        });
+    }
+    // Charger le bonus inscription
+    var b = await db.from('admin_config').select('*').eq('key','signup_bonus').single();
+    if (b.data) document.getElementById('signupBonus').value = b.data.value;
+
+    // 🔥 Charger la rétention quotidienne (NOUVEAU)
+    var ret = await db.from('admin_config').select('*').eq('key','retention_config').single();
+    if (ret.data && ret.data.value) {
+        var rc = ret.data.value;
+        [1,2,3].forEach(function(t) {
+            var tierData = rc[t]; if (!tierData) return;
+            document.querySelectorAll('.retention-t'+t).forEach(function(input) {
+                var rkey = input.dataset.rkey;
+                if (tierData[rkey] !== undefined) input.value = tierData[rkey];
+            });
+        });
+    }
+}
+
+async function savePricing() {
+    // Sauvegarder les tiers classiques
+    var tiers = {};    [1,2,3].forEach(function(t) {
+        tiers[t] = { costs:{}, rewards:{}, limits:{} };
+        document.querySelectorAll('.pricing-t'+t).forEach(function(input) {
+            var parts = input.dataset.key.split('.');
+            tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0;
+        });
+    });
+    await db.from('admin_config').upsert({key:'tiers', value:tiers, updated_at:new Date().toISOString()}, {onConflict:'key'});
+    await db.from('admin_config').upsert({key:'signup_bonus', value:parseInt(document.getElementById('signupBonus').value)||15, updated_at:new Date().toISOString()}, {onConflict:'key'});
+
+    // 🔥 Sauvegarder la rétention quotidienne (NOUVEAU)
+    var retention = {};
+    [1,2,3].forEach(function(t) {
+        retention[t] = {};
+        document.querySelectorAll('.retention-t'+t).forEach(function(input) {
+            retention[t][input.dataset.rkey] = parseInt(input.value) || 0;
+        });
+    });
+    await db.from('admin_config').upsert({key:'retention_config', value:retention, updated_at:new Date().toISOString()}, {onConflict:'key'});
+
+    addNotification('config', 'Pricing + Rétention sauvegardés');
+    alert('✅ Pricing + Rétention Quotidienne sauvegardés !');
+}
 
 // === SHOP ===
 async function loadShopConfig() { var r=await db.from('admin_config').select('*').eq('key','shop_config').single(); var c=r.data?r.data.value:{packs:[],subs:[],currency:'EUR',stripe_key:'',paypal_client_id:''}; document.getElementById('shopCurrency').value=c.currency||'EUR'; document.getElementById('stripeKey').value=c.stripe_key||''; document.getElementById('paypalClientId').value=c.paypal_client_id||''; var ph='';(c.packs||[]).forEach(function(p){ph+='<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="'+p.name+'"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="'+p.points+'"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="'+p.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('packsContainer').innerHTML=ph||'<div style="color:var(--dim);font-size:0.85rem">Aucun pack</div>'; var sh='';(c.subs||[]).forEach(function(s){sh+='<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="'+s.name+'"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="'+s.points+'"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="'+s.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('subsContainer').innerHTML=sh||'<div style="color:var(--dim);font-size:0.85rem">Aucun abonnement</div>'; }
@@ -533,11 +586,11 @@ async function saveLegal() { await db.from('admin_config').upsert({key:'legal',v
 
 // === USERS ===
 async function loadUsers() { var r=await db.from('users').select('id,email,name,created_at'); var ud=await db.from('user_data').select('*'); var um={}; if(ud.data)ud.data.forEach(function(d){um[d.user_id]=d}); window._allUsers=r.data||[]; window._usersMap=um; renderUsersTable(window._allUsers,um); }
-function renderUsersTable(users,um) { var tb=document.getElementById('usersTable'); if(!users.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun utilisateur</td></tr>';return} tb.innerHTML=users.map(function(u){var d=um[u.id]||{};return '<tr><td>'+(u.name||'-')+'</td><td style="font-size:0.8rem">'+u.email+'</td><td><div class="inline-points-edit"><span style="font-family:var(--mono);color:var(--gold);min-width:40px">'+(d.points||0)+'</span><input type="number" id="pts-'+u.id+'" value="'+(d.points||0)+'"><button class="btn btn-sm btn-success" onclick="saveUserPoints(\''+u.id+'\')"><i class="fas fa-save"></i></button></div></td><td>J'+(d.streak||1)+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(d.last_login||'-')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\''+u.id+'\')" title="Ajouter"><i class="fas fa-plus"></i></button><button class="btn btn-sm btn-danger" onclick="banUser(\''+u.id+'\')" title="Bannir"><i class="fas fa-ban"></i></button></div></td></tr>'}).join(''); }
-function searchUsers() { var q=document.getElementById('userSearch').value.toLowerCase(); var f=window._allUsers.filter(function(u){return(u.email&&u.email.toLowerCase().includes(q))||(u.name&&u.name.toLowerCase().includes(q))}); renderUsersTable(f,window._usersMap||{}); }
+function renderUsersTable(users,um) { var tb=document.getElementById('usersTable'); if(!users.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun utilisateur</td></tr>';return} tb.innerHTML=users.map(function(u){var d=um[u.id]||{};return '<tr><td>'+(u.name||'-')+'</td><td style="font-size:0.8rem">'+u.email+'</td><td><div class="inline-points-edit"><span style="font-family:var(--mono);color:var(--gold);min-width:40px">'+(d.points||0)+'</span><input type="number" id="pts-'+u.id+'" value="'+(d.points||0)+'"><button class="btn btn-sm btn-success" onclick="saveUserPoints(\''+u.id+'\')"><i class="fas fa-save"></i></button></div></td><td>J'+(d.streak||1)+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(d.last_login||'-')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\''+u.id+'\')" title="Ajouter"><i class="fas fa-plus"></i></button><button class="btn btn-sm btn-danger" onclick="banUser(\''+u.id+'\')" title="Bannir"><i class="fas fa-ban"></i></button></div></td></tr>'}).join(''); }function searchUsers() { var q=document.getElementById('userSearch').value.toLowerCase(); var f=window._allUsers.filter(function(u){return(u.email&&u.email.toLowerCase().includes(q))||(u.name&&u.name.toLowerCase().includes(q))}); renderUsersTable(f,window._usersMap||{}); }
 async function saveUserPoints(uid) { var np=parseInt(document.getElementById('pts-'+uid).value); if(isNaN(np)){alert('Nombre invalide');return} await db.from('user_data').update({points:np}).eq('user_id',uid); addNotification('user','Points mis à jour'); loadUsers(); }
 async function addPointsToUser(uid) { var a=prompt('Combien de points ajouter ?'); if(!a||isNaN(a))return; a=parseInt(a); await db.from('transactions').insert({user_id:uid,type:'earned',title:'Ajout admin',amount:a}); var d=await db.from('user_data').select('*').eq('user_id',uid).single(); if(d.data){await db.from('user_data').update({points:d.data.points+a,total_earned:(d.data.total_earned||0)+a}).eq('user_id',uid)} loadUsers(); addNotification('user',a+' points ajoutés'); }
 async function banUser(uid) { if(!confirm('Bannir cet utilisateur ?'))return; await db.from('user_data').update({points:0,streak:0}).eq('user_id',uid); loadUsers(); addNotification('user','Utilisateur banni'); }
+
 // === LOGS ===
 async function loadLogs() { var r=await db.from('admin_config').select('*').eq('key','system_logs').single(); var logs=r.data?r.data.value:[]; var tb=document.getElementById('logsTable'); if(logs.length){tb.innerHTML=logs.slice().reverse().slice(0,50).map(function(l){var colors={error:'var(--danger)',warn:'var(--warn)',info:'var(--accent)',success:'var(--success)'};return '<tr><td style="font-size:0.75rem;font-family:var(--mono);white-space:nowrap">'+new Date(l.time).toLocaleString('fr-FR')+'</td><td style="color:'+(colors[l.type]||'var(--text)')+';font-weight:600">'+l.type.toUpperCase()+'</td><td>'+l.message+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(l.details||'-')+'</td></tr>'}).join('')}else{tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--dim)">Aucun log</td></tr>'} }
 
