@@ -101,7 +101,12 @@
         .retention-card .card-title i{color:var(--gold)}
         .tasks-card{border-left:4px solid var(--info);background:linear-gradient(135deg,var(--surface) 0%,rgba(59,130,246,0.03) 100%)}
         .tasks-card .card-title i{color:var(--info)}
+        .referral-card{border-left:4px solid var(--accent2);background:linear-gradient(135deg,var(--surface) 0%,rgba(236,72,153,0.03) 100%)}
+        .referral-card .card-title i{color:var(--accent2)}
         .task-type-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}
+        .status-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px}
+        .status-pending{background:rgba(251,191,36,0.15);color:var(--gold)}
+        .status-valid{background:rgba(16,185,129,0.15);color:var(--success)}
         @media(max-width:768px){
             .sidebar{width:60px}
             .sidebar-logo span,.nav-section-title,.nav-item span,.sidebar-footer{display:none}
@@ -140,16 +145,17 @@
             <div class="nav-section-title">Principal</div>
             <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></button>
             <button class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></button>
-        </div>
-        <div class="nav-section">
+        </div>        <div class="nav-section">
             <div class="nav-section-title">Générateur IA</div>
             <button class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></button>
             <button class="nav-item" onclick="showSection('models-video')"><i class="fas fa-video"></i><span>Modèles Vidéo</span></button>
-            <button class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API + Test</span></button>        </div>
+            <button class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API + Test</span></button>
+        </div>
         <div class="nav-section">
             <div class="nav-section-title">Monétisation</div>
             <button class="nav-item" onclick="showSection('ad-networks')"><i class="fas fa-ad"></i><span>Régies Pub</span></button>
             <button class="nav-item" onclick="showSection('internal-tasks')"><i class="fas fa-tasks"></i><span>Tâches Internes</span></button>
+            <button class="nav-item" onclick="showSection('referral')"><i class="fas fa-user-friends"></i><span>Parrainage</span></button>
             <button class="nav-item" onclick="showSection('pricing')"><i class="fas fa-coins"></i><span>Points & Pricing</span></button>
             <button class="nav-item" onclick="showSection('shop-config')"><i class="fas fa-shopping-bag"></i><span>Boutique</span></button>
         </div>
@@ -167,7 +173,203 @@
             <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v3.3<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v3.4<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+</aside>
+
+<!-- NOTIFICATIONS -->
+<div class="notif-panel" id="notifPanel">
+    <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
+    <div class="notif-list" id="notifList"><div style="text-align:center;padding:2rem;color:var(--dim)">Chargement...</div></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="admin-section active" id="sec-dashboard">
+        <div class="page-header"><div><div class="page-title">Centre de Commandement</div><div class="page-subtitle">Vue d'ensemble en temps réel de Pixora</div></div><button class="btn btn-outline btn-sm" onclick="loadDashboard()"><i class="fas fa-sync"></i> Actualiser</button></div>
+        <div class="stats-grid">
+            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="dashTotalUsers">-</div><div class="stat-label">Users Total</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div class="stat-value" id="dashActiveToday">-</div><divC'est noté, Chef ! **10 pts + Inscription/Génération + Avant Points.** 👑
+
+Voici le code **COMPLET** mis à jour avec le système de Parrainage intégré. Écrase tout, sauvegarde, et c'est fait.
+
+```html<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixora Admin | Centre de Commandement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--bg:#050508;--surface:#0f0f14;--surface2:#16161e;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--info:#3B82F6;--warn:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;overflow:hidden}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+        .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:100}
+        .sidebar-logo{padding:1.2rem 1.5rem;display:flex;align-items:center;gap:0.7rem;border-bottom:1px solid var(--border)}
+        .sidebar-logo svg{width:32px;height:32px}
+        .sidebar-logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .sidebar-nav{flex:1;overflow-y:auto;padding:0.8rem}
+        .nav-section{margin-bottom:0.5rem}
+        .nav-section-title{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);padding:0.5rem 0.8rem;margin-bottom:0.2rem}
+        .nav-item{display:flex;align-items:center;gap:0.7rem;padding:0.65rem 0.8rem;border-radius:10px;font-size:0.85rem;color:var(--muted);cursor:pointer;transition:all 0.2s;position:relative;border:none;background:none;width:100%;text-align:left}
+        .nav-item:hover{background:rgba(139,92,246,0.08);color:var(--text)}
+        .nav-item.active{background:rgba(139,92,246,0.15);color:var(--accent);border-left:3px solid var(--accent)}
+        .nav-item i{width:20px;text-align:center;font-size:0.9rem}
+        .nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:0.6rem;padding:0.15rem 0.5rem;border-radius:10px;font-weight:700;font-family:var(--mono)}
+        .sidebar-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--dim)}
+        .main{margin-left:260px;flex:1;height:100vh;overflow-y:auto;padding:2rem}
+        .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+        .page-title{font-size:1.6rem;font-weight:800}
+        .page-subtitle{font-size:0.85rem;color:var(--muted);margin-top:0.2rem}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.3rem;position:relative;overflow:hidden}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+        .stat-card.purple::before{background:var(--accent)}.stat-card.green::before{background:var(--success)}.stat-card.gold::before{background:var(--gold)}.stat-card.pink::before{background:var(--accent2)}.stat-card.blue::before{background:var(--info)}.stat-card.warn::before{background:var(--warn)}
+        .stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:0.8rem}
+        .stat-card.purple .stat-icon{background:rgba(139,92,246,0.15);color:var(--accent)}
+        .stat-card.green .stat-icon{background:rgba(16,185,129,0.15);color:var(--success)}
+        .stat-card.gold .stat-icon{background:rgba(251,191,36,0.15);color:var(--gold)}
+        .stat-card.pink .stat-icon{background:rgba(236,72,153,0.15);color:var(--accent2)}
+        .stat-card.blue .stat-icon{background:rgba(59,130,246,0.15);color:var(--info)}
+        .stat-card.warn .stat-icon{background:rgba(249,115,22,0.15);color:var(--warn)}
+        .stat-value{font-size:2rem;font-weight:800;font-family:var(--mono);line-height:1}
+        .stat-label{color:var(--muted);font-size:0.7rem;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.5px}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
+        .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+        .card-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
+        .card-title i{color:var(--accent)}
+        .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem}
+        .form-group{display:flex;flex-direction:column;gap:0.3rem}        .form-label{font-size:0.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+        .form-input,.form-select,.form-textarea{width:100%;padding:0.7rem 0.9rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:0.85rem;outline:none;transition:border-color 0.2s}
+        .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+        .form-textarea{min-height:80px;resize:vertical;font-family:var(--mono);font-size:0.8rem}
+        .form-select{cursor:pointer}
+        .btn{padding:0.6rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;border:none}
+        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.3)}
+        .btn-success{background:var(--success);color:white}
+        .btn-success:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
+        .btn-danger{background:var(--danger);color:white}
+        .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
+        .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+        .btn-sm{padding:0.4rem 0.8rem;font-size:0.75rem;border-radius:8px}
+        .btn-test{background:var(--info);color:white}
+        .btn-test:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+        .btn-test.testing{opacity:0.7;cursor:wait}
+        .table-container{overflow-x:auto}
+        table{width:100%;border-collapse:collapse;font-size:0.85rem}
+        th{text-align:left;padding:0.8rem;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border)}
+        td{padding:0.8rem;border-bottom:1px solid var(--border);color:var(--text)}
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:rgba(255,255,255,0.02)}
+        .action-btns{display:flex;gap:0.3rem;justify-content:flex-end}
+        .toggle{position:relative;width:40px;height:22px;cursor:pointer;display:inline-block}
+        .toggle input{opacity:0;width:0;height:0}
+        .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:0.3s}
+        .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s}
+        .toggle input:checked+.toggle-slider{background:var(--success)}
+        .toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
+        .notif-panel{position:fixed;top:0;right:-400px;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:200;transition:right 0.3s ease;display:flex;flex-direction:column}
+        .notif-panel.open{right:0}
+        .notif-header{padding:1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .notif-list{flex:1;overflow-y:auto;padding:0.5rem}
+        .notif-item{padding:0.8rem;border-radius:10px;margin-bottom:0.4rem;background:var(--bg);border:1px solid var(--border);font-size:0.8rem;cursor:pointer;transition:all 0.2s}
+        .notif-item:hover{border-color:var(--accent)}
+        .notif-item.unread{border-left:3px solid var(--accent)}
+        .notif-time{font-size:0.65rem;color:var(--dim);margin-top:0.3rem;font-family:var(--mono)}
+        .notif-type{font-weight:600;margin-bottom:0.2rem}
+        .notif-type.user{color:var(--accent)}.notif-type.payment{color:var(--gold)}.notif-type.error{color:var(--danger)}.notif-type.gen{color:var(--success)}.notif-type.config{color:var(--info)}
+        .login-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
+        .login-overlay.hidden{display:none}
+        .login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;text-align:center}
+        .login-box h2{margin-bottom:0.5rem;font-weight:800}.login-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem}
+        .admin-section{display:none}.admin-section.active{display:block;animation:fadeIn 0.3s}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .api-test-result{margin-top:0.5rem;padding:0.6rem;border-radius:8px;font-size:0.8rem;font-family:var(--mono);display:none}
+        .api-test-result.success{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+        .api-test-result.error{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
+        .inline-points-edit{display:flex;gap:0.3rem;align-items:center}        .inline-points-edit input{width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--gold)}
+        .retention-card{border-left:4px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(251,191,36,0.03) 100%)}
+        .retention-card .card-title i{color:var(--gold)}
+        .tasks-card{border-left:4px solid var(--info);background:linear-gradient(135deg,var(--surface) 0%,rgba(59,130,246,0.03) 100%)}
+        .tasks-card .card-title i{color:var(--info)}
+        .referral-card{border-left:4px solid var(--accent2);background:linear-gradient(135deg,var(--surface) 0%,rgba(236,72,153,0.03) 100%)}
+        .referral-card .card-title i{color:var(--accent2)}
+        .task-type-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}
+        .status-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px}
+        .status-pending{background:rgba(251,191,36,0.15);color:var(--gold)}
+        .status-valid{background:rgba(16,185,129,0.15);color:var(--success)}
+        @media(max-width:768px){
+            .sidebar{width:60px}
+            .sidebar-logo span,.nav-section-title,.nav-item span,.sidebar-footer{display:none}
+            .sidebar-logo{padding:1rem;justify-content:center}
+            .nav-item{justify-content:center;padding:0.8rem}
+            .nav-item.active{border-left:none;border-bottom:3px solid var(--accent)}
+            .main{margin-left:60px;padding:1rem}
+            .notif-panel{width:100%}
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+        <h2>🔐 Pixora Admin</h2>
+        <p>Accès réservé à l'administrateur</p>
+        <form onsubmit="handleAdminLogin(event)">
+            <div class="form-group" style="margin-bottom:1rem"><input type="email" class="form-input" placeholder="Email admin" required id="adminEmail"></div>
+            <div class="form-group" style="margin-bottom:1rem"><input type="password" class="form-input" placeholder="Mot de passe" required id="adminPass"></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="btnAdminLogin"><i class="fas fa-sign-in-alt"></i> Accéder</button>
+        </form>
+    </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="alg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#alg)"/></svg>
+        <span>Pixora Admin</span>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section">
+            <div class="nav-section-title">Principal</div>
+            <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></button>
+            <button class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></button>
+        </div>        <div class="nav-section">
+            <div class="nav-section-title">Générateur IA</div>
+            <button class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></button>
+            <button class="nav-item" onclick="showSection('models-video')"><i class="fas fa-video"></i><span>Modèles Vidéo</span></button>
+            <button class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API + Test</span></button>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Monétisation</div>
+            <button class="nav-item" onclick="showSection('ad-networks')"><i class="fas fa-ad"></i><span>Régies Pub</span></button>
+            <button class="nav-item" onclick="showSection('internal-tasks')"><i class="fas fa-tasks"></i><span>Tâches Internes</span></button>
+            <button class="nav-item" onclick="showSection('referral')"><i class="fas fa-user-friends"></i><span>Parrainage</span></button>
+            <button class="nav-item" onclick="showSection('pricing')"><i class="fas fa-coins"></i><span>Points & Pricing</span></button>
+            <button class="nav-item" onclick="showSection('shop-config')"><i class="fas fa-shopping-bag"></i><span>Boutique</span></button>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Site</div>
+            <button class="nav-item" onclick="showSection('social-links')"><i class="fas fa-share-alt"></i><span>Réseaux Sociaux</span></button>
+            <button class="nav-item" onclick="showSection('site-settings')"><i class="fas fa-cog"></i><span>Paramètres Site</span></button>
+            <button class="nav-item" onclick="showSection('seo')"><i class="fas fa-search"></i><span>SEO & Meta</span></button>
+            <button class="nav-item" onclick="showSection('legal')"><i class="fas fa-gavel"></i><span>Contenu Légal</span></button>
+        </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Gestion</div>
+            <button class="nav-item" onclick="showSection('users')"><i class="fas fa-users"></i><span>Utilisateurs</span></button>
+            <button class="nav-item" onclick="showSection('logs')"><i class="fas fa-terminal"></i><span>Logs Système</span></button>
+            <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
+        </div>
+    </nav>
+    <div class="sidebar-footer">Pixora Admin v3.4<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 
 <!-- NOTIFICATIONS -->
@@ -188,13 +390,13 @@
             <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-value" id="dashPointsDistributed">-</div><div class="stat-label">Points Distribués</div></div>
             <div class="stat-card pink"><div class="stat-icon"><i class="fas fa-image"></i></div><div class="stat-value" id="dashGenerations">-</div><div class="stat-label">Générations Totales</div></div>
             <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-ad"></i></div><div class="stat-value" id="dashActiveAds">-</div><div class="stat-label">Pubs Actives</div></div>
-            <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>
-        </div>
+            <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>        </div>
         <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-stream"></i> Activité Récente</div></div><div class="table-container"><table><thead><tr><th>Type</th><th>Détail</th><th>User</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentActivity"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
     <!-- MODÈLES IMAGE -->
-    <div class="admin-section" id="sec-models-image">        <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
+    <div class="admin-section" id="sec-models-image">
+        <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="modelImageForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Image</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
             <input type="hidden" id="imgModelId">
             <div class="form-row"><div class="form-group"><label class="form-label">Nom du modèle</label><input type="text" class="form-input" id="imgModelName" placeholder="ex: Flux Schnell"></div><div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="imgModelProvider" placeholder="ex: fal.ai"></div></div>
@@ -237,13 +439,13 @@
         </div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Page</th><th>Type</th><th>Points</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="adNetworksTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
-
     <!-- TÂCHES INTERNES -->
     <div class="admin-section" id="sec-internal-tasks">
         <div class="page-header"><div><div class="page-title">Tâches Internes</div><div class="page-subtitle">Gérer les tâches quotidiennes qui remplissent la page Earn</div></div><button class="btn btn-primary btn-sm" onclick="openTaskForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card tasks-card" id="taskForm" style="display:none">
             <div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Tâche</div><button class="btn btn-sm btn-outline" onclick="closeTaskForm()">Annuler</button></div>
-            <input type="hidden" id="taskId">            <div class="form-row">
+            <input type="hidden" id="taskId">
+            <div class="form-row">
                 <div class="form-group"><label class="form-label">Nom de la tâche</label><input type="text" class="form-input" id="taskName" placeholder="ex: Voter pour une création"></div>
                 <div class="form-group"><label class="form-label">Description courte</label><input type="text" class="form-input" id="taskDesc" placeholder="ex: Donne ton avis sur une image"></div>
             </div>
@@ -261,6 +463,32 @@
                 <table>
                     <thead><tr><th>Nom</th><th>Type</th><th>Points</th><th>Limite/jour</th><th>Ordre</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead>
                     <tbody id="tasksTable"><tr><td colspan="7" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔥 PARRAINAGE (NOUVEAU) -->
+    <div class="admin-section" id="sec-referral">
+        <div class="page-header"><div><div class="page-title">Système de Parrainage</div><div class="page-subtitle">Configuration et suivi des parrainages</div></div><button class="btn btn-success btn-sm" onclick="saveReferralConfig()"><i class="fas fa-save"></i> Sauvegarder</button></div>
+        
+        <!-- Configuration -->
+        <div class="card referral-card">
+            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-cog"></i> Configuration Générale</div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Système activé</label><label class="toggle"><input type="checkbox" id="refEnabled" checked><span class="toggle-slider"></span></label></div>
+                <div class="form-group"><label class="form-label">Points par filleul validé</label><input type="number" class="form-input" id="refPoints" value="10"></div>
+                <div class="form-group"><label class="form-label">Condition de validation</label><select class="form-select" id="refCondition"><option value="signup_gen">Inscription + 1ère génération</option><option value="signup_only">Inscription seulement</option></select></div>
+            </div>
+            <p style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">Chaque utilisateur a un lien unique : <code style="color:var(--accent)">votre-site.com/?ref=USER_ID</code>. Les points sont crédités automatiquement quand la condition est remplie.</p>
+        </div>
+
+        <!-- Tableau des parrainages -->
+        <div class="card">
+            <div class="card-header"><div class="card-title"><i class="fas fa-list"></i> Parrainages Récents</div><button class="btn btn-sm btn-outline" onclick="loadReferrals()"><i class="fas fa-sync"></i></button></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Parrain</th><th>Filleul</th><th>Statut</th><th>Points</th><th>Date</th></tr></thead>                    <tbody id="referralsTable"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -292,7 +520,8 @@
         <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Devise</label><select class="form-select" id="shopCurrency"><option value="EUR">EUR (€)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option></select></div><div class="form-group"><label class="form-label">Stripe Key (publique)</label><input type="text" class="form-input" id="stripeKey" placeholder="pk_live_..."></div><div class="form-group"><label class="form-label">PayPal Client ID</label><input type="text" class="form-input" id="paypalClientId" placeholder="Client ID"></div></div></div>
     </div>
 
-    <!-- RÉSEAUX SOCIAUX -->    <div class="admin-section" id="sec-social-links">
+    <!-- RÉSEAUX SOCIAUX -->
+    <div class="admin-section" id="sec-social-links">
         <div class="page-header"><div><div class="page-title">Réseaux Sociaux</div><div class="page-subtitle">Liens affichés dans le footer et le profil</div></div><button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div id="socialLinksContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addSocialField()"><i class="fas fa-plus"></i> Ajouter un réseau</button></div>
     </div>
@@ -308,7 +537,6 @@
         <div class="page-header"><div><div class="page-title">SEO & Métadonnées</div><div class="page-subtitle">Optimisation pour les moteurs de recherche</div></div><button class="btn btn-success btn-sm" onclick="saveSeo()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title Tag</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement avec Pixora. Gagnez des points en complétant des tâches.</textarea></div><div class="form-row"><div class="form-group"><label class="form-label">OG Image URL</label><input type="text" class="form-input" id="seoOgImage" placeholder="URL image partage"></div><div class="form-group"><label class="form-label">Canonical URL</label><input type="text" class="form-input" id="seoCanonical" value="https://pixoraia.netlify.app/"></div></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Robots.txt</label><textarea class="form-textarea" id="seoRobots">User-agent: *\nAllow: /\nSitemap: https://pixoraia.netlify.app/sitemap.xml</textarea></div></div>
     </div>
-
     <!-- CONTENU LÉGAL -->
     <div class="admin-section" id="sec-legal">
         <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité, Mentions Légales</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
@@ -341,11 +569,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var notifications = [];
 var unreadCount = 0;
 
-// === AUTH CORRIGÉE ===
+// === AUTH ===
 async function handleAdminLogin(e) {
     e.preventDefault();
     var email = document.getElementById('adminEmail').value.trim();
@@ -357,8 +586,7 @@ async function handleAdminLogin(e) {
         var result = await db.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw new Error(result.error.message || 'Identifiants incorrects');
         document.getElementById('loginOverlay').classList.add('hidden');
-        document.getElementById('adminEmailDisplay').textContent = email;
-        initAdmin();
+        document.getElementById('adminEmailDisplay').textContent = email;        initAdmin();
     } catch (err) {
         alert('❌ ' + err.message);
         btn.disabled = false;
@@ -373,9 +601,9 @@ function showSection(name) {
     document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
     document.getElementById('sec-' + name).classList.add('active');
     var navItems = document.querySelectorAll('.nav-item');
-    var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'ad-networks':6, 'internal-tasks':7, pricing:8, 'shop-config':9, 'social-links':11, 'site-settings':12, seo:13, legal:14, users:16, logs:17, security:18 };
+    var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'ad-networks':6, 'internal-tasks':7, referral:8, pricing:9, 'shop-config':10, 'social-links':12, 'site-settings':13, seo:14, legal:15, users:17, logs:18, security:19 };
     if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');
-    var loaders = { dashboard:loadDashboard, 'models-image':function(){loadModels('image')}, 'models-video':function(){loadModels('video')}, apis:loadApiKeys, 'ad-networks':loadAdNetworks, 'internal-tasks':loadInternalTasks, pricing:loadPricing, 'shop-config':loadShopConfig, 'social-links':loadSocialLinks, 'site-settings':loadSiteSettings, seo:loadSeo, legal:loadLegal, users:loadUsers, logs:loadLogs };
+    var loaders = { dashboard:loadDashboard, 'models-image':function(){loadModels('image')}, 'models-video':function(){loadModels('video')}, apis:loadApiKeys, 'ad-networks':loadAdNetworks, 'internal-tasks':loadInternalTasks, referral:loadReferrals, pricing:loadPricing, 'shop-config':loadShopConfig, 'social-links':loadSocialLinks, 'site-settings':loadSiteSettings, seo:loadSeo, legal:loadLegal, users:loadUsers, logs:loadLogs };
     if (loaders[name]) loaders[name]();
 }
 
@@ -390,7 +618,8 @@ function updateNotifUI() {
         var icons = { user:'fa-user-plus', payment:'fa-credit-card', error:'fa-exclamation-triangle', gen:'fa-sparkles', config:'fa-cog' };
         return '<div class="notif-item '+(n.read?'':'unread')+'" onclick="markRead(this)"><div class="notif-type '+n.type+'"><i class="fas '+(icons[n.type]||'fa-info-circle')+'"></i> '+n.type.toUpperCase()+'</div><div>'+n.message+'</div><div class="notif-time">'+n.time.toLocaleTimeString('fr-FR')+'</div></div>';
     }).join('');
-}function markRead(el) { el.classList.remove('unread'); unreadCount = Math.max(0, unreadCount-1); updateNotifUI(); }
+}
+function markRead(el) { el.classList.remove('unread'); unreadCount = Math.max(0, unreadCount-1); updateNotifUI(); }
 
 // === DASHBOARD ===
 async function loadDashboard() {
@@ -406,8 +635,7 @@ async function loadDashboard() {
         var genResult = await db.from('user_data').select('total_generated');
         var totalGen = 0; if (genResult.data) genResult.data.forEach(function(u) { totalGen += (u.total_generated || 0); });
         document.getElementById('dashGenerations').textContent = totalGen.toLocaleString();
-        var adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
-        var ads = adsResult.data?.value || [];
+        var adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();        var ads = adsResult.data?.value || [];
         document.getElementById('dashActiveAds').textContent = ads.filter(function(a){return a.active}).length;
         var todayTx = await db.from('transactions').select('user_id').eq('type','earned').gte('created_at', today+'T00:00:00');
         var uniqueEarners = new Set((todayTx.data||[]).map(function(t){return t.user_id})).size;
@@ -439,7 +667,8 @@ async function loadModels(type) {
     } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun modèle '+type+'</td></tr>'; }
 }
 function openModelForm(type) { document.getElementById(type==='image'?'modelImageForm':'modelVideoForm').style.display='block'; document.getElementById(type==='image'?'imgModelId':'vidModelId').value=''; document.getElementById(type==='image'?'imgModelName':'vidModelName').value=''; document.getElementById(type==='image'?'imgModelProvider':'vidModelProvider').value=''; document.getElementById(type==='image'?'imgModelEndpoint':'vidModelEndpoint').value=''; document.getElementById(type==='image'?'imgModelCost':'vidModelCost').value=type==='image'?4:18; document.getElementById(type==='image'?'imgModelOrder':'vidModelOrder').value=0; document.getElementById(type==='image'?'imgModelActive':'vidModelActive').checked=true; }
-function closeModelForm() { document.getElementById('modelImageForm').style.display='none'; document.getElementById('modelVideoForm').style.display='none'; }async function editModel(type,id) { var r=await db.from('generator_models').select('*').eq('id',id).single(); if(!r.data)return; var m=r.data,p=type==='image'?'img':'vid'; document.getElementById(p+'ModelForm').style.display='block'; document.getElementById(p+'ModelId').value=m.id; document.getElementById(p+'ModelName').value=m.name; document.getElementById(p+'ModelProvider').value=m.provider; document.getElementById(p+'ModelEndpoint').value=m.api_endpoint||''; document.getElementById(p+'ModelCost').value=m.cost_points; document.getElementById(p+'ModelOrder').value=m.sort_order; document.getElementById(p+'ModelActive').checked=m.is_active; }
+function closeModelForm() { document.getElementById('modelImageForm').style.display='none'; document.getElementById('modelVideoForm').style.display='none'; }
+async function editModel(type,id) { var r=await db.from('generator_models').select('*').eq('id',id).single(); if(!r.data)return; var m=r.data,p=type==='image'?'img':'vid'; document.getElementById(p+'ModelForm').style.display='block'; document.getElementById(p+'ModelId').value=m.id; document.getElementById(p+'ModelName').value=m.name; document.getElementById(p+'ModelProvider').value=m.provider; document.getElementById(p+'ModelEndpoint').value=m.api_endpoint||''; document.getElementById(p+'ModelCost').value=m.cost_points; document.getElementById(p+'ModelOrder').value=m.sort_order; document.getElementById(p+'ModelActive').checked=m.is_active; }
 async function saveModel(type) { var p=type==='image'?'img':'vid',id=document.getElementById(p+'ModelId').value; var data={name:document.getElementById(p+'ModelName').value.trim(),type:type,provider:document.getElementById(p+'ModelProvider').value.trim(),api_endpoint:document.getElementById(p+'ModelEndpoint').value.trim(),cost_points:parseInt(document.getElementById(p+'ModelCost').value)||4,sort_order:parseInt(document.getElementById(p+'ModelOrder').value)||0,is_active:document.getElementById(p+'ModelActive').checked}; if(!data.name||!data.provider){alert('Nom et Provider requis');return} if(id){await db.from('generator_models').update(data).eq('id',id)}else{await db.from('generator_models').insert(data)} closeModelForm();loadModels(type);addNotification('config','Modèle '+type+' sauvegardé'); }
 async function deleteModel(id,type) { if(!confirm('Supprimer ce modèle ?'))return; await db.from('generator_models').delete().eq('id',id); loadModels(type); addNotification('config','Modèle supprimé'); }
 
@@ -455,8 +684,7 @@ async function loadApiKeys() {
         {id:'tencent',name:'Tencent Hunyuan',testUrl:''},
         {id:'runway',name:'Runway ML',testUrl:''},
         {id:'pika',name:'Pika Labs',testUrl:''},
-        {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}
-    ];
+        {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}    ];
     var html = '';
     providers.forEach(function(p) {
         html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
@@ -488,7 +716,8 @@ async function testApiKey(provider, testUrl) {
 async function saveApiKeys() {
     var keys = {};
     document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
-    await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'});    addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');
+    await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'});
+    addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');
 }
 
 // === RÉGIES PUB ===
@@ -504,8 +733,7 @@ async function loadAdNetworks() {
     } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie configurée</td></tr>'; }
 }
 function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=5; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }
-function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }
-function editAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=i; document.getElementById('adNetName').value=n.name; document.getElementById('adNetType').value=n.type||'smartlink'; document.getElementById('adNetPage').value=n.page||'earn'; document.getElementById('adNetPosition').value=n.position||'top'; document.getElementById('adNetLink').value=n.link||n.code||''; document.getElementById('adNetPoints').value=n.points; document.getElementById('adNetOrder').value=n.order||0; document.getElementById('adNetActive').checked=n.active!==false; }
+function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }function editAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=i; document.getElementById('adNetName').value=n.name; document.getElementById('adNetType').value=n.type||'smartlink'; document.getElementById('adNetPage').value=n.page||'earn'; document.getElementById('adNetPosition').value=n.position||'top'; document.getElementById('adNetLink').value=n.link||n.code||''; document.getElementById('adNetPoints').value=n.points; document.getElementById('adNetOrder').value=n.order||0; document.getElementById('adNetActive').checked=n.active!==false; }
 async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; var c=JSON.parse(JSON.stringify(n)); c.name+=' (copie)'; c.active=false; window._adNetworks.push(c); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie dupliquée'); }
 async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetworks[i].active; await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); }
 async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }
@@ -537,9 +765,43 @@ function renderTasksTable(tasks) {
     }).join('');
 }
 function openTaskForm() { document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=''; document.getElementById('taskName').value=''; document.getElementById('taskDesc').value=''; document.getElementById('taskPoints').value=2; document.getElementById('taskType').value='vote'; document.getElementById('taskLimit').value=5; document.getElementById('taskOrder').value=0; document.getElementById('taskActive').checked=true; }
-function closeTaskForm() { document.getElementById('taskForm').style.display='none'; }function editTask(index) { var t=window._internalTasks[index]; if(!t)return; document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=index; document.getElementById('taskName').value=t.name; document.getElementById('taskDesc').value=t.desc||''; document.getElementById('taskPoints').value=t.points; document.getElementById('taskType').value=t.type; document.getElementById('taskLimit').value=t.limit; document.getElementById('taskOrder').value=t.order||0; document.getElementById('taskActive').checked=t.active!==false; }
+function closeTaskForm() { document.getElementById('taskForm').style.display='none'; }
+function editTask(index) { var t=window._internalTasks[index]; if(!t)return; document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=index; document.getElementById('taskName').value=t.name; document.getElementById('taskDesc').value=t.desc||''; document.getElementById('taskPoints').value=t.points; document.getElementById('taskType').value=t.type; document.getElementById('taskLimit').value=t.limit; document.getElementById('taskOrder').value=t.order||0; document.getElementById('taskActive').checked=t.active!==false; }
 async function saveInternalTask() { var index=document.getElementById('taskId').value; var data={name:document.getElementById('taskName').value.trim(),desc:document.getElementById('taskDesc').value.trim(),points:parseInt(document.getElementById('taskPoints').value)||0,type:document.getElementById('taskType').value,limit:parseInt(document.getElementById('taskLimit').value)||1,order:parseInt(document.getElementById('taskOrder').value)||0,active:document.getElementById('taskActive').checked}; if(!data.name){alert('Nom requis');return} var tasks=window._internalTasks||[]; if(index!==''){tasks[parseInt(index)]=data}else{tasks.push(data)} tasks.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); closeTaskForm(); loadInternalTasks(); addNotification('config','Tâche "'+data.name+'" sauvegardée'); }
 async function deleteInternalTask(index) { if(!confirm('Supprimer cette tâche ?'))return; window._internalTasks.splice(index,1); await db.from('admin_config').upsert({key:'internal_tasks',value:window._internalTasks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadInternalTasks(); addNotification('config','Tâche supprimée'); }
+
+// 🔥 === PARRAINAGE (NOUVEAU) ===
+async function loadReferrals() {
+    // Charger la config
+    var configResult = await db.from('admin_config').select('*').eq('key','referral_config').single();
+    var config = configResult.data ? configResult.data.value : {enabled:true, points:10, condition:'signup_gen'};
+    document.getElementById('refEnabled').checked = config.enabled !== false;
+    document.getElementById('refPoints').value = config.points || 10;
+    document.getElementById('refCondition').value = config.condition || 'signup_gen';
+
+    // Charger les parrainages récents
+    var refResult = await db.from('referrals').select('*, sponsor:users!referrals_sponsor_id_fkey(email), referred:users!referrals_referred_id_fkey(email)').order('created_at',{ascending:false}).limit(50);
+    var tbody = document.getElementById('referralsTable');
+    if (refResult.data && refResult.data.length) {        tbody.innerHTML = refResult.data.map(function(r) {
+            var statusClass = r.validated ? 'status-valid' : 'status-pending';
+            var statusText = r.validated ? 'Validé' : 'En attente';
+            return '<tr><td style="font-size:0.8rem">'+(r.sponsor?.email||'-')+'</td><td style="font-size:0.8rem">'+(r.referred?.email||'-')+'</td><td><span class="status-badge '+statusClass+'">'+statusText+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+(r.validated?r.points||10:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(r.created_at).toLocaleString('fr-FR')+'</td></tr>';
+        }).join('');
+    } else {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>';
+    }
+}
+
+async function saveReferralConfig() {
+    var config = {
+        enabled: document.getElementById('refEnabled').checked,
+        points: parseInt(document.getElementById('refPoints').value) || 10,
+        condition: document.getElementById('refCondition').value
+    };
+    await db.from('admin_config').upsert({key:'referral_config',value:config,updated_at:new Date().toISOString()},{onConflict:'key'});
+    addNotification('config','Parrainage configuré : '+config.points+' pts/filleul');
+    alert('✅ Configuration parrainage sauvegardée !');
+}
 
 // === PRICING + RÉTENTION ===
 async function loadPricing() {
@@ -569,7 +831,6 @@ async function saveShopConfig() { var packs=[],subs=[]; document.querySelectorAl
 async function loadSocialLinks() { var r=await db.from('admin_config').select('*').eq('key','social_links').single(); var links=r.data?r.data.value:[]; var h=''; links.forEach(function(l){h+='<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" value="'+l.name+'"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" value="'+l.url+'"></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" value="'+(l.icon||'')+'" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('socialLinksContainer').innerHTML=h||'<div style="color:var(--dim);font-size:0.85rem">Aucun lien social</div>'; }
 function addSocialField() { document.getElementById('socialLinksContainer').insertAdjacentHTML('beforeend','<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" placeholder="Twitter"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" placeholder="https://twitter.com/..."></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 async function saveSocialLinks() { var links=[]; document.querySelectorAll('.social-row').forEach(function(r){var n=r.querySelector('.social-name').value.trim();if(n)links.push({name:n,url:r.querySelector('.social-url').value.trim(),icon:r.querySelector('.social-icon').value.trim()})}); await db.from('admin_config').upsert({key:'social_links',value:links,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Réseaux sociaux sauvegardés'); alert('✅ Réseaux sociaux sauvegardés !'); }
-
 // === SITE SETTINGS ===
 async function loadSiteSettings() { var r=await db.from('admin_config').select('*').eq('key','site_settings').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('settingSiteName').value=s.name||'Pixora';document.getElementById('settingLogoUrl').value=s.logo_url||'';document.getElementById('settingFavicon').value=s.favicon||'';document.getElementById('settingColorPrimary').value=s.color_primary||'#8B5CF6';document.getElementById('settingColorSecondary').value=s.color_secondary||'#EC4899';document.getElementById('settingLang').value=s.lang||'fr';document.getElementById('settingHeroText').value=s.hero_text||'';document.getElementById('settingCopyright').value=s.copyright||'';document.getElementById('settingMaintenance').checked=!!s.maintenance} }
 async function saveSiteSettings() { await db.from('admin_config').upsert({key:'site_settings',value:{name:document.getElementById('settingSiteName').value.trim(),logo_url:document.getElementById('settingLogoUrl').value.trim(),favicon:document.getElementById('settingFavicon').value.trim(),color_primary:document.getElementById('settingColorPrimary').value,color_secondary:document.getElementById('settingColorSecondary').value,lang:document.getElementById('settingLang').value,hero_text:document.getElementById('settingHeroText').value.trim(),copyright:document.getElementById('settingCopyright').value.trim(),maintenance:document.getElementById('settingMaintenance').checked},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Paramètres site sauvegardés'); alert('✅ Paramètres sauvegardés !'); }
@@ -586,7 +847,8 @@ async function saveLegal() { await db.from('admin_config').upsert({key:'legal',v
 async function loadUsers() { var r=await db.from('users').select('id,email,name,created_at'); var ud=await db.from('user_data').select('*'); var um={}; if(ud.data)ud.data.forEach(function(d){um[d.user_id]=d}); window._allUsers=r.data||[]; window._usersMap=um; renderUsersTable(window._allUsers,um); }
 function renderUsersTable(users,um) { var tb=document.getElementById('usersTable'); if(!users.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun utilisateur</td></tr>';return} tb.innerHTML=users.map(function(u){var d=um[u.id]||{};return '<tr><td>'+(u.name||'-')+'</td><td style="font-size:0.8rem">'+u.email+'</td><td><div class="inline-points-edit"><span style="font-family:var(--mono);color:var(--gold);min-width:40px">'+(d.points||0)+'</span><input type="number" id="pts-'+u.id+'" value="'+(d.points||0)+'"><button class="btn btn-sm btn-success" onclick="saveUserPoints(\''+u.id+'\')"><i class="fas fa-save"></i></button></div></td><td>J'+(d.streak||1)+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(d.last_login||'-')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\''+u.id+'\')" title="Ajouter"><i class="fas fa-plus"></i></button><button class="btn btn-sm btn-danger" onclick="banUser(\''+u.id+'\')" title="Bannir"><i class="fas fa-ban"></i></button></div></td></tr>'}).join(''); }
 function searchUsers() { var q=document.getElementById('userSearch').value.toLowerCase(); var f=window._allUsers.filter(function(u){return(u.email&&u.email.toLowerCase().includes(q))||(u.name&&u.name.toLowerCase().includes(q))}); renderUsersTable(f,window._usersMap||{}); }
-async function saveUserPoints(uid) { var np=parseInt(document.getElementById('pts-'+uid).value); if(isNaN(np)){alert('Nombre invalide');return} await db.from('user_data').update({points:np}).eq('user_id',uid); addNotification('user','Points mis à jour'); loadUsers(); }async function addPointsToUser(uid) { var a=prompt('Combien de points ajouter ?'); if(!a||isNaN(a))return; a=parseInt(a); await db.from('transactions').insert({user_id:uid,type:'earned',title:'Ajout admin',amount:a}); var d=await db.from('user_data').select('*').eq('user_id',uid).single(); if(d.data){await db.from('user_data').update({points:d.data.points+a,total_earned:(d.data.total_earned||0)+a}).eq('user_id',uid)} loadUsers(); addNotification('user',a+' points ajoutés'); }
+async function saveUserPoints(uid) { var np=parseInt(document.getElementById('pts-'+uid).value); if(isNaN(np)){alert('Nombre invalide');return} await db.from('user_data').update({points:np}).eq('user_id',uid); addNotification('user','Points mis à jour'); loadUsers(); }
+async function addPointsToUser(uid) { var a=prompt('Combien de points ajouter ?'); if(!a||isNaN(a))return; a=parseInt(a); await db.from('transactions').insert({user_id:uid,type:'earned',title:'Ajout admin',amount:a}); var d=await db.from('user_data').select('*').eq('user_id',uid).single(); if(d.data){await db.from('user_data').update({points:d.data.points+a,total_earned:(d.data.total_earned||0)+a}).eq('user_id',uid)} loadUsers(); addNotification('user',a+' points ajoutés'); }
 async function banUser(uid) { if(!confirm('Bannir cet utilisateur ?'))return; await db.from('user_data').update({points:0,streak:0}).eq('user_id',uid); loadUsers(); addNotification('user','Utilisateur banni'); }
 
 // === LOGS ===
