@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column}
         header{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50}
@@ -22,6 +22,51 @@
         .page-header{text-align:center;margin-bottom:2.5rem}
         .page-title{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
         .page-subtitle{color:var(--muted);font-size:1rem}
+
+        /* === BONUS STREAK CARD === */
+        .streak-card{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(139,92,246,0.08));border:1px solid rgba(251,191,36,0.3);border-radius:16px;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+        .streak-left{display:flex;align-items:center;gap:1rem}
+        .streak-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#F59E0B);display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#000}
+        .streak-info h3{font-size:1.1rem;font-weight:700;margin-bottom:0.2rem}
+        .streak-info p{color:var(--muted);font-size:0.85rem}
+        .streak-days{display:flex;gap:0.3rem;margin-top:0.5rem}
+        .streak-dot{width:24px;height:24px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-family:var(--mono);color:var(--dim)}
+        .streak-dot.active{background:var(--gold);color:#000;font-weight:700}
+        .streak-dot.today{border:2px solid var(--gold);color:var(--gold)}
+        .btn-claim{padding:0.7rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;background:var(--gold);color:#000;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem}
+        .btn-claim:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,191,36,0.3)}
+        .btn-claim.claimed{background:var(--border);color:var(--muted);cursor:default;transform:none;box-shadow:none}
+
+        /* === SECTION TITLES === */
+        .section-title{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+        .section-title i{color:var(--accent)}
+
+        /* === TASKS GRID === */
+        .tasks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:2.5rem}
+        .task-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;gap:0.8rem;transition:all 0.2s}
+        .task-card:hover{border-color:var(--accent)}
+        .task-card.done{opacity:0.5;border-color:var(--success)}
+        .task-top{display:flex;justify-content:space-between;align-items:flex-start}
+        .task-icon{width:40px;height:40px;border-radius:10px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--accent)}        .task-points{font-family:var(--mono);font-size:0.9rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.3rem 0.6rem;border-radius:6px}
+        .task-name{font-size:0.95rem;font-weight:600}
+        .task-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}
+        .task-progress{font-size:0.7rem;color:var(--dim);font-family:var(--mono)}
+        .btn-task{padding:0.6rem;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:0.3rem}
+        .btn-task:hover{background:var(--accent2)}
+        .btn-task.done{background:var(--border);color:var(--muted);cursor:default}
+
+        /* === REFERRAL CARD === */
+        .referral-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2.5rem}
+        .referral-link-box{display:flex;gap:0.5rem;margin-top:1rem}
+        .referral-input{flex:1;padding:0.7rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--accent);font-family:var(--mono);font-size:0.8rem;outline:none}
+        .btn-copy{padding:0.7rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;white-space:nowrap}
+        .btn-copy:hover{background:var(--accent2)}
+        .referral-stats{display:flex;gap:1.5rem;margin-top:1rem}
+        .ref-stat{text-align:center}
+        .ref-stat-value{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold)}
+        .ref-stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+
+        /* === EXISTING CPA STYLES (UNCHANGED) === */
         .earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
         .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all 0.3s}
         .earn-card.completed{opacity:0.7}
@@ -42,12 +87,20 @@
         .smartlink-info{background:rgba(139,92,246,0.1);border:1px solid var(--accent);border-radius:10px;padding:1rem;margin:1rem 0;text-align:center}
         .smartlink-info i{color:var(--accent);font-size:1.5rem;margin-bottom:0.5rem}
         .smartlink-info p{font-size:0.85rem;color:var(--muted);margin-top:0.5rem}
-        @media(max-width:768px){.earn-grid{grid-template-columns:1fr}.page-title{font-size:1.5rem}}
-    </style>
-</head>
+        @media(max-width:768px){
+            .earn-grid,.tasks-grid{grid-template-columns:1fr}
+            .page-title{font-size:1.5rem}
+            .streak-card{flex-direction:column;text-align:center}
+            .streak-left{flex-direction:column}
+            .streak-days{justify-content:center}
+            .referral-link-box{flex-direction:column}
+            .referral-stats{justify-content:center}
+        }
+    </style></head>
 <body>
     <header>
-        <a href="/index.html" class="logo">            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
+        <a href="/index.html" class="logo">
+            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
             <span>Pixora</span>
         </a>
         <div class="balance-pill">
@@ -62,6 +115,43 @@
             <p class="page-subtitle">Complétez des actions pour alimenter votre compte. Chaque action est unique.</p>
         </div>
 
+        <!-- 🔥 BONUS QUOTIDIEN + STREAK -->
+        <div class="streak-card" id="streakCard">
+            <div class="streak-left">
+                <div class="streak-icon">🔥</div>
+                <div class="streak-info">
+                    <h3 id="streakTitle">Bonus Quotidien</h3>
+                    <p id="streakDesc">Connectez-vous chaque jour pour gagner des points bonus</p>
+                    <div class="streak-days" id="streakDots"></div>
+                </div>
+            </div>
+            <button class="btn-claim" id="btnClaimBonus" onclick="claimDailyBonus()">
+                <i class="fas fa-gift"></i> Réclamer
+            </button>
+        </div>
+
+        <!-- 📋 TÂCHES INTERNES -->
+        <div class="section-title"><i class="fas fa-tasks"></i> Tâches Rapides</div>
+        <div class="tasks-grid" id="tasksContainer">
+            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+
+        <!-- 👥 PARRAINAGE -->
+        <div class="section-title"><i class="fas fa-user-friends"></i> Parrainage</div>
+        <div class="referral-card">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
+            <p style="font-size:0.85rem;color:var(--muted)">Partagez votre lien unique. Vos points sont crédités quand votre filleul s'inscrit et génère sa première création.</p>
+            <div class="referral-link-box">
+                <input type="text" class="referral-input" id="referralLink" readonly value="Chargement...">
+                <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copier</button>
+            </div>
+            <div class="referral-stats">                <div class="ref-stat"><div class="ref-stat-value" id="refCount">0</div><div class="ref-stat-label">Filleuls</div></div>
+                <div class="ref-stat"><div class="ref-stat-value" id="refPoints">0</div><div class="ref-stat-label">Points gagnés</div></div>
+            </div>
+        </div>
+
+        <!-- 💰 OFFRES CPA (EXISTANT - INCHANGÉ) -->
+        <div class="section-title"><i class="fas fa-ad"></i> Offres Sponsorisées</div>
         <div class="earn-grid" id="adsContainer">
             <div class="empty-state">
                 <i class="fas fa-spinner fa-spin"></i>
@@ -77,6 +167,7 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let user = null;
         let adsData = [];
+        let userTier = 1;
 
         const AD_CONFIG = {
             video: { icon: '🎬', label: 'Regarder une vidéo', desc: 'Regardez une vidéo de 30 secondes' },
@@ -87,55 +178,221 @@
             popunder: { icon: '🪟', label: 'Popunder', desc: 'Ouvrez une fenêtre publicitaire' }
         };
 
-        // Détecte si c'est une URL (Smartlink) ou du code HTML
-        function isURL(str) {
-            return str && (str.startsWith('http://') || str.startsWith('https://'));
-        }
+        const TASK_ICONS = { vote:'fa-heart', comment:'fa-comment', share:'fa-share-alt', profile:'fa-user-edit', badge:'fa-trophy', daily:'fa-calendar-check', social:'fa-hashtag' };
 
+        function isURL(str) { return str && (str.startsWith('http://') || str.startsWith('https://')); }
+
+        // =============================================
+        // INIT
+        // =============================================
         async function init() {
             const { data: { user: u }, error } = await db.auth.getUser();
             if (error || !u) { window.location.href = '/index.html'; return; }
             user = u;
-            await updatePoints();            await loadAds();
+            await updatePoints();
+            await detectTier();
+            await loadDailyBonus();
+            await loadTasks();
+            await loadReferral();
+            await loadAds();        }
+
+        // =============================================
+        // TIER DETECTION
+        // =============================================
+        async function detectTier() {
+            try {
+                const { data } = await db.from('user_data').select('tier').eq('user_id', user.id).single();
+                userTier = data?.tier || 1;
+            } catch(e) { userTier = 1; }
         }
 
+        // =============================================
+        // DAILY BONUS + STREAK
+        // =============================================
+        async function loadDailyBonus() {
+            try {
+                const { data: userData } = await db.from('user_data').select('streak,last_login').eq('user_id', user.id).single();
+                const { data: retConfig } = await db.from('admin_config').select('value').eq('key','retention_config').single();
+                const rc = retConfig?.value || {};
+                const tierData = rc[userTier] || rc[1] || {};
+
+                const streak = userData?.streak || 0;
+                const lastLogin = userData?.last_login;
+                const today = new Date().toISOString().split('T')[0];
+                const alreadyClaimed = lastLogin === today;
+
+                // Calculer le bonus du jour
+                let bonusPts = tierData.bonus_login || 5;
+                let streakPts = tierData.streak_j1_3 || 3;
+                if (streak >= 7) streakPts = tierData.streak_j7 || 10;
+                else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
+                const totalDaily = bonusPts + streakPts;
+
+                // Titre dynamique
+                document.getElementById('streakTitle').textContent = alreadyClaimed ? '✅ Bonus Réclamé !' : `🔥 Jour ${streak + 1} — +${totalDaily} pts`;
+                document.getElementById('streakDesc').textContent = alreadyClaimed ? 'Revenez demain pour continuer votre série' : `${bonusPts} pts connexion + ${streakPts} pts streak`;
+
+                // Dots streak (7 jours)
+                let dotsHtml = '';
+                for (let i = 1; i <= 7; i++) {
+                    let cls = 'streak-dot';
+                    if (i <= streak) cls += ' active';
+                    if (i === streak + 1 && !alreadyClaimed) cls += ' today';
+                    dotsHtml += `<div class="${cls}">${i}</div>`;
+                }
+                document.getElementById('streakDots').innerHTML = dotsHtml;
+
+                // Bouton
+                const btn = document.getElementById('btnClaimBonus');                if (alreadyClaimed) {
+                    btn.classList.add('claimed');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Déjà réclamé';
+                    btn.disabled = true;
+                } else {
+                    btn.innerHTML = `<i class="fas fa-gift"></i> +${totalDaily} pts`;
+                }
+            } catch(e) { console.error('Bonus error:', e); }
+        }
+
+        async function claimDailyBonus() {
+            const btn = document.getElementById('btnClaimBonus');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+            try {
+                const { data: userData } = await db.from('user_data').select('points,streak,last_login').eq('user_id', user.id).single();
+                const { data: retConfig } = await db.from('admin_config').select('value').eq('key','retention_config').single();
+                const rc = retConfig?.value || {};
+                const tierData = rc[userTier] || rc[1] || {};
+
+                const today = new Date().toISOString().split('T')[0];
+                if (userData?.last_login === today) { alert('Déjà réclamé aujourd\'hui'); await loadDailyBonus(); return; }
+
+                const streak = (userData?.streak || 0) + 1;
+                let bonusPts = tierData.bonus_login || 5;
+                let streakPts = tierData.streak_j1_3 || 3;
+                if (streak >= 7) streakPts = tierData.streak_j7 || 10;
+                else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
+                const totalDaily = bonusPts + streakPts;
+
+                const newPoints = (userData?.points || 0) + totalDaily;
+
+                await Promise.all([
+                    db.from('user_data').update({ points: newPoints, streak: streak, last_login: today }).eq('user_id', user.id),
+                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: `Bonus Jour ${streak}`, amount: totalDaily })
+                ]);
+
+                document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
+                await loadDailyBonus();
+            } catch(e) { console.error('Claim error:', e); alert('Erreur: ' + e.message); await loadDailyBonus(); }
+        }
+
+        // =============================================
+        // INTERNAL TASKS
+        // =============================================
+        async function loadTasks() {
+            const container = document.getElementById('tasksContainer');
+            try {
+                const { data: taskConfig } = await db.from('admin_config').select('value').eq('key','internal_tasks').single();
+                const tasks = taskConfig?.value || [];                const activeTasks = tasks.filter(t => t.active);
+
+                if (activeTasks.length === 0) { container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Aucune tâche disponible</p></div>'; return; }
+
+                // Charger les complétions du jour
+                const today = new Date().toISOString().split('T')[0];
+                const { data: completed } = await db.from('ad_clicks').select('ad_name').eq('user_id', user.id).eq('status','task_done').gte('created_at', today + 'T00:00:00');
+                const completedMap = {};
+                (completed || []).forEach(c => { completedMap[c.ad_name] = (completedMap[c.ad_name] || 0) + 1; });
+
+                container.innerHTML = activeTasks.map(t => {
+                    const doneCount = completedMap[t.name] || 0;
+                    const isMaxed = doneCount >= t.limit;
+                    const icon = TASK_ICONS[t.type] || 'fa-check';
+                    return `
+                        <div class="task-card ${isMaxed ? 'done' : ''}" id="task-${t.name.replace(/\s/g,'')}">
+                            <div class="task-top">
+                                <div class="task-icon"><i class="fas ${icon}"></i></div>
+                                <div class="task-points">+${t.points}</div>
+                            </div>
+                            <div class="task-name">${t.name}</div>
+                            <div class="task-desc">${t.desc || ''}</div>
+                            <div class="task-progress">${doneCount}/${t.limit} aujourd'hui</div>
+                            <button class="btn-task ${isMaxed ? 'done' : ''}" onclick="doTask('${t.name}',${t.points},${t.limit})" ${isMaxed ? 'disabled' : ''}>
+                                ${isMaxed ? '<i class="fas fa-check"></i> Terminé' : '<i class="fas fa-play"></i> Faire'}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) { console.error('Tasks error:', e); container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement tâches</p></div>'; }
+        }
+
+        async function doTask(taskName, points, limit) {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const { data: completed } = await db.from('ad_clicks').select('ad_name').eq('user_id', user.id).eq('status','task_done').eq('ad_name', taskName).gte('created_at', today + 'T00:00:00');
+                if ((completed?.length || 0) >= limit) { alert('Limite atteinte pour aujourd\'hui'); await loadTasks(); return; }
+
+                const { data: userData } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+                const newPoints = (userData?.points || 0) + points;
+
+                await Promise.all([
+                    db.from('user_data').update({ points: newPoints }).eq('user_id', user.id),
+                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: taskName, amount: points }),
+                    db.from('ad_clicks').insert({ user_id: user.id, ad_name: taskName, token: 'task_' + Date.now(), status: 'task_done' })
+                ]);
+
+                document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
+                await loadTasks();
+            } catch(e) { console.error('Task error:', e); alert('Erreur: ' + e.message); }        }
+
+        // =============================================
+        // REFERRAL
+        // =============================================
+        async function loadReferral() {
+            try {
+                const { data: refConfig } = await db.from('admin_config').select('value').eq('key','referral_config').single();
+                const config = refConfig?.value || {};
+                if (!config.enabled) { document.querySelector('.referral-card').style.display = 'none'; return; }
+
+                const link = window.location.origin + '/?ref=' + user.id;
+                document.getElementById('referralLink').value = link;
+
+                const { data: refs } = await db.from('referrals').select('validated,points').eq('sponsor_id', user.id);
+                const validated = (refs || []).filter(r => r.validated);
+                document.getElementById('refCount').textContent = validated.length;
+                document.getElementById('refPoints').textContent = validated.reduce((sum, r) => sum + (r.points || 0), 0);
+            } catch(e) { console.error('Referral error:', e); }
+        }
+
+        function copyReferralLink() {
+            const input = document.getElementById('referralLink');
+            input.select();
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copié !';
+                setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copier'; }, 2000);
+            });
+        }
+
+        // =============================================
+        // CPA ADS (EXISTING - UNCHANGED LOGIC)
+        // =============================================
         async function loadAds() {
             const container = document.getElementById('adsContainer');
-            
             try {
-                const { data: configData } = await db
-                    .from('admin_config')
-                    .select('value')
-                    .eq('key', 'ad_networks')
-                    .single();
-
+                const { data: configData } = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
                 adsData = configData?.value || [];
                 const activeAds = adsData.filter(ad => ad.active && ad.page === 'earn');
 
                 if (activeAds.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-inbox"></i>
-                            <p>Aucune offre disponible pour le moment</p>
-                            <p style="font-size:0.85rem;margin-top:0.5rem">Revenez plus tard !</p>
-                        </div>
-                    `;
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune offre disponible pour le moment</p><p style="font-size:0.85rem;margin-top:0.5rem">Revenez plus tard !</p></div>';
                     return;
                 }
 
-                const { data: completedData } = await db
-                    .from('ad_clicks')
-                    .select('ad_name')
-                    .eq('user_id', user.id)
-                    .eq('status', 'paid');
-
+                const { data: completedData } = await db.from('ad_clicks').select('ad_name').eq('user_id', user.id).eq('status', 'paid');
                 const completedNames = new Set(completedData?.map(c => c.ad_name) || []);
 
-                container.innerHTML = activeAds.map((ad, index) => {
-                    const config = AD_CONFIG[ad.type] || AD_CONFIG.smartlink;
+                container.innerHTML = activeAds.map((ad, index) => {                    const config = AD_CONFIG[ad.type] || AD_CONFIG.smartlink;
                     const isCompleted = completedNames.has(ad.name);
                     const actualIndex = adsData.findIndex(a => a.name === ad.name);
-                    
                     return `
                         <div class="earn-card ${isCompleted ? 'completed' : ''}" id="card-${ad.name.replace(/\s/g,'')}">
                             <div class="card-header">
@@ -144,158 +401,82 @@
                             </div>
                             <h3 class="card-title">${ad.name}</h3>
                             <p class="card-desc">${config.desc}</p>
-                            
-                            ${isCompleted ? `                                <div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center">
+                            ${isCompleted ? `
+                                <div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center">
                                     <i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i>
                                     <p style="margin-top:0.5rem;font-weight:600">Déjà complété</p>
                                 </div>
-                                <button class="btn btn-disabled" disabled>
-                                    <i class="fas fa-check"></i> Terminé
-                                </button>
+                                <button class="btn btn-disabled" disabled><i class="fas fa-check"></i> Terminé</button>
                             ` : `
-                                <button class="btn btn-primary" onclick="startTask(${actualIndex})">
-                                    <i class="fas fa-play"></i> Commencer
-                                </button>
+                                <button class="btn btn-primary" onclick="startTask(${actualIndex})"><i class="fas fa-play"></i> Commencer</button>
                             `}
                         </div>
                     `;
                 }).join('');
-
             } catch (e) {
                 console.error('Load ads error:', e);
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i>
-                        <p style="color:var(--danger)">Erreur de chargement</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p style="color:var(--danger)">Erreur de chargement</p></div>';
             }
         }
 
         function loadAdScript(container, htmlCode) {
-            const fullHtml = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background: transparent;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-    </style>
-</head>
-<body>
-${htmlCode}
-</body>
-</html>`;
+            const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:100vh}</style></head><body>${htmlCode}</body></html>`;
             const blob = new Blob([fullHtml], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
-            
             const iframe = document.createElement('iframe');
             iframe.src = url;
             iframe.style.width = '100%';
             iframe.style.height = '270px';
             iframe.style.border = 'none';
             iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-            
             container.appendChild(iframe);
-            
-            iframe.onload = () => {
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
-            };
+            iframe.onload = () => { setTimeout(() => URL.revokeObjectURL(url), 1000); };
         }
 
         async function startTask(adIndex) {
             const ad = adsData[adIndex];
             const card = document.getElementById(`card-${ad.name.replace(/\s/g,'')}`);
             const btn = card.querySelector('.btn');
-
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-disabled');
+            btn.classList.remove('btn-primary');            btn.classList.add('btn-disabled');
 
             const hasCode = ad.code && ad.code.length > 0;
             const isSmartlink = isURL(ad.code);
 
-            // Si c'est un Smartlink (URL), on ouvre dans un nouvel onglet
             if (isSmartlink) {
                 const smartlinkInfo = document.createElement('div');
                 smartlinkInfo.className = 'smartlink-info';
-                smartlinkInfo.innerHTML = `
-                    <i class="fas fa-external-link-alt"></i>
-                    <p><strong>Une nouvelle fenêtre s'est ouverte !</strong></p>
-                    <p>Visitez le site partenaire, puis revenez ici.</p>
-                    <p style="margin-top:0.5rem;font-size:0.75rem;color:var(--dim)">Vos points seront crédités automatiquement.</p>
-                `;
+                smartlinkInfo.innerHTML = '<i class="fas fa-external-link-alt"></i><p><strong>Une nouvelle fenêtre s\'est ouverte !</strong></p><p>Visitez le site partenaire, puis revenez ici.</p><p style="margin-top:0.5rem;font-size:0.75rem;color:var(--dim)">Vos points seront crédités automatiquement.</p>';
                 card.insertBefore(smartlinkInfo, btn);
-
-                // Ouvre le Smartlink dans un nouvel onglet
                 window.open(ad.code, '_blank', 'noopener,noreferrer');
             } else if (hasCode) {
-                // Sinon, affiche le code HTML dans une iframe
                 const adContainer = document.createElement('div');
                 adContainer.className = 'ad-container';
                 adContainer.id = `ad-${ad.name.replace(/\s/g,'')}`;
-                loadAdScript(adContainer, ad.code);                card.insertBefore(adContainer, btn);
+                loadAdScript(adContainer, ad.code);
+                card.insertBefore(adContainer, btn);
             }
 
             let seconds = 30;
             const timerDiv = document.createElement('div');
             timerDiv.className = 'timer';
-            timerDiv.innerHTML = `️ ${seconds}s restantes`;
+            timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
             card.insertBefore(timerDiv, btn);
-
-            const timer = setInterval(() => {
-                seconds--;
-                timerDiv.innerHTML = `⏱️ ${seconds}s restantes`;
-                if (seconds <= 0) clearInterval(timer);
-            }, 1000);
+            const timer = setInterval(() => { seconds--; timerDiv.innerHTML = `⏱️ ${seconds}s restantes`; if (seconds <= 0) clearInterval(timer); }, 1000);
 
             try {
                 const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
-                const { data: userData } = await db
-                    .from('user_data')
-                    .select('points')
-                    .eq('user_id', user.id)
-                    .single();
-
+                const { data: userData } = await db.from('user_data').select('points').eq('user_id', user.id).single();
                 const newPoints = (userData?.points || 0) + (ad.points || 10);
-
                 await Promise.all([
                     db.from('user_data').update({ points: newPoints }).eq('user_id', user.id),
-                    db.from('transactions').insert({
-                        user_id: user.id,
-                        type: 'earned',
-                        title: ad.name,
-                        amount: ad.points || 10
-                    }),
-                    db.from('ad_clicks').insert({
-                        user_id: user.id,
-                        ad_name: ad.name,
-                        token: token,
-                        status: 'paid'
-                    })
+                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: ad.points || 10 }),
+                    db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
                 ]);
-
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
-                
-                setTimeout(async () => {
-                    timerDiv.innerHTML = '✅ Terminé !';
-                    timerDiv.style.color = 'var(--success)';
-                    await loadAds();
-                }, 30000);
-
-            } catch (e) {                console.error('Error:', e);
-                alert('Erreur: ' + e.message);
-                await loadAds();
-            }
+                setTimeout(async () => { timerDiv.innerHTML = '✅ Terminé !'; timerDiv.style.color = 'var(--success)'; await loadAds(); }, 30000);
+            } catch (e) { console.error('Error:', e); alert('Erreur: ' + e.message); await loadAds(); }
         }
 
         async function updatePoints() {
