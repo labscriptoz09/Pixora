@@ -298,6 +298,8 @@ function updateCostUI() {
     if (ref && ref.length > 10) { pendingReferrer = ref; localStorage.setItem('pixora_ref', ref); }
     else { pendingReferrer = localStorage.getItem('pixora_ref'); }
 }
+
+// === CORRECTION 18 : processReferral corrigé (suppression db.from('users')) ===
 async function processReferral(newUserId) {
     var referrerId = pendingReferrer || localStorage.getItem('pixora_ref');
     if (!referrerId || referrerId === newUserId) return;
@@ -305,8 +307,6 @@ async function processReferral(newUserId) {
         var refConfigR = await db.from('admin_config').select('value').eq('key','referral_config').single();
         var config = (refConfigR.data && refConfigR.data.value) ? refConfigR.data.value : { enabled:true, points:10, condition:'signup_gen' };
         if (!config.enabled) return;
-        var sponsorR = await db.from('users').select('id').eq('id', referrerId).single();
-        if (!sponsorR.data) return;
         var existR = await db.from('referrals').select('id').eq('sponsor_id', referrerId).eq('referred_id', newUserId).single();
         if (existR.data) return;
         var isValidated = config.condition === 'signup_only';
@@ -320,8 +320,9 @@ async function processReferral(newUserId) {
             ]);
         }
         localStorage.removeItem('pixora_ref'); pendingReferrer = null;
-    } catch(e) { console.error('Referral error:', e); }
+    } catch(e) { console.error('Referral error:', e); notify('❌ Erreur parrainage: ' + e.message, 'error'); }
 }
+
 async function validatePendingReferral(userId) {
     try {
         var refsR = await db.from('referrals').select('id,sponsor_id,points').eq('referred_id', userId).eq('validated', false);
@@ -340,8 +341,8 @@ async function validatePendingReferral(userId) {
     } catch(e) { console.error('Validate referral error:', e); }
 }
 async function ensureUserData(userId) {
-    try {
-        var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single();        if (!existing.data) {
+    try {        var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single();
+        if (!existing.data) {
             await db.from('user_data').insert({ user_id: userId, points: 0, streak: 0, last_login: null, total_generated: 0, total_earned: 0, tier: 1 });
         }
     } catch(e) { console.error('Ensure user_data error:', e); }
@@ -389,11 +390,9 @@ async function doLogin(e) {
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
     try {
         var r = await db.auth.signInWithPassword({ email: document.getElementById('l-email').value.trim(), password: document.getElementById('l-pw').value });
-        if (r.error) throw r.error;
-        closeAuth(); await loadUserTier(); updateUI(); notify('✅ Bienvenue !', 'success');    } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; }
+        if (r.error) throw r.error;        closeAuth(); await loadUserTier(); updateUI(); notify('✅ Bienvenue !', 'success');
+    } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; }
 }
-
-// === CORRECTION 1 : signInWithPassword après signUp pour Firefox ===
 async function doRegister(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-reg');
@@ -404,7 +403,6 @@ async function doRegister(e) {
         var nameVal = document.getElementById('r-name').value.trim();
         var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } });
         if (r.error) throw r.error;
-        // CORRECTION FIREFOX : Forcer connexion auto après signUp
         var signInR = await db.auth.signInWithPassword({ email: emailVal, password: pwVal });
         if (signInR.error) throw signInR.error;
         var newUserId = signInR.data.user ? signInR.data.user.id : null;
@@ -427,7 +425,6 @@ async function doRegister(e) {
         btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte';
     }
 }
-
 async function loginWithGoogle() {
     try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pixora-gold-eight.vercel.app' } }); } catch (err) { notify('❌ Erreur Google Login', 'error'); }
 }
@@ -439,10 +436,10 @@ async function getUserData() {
 async function saveTransaction(type, title, amount) {
     var u = await getUser(); if (!u) return;
     await db.from('transactions').insert({ user_id: u.id, type: type, title: title, amount: amount });
-    var d = await getUserData();    var up = { points: d.points + amount };
+    var d = await getUserData();
+    var up = { points: d.points + amount };
     if (amount > 0) up.total_earned = (d.total_earned || 0) + amount;
-    if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1;
-    await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' });
+    if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1;    await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' });
 }
 function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
@@ -488,10 +485,10 @@ function openLB(url, type) {
     } else { var i = document.createElement('img'); i.src = url; i.alt = 'Zoom'; c.appendChild(i); }
     document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden';
 }
-function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
+function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }
+document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
 async function dlLB() {
-    if (!lbUrl) return;
-    try { var r = await fetch(lbUrl); var b = await r.blob(); var ext = lbType === 'video' ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(lbUrl, '_blank'); }
+    if (!lbUrl) return;    try { var r = await fetch(lbUrl); var b = await r.blob(); var ext = lbType === 'video' ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(lbUrl, '_blank'); }
 }
 async function dlDirect(btn) {
     var card = btn.closest('.result-card'); var media = card.querySelector('img') || card.querySelector('video');
@@ -538,11 +535,9 @@ async function uploadToStorage(mediaUrl, type) {
         loadStudio();
     } catch (err) { console.error('Upload failed:', err); }
 }
-// === CORRECTIONS 2 + 3 + 4 : ID timer unique + closure isolée + points frais ===
 async function generate() {
     var p = document.getElementById('prompt').value.trim();
-    if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
-    var logged = await isLogged();
+    if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }    var logged = await isLogged();
     if (!logged) { openAuth(); return; }
     await loadUserTier();
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
@@ -555,10 +550,7 @@ async function generate() {
     if (curType === 'video') url += '&type=video';
     var grid = document.getElementById('results-grid');
     var card = document.createElement('div'); card.className = 'result-card';
-
-    // CORRECTION 2 : ID timer UNIQUE par carte
     var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-
     if (curType === 'video') {
         card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération vidéo...</div></div><video src="' + url + '" muted loop playsinline style="opacity:0;transition:opacity 0.3s"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
     } else {
@@ -566,16 +558,11 @@ async function generate() {
     }
     grid.insertBefore(card, grid.firstChild);
     var st = Date.now();
-
-    // CORRECTION 2 : Utiliser l'ID unique pour le timer
     var tmr = document.getElementById(tmrId);
     var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
     var media = curType === 'video' ? card.querySelector('video') : card.querySelector('img');
-
-    // CORRECTION 3 : loaded isolée dans cette closure + protégée par tmrId unique
     var loaded = false;
     var currentUser = await getUser();
-
     function onLoad() {
         if (loaded) return; loaded = true; clearInterval(iv);
         var elapsed = ((Date.now() - st) / 1000).toFixed(1);
@@ -584,11 +571,7 @@ async function generate() {
         if (curType === 'video') { media.onmouseenter = function() { media.play(); }; media.onmouseleave = function() { media.pause(); media.currentTime = 0; }; }
         card.onclick = function() { openLB(url, curType); };
         uploadToStorage(url, curType);
-
-        // CORRECTION 4 : Recharger points FRAIS après transaction via .then()
-        saveTransaction('spent', 'Génération ' + curType, -cost).then(function() {            updateUI();
-        });
-
+        saveTransaction('spent', 'Génération ' + curType, -cost).then(function() { updateUI(); });
         if (currentUser) {
             validatePendingReferral(currentUser.id);
             getUserData().then(function(freshData) {
@@ -602,10 +585,8 @@ async function generate() {
     if (curType === 'video') { media.onloadeddata = onLoad; media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération vidéo échouée.', 'error'); }; }
     else { media.onload = onLoad; media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération échouée. Réessayez.', 'error'); }; }
 }
-
 var authNotified = false;
-db.auth.onAuthStateChange(async function(event) {
-    if (event === 'SIGNED_IN') {
+db.auth.onAuthStateChange(async function(event) {    if (event === 'SIGNED_IN') {
         await loadUserTier(); updateUI(); closeAuth();
         if (!authNotified) { notify('✅ Connecté !', 'success'); authNotified = true; setTimeout(function() { authNotified = false; }, 3000); }
     } else if (event === 'SIGNED_OUT') { currentTier = 1; updateCostUI(); updateUI(); authNotified = false; }
