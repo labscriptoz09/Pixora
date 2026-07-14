@@ -299,49 +299,32 @@ function updateCostUI() {
     else { pendingReferrer = localStorage.getItem('pixora_ref'); }
 }
 
-// === CORRECTIONS 18 + 19 + 20 : processReferral corrigé avec upsert ===
+// === NOUVEAU SYSTÈME PARRAINAGE : Juste insert referrals, ZÉRO crédit auto ===
 async function processReferral(newUserId) {
     var referrerId = pendingReferrer || localStorage.getItem('pixora_ref');
     if (!referrerId || referrerId === newUserId) return;
     try {
         var refConfigR = await db.from('admin_config').select('value').eq('key','referral_config').single();
-        var config = (refConfigR.data && refConfigR.data.value) ? refConfigR.data.value : { enabled:true, points:10, condition:'signup_gen' };
+        var config = (refConfigR.data && refConfigR.data.value) ? refConfigR.data.value : { enabled:true, points:10 };
         if (!config.enabled) return;
         var existR = await db.from('referrals').select('id').eq('sponsor_id', referrerId).eq('referred_id', newUserId).single();
         if (existR.data) return;
-        var isValidated = config.condition === 'signup_only';
-        await db.from('referrals').insert({ sponsor_id: referrerId, referred_id: newUserId, points: config.points || 10, validated: isValidated });
-        if (isValidated) {
-            await ensureUserData(referrerId);
-            var sd = await db.from('user_data').select('points').eq('user_id', referrerId).single();
-            var newPts = ((sd.data && sd.data.points) || 0) + (config.points || 10);
-            // CORRECTION 20 : upsert au lieu de update pour contourner RLS
-            await Promise.all([
-                db.from('user_data').upsert({ user_id: referrerId, points: newPts }, { onConflict: 'user_id' }),
-                db.from('transactions').insert({ user_id: referrerId, type: 'earned', title: 'Parrainage validé', amount: config.points || 10 })
-            ]);
-        }
+        // TOUJOURS validated: false → le sponsor confirmera manuellement sur earn.html
+        await db.from('referrals').insert({ sponsor_id: referrerId, referred_id: newUserId, points: config.points || 10, validated: false });
         localStorage.removeItem('pixora_ref'); pendingReferrer = null;
     } catch(e) { console.error('Referral error:', e); notify('❌ Erreur parrainage: ' + e.message, 'error'); }
 }
 
-// === CORRECTION 20 appliquée aussi dans validatePendingReferral ===
+// === NOUVEAU SYSTÈME : Juste update validated, ZÉRO crédit auto ===
 async function validatePendingReferral(userId) {
     try {
-        var refsR = await db.from('referrals').select('id,sponsor_id,points').eq('referred_id', userId).eq('validated', false);
+        var refsR = await db.from('referrals').select('id').eq('referred_id', userId).eq('validated', false);
         var refs = refsR.data || [];
         if (refs.length === 0) return;
         for (var i = 0; i < refs.length; i++) {
-            var ref = refs[i];
-            await db.from('referrals').update({ validated: true }).eq('id', ref.id);
-            await ensureUserData(ref.sponsor_id);
-            var sd = await db.from('user_data').select('points').eq('user_id', ref.sponsor_id).single();
-            var newPts = ((sd.data && sd.data.points) || 0) + (ref.points || 10);
-            // CORRECTION 20 : upsert au lieu de update pour contourner RLS
-            await Promise.all([
-                db.from('user_data').upsert({ user_id: ref.sponsor_id, points: newPts }, { onConflict: 'user_id' }),
-                db.from('transactions').insert({ user_id: ref.sponsor_id, type: 'earned', title: 'Parrainage validé (1ère gen)', amount: ref.points || 10 })
-            ]);        }
+            // Marque juste comme validé → le sponsor récupérera ses points sur earn.html
+            await db.from('referrals').update({ validated: true }).eq('id', refs[i].id);
+        }
     } catch(e) { console.error('Validate referral error:', e); }
 }
 
@@ -358,8 +341,7 @@ async function grantSignupBonus(userId) {
         var bonusR = await db.from('admin_config').select('value').eq('key','signup_bonus').single();
         var bonus = (bonusR.data && bonusR.data.value !== undefined) ? bonusR.data.value : 15;
         if (bonus <= 0) return;
-        var existR = await db.from('transactions').select('id').eq('user_id', userId).eq('title', 'Bonus inscription').single();
-        if (existR.data) return;
+        var existR = await db.from('transactions').select('id').eq('user_id', userId).eq('title', 'Bonus inscription').single();        if (existR.data) return;
         var ud = await db.from('user_data').select('points,total_earned').eq('user_id', userId).single();
         var curPts = (ud.data && ud.data.points) || 0;
         var curEarned = (ud.data && ud.data.total_earned) || 0;
@@ -390,7 +372,8 @@ function switchTab(m) {
     document.getElementById('sec-login').classList.toggle('active', m === 'login');
     document.getElementById('sec-register').classList.toggle('active', m !== 'login');
 }
-async function doLogin(e) {    e.preventDefault();
+async function doLogin(e) {
+    e.preventDefault();
     var btn = document.getElementById('btn-login');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
     try {
@@ -407,8 +390,7 @@ async function doRegister(e) {
         var emailVal = document.getElementById('r-email').value.trim();
         var pwVal = document.getElementById('r-pw').value;
         var nameVal = document.getElementById('r-name').value.trim();
-        var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } });
-        if (r.error) throw r.error;
+        var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } });        if (r.error) throw r.error;
         var signInR = await db.auth.signInWithPassword({ email: emailVal, password: pwVal });
         if (signInR.error) throw signInR.error;
         var newUserId = signInR.data.user ? signInR.data.user.id : null;
@@ -439,7 +421,8 @@ async function getUserData() {
     var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
     var d = r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 }; d.user_id = u.id; return d;
 }
-async function saveTransaction(type, title, amount) {    var u = await getUser(); if (!u) return;
+async function saveTransaction(type, title, amount) {
+    var u = await getUser(); if (!u) return;
     await db.from('transactions').insert({ user_id: u.id, type: type, title: title, amount: amount });
     var d = await getUserData();
     var up = { points: d.points + amount };
@@ -456,8 +439,7 @@ document.addEventListener('click', function(e) {
 async function doLogout() {
     await db.auth.signOut(); closeUserMenu(); currentTier = 1; updateCostUI(); updateUI(); notify('👋 Déconnecté', 'success');
     setTimeout(function() { location.reload(); }, 800);
-}
-async function updateUI() {
+}async function updateUI() {
     var logged = await isLogged(); var user = await getUser();
     document.getElementById('user-stats').classList.toggle('show', logged);
     document.getElementById('user-avatar').classList.toggle('show', logged);
@@ -488,7 +470,8 @@ function openLB(url, type) {
     if (lbType === 'video') {
         var v = document.createElement('video'); v.src = url; v.controls = true; v.autoplay = true; v.loop = true;
         v.style.cssText = 'max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)'; c.appendChild(v);
-    } else { var i = document.createElement('img'); i.src = url; i.alt = 'Zoom'; c.appendChild(i); }    document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden';
+    } else { var i = document.createElement('img'); i.src = url; i.alt = 'Zoom'; c.appendChild(i); }
+    document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden';
 }
 function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }
 document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
@@ -505,8 +488,7 @@ function selType(t) {
     curType = t;
     document.querySelectorAll('.type-btn').forEach(function(c, i) { c.classList.toggle('active', (t === 'image' && i === 0) || (t === 'video' && i === 1)); });
 }
-async function loadStudio() {
-    var grid = document.getElementById('results-grid');
+async function loadStudio() {    var grid = document.getElementById('results-grid');
     try {
         var result = await db.storage.from(BUCKET).list('', { limit: 20, sortBy: { column: 'created_at', order: 'desc' } });
         if (!result.data || result.data.length === 0) return;
@@ -537,7 +519,8 @@ async function uploadToStorage(mediaUrl, type) {
         var prefix = type === 'video' ? '_video_' : '_img_';
         var fileName = Date.now() + prefix + Math.floor(Math.random() * 100000) + (type === 'video' ? '.mp4' : '.jpg');
         var contentType = type === 'video' ? 'video/mp4' : 'image/jpeg';
-        await db.storage.from(BUCKET).upload(fileName, blob, { contentType: contentType, upsert: false });        loadStudio();
+        await db.storage.from(BUCKET).upload(fileName, blob, { contentType: contentType, upsert: false });
+        loadStudio();
     } catch (err) { console.error('Upload failed:', err); }
 }
 async function generate() {
@@ -554,8 +537,7 @@ async function generate() {
     var seed = Math.floor(Math.random() * 100000);
     var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?width=512&height=512&nologo=true&seed=' + seed;
     if (curType === 'video') url += '&type=video';
-    var grid = document.getElementById('results-grid');
-    var card = document.createElement('div'); card.className = 'result-card';
+    var grid = document.getElementById('results-grid');    var card = document.createElement('div'); card.className = 'result-card';
     var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
     if (curType === 'video') {
         card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération vidéo...</div></div><video src="' + url + '" muted loop playsinline style="opacity:0;transition:opacity 0.3s"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
@@ -586,7 +568,8 @@ async function generate() {
             });
         }
         notify('✅ Générée en ' + elapsed + 's ! (-' + cost + ' pts)', 'success');
-        setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);    }
+        setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);
+    }
     if (curType === 'video') { media.onloadeddata = onLoad; media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération vidéo échouée.', 'error'); }; }
     else { media.onload = onLoad; media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération échouée. Réessayez.', 'error'); }; }
 }
