@@ -88,15 +88,17 @@
         .notif-type{font-weight:600;margin-bottom:0.2rem}
         .notif-type.user{color:var(--accent)}.notif-type.payment{color:var(--gold)}.notif-type.error{color:var(--danger)}.notif-type.gen{color:var(--success)}.notif-type.config{color:var(--info)}
         .login-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
-        .login-overlay.hidden{display:none}
+        .login-overlay.hidden{display:none!important}
         .login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;text-align:center}
-        .login-box h2{margin-bottom:0.5rem;font-weight:800}.login-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem}
+        .login-box h2{margin-bottom:0.5rem;font-weight:800}
+        .login-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem}
+        .login-error{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:var(--danger);padding:0.6rem;border-radius:8px;font-size:0.8rem;margin-bottom:1rem;display:none}
         .admin-section{display:none}.admin-section.active{display:block;animation:fadeIn 0.3s}
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .api-test-result{margin-top:0.5rem;padding:0.6rem;border-radius:8px;font-size:0.8rem;font-family:var(--mono);display:none}
-        .api-test-result.success{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
-        .api-test-result.error{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
-        .inline-points-edit{display:flex;gap:0.3rem;align-items:center}        .inline-points-edit input{width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--gold)}
+        .api-test-result{margin-top:0.5rem;padding:0.6rem;border-radius:8px;font-size:0.8rem;font-family:var(--mono);display:none;word-break:break-all}
+        .api-test-result.success{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}        .api-test-result.error{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
+        .inline-points-edit{display:flex;gap:0.3rem;align-items:center}
+        .inline-points-edit input{width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--gold)}
         .retention-card{border-left:4px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(251,191,36,0.03) 100%)}
         .retention-card .card-title i{color:var(--gold)}
         .tasks-card{border-left:4px solid var(--info);background:linear-gradient(135deg,var(--surface) 0%,rgba(59,130,246,0.03) 100%)}
@@ -121,10 +123,12 @@
 </head>
 <body>
 
+<!-- OVERLAY LOGIN : TOUJOURS VISIBLE PAR DÉFAUT -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
         <h2>🔐 Pixora Admin</h2>
-        <p>Accès réservé à l'administrateur</p>
+        <p>Accès réservé à l'administrateur autorisé</p>
+        <div class="login-error" id="loginError"></div>
         <form onsubmit="handleAdminLogin(event)">
             <div class="form-group" style="margin-bottom:1rem"><input type="email" class="form-input" placeholder="Email admin" required id="adminEmail"></div>
             <div class="form-group" style="margin-bottom:1rem"><input type="password" class="form-input" placeholder="Mot de passe" required id="adminPass"></div>
@@ -141,11 +145,11 @@
     <nav class="sidebar-nav">
         <div class="nav-section">
             <div class="nav-section-title">Principal</div>
-            <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></button>
-            <button class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></button>
+            <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></button>            <button class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></button>
         </div>
         <div class="nav-section">
-            <div class="nav-section-title">Générateur IA</div>            <button class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></button>
+            <div class="nav-section-title">Générateur IA</div>
+            <button class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></button>
             <button class="nav-item" onclick="showSection('models-video')"><i class="fas fa-video"></i><span>Modèles Vidéo</span></button>
             <button class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API + Test</span></button>
         </div>
@@ -171,7 +175,7 @@
             <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v4.1<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v4.2<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 
 <div class="notif-panel" id="notifPanel">
@@ -190,11 +194,11 @@
             <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-ad"></i></div><div class="stat-value" id="dashActiveAds">-</div><div class="stat-label">Pubs Actives</div></div>
             <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>
         </div>
-        <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-stream"></i> Activité Récente</div></div><div class="table-container"><table><thead><tr><th>Type</th><th>Détail</th><th>User</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentActivity"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
+        <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-stream"></i> Activité Récente</div></div><div class="table-container"><table><thead><tr><th>Type</th><th>Détail</th><th>User</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentActivity"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>    </div>
 
     <div class="admin-section" id="sec-models-image">
-        <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>        <div class="card" id="modelImageForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Image</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
+        <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
+        <div class="card" id="modelImageForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Image</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
             <input type="hidden" id="imgModelId">
             <div class="form-row"><div class="form-group"><label class="form-label">Nom du modèle</label><input type="text" class="form-input" id="imgModelName" placeholder="ex: Flux Schnell"></div><div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="imgModelProvider" placeholder="ex: fal.ai"></div></div>
             <div class="form-row"><div class="form-group"><label class="form-label">Endpoint API</label><input type="text" class="form-input" id="imgModelEndpoint" placeholder="URL endpoint"></div><div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="imgModelCost" value="4"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="imgModelOrder" value="0"></div></div>
@@ -216,25 +220,29 @@
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Coût</th><th>Ordre</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="vidModelsTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
-    <!-- MODIFICATION #3 : Test API Site Actuelle ajouté -->
+    <!-- CLÉS API + TEST GÉNÉRATEUR SITE -->
     <div class="admin-section" id="sec-apis">
         <div class="page-header"><div><div class="page-title">Clés API + Test</div><div class="page-subtitle">Configurer et tester les clés API des providers IA</div></div><button class="btn btn-success btn-sm" onclick="saveApiKeys()"><i class="fas fa-save"></i> Sauvegarder Tout</button></div>
+
+        <!-- TEST API SITE ACTUELLE -->
         <div class="card" style="border-left:4px solid var(--success);background:linear-gradient(135deg,var(--surface) 0%,rgba(16,185,129,0.03) 100%)">
-            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-wand-magic-sparkles" style="color:var(--success)"></i> API Site Actuelle (Génération)</div>
-            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">Teste l'endpoint utilisé par index.html pour générer images/vidéos.</p>
+            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-wand-magic-sparkles" style="color:var(--success)"></i> Test Générateur Site (fal.ai Flux)</div>
+            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">Teste l'endpoint utilisé par index.html pour générer des images.</p>
             <div class="form-row">
-                <div class="form-group"><label class="form-label">Endpoint Actuel</label><input type="text" class="form-input" id="siteApiEndpoint" placeholder="https://..." value=""></div>
-                <div class="form-group"><label class="form-label">Clé API</label><input type="password" class="form-input" id="siteApiKey" placeholder="sk-..."></div>
+                <div class="form-group"><label class="form-label">Endpoint</label><input type="text" class="form-input" id="siteApiEndpoint" value="https://queue.fal.run/fal-ai/flux/schnell"></div>
+                <div class="form-group"><label class="form-label">Clé API fal.ai</label><input type="password" class="form-input" id="siteApiKey" placeholder="Chargement..."></div>
             </div>
+            <div class="form-group" style="margin-bottom:0.5rem"><label class="form-label">Prompt de test</label><input type="text" class="form-input" id="siteApiPrompt" value="a cute pixel art cat, vibrant colors"></div>
             <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
                 <button class="btn btn-test" onclick="testSiteApi()" id="btn-test-site"><i class="fas fa-vial"></i> Tester Génération</button>
-                <button class="btn btn-outline btn-sm" onclick="loadSiteApiConfig()"><i class="fas fa-sync"></i> Charger Config</button>
+                <button class="btn btn-outline btn-sm" onclick="loadSiteApiConfig()"><i class="fas fa-sync"></i> Recharger Config</button>
             </div>
             <div class="api-test-result" id="test-result-site"></div>
         </div>
+
+        <!-- CLÉS API PROVIDERS -->
         <div class="card"><div id="apiKeysContainer"><div style="text-align:center;color:var(--dim);padding:1rem"><i class="fas fa-spinner fa-spin"></i> Chargement...</div></div></div>
     </div>
-
     <div class="admin-section" id="sec-ad-networks">
         <div class="page-header"><div><div class="page-title">Régies Publicitaires</div><div class="page-subtitle">Gérer les offres CPA et pubs CPM</div></div><button class="btn btn-primary btn-sm" onclick="openAdNetworkForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="adNetworkForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Régie</div><button class="btn btn-sm btn-outline" onclick="closeAdNetworkForm()">Annuler</button></div>
@@ -243,7 +251,8 @@
             <div class="form-row"><div class="form-group"><label class="form-label">Page cible</label><select class="form-select" id="adNetPage"><option value="earn">Earn</option><option value="index">Index</option><option value="galerie">Galerie</option><option value="profile">Profile</option><option value="shop">Shop</option></select></div><div class="form-group"><label class="form-label">Position</label><select class="form-select" id="adNetPosition"><option value="top">Haut</option><option value="middle">Milieu</option><option value="bottom">Bas</option><option value="auto">Auto</option></select></div></div>
             <div class="form-row"><div class="form-group"><label class="form-label">Lien / Code HTML</label><input type="text" class="form-input" id="adNetLink" placeholder="URL ou code"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input" id="adNetPoints" value="5"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="adNetOrder" value="0"></div></div>
             <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="adNetActive" checked><span class="toggle-slider"></span></label></div>
-            <button class="btn btn-success" onclick="saveAdNetwork()"><i class="fas fa-save"></i> Sauvegarder</button>        </div>
+            <button class="btn btn-success" onclick="saveAdNetwork()"><i class="fas fa-save"></i> Sauvegarder</button>
+        </div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Page</th><th>Type</th><th>Points</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="adNetworksTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
@@ -283,8 +292,7 @@
                 <div class="form-group"><label class="form-label">Système activé</label><label class="toggle"><input type="checkbox" id="refEnabled" checked><span class="toggle-slider"></span></label></div>
                 <div class="form-group"><label class="form-label">Points par filleul validé</label><input type="number" class="form-input" id="refPoints" value="10"></div>
                 <div class="form-group"><label class="form-label">Condition de validation</label><select class="form-select" id="refCondition"><option value="signup_gen">Inscription + 1ère génération</option><option value="signup_only">Inscription seulement</option></select></div>
-            </div>
-            <p style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">Chaque utilisateur a un lien unique : <code style="color:var(--accent)">votre-site.com/?ref=USER_ID</code>. Les points sont crédités automatiquement quand la condition est remplie.</p>
+            </div>            <p style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">Chaque utilisateur a un lien unique : <code style="color:var(--accent)">votre-site.com/?ref=USER_ID</code>. Les points sont crédités automatiquement quand la condition est remplie.</p>
         </div>
         <div class="card">
             <div class="card-header"><div class="card-title"><i class="fas fa-list"></i> Parrainages Récents</div><button class="btn btn-sm btn-outline" onclick="loadReferrals()"><i class="fas fa-sync"></i></button></div>
@@ -292,7 +300,8 @@
                 <table>
                     <thead><tr><th>Parrain</th><th>Filleul</th><th>Statut</th><th>Points</th><th>Date</th></tr></thead>
                     <tbody id="referralsTable"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
-                </table>            </div>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -332,8 +341,7 @@
 
     <div class="admin-section" id="sec-seo">
         <div class="page-header"><div><div class="page-title">SEO & Métadonnées</div><div class="page-subtitle">Optimisation pour les moteurs de recherche</div></div><button class="btn btn-success btn-sm" onclick="saveSeo()"><i class="fas fa-save"></i> Sauvegarder</button></div>
-        <div class="card"><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title Tag</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement avec Pixora. Gagnez des points en complétant des tâches.</textarea></div><div class="form-row"><div class="form-group"><label class="form-label">OG Image URL</label><input type="text" class="form-input" id="seoOgImage" placeholder="URL image partage"></div><div class="form-group"><label class="form-label">Canonical URL</label><input type="text" class="form-input" id="seoCanonical" value="https://pixoraia.netlify.app/"></div></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Robots.txt</label><textarea class="form-textarea" id="seoRobots">User-agent: *\nAllow: /\nSitemap: https://pixoraia.netlify.app/sitemap.xml</textarea></div></div>
-    </div>
+        <div class="card"><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title Tag</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement avec Pixora. Gagnez des points en complétant des tâches.</textarea></div><div class="form-row"><div class="form-group"><label class="form-label">OG Image URL</label><input type="text" class="form-input" id="seoOgImage" placeholder="URL image partage"></div><div class="form-group"><label class="form-label">Canonical URL</label><input type="text" class="form-input" id="seoCanonical" value="https://pixoraia.netlify.app/"></div></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Robots.txt</label><textarea class="form-textarea" id="seoRobots">User-agent: *\nAllow: /\nSitemap: https://pixoraia.netlify.app/sitemap.xml</textarea></div></div>    </div>
 
     <div class="admin-section" id="sec-legal">
         <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité, Mentions Légales</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
@@ -341,6 +349,7 @@
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Politique de Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:200px"></textarea></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
     </div>
+
     <div class="admin-section" id="sec-users">
         <div class="page-header"><div><div class="page-title">Utilisateurs</div><div class="page-subtitle">Gérer les comptes et les points</div></div><div style="display:flex;gap:0.5rem"><input type="text" class="form-input" placeholder="Rechercher email/pseudo..." id="userSearch" style="width:250px" oninput="searchUsers()"><button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i></button></div></div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Pseudo</th><th>Email</th><th>Points</th><th>Streak</th><th>Dernière connexion</th><th style="text-align:right">Actions</th></tr></thead><tbody id="usersTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
@@ -371,57 +380,86 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var notifications = [];
 var unreadCount = 0;
+var isAdminVerified = false;
 
 // =============================================
-// MODIFICATION #1 : SÉCURITÉ ADMIN AVEC WHITELIST
+// SÉCURITÉ ADMIN v4.2 — WHITELIST STRICTE
 // =============================================
+function showLoginError(msg) {
+    var el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+function hideLoginError() {
+    document.getElementById('loginError').style.display = 'none';
+}
+
+async function verifyAdminAccess(email) {
+    try {
+        var configResult = await db.from('admin_config').select('value').eq('key', 'admin_emails').single();
+        var adminEmails = configResult.data ? configResult.data.value : null;
+
+        // Si aucune whitelist n'existe encore → créer avec cet email (premier admin)
+        if (!configResult.data || !adminEmails || adminEmails.length === 0) {
+            adminEmails = [email];
+            await db.from('admin_config').upsert({ key: 'admin_emails', value: adminEmails, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+            return true;
+        }
+
+        // Vérifier si l'email est dans la whitelist
+        if (adminEmails.indexOf(email) === -1) {
+            return false;
+        }
+
+        return true;
+    } catch(e) {
+        console.error('Verify admin error:', e);
+        return false;
+    }
+}
+
 async function handleAdminLogin(e) {
     e.preventDefault();
+    hideLoginError();
     var email = document.getElementById('adminEmail').value.trim().toLowerCase();
     var pass = document.getElementById('adminPass').value;
     var btn = document.getElementById('btnAdminLogin');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+
     try {
         // Étape 1 : Auth Supabase
         var result = await db.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw new Error(result.error.message);
         if (!result.data.session) throw new Error('Session non créée');
 
-        // Étape 2 : Vérifier whitelist admin_emails
-        var configResult = await db.from('admin_config').select('value').eq('key', 'admin_emails').single();
-        var adminEmails = configResult.data ? configResult.data.value : [];
-        // Si la liste n'existe pas encore, initialiser avec cet email (premier admin)
-        if (!configResult.data || adminEmails.length === 0) {
-            adminEmails = [email];
-            await db.from('admin_config').upsert({ key: 'admin_emails', value: adminEmails, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        }
-
-        // Vérifier si l'email est dans la whitelist
-        if (adminEmails.indexOf(email) === -1) {
+        // Étape 2 : Vérifier whitelist AVANT d'afficher quoi que ce soit
+        var isAuthorized = await verifyAdminAccess(email);
+        if (!isAuthorized) {
             await db.auth.signOut();
-            throw new Error('⛔ Accès refusé. Cet email n\'est pas autorisé.');
+            showLoginError('⛔ Accès refusé. Cet email n\'est pas dans la liste des administrateurs autorisés.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder';            return;
         }
 
-        // ✅ Accès autorisé
+        // ✅ ACCÈS AUTORISÉ — Maintenant seulement on affiche le panel
+        isAdminVerified = true;
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('adminEmailDisplay').textContent = email;
         initAdmin();
     } catch (err) {
-        alert('❌ ' + err.message);
+        showLoginError('❌ ' + err.message);
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder';
     }
 }
 
 function logoutAdmin() {
+    isAdminVerified = false;
     db.auth.signOut();
     location.reload();
 }
 
-// =============================================
-// MODIFICATION #2 : Sauvegarder liste admin_emails
-// =============================================
 async function saveAdminEmails() {
     var raw = document.getElementById('adminEmailsList').value.trim();
     var emails = raw.split('\n').map(function(e) { return e.trim().toLowerCase(); }).filter(function(e) { return e.length > 0 && e.includes('@'); });
@@ -439,8 +477,10 @@ async function loadAdminEmails() {
 }
 
 // =============================================
-// NAVIGATION// =============================================
+// NAVIGATION
+// =============================================
 function showSection(name) {
+    if (!isAdminVerified) return;
     document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
     document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
     document.getElementById('sec-' + name).classList.add('active');
@@ -448,8 +488,7 @@ function showSection(name) {
     var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'ad-networks':6, 'internal-tasks':7, referral:8, pricing:9, 'shop-config':10, 'social-links':12, 'site-settings':13, seo:14, legal:15, users:17, logs:18, security:19 };
     if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');
     var loaders = { dashboard:loadDashboard, 'models-image':function(){loadModels('image')}, 'models-video':function(){loadModels('video')}, apis:loadApiKeys, 'ad-networks':loadAdNetworks, 'internal-tasks':loadInternalTasks, referral:loadReferrals, pricing:loadPricing, 'shop-config':loadShopConfig, 'social-links':loadSocialLinks, 'site-settings':loadSiteSettings, seo:loadSeo, legal:loadLegal, users:loadUsers, logs:loadLogs, security:loadAdminEmails };
-    if (loaders[name]) loaders[name]();
-}
+    if (loaders[name]) loaders[name]();}
 
 // =============================================
 // NOTIFICATIONS
@@ -488,7 +527,8 @@ async function loadDashboard() {
         document.getElementById('dashActiveAds').textContent = ads.filter(function(a){return a.active}).length;
         var todayTx = await db.from('transactions').select('user_id').eq('type','earned').gte('created_at', today+'T00:00:00');
         var uniqueEarners = new Set((todayTx.data||[]).map(function(t){return t.user_id})).size;
-        document.getElementById('dashTodayEarners').textContent = uniqueEarners;        var recentTx = await db.from('transactions').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
+        document.getElementById('dashTodayEarners').textContent = uniqueEarners;
+        var recentTx = await db.from('transactions').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
         var recentClicks = await db.from('ad_clicks').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
         var activity = [];
         (recentTx.data||[]).forEach(function(t){activity.push({type:t.type,detail:t.title,user:t.users?t.users.email:'-',points:t.amount,date:t.created_at})});
@@ -497,8 +537,7 @@ async function loadDashboard() {
         var tbody = document.getElementById('dashRecentActivity');
         if (activity.length) {
             tbody.innerHTML = activity.slice(0,10).map(function(a){
-                var colors={earned:'var(--success)',spent:'var(--danger)',task:'var(--info)',purchased:'var(--gold)'};
-                return '<tr><td style="color:'+(colors[a.type]||'var(--text)')+';font-weight:600">'+a.type.toUpperCase()+'</td><td>'+a.detail+'</td><td style="font-size:0.8rem">'+a.user+'</td><td style="font-family:var(--mono);color:'+(a.points>0?'var(--success)':'var(--dim)')+'">'+(a.points>0?'+'+a.points:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(a.date).toLocaleString('fr-FR')+'</td></tr>';
+                var colors={earned:'var(--success)',spent:'var(--danger)',task:'var(--info)',purchased:'var(--gold)'};                return '<tr><td style="color:'+(colors[a.type]||'var(--text)')+';font-weight:600">'+a.type.toUpperCase()+'</td><td>'+a.detail+'</td><td style="font-size:0.8rem">'+a.user+'</td><td style="font-family:var(--mono);color:'+(a.points>0?'var(--success)':'var(--dim)')+'">'+(a.points>0?'+'+a.points:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(a.date).toLocaleString('fr-FR')+'</td></tr>';
             }).join('');
         } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucune activité récente</td></tr>'; }
     } catch(err) { console.error('Dashboard error:', err); }
@@ -523,45 +562,58 @@ async function saveModel(type) { var p=type==='image'?'img':'vid',id=document.ge
 async function deleteModel(id,type) { if(!confirm('Supprimer ce modèle ?'))return; await db.from('generator_models').delete().eq('id',id); loadModels(type); addNotification('config','Modèle supprimé'); }
 
 // =============================================
-// CLÉS API + TEST + MODIFICATION #3 : TEST API SITE
+// TEST API SITE + CLÉS API
 // =============================================
 async function loadSiteApiConfig() {
     var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
     var keys = r.data ? r.data.value : {};
-    // Charger l'endpoint du premier modèle image actif comme endpoint site
-    var models = await db.from('generator_models').select('api_endpoint').eq('type','image').eq('is_active',true).order('sort_order').limit(1);
-    if (models.data && models.data.length > 0 && models.data[0].api_endpoint) {
-        document.getElementById('siteApiEndpoint').value = models.data[0].api_endpoint;
+    if (keys['fal.ai']) {
+        document.getElementById('siteApiKey').value = keys['fal.ai'];
+    } else {
+        document.getElementById('siteApiKey').placeholder = 'Aucune clé fal.ai configurée';
     }
-    // Charger la clé fal.ai comme clé site par défaut
-    if (keys['fal.ai']) document.getElementById('siteApiKey').value = keys['fal.ai'];
 }
 
-async function testSiteApi() {    var btn = document.getElementById('btn-test-site');
+async function testSiteApi() {
+    var btn = document.getElementById('btn-test-site');
     var resultDiv = document.getElementById('test-result-site');
     var endpoint = document.getElementById('siteApiEndpoint').value.trim();
     var key = document.getElementById('siteApiKey').value.trim();
-    if (!endpoint || !key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Endpoint et clé requis'; resultDiv.style.display='block'; return; }
-    btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Test...';
+    var prompt = document.getElementById('siteApiPrompt').value.trim() || 'test cat';
+    if (!endpoint || !key) {
+        resultDiv.className='api-test-result error';
+        resultDiv.innerHTML='<i class="fas fa-times"></i> Endpoint et clé API requis';
+        resultDiv.style.display='block';
+        return;
+    }
+    btn.classList.add('testing');    btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Génération...';
     resultDiv.style.display='none';
     try {
         var response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Key ' + key },
-            body: JSON.stringify({ prompt: 'test pixel art cat', width: 64, height: 64, num_images: 1 })
+            body: JSON.stringify({ prompt: prompt, width: 256, height: 256, num_images: 1 })
         });
-        btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération';
+        btn.classList.remove('testing');
+        btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération';
         if (response.ok) {
             var data = await response.json();
+            var imgUrl = '';
+            if (data.images && data.images.length > 0) imgUrl = data.images[0].url;
+            else if (data.output && data.output.images && data.output.images.length > 0) imgUrl = data.output.images[0].url;
+            var html = '<i class="fas fa-check"></i> ✅ API fonctionnelle ! (' + response.status + ')';
+            if (imgUrl) html += '<br><img src="' + imgUrl + '" style="max-width:200px;border-radius:8px;margin-top:0.5rem">';
+            else html += '<br><small>Réponse : ' + JSON.stringify(data).substring(0, 300) + '</small>';
             resultDiv.className='api-test-result success';
-            resultDiv.innerHTML='<i class="fas fa-check"></i> ✅ API fonctionnelle ! (' + response.status + ')<br><small>' + JSON.stringify(data).substring(0, 200) + '</small>';
+            resultDiv.innerHTML = html;
         } else {
             var errText = await response.text();
             resultDiv.className='api-test-result error';
-            resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur ' + response.status + '<br><small>' + errText.substring(0, 200) + '</small>';
+            resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur ' + response.status + '<br><small>' + errText.substring(0, 300) + '</small>';
         }
     } catch(err) {
-        btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération';
+        btn.classList.remove('testing');
+        btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération';
         resultDiv.className='api-test-result error';
         resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ ' + err.message;
     }
@@ -583,10 +635,11 @@ async function loadApiKeys() {
         {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}
     ];
     var html = '';
-    providers.forEach(function(p) {
-        html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
+    providers.forEach(function(p) {        html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
     });
-    document.getElementById('apiKeysContainer').innerHTML = html;}
+    document.getElementById('apiKeysContainer').innerHTML = html;
+}
+
 async function testApiKey(provider, testUrl) {
     var btn = document.getElementById('btn-test-'+provider);
     var resultDiv = document.getElementById('test-result-'+provider);
@@ -609,6 +662,7 @@ async function testApiKey(provider, testUrl) {
     } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur : '+err.message; }
     resultDiv.style.display='block';
 }
+
 async function saveApiKeys() {
     var keys = {};
     document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
@@ -630,12 +684,12 @@ async function loadAdNetworks() {
         }).join('');
     } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie configurée</td></tr>'; }
 }
-function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=5; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }
-function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }
+function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=5; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }
 function editAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=i; document.getElementById('adNetName').value=n.name; document.getElementById('adNetType').value=n.type||'smartlink'; document.getElementById('adNetPage').value=n.page||'earn'; document.getElementById('adNetPosition').value=n.position||'top'; document.getElementById('adNetLink').value=n.link||n.code||''; document.getElementById('adNetPoints').value=n.points; document.getElementById('adNetOrder').value=n.order||0; document.getElementById('adNetActive').checked=n.active!==false; }
 async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; var c=JSON.parse(JSON.stringify(n)); c.name+=' (copie)'; c.active=false; window._adNetworks.push(c); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie dupliquée'); }
 async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetworks[i].active; await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); }
-async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie supprimée'); }
+async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }
+async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie supprimée'); }
 
 // =============================================
 // TÂCHES INTERNES
@@ -679,12 +733,12 @@ async function loadReferrals() {
     document.getElementById('refEnabled').checked = config.enabled !== false;
     document.getElementById('refPoints').value = config.points || 10;
     document.getElementById('refCondition').value = config.condition || 'signup_gen';
-    try {
-        var refResult = await db.from('referrals').select('*, sponsor:users!referrals_sponsor_id_fkey(email), referred:users!referrals_referred_id_fkey(email)').order('created_at',{ascending:false}).limit(50);
+    try {        var refResult = await db.from('referrals').select('*, sponsor:users!referrals_sponsor_id_fkey(email), referred:users!referrals_referred_id_fkey(email)').order('created_at',{ascending:false}).limit(50);
         var tbody = document.getElementById('referralsTable');
         if (refResult.data && refResult.data.length) {
             tbody.innerHTML = refResult.data.map(function(r) {
-                var statusClass = r.validated ? 'status-valid' : 'status-pending';                var statusText = r.validated ? 'Validé' : 'En attente';
+                var statusClass = r.validated ? 'status-valid' : 'status-pending';
+                var statusText = r.validated ? 'Validé' : 'En attente';
                 return '<tr><td style="font-size:0.8rem">'+(r.sponsor?.email||'-')+'</td><td style="font-size:0.8rem">'+(r.referred?.email||'-')+'</td><td><span class="status-badge '+statusClass+'">'+statusText+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+(r.validated?r.points||10:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(r.created_at).toLocaleString('fr-FR')+'</td></tr>';
             }).join('');
         } else {
@@ -728,12 +782,12 @@ async function loadShopConfig() { var r=await db.from('admin_config').select('*'
 function addPackField() { document.getElementById('packsContainer').insertAdjacentHTML('beforeend','<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Pack Name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 function addSubField() { document.getElementById('subsContainer').insertAdjacentHTML('beforeend','<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Plan Name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 async function saveShopConfig() { var packs=[],subs=[]; document.querySelectorAll('.pack-row').forEach(function(r){var n=r.querySelector('.pack-name').value.trim();if(n)packs.push({name:n,points:parseInt(r.querySelector('.pack-points').value)||0,price:parseFloat(r.querySelector('.pack-price').value)||0})}); document.querySelectorAll('.sub-row').forEach(function(r){var n=r.querySelector('.sub-name').value.trim();if(n)subs.push({name:n,points:parseInt(r.querySelector('.sub-points').value)||0,price:parseFloat(r.querySelector('.sub-price').value)||0})}); await db.from('admin_config').upsert({key:'shop_config',value:{packs:packs,subs:subs,currency:document.getElementById('shopCurrency').value,stripe_key:document.getElementById('stripeKey').value.trim(),paypal_client_id:document.getElementById('paypalClientId').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Boutique sauvegardée'); alert('✅ Boutique sauvegardée !'); }
-
 // =============================================
 // SOCIAL LINKS
 // =============================================
 async function loadSocialLinks() { var r=await db.from('admin_config').select('*').eq('key','social_links').single(); var links=r.data?r.data.value:[]; var h=''; links.forEach(function(l){h+='<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" value="'+l.name+'"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" value="'+l.url+'"></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" value="'+(l.icon||'')+'" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('socialLinksContainer').innerHTML=h||'<div style="color:var(--dim);font-size:0.85rem">Aucun lien social</div>'; }
-function addSocialField() { document.getElementById('socialLinksContainer').insertAdjacentHTML('beforeend','<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" placeholder="Twitter"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" placeholder="https://twitter.com/..."></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }async function saveSocialLinks() { var links=[]; document.querySelectorAll('.social-row').forEach(function(r){var n=r.querySelector('.social-name').value.trim();if(n)links.push({name:n,url:r.querySelector('.social-url').value.trim(),icon:r.querySelector('.social-icon').value.trim()})}); await db.from('admin_config').upsert({key:'social_links',value:links,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Réseaux sociaux sauvegardés'); alert('✅ Réseaux sociaux sauvegardés !'); }
+function addSocialField() { document.getElementById('socialLinksContainer').insertAdjacentHTML('beforeend','<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" placeholder="Twitter"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" placeholder="https://twitter.com/..."></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
+async function saveSocialLinks() { var links=[]; document.querySelectorAll('.social-row').forEach(function(r){var n=r.querySelector('.social-name').value.trim();if(n)links.push({name:n,url:r.querySelector('.social-url').value.trim(),icon:r.querySelector('.social-icon').value.trim()})}); await db.from('admin_config').upsert({key:'social_links',value:links,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Réseaux sociaux sauvegardés'); alert('✅ Réseaux sociaux sauvegardés !'); }
 
 // =============================================
 // SITE SETTINGS
@@ -777,34 +831,46 @@ async function changeAdminPassword() { var np=document.getElementById('newAdminP
 // REALTIME
 // =============================================
 function subscribeRealtime() {
-    db.channel('admin-realtime')
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'users'},function(p){addNotification('user','Nouveau compte : '+(p.new.email||'inconnu'))})
+    db.channel('admin-realtime')        .on('postgres_changes',{event:'INSERT',schema:'public',table:'users'},function(p){addNotification('user','Nouveau compte : '+(p.new.email||'inconnu'))})
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'transactions'},function(p){if(p.new.type==='purchased')addNotification('payment','Paiement : '+p.new.title);if(p.new.type==='earned'&&p.new.amount>=50)addNotification('gen','Génération : '+p.new.title)})
         .subscribe();
 }
+
 // =============================================
 // INIT
 // =============================================
 async function initAdmin() { subscribeRealtime(); loadDashboard(); updateNotifUI(); }
 
+// =============================================
+// DOMCONTENTLOADED v4.2 — SÉCURITÉ MAXIMALE
+// L'overlay reste VISIBLE tant que la vérification n'est pas réussie
+// =============================================
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         var r = await db.auth.getSession();
         if (r.data.session && r.data.session.user) {
-            // MODIFICATION #1 : Vérifier whitelist même pour session existante
             var email = r.data.session.user.email.toLowerCase();
-            var configResult = await db.from('admin_config').select('value').eq('key', 'admin_emails').single();
-            var adminEmails = configResult.data ? configResult.data.value : [];
-            if (adminEmails.length > 0 && adminEmails.indexOf(email) === -1) {
+
+            // RE-VÉRIFIER la whitelist même pour session existante
+            var isAuthorized = await verifyAdminAccess(email);
+
+            if (!isAuthorized) {
+                // Pas autorisé → déconnexion + overlay RESTE visible
                 await db.auth.signOut();
+                showLoginError('⛔ Session expirée ou accès non autorisé. Veuillez vous reconnecter.');
                 return;
             }
+
+            // ✅ Autorisé → MAINTENANT seulement on affiche le panel
+            isAdminVerified = true;
             document.getElementById('loginOverlay').classList.add('hidden');
             document.getElementById('adminEmailDisplay').textContent = email;
             initAdmin();
         }
+        // Si pas de session → l'overlay reste visible naturellement
     } catch(err) {
-        console.log('Pas de session active, affichage du login');
+        console.error('Session check error:', err);
+        // En cas d'erreur → overlay reste visible
     }
 });
 </script>
