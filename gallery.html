@@ -316,7 +316,7 @@ async function submitComment() {
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
 }
 
-// === CORRECTION : Requêtes individuelles par fichier (RLS compatible) ===
+// === CORRECTION DÉFINITIVE : Requêtes PARALLÈLES via Promise.all ===
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
     try {
@@ -341,58 +341,56 @@ async function loadGallery() {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
             return;
         }
-        // CORRECTION : Requêtes INDIVIDUELLES par fichier (pas de .in(), pas de global select)
-        var voteCounts = {};
-        var commentCounts = {};
-        var userVoted = {};
         var user = await getUser();
+        var userId = user ? user.id : null;
 
-        for (var f = 0; f < validFiles.length; f++) {
-            var fname = validFiles[f].name;
+        // Construire TOUTES les promesses en parallèle
+        var promises = validFiles.map(function(item) {
+            var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('file_name', item.name);
+            var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('file_name', item.name);
+            var pUserVoted = userId
+                ? db.from('votes').select('id').eq('user_id', userId).eq('file_name', item.name).limit(1)
+                : Promise.resolve({ data: [] });
+            return Promise.all([pVotes, pComments, pUserVoted]).then(function(results) {
+                return {
+                    name: item.name,
+                    url: item.url,
+                    voteCount: results[0].count || 0,
+                    commentCount: results[1].count || 0,
+                    userVoted: results[2].data && results[2].data.length > 0
+                };
+            }).catch(function(err) {
+                console.error('Load stats error for ' + item.name + ':', err);
+                return { name: item.name, url: item.url, voteCount: 0, commentCount: 0, userVoted: false };
+            });
+        });
 
-            // Compter votes pour ce fichier
-            var vR = await db.from('votes').select('id').eq('file_name', fname);
-            voteCounts[fname] = (vR.data || []).length;
+        // Attendre TOUTES les requêtes simultanément
+        var stats = await Promise.all(promises);
 
-            // Compter commentaires pour ce fichier
-            var cR = await db.from('comments').select('id').eq('file_name', fname);
-            commentCounts[fname] = (cR.data || []).length;
-
-            // Vérifier si user actuel a voté ce fichier
-            if (user) {
-                var uvR = await db.from('votes').select('id').eq('user_id', user.id).eq('file_name', fname).limit(1);
-                if (uvR.data && uvR.data.length > 0) {
-                    userVoted[fname] = true;
-                }
-            }
-        }
-
-        // Construction des cartes avec données correctes
+        // Construire les cartes APRÈS toutes les données chargées
         grid.innerHTML = '';
-        validFiles.forEach(function(item) {
-            var vc = voteCounts[item.name] || 0;
-            var cc = commentCounts[item.name] || 0;
-            var isVoted = userVoted[item.name] || false;
+        stats.forEach(function(s) {
             var card = document.createElement('div');
             card.className = 'result-card';
-            card.innerHTML = '<img src="' + item.url + '" alt="Création Pixora" loading="lazy">' +
+            card.innerHTML = '<img src="' + s.url + '" alt="Création Pixora" loading="lazy">' +
                 '<div class="result-overlay">' +
                 '<div class="card-actions">' +
-                '<button class="action-btn ' + (isVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + item.name + '\',this)" title="Voter">' +
-                '<i class="fas fa-heart"></i><span class="action-count">' + vc + '</span></button>' +
-                '<button class="action-btn" onclick="event.stopPropagation();openCommentModal(\'' + item.name + '\')" title="Commenter">' +
-                '<i class="fas fa-comment"></i><span class="action-count">' + cc + '</span></button>' +
+                '<button class="action-btn ' + (s.userVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + s.name + '\',this)" title="Voter">' +
+                '<i class="fas fa-heart"></i><span class="action-count">' + s.voteCount + '</span></button>' +
+                '<button class="action-btn" onclick="event.stopPropagation();openCommentModal(\'' + s.name + '\')" title="Commenter">' +
+                '<i class="fas fa-comment"></i><span class="action-count">' + s.commentCount + '</span></button>' +
                 '</div>' +
                 '<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>' +
                 '</div>';
-            card.onclick = function() { openLB(item.url); };
+            card.onclick = function() { openLB(s.url); };
             grid.appendChild(card);
         });
     } catch (err) {
         console.error('Gallery error:', err);
-        grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur chargement galerie</p></div>';    }
+        grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur chargement galerie</p></div>';
+    }
 }
-
 document.addEventListener('DOMContentLoaded', async function() {
     await updateUI();
     await loadGallery();
