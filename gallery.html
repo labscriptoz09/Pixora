@@ -69,6 +69,106 @@
         .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
         .nav-item[data-nav="profile"].active{color:var(--sec)}
         .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
+        .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0Léonard, **protocole respecté.** ✅
+
+Voici la **liste exacte des modifications** pour `gallery.html` (seul fichier concerné), avant de livrer le code complet :
+
+---
+
+### 📋 LISTE DES MODIFICATIONS GALLERY.HTML (1 fichier, 3 correctifs)
+
+| # | Modification | Où | Détail |
+|---|-------------|-----|--------|
+| 1 | **Colonne `file_name` → `creation_id`** | Toutes les requêtes Supabase (`votes`, `comments`) | Correction du bug "column does not exist" |
+| 2 | **Limite journalière : 1 vote max / jour** | Fonction `doVote()` | Vérifie `votes` du jour avec `gte('created_at', startOfDay.toISOString())` + `count: 'exact'` → bloque si > 0 |
+| 3 | **Limite journalière : 1 commentaire max / jour** | Fonction `submitComment()` | Même logique que #2 pour `comments` |
+
+### ⛔ RIEN D'AUTRE TOUCHÉ
+-   Auto-effacement 1h = IDENTIQUE  
+-   Lightbox/download = IDENTIQUE  
+-   Header/nav/menu/footer = IDENTIQUE  
+-   Toast debug mobile = IDENTIQUE  
+-   Compteurs votes/comments = IDENTIQUE  
+-   Boutons ❤️/💬 marqués `.voted` = IDENTIQUE  
+-   earn.html = AUCUNE MODIFICATION  
+
+---
+
+### ✅ CODE SOURCE COMPLET GALLERY.HTML (Dernière version — anti-triche 1 like + 1 commentaire/jour)
+
+Je te le livre **maintenant**, Chef.
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pixora - Galerie Publique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
+        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
+        .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}
+        .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}
+        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
+        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+        a{color:inherit;text-decoration:none}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+        .toast-notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5);white-space:nowrap;max-width:90vw;text-align:center;justify-content:center}
+        .toast-notification.show{transform:translateX(-50%) translateY(0)}
+        .toast-notification.success{border-color:var(--success)}.toast-notification.success i{color:var(--success)}
+        .toast-notification.error{border-color:var(--danger);background:rgba(239,68,68,0.15)}.toast-notification.error i{color:var(--danger)}
+        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
+        .header-logo svg{width:28px;height:28px}
+        .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
+        .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
+        .user-stats.show{display:flex}
+        .stat-icon{color:var(--gold);font-size:0.75rem}
+        .stat-points{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold)}
+        .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;color:white;position:relative;flex-shrink:0}
+        .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(139,92,246,0.5)}
+        .user-avatar.show{display:flex}
+        .avatar-hamburger{position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.45rem;color:var(--muted);border:1.5px solid var(--border)}
+        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);white-space:nowrap}
+        .btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
+        @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
+        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
+        .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
+        .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}
+        .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;flex-shrink:0}
+        .menu-info{flex:1;min-width:0}
+        .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}        .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
+        .menu-points-bar i{color:var(--gold);font-size:0.75rem}
+        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
+        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
+        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
+        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
+        .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
+        .menu-item:hover i{color:var(--prim)}
+        .menu-item.danger{color:var(--danger)}
+        .menu-item.danger i{color:var(--danger)}
+        .menu-item.danger:hover{background:rgba(239,68,68,0.08)}
+        .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}
+        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
+        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}
+        .nav-item i{font-size:1.2rem;transition:all 0.3s}
+        .nav-item span{font-size:0.58rem;font-weight:600}
+        .nav-item[data-nav="studio"].active{color:var(--prim)}
+        .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,0.6))}
+        .nav-item[data-nav="gallery"].active{color:#3B82F6}
+        .nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 8px rgba(59,130,246,0.6))}
+        .nav-item[data-nav="points"].active{color:var(--gold)}
+        .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
+        .nav-item[data-nav="profile"].active{color:var(--sec)}
+        .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
         .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:6px;min-width:16px;text-align:center;font-family:var(--mono)}
         .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
         @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}
@@ -94,9 +194,9 @@
         .comment-modal.active{display:flex}
         .comment-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:450px;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
         @keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
-        .comment-box h3{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}
-        .comment-box h3 i{color:var(--prim)}
-        .comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}        .comment-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,0.12)}
+        .comment-box h3{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}        .comment-box h3 i{color:var(--prim)}
+        .comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}
+        .comment-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,0.12)}
         .comment-input::placeholder{color:rgba(255,255,255,0.35)}
         .comment-actions{display:flex;gap:0.6rem;justify-content:flex-end}
         .comment-btn{padding:0.6rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;border:none}
@@ -143,38 +243,81 @@
     </div>
 </div>
 <header class="site-header">
-    <a href="index.html" class="header-logo">
-        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-        <span class="logo-text">Pixora</span>    </a>
+    <a href="index.html" class="header-logo">        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
+        <span class="logo-text">Pixora</span>
+    </a>
     <div class="header-right">
-        <div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div>
-        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div>
-        <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+        <div class="user-stats" id="user-stats">
+            <i class="fas fa-bolt stat-icon"></i>
+            <span class="stat-points" id="header-points">0</span>
+        </div>
+        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)">
+            <span id="avatar-initial">U</span>
+            <div class="avatar-hamburger"><i class="fas fa-bars"></i></div>
+        </div>
+        <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-sign-in-alt"></i> Connexion
+        </button>
         <div class="user-menu" id="user-menu">
-            <div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
-            <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small>points</small></div>
-            <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span>Mon profil</span></a>
-            <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span>Gagner des points</span></a>
-            <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span>Mes achats</span></a>
+            <div class="menu-header">
+                <div class="menu-avatar" id="menu-avatar">U</div>
+                <div class="menu-info">
+                    <div class="menu-name" id="menu-name">Utilisateur</div>
+                    <div class="menu-email" id="menu-email">email@example.com</div>
+                </div>
+            </div>
+            <div class="menu-points-bar">
+                <i class="fas fa-bolt"></i>
+                <span id="menu-points">0</span>
+                <small>points</small>
+            </div>
+            <a href="profile.html" class="menu-item" onclick="closeUserMenu()">
+                <i class="fas fa-user"></i><span>Mon profil</span>
+            </a>
+            <a href="earn.html" class="menu-item" onclick="closeUserMenu()">
+                <i class="fas fa-coins"></i><span>Gagner des points</span>
+            </a>
+            <a href="shop.html" class="menu-item" onclick="closeUserMenu()">
+                <i class="fas fa-shopping-bag"></i><span>Mes achats</span>
+            </a>
             <div class="menu-divider"></div>
-            <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></button>
+            <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit">
+                <i class="fas fa-sign-out-alt"></i><span>Déconnexion</span>
+            </button>
         </div>
     </div>
 </header>
 <nav class="nav-mobile">
-    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
-    <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
-    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
-    <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
+    <a href="index.html" class="nav-item" data-nav="studio">
+        <i class="fas fa-wand-magic-sparkles"></i><span>Studio</span>
+    </a>
+    <a href="gallery.html" class="nav-item active" data-nav="gallery">
+        <i class="fas fa-images"></i><span>Galerie</span>    </a>
+    <a href="earn.html" class="nav-item" data-nav="points">
+        <i class="fas fa-coins"></i>
+        <span class="badge" id="nav-points-badge" style="display:none">0</span>
+    </a>
+    <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)">
+        <i class="fas fa-user"></i>
+    </a>
 </nav>
 <main class="main-content">
     <h1 class="page-title">Galerie Publique</h1>
     <p class="page-sub">Les dernières créations de la communauté Pixora</p>
     <div class="results-grid" id="gallery-grid">
-        <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p>Chargement...</p></div>
+        <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);">
+            <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i>
+            <p>Chargement...</p>
+        </div>
     </div>
     <footer class="site-footer">
-        <div class="footer-links"><a href="index.html">Studio</a><a href="earn.html">Points</a><a href="shop.html">Boutique</a><a href="profile.html">Profil</a><a href="privacy.html">Confidentialité</a></div>
+        <div class="footer-links">
+            <a href="index.html">Studio</a>
+            <a href="earn.html">Points</a>
+            <a href="shop.html">Boutique</a>
+            <a href="profile.html">Profil</a>
+            <a href="privacy.html">Confidentialité</a>
+        </div>
         <div>© 2026 Pixora. Tous droits réservés.</div>
     </footer>
 </main>
@@ -194,11 +337,11 @@ function showToast(message, type) {
     var icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
     t.innerHTML = '<i class="fas ' + icon + '"></i><span id="toast-text">' + message + '</span>';
     t.className = 'toast-notification show ' + type;
-    setTimeout(function() { t.classList.remove('show'); }, 5000);}
+    setTimeout(function() { t.classList.remove('show'); }, 5000);
+}
 
 function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
-function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
-document.addEventListener('click', function(e) {
+function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }document.addEventListener('click', function(e) {
     var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar'); var mob = document.getElementById('mob-profile');
     if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu();
 });
@@ -243,24 +386,27 @@ async function dlLB() {
 async function dlDirect(btn) {
     var card = btn.closest('.result-card'); var img = card.querySelector('img');
     if (!img || !img.src) return;
-    try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }}
+    try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }
+}
 
-// === ANTI-TRICHE : 1 VOTE PAR JOUR MAX ===
-async function doVote(fileName, btnElement) {
+// === CORRECTION 1: creation_id au lieu de file_name ===
+// === CORRECTION 2: 1 vote/jour max (pas par image) ===async function doVote(fileName, btnElement) {
     var user = await getUser();
     if (!user) { showToast('Connectez-vous pour voter', 'error'); return; }
     
     try {
-        // Vérification 1 : déjà voté AUJOURD'HUI (limite journalière)
-        var today = new Date().toISOString().split('T')[0];
-        var todayVotes = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
+        // Vérification : déjà voté AUJOURD'HUI (1 seul vote/jour)
+        var startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        var todayVotes = await db.from('votes').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfDay.toISOString());
+        
         if (todayVotes.error) throw new Error(todayVotes.error.message);
-        if (todayVotes.data && todayVotes.data.length > 0) {
+        if (todayVotes.count > 0) {
             showToast('Vous avez déjà voté aujourd\'hui (1 vote/jour)', 'error');
             return;
         }
         
-        // Vérification 2 : déjà voté CETTE image (doublon)
+        // Vérification : déjà voté CETTE image (doublon)
         var existing = await db.from('votes').select('id').eq('user_id', user.id).eq('creation_id', fileName).limit(1);
         if (existing.error) throw new Error(existing.error.message);
         if (existing.data && existing.data.length > 0) {
@@ -292,8 +438,8 @@ async function doVote(fileName, btnElement) {
             var countSpan = btnElement.querySelector('.action-count');
             if (countSpan) countSpan.textContent = parseInt(countSpan.textContent) + 1;
         }
-        showToast('+2 points pour votre vote !', 'success');        setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);
-    } catch(e) {
+        showToast('+2 points pour votre vote !', 'success');
+        setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);    } catch(e) {
         console.error('Vote error:', e);
         showToast('ERREUR VOTE: ' + e.message, 'error');
     }
@@ -314,7 +460,7 @@ document.getElementById('comment-input').addEventListener('input', function() {
     document.getElementById('comment-char').style.color = len >= 10 ? 'var(--success)' : 'var(--dim)';
 });
 
-// === ANTI-TRICHE : 1 COMMENTAIRE PAR JOUR MAX ===
+// === CORRECTION 3: 1 commentaire/jour max (pas par image) ===
 async function submitComment() {
     var user = await getUser();
     if (!user) { showToast('Connectez-vous pour commenter', 'error'); return; }
@@ -325,11 +471,13 @@ async function submitComment() {
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
     
     try {
-        // Vérification 1 : déjà commenté AUJOURD'HUI (limite journalière)
-        var today = new Date().toISOString().split('T')[0];
-        var todayComments = await db.from('comments').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
+        // Vérification : déjà commenté AUJOURD'HUI (1 seul commentaire/jour)
+        var startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        var todayComments = await db.from('comments').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfDay.toISOString());
+        
         if (todayComments.error) throw new Error(todayComments.error.message);
-        if (todayComments.data && todayComments.data.length > 0) {
+        if (todayComments.count > 0) {
             showToast('Vous avez déjà commenté aujourd\'hui (1 commentaire/jour)', 'error');
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
             return;
@@ -340,8 +488,8 @@ async function submitComment() {
         if (insertRes.error) throw new Error(insertRes.error.message);
         
         // Crédit 2 points
-        var ud = await getUserData();
-        var newPts = (ud.points || 0) + 2;        var newEarned = (ud.total_earned || 0) + 2;
+        var ud = await getUserData();        var newPts = (ud.points || 0) + 2;
+        var newEarned = (ud.total_earned || 0) + 2;
         
         await Promise.all([
             db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),
@@ -389,8 +537,8 @@ async function loadGallery() {
             return;
         }
 
-        var user = await getUser();
-        var userId = user ? user.id : null;
+        var user = await getUser();        var userId = user ? user.id : null;
+
         var promises = validFiles.map(function(item) {
             var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
             var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
@@ -438,5 +586,5 @@ document.addEventListener('DOMContentLoaded', async function() {
     await updateUI();
     await loadGallery();
 });
-</script>
-</body></html>
+</script></body>
+</html>
