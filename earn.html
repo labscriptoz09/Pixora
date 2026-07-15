@@ -92,11 +92,13 @@
         .validation-banner{background:rgba(16,185,129,0.1);border:1px solid var(--success);border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem;animation:fadeIn 0.5s}
         .validation-banner i{color:var(--success);font-size:1.3rem}
         .validation-banner span{font-weight:600;font-size:0.9rem}
+        .validation-banner.info{background:rgba(139,92,246,0.1);border-color:var(--accent)}
+        .validation-banner.info i{color:var(--accent)}
         @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
         @media(max-width:768px){
-            .earn-grid,.tasks-grid{grid-template-columns:1fr}
-            .page-title{font-size:1.5rem}
-            .streak-card{flex-direction:column;text-align:center}            .streak-left{flex-direction:column}
+            .earn-grid,.tasks-grid{grid-template-columns:1fr}            .page-title{font-size:1.5rem}
+            .streak-card{flex-direction:column;text-align:center}
+            .streak-left{flex-direction:column}
             .streak-days{justify-content:center}
             .referral-link-box{flex-direction:column}
             .referral-stats{justify-content:center}
@@ -143,9 +145,9 @@
         </div>
 
         <div class="section-title"><i class="fas fa-tasks"></i> Tâches Rapides</div>
-        <div class="tasks-grid" id="tasksContainer">
-            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        <div class="tasks-grid" id="tasksContainer">            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
         </div>
+
         <div class="section-title"><i class="fas fa-user-friends"></i> Parrainage</div>
         <div class="referral-card">
             <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
@@ -192,9 +194,9 @@
 
         function isURL(str) { return str && (str.startsWith('http://') || str.startsWith('https://')); }
 
-        async function init() {
-            const { data: { user: u }, error } = await db.auth.getUser();
-            if (error || !u) { window.location.href = '/index.html'; return; }            user = u;
+        async function init() {            const { data: { user: u }, error } = await db.auth.getUser();
+            if (error || !u) { window.location.href = '/index.html'; return; }
+            user = u;
             await updatePoints();
             await detectTier();
             await checkValidationReturn();
@@ -211,6 +213,7 @@
             } catch(e) { userTier = 1; }
         }
 
+        // === CORRECTIONS 1+2 : Anti-doublon validation cross-page ===
         async function checkValidationReturn() {
             const params = new URLSearchParams(window.location.search);
             const validated = params.get('validated');
@@ -218,32 +221,62 @@
             const banner = document.getElementById('validationBanner');
             const message = document.getElementById('validationMessage');
             try {
+                const today = new Date().toISOString().split('T')[0];
+
                 if (validated === 'vote') {
-                    const today = new Date().toISOString().split('T')[0];
-                    const { data: existing } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                    if (existing && existing.length > 0) {
-                        await creditTaskPoints('Voter pour une création', 'vote', 2);
-                        message.textContent = '✅ Vote validé ! +2 points crédités.';
+                    // CORRECTION 1 : Vérifier task_completions AVANT tout
+                    const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
+                    if (alreadyDone && alreadyDone.length > 0) {
+                        // CORRECTION 2 : Déjà créditée → message info, PAS de crédit
+                        message.textContent = '✅ Vote déjà validé aujourd\'hui.';
+                        banner.className = 'validation-banner info show';
                         banner.style.display = 'flex';
+                    } else {
+                        // Pas encore créditée → vérifier que le vote existe bien
+                        const { data: existing } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                        if (existing && existing.length > 0) {
+                            await creditTaskPoints('Voter pour une création', 'vote', 2);
+                            message.textContent = '✅ Vote validé ! +2 points crédités.';
+                            banner.className = 'validation-banner show';
+                            banner.style.display = 'flex';
+                        }
                     }
                 } else if (validated === 'comment') {
-                    const today = new Date().toISOString().split('T')[0];
-                    const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                    if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
-                        await creditTaskPoints('Commenter une création', 'comment', 2);
-                        message.textContent = '✅ Commentaire validé ! +2 points crédités.';
+                    // CORRECTION 1 : Vérifier task_completions AVANT tout
+                    const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Commenter une création').gte('created_at', today + 'T00:00:00').limit(1);                    if (alreadyDone && alreadyDone.length > 0) {
+                        // CORRECTION 2 : Déjà créditée → message info, PAS de crédit
+                        message.textContent = '✅ Commentaire déjà validé aujourd\'hui.';
+                        banner.className = 'validation-banner info show';
                         banner.style.display = 'flex';
+                    } else {
+                        // Pas encore créditée → vérifier que le commentaire existe bien
+                        const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                        if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
+                            await creditTaskPoints('Commenter une création', 'comment', 2);
+                            message.textContent = '✅ Commentaire validé ! +2 points crédités.';
+                            banner.className = 'validation-banner show';
+                            banner.style.display = 'flex';
+                        }
                     }
                 } else if (validated === 'profile') {
-                    const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
-                    if (userData?.profile_complete) {
-                        await creditTaskPoints('Compléter son profil', 'profile', 3);
-                        message.textContent = '✅ Profil complété ! +3 points crédités.';
+                    const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
+                    if (alreadyDone && alreadyDone.length > 0) {
+                        message.textContent = '✅ Profil déjà validé aujourd\'hui.';
+                        banner.className = 'validation-banner info show';
                         banner.style.display = 'flex';
+                    } else {
+                        const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
+                        if (userData?.profile_complete) {
+                            await creditTaskPoints('Compléter son profil', 'profile', 3);
+                            message.textContent = '✅ Profil complété ! +3 points crédités.';
+                            banner.className = 'validation-banner show';
+                            banner.style.display = 'flex';
+                        }
                     }
                 }
                 window.history.replaceState({}, document.title, window.location.pathname);
-                setTimeout(() => { banner.style.display = 'none'; }, 5000);            } catch(e) { console.error('Validation error:', e); }
+                setTimeout(() => { banner.style.display = 'none'; }, 5000);
+            } catch(e) { console.error('Validation error:', e); }
         }
 
         async function creditTaskPoints(taskName, taskType, points) {
@@ -260,7 +293,6 @@
             ]);
             document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
         }
-
         async function loadDailyBonus() {
             try {
                 const { data: userData } = await db.from('user_data').select('streak,last_login').eq('user_id', user.id).single();
@@ -292,7 +324,8 @@
                     btn.innerHTML = '<i class="fas fa-check"></i> Déjà réclamé';
                     btn.disabled = true;
                 } else {
-                    btn.innerHTML = '<i class="fas fa-gift"></i> +' + totalDaily + ' pts';                }
+                    btn.innerHTML = '<i class="fas fa-gift"></i> +' + totalDaily + ' pts';
+                }
             } catch(e) { console.error('Bonus error:', e); }
         }
 
@@ -308,8 +341,7 @@
                 const today = new Date().toISOString().split('T')[0];
                 if (userData?.last_login === today) { alert('Déjà réclamé aujourd\'hui'); await loadDailyBonus(); return; }
                 const streak = (userData?.streak || 0) + 1;
-                let bonusPts = tierData.bonus_login || 5;
-                let streakPts = tierData.streak_j1_3 || 3;
+                let bonusPts = tierData.bonus_login || 5;                let streakPts = tierData.streak_j1_3 || 3;
                 if (streak >= 7) streakPts = tierData.streak_j7 || 10;
                 else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
                 const totalDaily = bonusPts + streakPts;
@@ -341,7 +373,8 @@
                     const isMaxed = doneCount >= t.limit;
                     const icon = TASK_ICONS[t.type] || 'fa-check';
                     if (t.type === 'badge') {
-                        const badgeDone = genCount >= 5;                        return '<div class="task-card ' + (badgeDone ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
+                        const badgeDone = genCount >= 5;
+                        return '<div class="task-card ' + (badgeDone ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
                             '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
                             '<div class="task-name">' + t.name + '</div>' +
                             '<div class="task-desc">' + (t.desc || '') + '</div>' +
@@ -357,8 +390,7 @@
                         '<div class="task-progress">' + doneCount + '/' + t.limit + ' aujourd\'hui</div>' +
                         '<button class="btn-task ' + (isMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (isMaxed ? 'disabled' : '') + '>' +
                         (isMaxed ? '<i class="fas fa-check"></i> Terminé' : '<i class="fas fa-play"></i> Faire') +
-                        '</button></div>';
-                }).join('');
+                        '</button></div>';                }).join('');
             } catch(e) { console.error('Tasks error:', e); container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement tâches</p></div>'; }
         }
 
@@ -390,7 +422,8 @@
                         await loadTasks();
                     }
                 }
-            } catch(e) {                if (e.name !== 'AbortError') {
+            } catch(e) {
+                if (e.name !== 'AbortError') {
                     await navigator.clipboard.writeText(shareUrl);
                     alert('Lien copié dans le presse-papier ! Partagez-le puis revenez.');
                 }
@@ -406,11 +439,9 @@
                 alert('🏆 Badge débloqué ! +5 points');
                 await loadTasks();
             } else {
-                alert('Il vous faut encore ' + (5 - genCount) + ' génération(s) aujourd\'hui pour débloquer ce badge.');
-            }
+                alert('Il vous faut encore ' + (5 - genCount) + ' génération(s) aujourd\'hui pour débloquer ce badge.');            }
         }
 
-        // === PARRAINAGE SÉCURISÉ : Utilise colonne claimed directement dans referrals ===
         async function loadReferral() {
             try {
                 const { data: refConfig } = await db.from('admin_config').select('value').eq('key','referral_config').single();
@@ -418,28 +449,22 @@
                 if (!config.enabled) { document.querySelector('.referral-card').style.display = 'none'; return; }
                 const link = window.location.origin + '/?ref=' + user.id;
                 document.getElementById('referralLink').value = link;
-
-                // Charger TOUS les referrals avec la colonne claimed
                 const { data: refs } = await db.from('referrals').select('id,referred_id,points,validated,claimed').eq('sponsor_id', user.id);
                 const allRefs = refs || [];
                 const validated = allRefs.filter(function(r) { return r.validated; });
                 document.getElementById('refCount').textContent = validated.length;
-
-                // Points déjà réclamés = ceux où claimed = true
                 const claimedRefs = validated.filter(function(r) { return r.claimed === true; });
                 const claimedPoints = claimedRefs.reduce(function(sum, r) { return sum + (r.points || 0); }, 0);
                 document.getElementById('refPoints').textContent = claimedPoints;
-
-                // Afficher uniquement les validés ET non réclamés
                 const pendingContainer = document.getElementById('pendingReferralsContainer');
                 const pendingRefs = validated.filter(function(r) { return r.claimed !== true; });
-
                 if (pendingRefs.length === 0) {
                     pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> Tous vos parrainages sont confirmés !</div>';
                 } else {
                     let html = '<div class="pending-ref-list">';
                     pendingRefs.forEach(function(ref) {
-                        html += '<div class="pending-ref-card" id="ref-card-' + ref.id + '">' +                            '<div class="pending-ref-info">' +
+                        html += '<div class="pending-ref-card" id="ref-card-' + ref.id + '">' +
+                            '<div class="pending-ref-info">' +
                             '<div class="pending-ref-icon"><i class="fas fa-user-plus"></i></div>' +
                             '<div class="pending-ref-details">' +
                             '<h4>Nouveau filleul</h4>' +
@@ -455,41 +480,32 @@
             } catch(e) { console.error('Referral error:', e); }
         }
 
-        // === ANTI-TRICHE : Verrouillage immédiat + vérification claimed serveur ===
         async function claimReferral(refId, points) {
-            // Verrouillage IMMÉDIAT avant toute requête
             const btn = document.getElementById('btn-ref-' + refId);
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
             }
             try {
-                // Double-vérification serveur : claimed doit être false
                 const { data: refCheck } = await db.from('referrals').select('id,claimed').eq('id', refId).eq('sponsor_id', user.id).single();
-                if (!refCheck || refCheck.claimed === true) {
-                    alert('Ce parrainage a déjà été confirmé.');
+                if (!refCheck || refCheck.claimed === true) {                    alert('Ce parrainage a déjà été confirmé.');
                     await loadReferral();
                     return;
                 }
-
-                // Crédit des points DEPUIS LA SESSION DU SPONSOR
                 const { data: userData } = await db.from('user_data').select('points,total_earned').eq('user_id', user.id).single();
                 const newPoints = (userData?.points || 0) + points;
                 const newEarned = (userData?.total_earned || 0) + points;
-
-                // Marquer claimed = true + créditer points en parallèle
                 await Promise.all([
                     db.from('referrals').update({ claimed: true }).eq('id', refId),
                     db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
                     db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Parrainage:' + refId, amount: points })
                 ]);
-
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
                 alert('✅ Parrainage confirmé ! +' + points + ' points');
             } catch(e) {
                 console.error('Claim referral error:', e);
-                alert('Erreur: ' + e.message);            }
-            // Toujours recharger après succès OU erreur
+                alert('Erreur: ' + e.message);
+            }
             await loadReferral();
         }
 
@@ -521,8 +537,7 @@
                     const actualIndex = adsData.findIndex(function(a) { return a.name === ad.name; });
                     if (isCompleted) {
                         return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +
-                            '<div class="card-header"><div class="card-icon">' + config.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
-                            '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + config.desc + '</p>' +
+                            '<div class="card-header"><div class="card-icon">' + config.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +                            '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + config.desc + '</p>' +
                             '<div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i><p style="margin-top:0.5rem;font-weight:600">Déjà complété</p></div>' +
                             '<button class="btn btn-disabled" disabled><i class="fas fa-check"></i> Terminé</button></div>';
                     }
@@ -537,7 +552,8 @@
             }
         }
 
-        function loadAdScript(container, htmlCode) {            const fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:100vh}</style></head><body>' + htmlCode + '</body></html>';
+        function loadAdScript(container, htmlCode) {
+            const fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:100vh}</style></head><body>' + htmlCode + '</body></html>';
             const blob = new Blob([fullHtml], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const iframe = document.createElement('iframe');
@@ -556,7 +572,6 @@
             const btn = card.querySelector('.btn');
             const hasCode = ad.code && ad.code.length > 0;
             const isSmartlink = isURL(ad.code);
-
             if (isSmartlink) {
                 window.open(ad.code, '_blank', 'noopener,noreferrer');
                 const smartlinkInfo = document.createElement('div');
@@ -570,13 +585,10 @@
                 loadAdScript(adContainer, ad.code);
                 card.insertBefore(adContainer, btn);
             }
-
             btn.disabled = true;
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-disabled');
+            btn.classList.remove('btn-primary');            btn.classList.add('btn-disabled');
             let seconds = 20;
             btn.innerHTML = '<i class="fas fa-clock"></i> Patientez ' + seconds + 's...';
-
             const timer = setInterval(function() {
                 seconds--;
                 if (seconds > 0) {
@@ -586,7 +598,8 @@
                     btn.disabled = false;
                     btn.classList.remove('btn-disabled');
                     btn.classList.add('btn-success');
-                    btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';                    btn.onclick = function() { confirmAd(adIndex); };
+                    btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';
+                    btn.onclick = function() { confirmAd(adIndex); };
                 }
             }, 1000);
         }
@@ -623,7 +636,6 @@
             const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
             document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
         }
-
         init();
     </script>
 </body>
