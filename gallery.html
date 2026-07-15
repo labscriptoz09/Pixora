@@ -316,7 +316,7 @@ async function submitComment() {
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
 }
 
-// === CORRECTIONS 1+2+3 : Requêtes globales sans .in() + cache local ===
+// === CORRECTION : Requêtes individuelles par fichier (RLS compatible) ===
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
     try {
@@ -341,23 +341,33 @@ async function loadGallery() {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
             return;
         }
-        // CORRECTION 1 : Requêtes GLOBALES sans .in() → filtrage JS local
-        var allVotes = await db.from('votes').select('file_name');
-        var allComments = await db.from('comments').select('file_name');
+        // CORRECTION : Requêtes INDIVIDUELLES par fichier (pas de .in(), pas de global select)
         var voteCounts = {};
         var commentCounts = {};
-        (allVotes.data || []).forEach(function(v) { voteCounts[v.file_name] = (voteCounts[v.file_name] || 0) + 1; });
-        (allComments.data || []).forEach(function(c) { commentCounts[c.file_name] = (commentCounts[c.file_name] || 0) + 1; });
-
-        // CORRECTION 2 : Cache local des votes du user connecté
-        var user = await getUser();
         var userVoted = {};
-        if (user) {
-            var myVotes = await db.from('votes').select('file_name').eq('user_id', user.id);
-            (myVotes.data || []).forEach(function(v) { userVoted[v.file_name] = true; });
+        var user = await getUser();
+
+        for (var f = 0; f < validFiles.length; f++) {
+            var fname = validFiles[f].name;
+
+            // Compter votes pour ce fichier
+            var vR = await db.from('votes').select('id').eq('file_name', fname);
+            voteCounts[fname] = (vR.data || []).length;
+
+            // Compter commentaires pour ce fichier
+            var cR = await db.from('comments').select('id').eq('file_name', fname);
+            commentCounts[fname] = (cR.data || []).length;
+
+            // Vérifier si user actuel a voté ce fichier
+            if (user) {
+                var uvR = await db.from('votes').select('id').eq('user_id', user.id).eq('file_name', fname).limit(1);
+                if (uvR.data && uvR.data.length > 0) {
+                    userVoted[fname] = true;
+                }
+            }
         }
 
-        // CORRECTION 3 : Construction cartes avec compteurs + état voté
+        // Construction des cartes avec données correctes
         grid.innerHTML = '';
         validFiles.forEach(function(item) {
             var vc = voteCounts[item.name] || 0;
@@ -380,8 +390,7 @@ async function loadGallery() {
         });
     } catch (err) {
         console.error('Gallery error:', err);
-        grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur chargement galerie</p></div>';
-    }
+        grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur chargement galerie</p></div>';    }
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
