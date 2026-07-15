@@ -19,10 +19,10 @@
         button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
         a{color:inherit;text-decoration:none}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-        .toast-notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5);white-space:nowrap}
+        .toast-notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5);white-space:nowrap;max-width:90vw;text-align:center;justify-content:center}
         .toast-notification.show{transform:translateX(-50%) translateY(0)}
         .toast-notification.success{border-color:var(--success)}.toast-notification.success i{color:var(--success)}
-        .toast-notification.error{border-color:var(--danger)}.toast-notification.error i{color:var(--danger)}
+        .toast-notification.error{border-color:var(--danger);background:rgba(239,68,68,0.15)}.toast-notification.error i{color:var(--danger)}
         .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
         .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
         .header-logo svg{width:28px;height:28px}
@@ -245,19 +245,34 @@ async function dlDirect(btn) {
     if (!img || !img.src) return;
     try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }}
 
-// === CORRECTION : creation_id au lieu de file_name ===
+// === ANTI-TRICHE : 1 VOTE PAR JOUR MAX ===
 async function doVote(fileName, btnElement) {
     var user = await getUser();
     if (!user) { showToast('Connectez-vous pour voter', 'error'); return; }
     
     try {
+        // Vérification 1 : déjà voté AUJOURD'HUI (limite journalière)
+        var today = new Date().toISOString().split('T')[0];
+        var todayVotes = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
+        if (todayVotes.error) throw new Error(todayVotes.error.message);
+        if (todayVotes.data && todayVotes.data.length > 0) {
+            showToast('Vous avez déjà voté aujourd\'hui (1 vote/jour)', 'error');
+            return;
+        }
+        
+        // Vérification 2 : déjà voté CETTE image (doublon)
         var existing = await db.from('votes').select('id').eq('user_id', user.id).eq('creation_id', fileName).limit(1);
         if (existing.error) throw new Error(existing.error.message);
-        if (existing.data && existing.data.length > 0) { showToast('Vous avez déjà voté cette création', 'error'); return; }
+        if (existing.data && existing.data.length > 0) {
+            showToast('Vous avez déjà voté cette création', 'error');
+            return;
+        }
         
+        // Insert vote
         var insertRes = await db.from('votes').insert({ user_id: user.id, creation_id: fileName });
         if (insertRes.error) throw new Error(insertRes.error.message);
         
+        // Crédit 2 points
         var ud = await getUserData();
         var newPts = (ud.points || 0) + 2;
         var newEarned = (ud.total_earned || 0) + 2;
@@ -268,6 +283,7 @@ async function doVote(fileName, btnElement) {
             db.from('task_completions').insert({ user_id: user.id, task_name: 'Voter pour une création', task_type: 'vote', points: 2 })
         ]);
         
+        // Update UI locale
         document.getElementById('header-points').textContent = newPts;
         document.getElementById('menu-points').textContent = newPts;
         document.getElementById('nav-points-badge').textContent = newPts;
@@ -276,8 +292,7 @@ async function doVote(fileName, btnElement) {
             var countSpan = btnElement.querySelector('.action-count');
             if (countSpan) countSpan.textContent = parseInt(countSpan.textContent) + 1;
         }
-        showToast('+2 points pour votre vote !', 'success');
-        setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);
+        showToast('+2 points pour votre vote !', 'success');        setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);
     } catch(e) {
         console.error('Vote error:', e);
         showToast('ERREUR VOTE: ' + e.message, 'error');
@@ -292,13 +307,14 @@ function openCommentModal(fileName) {
     document.getElementById('comment-input').focus();
 }
 function closeCommentModal() { document.getElementById('comment-modal').classList.remove('active'); currentCommentFile = ''; }
-document.getElementById('comment-modal').addEventListener('click', function(e) { if (e.target === this) closeCommentModal(); });document.getElementById('comment-input').addEventListener('input', function() {
+document.getElementById('comment-modal').addEventListener('click', function(e) { if (e.target === this) closeCommentModal(); });
+document.getElementById('comment-input').addEventListener('input', function() {
     var len = this.value.trim().length;
     document.getElementById('comment-char').textContent = len + '/10 min';
     document.getElementById('comment-char').style.color = len >= 10 ? 'var(--success)' : 'var(--dim)';
 });
 
-// === CORRECTION : creation_id au lieu de file_name ===
+// === ANTI-TRICHE : 1 COMMENTAIRE PAR JOUR MAX ===
 async function submitComment() {
     var user = await getUser();
     if (!user) { showToast('Connectez-vous pour commenter', 'error'); return; }
@@ -309,12 +325,23 @@ async function submitComment() {
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
     
     try {
+        // Vérification 1 : déjà commenté AUJOURD'HUI (limite journalière)
+        var today = new Date().toISOString().split('T')[0];
+        var todayComments = await db.from('comments').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
+        if (todayComments.error) throw new Error(todayComments.error.message);
+        if (todayComments.data && todayComments.data.length > 0) {
+            showToast('Vous avez déjà commenté aujourd\'hui (1 commentaire/jour)', 'error');
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
+            return;
+        }
+        
+        // Insert commentaire
         var insertRes = await db.from('comments').insert({ user_id: user.id, creation_id: currentCommentFile, content: content });
         if (insertRes.error) throw new Error(insertRes.error.message);
         
+        // Crédit 2 points
         var ud = await getUserData();
-        var newPts = (ud.points || 0) + 2;
-        var newEarned = (ud.total_earned || 0) + 2;
+        var newPts = (ud.points || 0) + 2;        var newEarned = (ud.total_earned || 0) + 2;
         
         await Promise.all([
             db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),
@@ -322,6 +349,7 @@ async function submitComment() {
             db.from('task_completions').insert({ user_id: user.id, task_name: 'Commenter une création', task_type: 'comment', points: 2 })
         ]);
         
+        // Update UI locale
         document.getElementById('header-points').textContent = newPts;
         document.getElementById('menu-points').textContent = newPts;
         document.getElementById('nav-points-badge').textContent = newPts;
@@ -335,13 +363,13 @@ async function submitComment() {
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
 }
 
-// === CORRECTION : creation_id au lieu de file_name ===
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
     try {
         var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
         if (result.error) throw new Error(result.error.message);
-        if (!result.data || result.data.length === 0) {            grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
+        if (!result.data || result.data.length === 0) {
+            grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
             return;
         }
         var now = Date.now();
@@ -363,7 +391,6 @@ async function loadGallery() {
 
         var user = await getUser();
         var userId = user ? user.id : null;
-
         var promises = validFiles.map(function(item) {
             var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
             var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
@@ -390,7 +417,8 @@ async function loadGallery() {
             card.innerHTML = '<img src="' + s.url + '" alt="Création Pixora" loading="lazy">' +
                 '<div class="result-overlay">' +
                 '<div class="card-actions">' +
-                '<button class="action-btn ' + (s.userVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + s.name + '\',this)" title="Voter">' +                '<i class="fas fa-heart"></i><span class="action-count">' + s.voteCount + '</span></button>' +
+                '<button class="action-btn ' + (s.userVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + s.name + '\',this)" title="Voter">' +
+                '<i class="fas fa-heart"></i><span class="action-count">' + s.voteCount + '</span></button>' +
                 '<button class="action-btn" onclick="event.stopPropagation();openCommentModal(\'' + s.name + '\')" title="Commenter">' +
                 '<i class="fas fa-comment"></i><span class="action-count">' + s.commentCount + '</span></button>' +
                 '</div>' +
@@ -411,5 +439,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadGallery();
 });
 </script>
-</body>
-</html>
+</body></html>
