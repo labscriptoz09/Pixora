@@ -19,14 +19,10 @@
         button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
         a{color:inherit;text-decoration:none}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-
-        /* === MODIFICATION 1 : Toast Notification CSS === */
         .toast-notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5);white-space:nowrap}
         .toast-notification.show{transform:translateX(-50%) translateY(0)}
         .toast-notification.success{border-color:var(--success)}.toast-notification.success i{color:var(--success)}
         .toast-notification.error{border-color:var(--danger)}.toast-notification.error i{color:var(--danger)}
-
-        /* HEADER */
         .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
         .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
         .header-logo svg{width:28px;height:28px}
@@ -43,17 +39,15 @@
         .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);white-space:nowrap}
         .btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
-
-        /* USER MENU */
         .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
         .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
-        .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}        .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;flex-shrink:0}
+        .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}
+        .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;flex-shrink:0}
         .menu-info{flex:1;min-width:0}
         .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
-        .menu-points-bar i{color:var(--gold);font-size:0.75rem}
-        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
+        .menu-points-bar i{color:var(--gold);font-size:0.75rem}        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
         .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
         .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
         .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
@@ -63,8 +57,6 @@
         .menu-item.danger i{color:var(--danger)}
         .menu-item.danger:hover{background:rgba(239,68,68,0.08)}
         .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}
-
-        /* MOBILE NAV */
         .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
         .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}
         .nav-item i{font-size:1.2rem;transition:all 0.3s}
@@ -78,14 +70,10 @@
         .nav-item[data-nav="profile"].active{color:var(--sec)}
         .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
         .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:6px;min-width:16px;text-align:center;font-family:var(--mono)}
-
-        /* MAIN */
         .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
         @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}
         .page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.03em}
         .page-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem}
-
-        /* GRID */
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
         @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem}}
         .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
@@ -94,25 +82,21 @@
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);display:flex;align-items:flex-end;justify-content:space-between;padding:0.6rem;opacity:0;transition:opacity 0.3s}
         .result-card:hover .result-overlay{opacity:1}
         @media(hover:none){.result-overlay{opacity:1}}
-
-        /* === MODIFICATION 3 : Boutons Vote/Commentaire + Compteurs === */
-        .card-actions{display:flex;gap:0.4rem;align-items:center}        .action-btn{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:var(--text);font-size:0.75rem;font-weight:600;transition:all 0.2s;cursor:pointer}
+        .card-actions{display:flex;gap:0.4rem;align-items:center}
+        .action-btn{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:var(--text);font-size:0.75rem;font-weight:600;transition:all 0.2s;cursor:pointer}
         .action-btn:hover{background:var(--prim);border-color:var(--prim);transform:scale(1.05)}
         .action-btn.voted{background:rgba(239,68,68,0.3);border-color:var(--danger);color:#FCA5A5}
         .action-btn i{font-size:0.8rem}
         .action-count{font-family:var(--mono);font-size:0.7rem}
         .dl-btn{width:34px;height:34px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:0.8rem;transition:all 0.2s;cursor:pointer}
         .dl-btn:hover{background:var(--prim);border-color:var(--prim);transform:scale(1.1)}
-
-        /* === MODIFICATION 5 : Modal Commentaire CSS === */
         .comment-modal{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
         .comment-modal.active{display:flex}
         .comment-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:450px;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
         @keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
         .comment-box h3{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}
         .comment-box h3 i{color:var(--prim)}
-        .comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}
-        .comment-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,0.12)}
+        .comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}        .comment-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,0.12)}
         .comment-input::placeholder{color:rgba(255,255,255,0.35)}
         .comment-actions{display:flex;gap:0.6rem;justify-content:flex-end}
         .comment-btn{padding:0.6rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;border:none}
@@ -121,8 +105,6 @@
         .comment-btn.secondary{background:rgba(255,255,255,0.08);color:var(--muted)}
         .comment-btn.secondary:hover{background:rgba(255,255,255,0.12);color:var(--text)}
         .comment-char{font-size:0.7rem;color:var(--dim);margin-bottom:0.5rem;text-align:right;font-family:var(--mono)}
-
-        /* LIGHTBOX */
         .lightbox{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.95);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;flex-direction:column;padding:1rem}
         .lightbox.active{display:flex}
         .lightbox img{max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
@@ -132,8 +114,6 @@
         .lb-btn{padding:0.7rem 1.3rem;background:var(--prim);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s}
         .lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
         .lb-btn.sec{background:rgba(255,255,255,0.1)}
-
-        /* FOOTER */
         .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
         .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}
         .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
@@ -141,12 +121,8 @@
     </style>
 </head>
 <body>
-
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
-
-<!-- === MODIFICATION 2 : Toast Notification HTML === -->
 <div class="toast-notification" id="toast"><i class="fas fa-check-circle"></i><span id="toast-text"></span></div>
-<!-- === MODIFICATION 5 : Modal Commentaire HTML === -->
 <div class="comment-modal" id="comment-modal">
     <div class="comment-box">
         <h3><i class="fas fa-comment-dots"></i> Laisser un commentaire</h3>
@@ -158,8 +134,6 @@
         </div>
     </div>
 </div>
-
-<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
     <div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div>
     <img id="lb-img" src="" alt="Zoom">
@@ -168,39 +142,17 @@
         <button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> Fermer</button>
     </div>
 </div>
-
-<!-- HEADER -->
 <header class="site-header">
     <a href="index.html" class="header-logo">
-        <svg viewBox="0 0 32 32" fill="none">
-            <defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
-            <path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
-            <path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/>
-        </svg>
-        <span class="logo-text">Pixora</span>
-    </a>
+        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
+        <span class="logo-text">Pixora</span>    </a>
     <div class="header-right">
-        <div class="user-stats" id="user-stats">
-            <i class="fas fa-bolt stat-icon"></i>
-            <span class="stat-points" id="header-points">0</span>
-        </div>
-        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)">
-            <span id="avatar-initial">U</span>
-            <div class="avatar-hamburger"><i class="fas fa-bars"></i></div>
-        </div>
+        <div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div>
+        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div>
         <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> Connexion</button>
         <div class="user-menu" id="user-menu">
-            <div class="menu-header">
-                <div class="menu-avatar" id="menu-avatar">U</div>
-                <div class="menu-info">
-                    <div class="menu-name" id="menu-name">Utilisateur</div>
-                    <div class="menu-email" id="menu-email">email@example.com</div>                </div>
-            </div>
-            <div class="menu-points-bar">
-                <i class="fas fa-bolt"></i>
-                <span id="menu-points">0</span>
-                <small>points</small>
-            </div>
+            <div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
+            <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small>points</small></div>
             <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span>Mon profil</span></a>
             <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span>Gagner des points</span></a>
             <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span>Mes achats</span></a>
@@ -209,47 +161,33 @@
         </div>
     </div>
 </header>
-
-<!-- MOBILE NAV -->
 <nav class="nav-mobile">
     <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
     <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
     <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
     <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
 </nav>
-
-<!-- MAIN CONTENT -->
 <main class="main-content">
     <h1 class="page-title">Galerie Publique</h1>
     <p class="page-sub">Les dernières créations de la communauté Pixora</p>
     <div class="results-grid" id="gallery-grid">
-        <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);">
-            <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i>
-            <p>Chargement...</p>
-        </div>
+        <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p>Chargement...</p></div>
     </div>
     <footer class="site-footer">
-        <div class="footer-links">
-            <a href="index.html">Studio</a>
-            <a href="earn.html">Points</a>
-            <a href="shop.html">Boutique</a>
-            <a href="profile.html">Profil</a>
-            <a href="privacy.html">Confidentialité</a>
-        </div>
+        <div class="footer-links"><a href="index.html">Studio</a><a href="earn.html">Points</a><a href="shop.html">Boutique</a><a href="profile.html">Profil</a><a href="privacy.html">Confidentialité</a></div>
         <div>© 2026 Pixora. Tous droits réservés.</div>
     </footer>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
 <script>
-var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var BUCKET = 'pixora-gallery';
 var lbUrl = '';
 var currentCommentFile = '';
 
-// === MODIFICATION 6 : Toast Notification ===
 function showToast(message, type) {
     type = type || 'success';
     var t = document.getElementById('toast');
@@ -257,8 +195,6 @@ function showToast(message, type) {
     t.className = 'toast-notification show ' + type;
     setTimeout(function() { t.classList.remove('show'); }, 3000);
 }
-
-// === USER MENU ===
 function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
 document.addEventListener('click', function(e) {
@@ -266,12 +202,8 @@ document.addEventListener('click', function(e) {
     if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu();
 });
 
-async function doLogout() {
-    await db.auth.signOut(); closeUserMenu(); updateUI();
-    setTimeout(function() { location.reload(); }, 800);
-}
+async function doLogout() { await db.auth.signOut(); closeUserMenu(); updateUI(); setTimeout(function() { location.reload(); }, 800); }
 
-// === USER DATA ===
 async function getUser() { var r = await db.auth.getUser(); return r.data.user; }
 
 async function getUserData() {
@@ -280,7 +212,6 @@ async function getUserData() {
     var d = r.data || { points: 0, streak: 1 }; d.user_id = u.id; return d;
 }
 
-// === UPDATE UI ===
 async function updateUI() {
     var logged = await getUser();
     document.getElementById('user-stats').classList.toggle('show', !!logged);
@@ -292,7 +223,8 @@ async function updateUI() {
         document.getElementById('nav-points-badge').textContent = d.points || 0;
         document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';
         document.getElementById('menu-points').textContent = d.points || 0;
-        var name = logged.user_metadata && logged.user_metadata.name ? logged.user_metadata.name : 'Utilisateur';        var initial = name.charAt(0).toUpperCase();
+        var name = logged.user_metadata && logged.user_metadata.name ? logged.user_metadata.name : 'Utilisateur';
+        var initial = name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent = initial;
         document.getElementById('menu-avatar').textContent = initial;
         document.getElementById('menu-name').textContent = name;
@@ -300,7 +232,6 @@ async function updateUI() {
     }
 }
 
-// === LIGHTBOX ===
 function openLB(url) { lbUrl = url; document.getElementById('lb-img').src = url; document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
 function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; lbUrl = ''; }
 document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
@@ -312,42 +243,35 @@ async function dlLB() {
 
 async function dlDirect(btn) {
     var card = btn.closest('.result-card'); var img = card.querySelector('img');
-    if (!img || !img.src) return;
-    try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }
+    if (!img || !img.src) return;    try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }
 }
 
-// === MODIFICATION 4 : Vote avec vérification doublon ===
 async function doVote(fileName, btnElement) {
     var user = await getUser();
     if (!user) { showToast('Connectez-vous pour voter', 'error'); return; }
-    // Vérification doublon
     var existing = await db.from('votes').select('id').eq('user_id', user.id).eq('file_name', fileName).limit(1);
     if (existing.data && existing.data.length > 0) { showToast('Vous avez déjà voté cette création', 'error'); return; }
-    // Insert vote
     await db.from('votes').insert({ user_id: user.id, file_name: fileName });
-    // Crédit 2 points
     var ud = await getUserData();
     var newPts = (ud.points || 0) + 2;
     var newEarned = (ud.total_earned || 0) + 2;
     await Promise.all([
         db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),
-        db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Vote galerie', amount: 2 })
+        db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Voter pour une création', amount: 2 }),
+        db.from('task_completions').insert({ user_id: user.id, task_name: 'Voter pour une création', task_type: 'vote', points: 2 })
     ]);
-    // Update UI locale
     document.getElementById('header-points').textContent = newPts;
     document.getElementById('menu-points').textContent = newPts;
     document.getElementById('nav-points-badge').textContent = newPts;
-    // Update bouton visuellement
     if (btnElement) {
         btnElement.classList.add('voted');
         var countSpan = btnElement.querySelector('.action-count');
-        if (countSpan) countSpan.textContent = parseInt(countSpan.textContent) + 1;    }
+        if (countSpan) countSpan.textContent = parseInt(countSpan.textContent) + 1;
+    }
     showToast('+2 points pour votre vote !', 'success');
-    // Redirect validation cross-page
     setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);
 }
 
-// === MODIFICATION 5 : Commentaire Modal ===
 function openCommentModal(fileName) {
     currentCommentFile = fileName;
     document.getElementById('comment-input').value = '';
@@ -355,10 +279,7 @@ function openCommentModal(fileName) {
     document.getElementById('comment-modal').classList.add('active');
     document.getElementById('comment-input').focus();
 }
-function closeCommentModal() {
-    document.getElementById('comment-modal').classList.remove('active');
-    currentCommentFile = '';
-}
+function closeCommentModal() { document.getElementById('comment-modal').classList.remove('active'); currentCommentFile = ''; }
 document.getElementById('comment-modal').addEventListener('click', function(e) { if (e.target === this) closeCommentModal(); });
 document.getElementById('comment-input').addEventListener('input', function() {
     var len = this.value.trim().length;
@@ -371,8 +292,7 @@ async function submitComment() {
     if (!user) { showToast('Connectez-vous pour commenter', 'error'); return; }
     var content = document.getElementById('comment-input').value.trim();
     if (content.length < 10) { showToast('Commentaire trop court (min. 10 caractères)', 'error'); return; }
-    var btn = document.getElementById('btn-submit-comment');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+    var btn = document.getElementById('btn-submit-comment');    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
     try {
         await db.from('comments').insert({ user_id: user.id, file_name: currentCommentFile, content: content });
         var ud = await getUserData();
@@ -380,7 +300,8 @@ async function submitComment() {
         var newEarned = (ud.total_earned || 0) + 2;
         await Promise.all([
             db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),
-            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Commentaire galerie', amount: 2 })
+            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Commenter une création', amount: 2 }),
+            db.from('task_completions').insert({ user_id: user.id, task_name: 'Commenter une création', task_type: 'comment', points: 2 })
         ]);
         document.getElementById('header-points').textContent = newPts;
         document.getElementById('menu-points').textContent = newPts;
@@ -390,11 +311,12 @@ async function submitComment() {
         setTimeout(function() { window.location.href = 'earn.html?validated=comment'; }, 1500);
     } catch(e) {
         console.error('Comment error:', e);
-        showToast('Erreur: ' + e.message, 'error');    }
+        showToast('Erreur: ' + e.message, 'error');
+    }
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
 }
 
-// === MODIFICATION 3 : Load Gallery avec boutons Vote/Commentaire + compteurs ===
+// === CORRECTIONS 1+2+3 : Requêtes globales sans .in() + cache local ===
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
     try {
@@ -419,27 +341,28 @@ async function loadGallery() {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création récente.<br>Soyez le premier à générer !</p></div>';
             return;
         }
+        // CORRECTION 1 : Requêtes GLOBALES sans .in() → filtrage JS local
+        var allVotes = await db.from('votes').select('file_name');
+        var allComments = await db.from('comments').select('file_name');
+        var voteCounts = {};
+        var commentCounts = {};
+        (allVotes.data || []).forEach(function(v) { voteCounts[v.file_name] = (voteCounts[v.file_name] || 0) + 1; });
+        (allComments.data || []).forEach(function(c) { commentCounts[c.file_name] = (commentCounts[c.file_name] || 0) + 1; });
 
-        // Charger compteurs votes et comments pour tous les fichiers valides
-        var fileNames = validFiles.map(function(f) { return f.name; });
-        var votesR = await db.from('votes').select('file_name').in('file_name', fileNames);
-        var commentsR = await db.from('comments').select('file_name').in('file_name', fileNames);
-        var voteCounts = {}; var commentCounts = {};
-        (votesR.data || []).forEach(function(v) { voteCounts[v.file_name] = (voteCounts[v.file_name] || 0) + 1; });
-        (commentsR.data || []).forEach(function(c) { commentCounts[c.file_name] = (commentCounts[c.file_name] || 0) + 1; });
-
-        // Vérifier si l'utilisateur actuel a déjà voté
+        // CORRECTION 2 : Cache local des votes du user connecté
         var user = await getUser();
         var userVoted = {};
         if (user) {
-            var myVotes = await db.from('votes').select('file_name').eq('user_id', user.id).in('file_name', fileNames);
+            var myVotes = await db.from('votes').select('file_name').eq('user_id', user.id);
             (myVotes.data || []).forEach(function(v) { userVoted[v.file_name] = true; });
         }
 
+        // CORRECTION 3 : Construction cartes avec compteurs + état voté
         grid.innerHTML = '';
         validFiles.forEach(function(item) {
             var vc = voteCounts[item.name] || 0;
-            var cc = commentCounts[item.name] || 0;            var isVoted = userVoted[item.name] || false;
+            var cc = commentCounts[item.name] || 0;
+            var isVoted = userVoted[item.name] || false;
             var card = document.createElement('div');
             card.className = 'result-card';
             card.innerHTML = '<img src="' + item.url + '" alt="Création Pixora" loading="lazy">' +
@@ -461,7 +384,6 @@ async function loadGallery() {
     }
 }
 
-// === INIT ===
 document.addEventListener('DOMContentLoaded', async function() {
     await updateUI();
     await loadGallery();
