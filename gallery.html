@@ -192,9 +192,34 @@ var BUCKET = 'pixora-gallery';
 var lbUrl = '';
 var currentCommentFile = '';
 
+// =============================================
+// MODIFICATION #4 : LIMITES DYNAMIQUES DEPUIS ADMIN
+// =============================================var VOTE_LIMIT = 1;
+var COMMENT_LIMIT = 1;
+
+async function loadTaskLimits() {
+    try {
+        var result = await db.from('admin_config').select('value').eq('key', 'internal_tasks').single();
+        if (result.data && result.data.value) {
+            var tasks = result.data.value;
+            for (var i = 0; i < tasks.length; i++) {
+                if (tasks[i].type === 'vote' && tasks[i].active) {
+                    VOTE_LIMIT = tasks[i].limit || 1;
+                }
+                if (tasks[i].type === 'comment' && tasks[i].active) {
+                    COMMENT_LIMIT = tasks[i].limit || 1;
+                }
+            }
+        }
+    } catch(e) {
+        console.error('Load task limits error:', e);
+    }
+}
+
 function showToast(message, type) {
     type = type || 'success';
-    var t = document.getElementById('toast');    var icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+    var t = document.getElementById('toast');
+    var icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
     t.innerHTML = '<i class="fas ' + icon + '"></i><span id="toast-text">' + message + '</span>';
     t.className = 'toast-notification show ' + type;
     setTimeout(function() { t.classList.remove('show'); }, 5000);
@@ -218,8 +243,7 @@ async function getUserData() {
 async function updateUI() {
     var logged = await getUser();
     document.getElementById('user-stats').classList.toggle('show', !!logged);
-    document.getElementById('user-avatar').classList.toggle('show', !!logged);
-    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
+    document.getElementById('user-avatar').classList.toggle('show', !!logged);    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
     if (logged) {
         var d = await getUserData();
         document.getElementById('header-points').textContent = d.points || 0;
@@ -235,7 +259,6 @@ async function updateUI() {
     }
 }
 
-// === LIGHTBOX : display direct (pas de classList) ===
 function openLB(url) {
     lbUrl = url;
     document.getElementById('lb-img').src = url;
@@ -243,7 +266,8 @@ function openLB(url) {
     document.body.style.overflow = 'hidden';
 }
 function closeLB() {
-    document.getElementById('lightbox').style.display = 'none';    document.body.style.overflow = '';
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = '';
     lbUrl = '';
 }
 document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
@@ -259,19 +283,27 @@ async function dlDirect(btn) {
     try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }
 }
 
-// === 1 VOTE/JOUR MAX + creation_id ===
+// =============================================
+// MODIFICATION #5 : LIMITE DYNAMIQUE VOTE
+// =============================================
 async function doVote(fileName, btnElement) {
     var user = await getUser();
     if (!user) { showToast('Connectez-vous pour voter', 'error'); return; }
     try {
         var startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
-        var todayVotes = await db.from('votes').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfDay.toISOString());
-        if (todayVotes.error) throw new Error(todayVotes.error.message);
-        if (todayVotes.count > 0) { showToast('Vous avez déjà voté aujourd\'hui (1 vote/jour)', 'error'); return; }
+        var todayVotes = await db.from('votes').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfDay.toISOString());        if (todayVotes.error) throw new Error(todayVotes.error.message);
+        // MODIFICATION #5 : Utiliser VOTE_LIMIT dynamique au lieu de > 0
+        if (todayVotes.count >= VOTE_LIMIT) {
+            showToast('Vous avez déjà voté aujourd\'hui (' + VOTE_LIMIT + ' vote' + (VOTE_LIMIT > 1 ? 's' : '') + '/jour)', 'error');
+            return;
+        }
         var existing = await db.from('votes').select('id').eq('user_id', user.id).eq('creation_id', fileName).limit(1);
         if (existing.error) throw new Error(existing.error.message);
-        if (existing.data && existing.data.length > 0) { showToast('Vous avez déjà voté cette création', 'error'); return; }
+        if (existing.data && existing.data.length > 0) {
+            showToast('Vous avez déjà voté cette création', 'error');
+            return;
+        }
         var insertRes = await db.from('votes').insert({ user_id: user.id, creation_id: fileName });
         if (insertRes.error) throw new Error(insertRes.error.message);
         var ud = await getUserData();
@@ -292,12 +324,12 @@ async function doVote(fileName, btnElement) {
         }
         showToast('+2 points pour votre vote !', 'success');
         setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);
-    } catch(e) {        console.error('Vote error:', e);
+    } catch(e) {
+        console.error('Vote error:', e);
         showToast('ERREUR VOTE: ' + e.message, 'error');
     }
 }
 
-// === COMMENT MODAL : display direct (pas de classList) ===
 function openCommentModal(fileName) {
     currentCommentFile = fileName;
     document.getElementById('comment-input').value = '';
@@ -309,14 +341,15 @@ function closeCommentModal() {
     document.getElementById('comment-modal').style.display = 'none';
     currentCommentFile = '';
 }
-document.getElementById('comment-modal').addEventListener('click', function(e) { if (e.target === this) closeCommentModal(); });
-document.getElementById('comment-input').addEventListener('input', function() {
+document.getElementById('comment-modal').addEventListener('click', function(e) { if (e.target === this) closeCommentModal(); });document.getElementById('comment-input').addEventListener('input', function() {
     var len = this.value.trim().length;
     document.getElementById('comment-char').textContent = len + '/10 min';
     document.getElementById('comment-char').style.color = len >= 10 ? 'var(--success)' : 'var(--dim)';
 });
 
-// === 1 COMMENTAIRE/JOUR MAX + creation_id ===
+// =============================================
+// MODIFICATION #6 : LIMITE DYNAMIQUE COMMENTAIRE
+// =============================================
 async function submitComment() {
     var user = await getUser();
     if (!user) { showToast('Connectez-vous pour commenter', 'error'); return; }
@@ -329,7 +362,12 @@ async function submitComment() {
         startOfDay.setHours(0, 0, 0, 0);
         var todayComments = await db.from('comments').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfDay.toISOString());
         if (todayComments.error) throw new Error(todayComments.error.message);
-        if (todayComments.count > 0) { showToast('Vous avez déjà commenté aujourd\'hui (1 commentaire/jour)', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer'; return; }
+        // MODIFICATION #6 : Utiliser COMMENT_LIMIT dynamique au lieu de > 0
+        if (todayComments.count >= COMMENT_LIMIT) {
+            showToast('Vous avez déjà commenté aujourd\'hui (' + COMMENT_LIMIT + ' commentaire' + (COMMENT_LIMIT > 1 ? 's' : '') + '/jour)', 'error');
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
+            return;
+        }
         var insertRes = await db.from('comments').insert({ user_id: user.id, creation_id: currentCommentFile, content: content });
         if (insertRes.error) throw new Error(insertRes.error.message);
         var ud = await getUserData();
@@ -341,7 +379,8 @@ async function submitComment() {
             db.from('task_completions').insert({ user_id: user.id, task_name: 'Commenter une création', task_type: 'comment', points: 2 })
         ]);
         document.getElementById('header-points').textContent = newPts;
-        document.getElementById('menu-points').textContent = newPts;        document.getElementById('nav-points-badge').textContent = newPts;
+        document.getElementById('menu-points').textContent = newPts;
+        document.getElementById('nav-points-badge').textContent = newPts;
         closeCommentModal();
         showToast('+2 points pour votre commentaire !', 'success');
         setTimeout(function() { window.location.href = 'earn.html?validated=comment'; }, 1500);
@@ -351,7 +390,6 @@ async function submitComment() {
     }
     btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
 }
-
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
     try {
@@ -390,7 +428,8 @@ async function loadGallery() {
                 return { name: item.name, url: item.url, voteCount: 0, commentCount: 0, userVoted: false };
             });
         });
-        var stats = await Promise.all(promises);        grid.innerHTML = '';
+        var stats = await Promise.all(promises);
+        grid.innerHTML = '';
         stats.forEach(function(s) {
             var card = document.createElement('div');
             card.className = 'result-card';
@@ -400,8 +439,7 @@ async function loadGallery() {
                 '<button class="action-btn ' + (s.userVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + s.name + '\',this)" title="Voter">' +
                 '<i class="fas fa-heart"></i><span class="action-count">' + s.voteCount + '</span></button>' +
                 '<button class="action-btn" onclick="event.stopPropagation();openCommentModal(\'' + s.name + '\')" title="Commenter">' +
-                '<i class="fas fa-comment"></i><span class="action-count">' + s.commentCount + '</span></button>' +
-                '</div>' +
+                '<i class="fas fa-comment"></i><span class="action-count">' + s.commentCount + '</span></button>' +                '</div>' +
                 '<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>' +
                 '</div>';
             card.onclick = function() { openLB(s.url); };
@@ -415,6 +453,8 @@ async function loadGallery() {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
+    // MODIFICATION #4 : Charger limites AVANT tout
+    await loadTaskLimits();
     await updateUI();
     await loadGallery();
 });
