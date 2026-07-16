@@ -366,21 +366,35 @@ async function generateWithFallback(prompt, type) {
     return { url: getPollinationsUrl(prompt, type), provider: 'Pollinations' };
 }
 
+// =============================================
+// BADGE AUTOMATIQUE CRÉATEUR ACTIF (CORRIGÉ v3.1)
+// =============================================
 async function checkAndGrantBadge(userId) {
+    if (!userId || typeof userId !== 'string') {
+        console.error('Invalid userId for badge check:', userId);
+        return;
+    }
     try {
         var today = new Date().toISOString().split('T')[0];
+
+        // Compter les générations du jour (transactions spent)
         var txResult = await db.from('transactions')
-            .select('id')
+            .select('id, title')
             .eq('user_id', userId)
             .eq('type', 'spent')
             .gte('created_at', today + 'T00:00:00');
+
         var genCount = 0;
         if (txResult.data) {
             for (var i = 0; i < txResult.data.length; i++) {
-                genCount++;
-            }
-        }
+                if (txResult.data[i].title && txResult.data[i].title.indexOf('Génération') === 0) {
+                    genCount++;
+                }
+            }        }
+
         if (genCount < 5) return;
+
+        // Vérifier si badge déjà obtenu aujourd'hui
         var badgeResult = await db.from('task_completions')
             .select('id')
             .eq('user_id', userId)
@@ -388,25 +402,44 @@ async function checkAndGrantBadge(userId) {
             .eq('task_name', 'Badge Créateur Actif')
             .gte('completed_at', today + 'T00:00:00')
             .limit(1);
+
         if (badgeResult.data && badgeResult.data.length > 0) return;
+
+        // Insérer le badge
         await db.from('task_completions').insert({
-            user_id: userId,            task_type: 'badge',
+            user_id: userId,
+            task_type: 'badge',
             task_name: 'Badge Créateur Actif',
             completed_at: new Date().toISOString()
         });
+
+        // Créditer 5 points
         var ud = await db.from('user_data').select('points, total_earned').eq('user_id', userId).single();
         var curPts = (ud.data && ud.data.points) || 0;
         var curEarned = (ud.data && ud.data.total_earned) || 0;
-        await db.from('user_data').update({ points: curPts + 5, total_earned: curEarned + 5 }).eq('user_id', userId);
-        await db.from('transactions').insert({ user_id: userId, type: 'earned', title: '🏆 Badge Créateur Actif', amount: 5 });
+
+        await db.from('user_data').update({
+            points: curPts + 5,
+            total_earned: curEarned + 5
+        }).eq('user_id', userId);
+
+        await db.from('transactions').insert({
+            user_id: userId,
+            type: 'earned',
+            title: '🏆 Badge Créateur Actif',
+            amount: 5
+        });
+
         notify('🏆 Badge Créateur Actif débloqué ! +5 points', 'success');
         updateUI();
-    } catch(e) { console.error('Badge check error:', e); }
+    } catch(e) {
+        console.error('Badge check error:', e);
+        notify('❌ Erreur badge: ' + e.message, 'error');
+    }
 }
 
 async function loadDynamicConfig() {
-    try { var r = await db.from('admin_config').select('*').eq('key', 'tiers').single(); if (r.data && r.data.value) CONFIG_TIERS = r.data.value; } catch (err) { console.error('Config error:', err); }
-    updateCostUI();
+    try { var r = await db.from('admin_config').select('*').eq('key', 'tiers').single(); if (r.data && r.data.value) CONFIG_TIERS = r.data.value; } catch (err) { console.error('Config error:', err); }    updateCostUI();
 }
 function updateCostUI() {
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
@@ -439,7 +472,8 @@ async function validatePendingReferral(userId) {
         for (var i = 0; i < refs.length; i++) {
             await db.from('referrals').update({ validated: true }).eq('id', refs[i].id);
         }
-    } catch(e) { console.error('Validate referral error:', e); }}
+    } catch(e) { console.error('Validate referral error:', e); }
+}
 async function ensureUserData(userId) {
     try {
         var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single();
@@ -454,8 +488,7 @@ async function grantSignupBonus(userId) {
         var bonus = (bonusR.data && bonusR.data.value !== undefined) ? bonusR.data.value : 15;
         if (bonus <= 0) return;
         var existR = await db.from('transactions').select('id').eq('user_id', userId).eq('title', 'Bonus inscription').single();
-        if (existR.data) return;
-        var ud = await db.from('user_data').select('points,total_earned').eq('user_id', userId).single();
+        if (existR.data) return;        var ud = await db.from('user_data').select('points,total_earned').eq('user_id', userId).single();
         var curPts = (ud.data && ud.data.points) || 0;
         var curEarned = (ud.data && ud.data.total_earned) || 0;
         await db.from('user_data').update({ points: curPts + bonus, total_earned: curEarned + bonus }).eq('user_id', userId);
@@ -488,7 +521,8 @@ async function doLogin(e) {
     var btn = document.getElementById('btn-login');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
     try {
-        var r = await db.auth.signInWithPassword({ email: document.getElementById('l-email').value.trim(), password: document.getElementById('l-pw').value });        if (r.error) throw r.error;
+        var r = await db.auth.signInWithPassword({ email: document.getElementById('l-email').value.trim(), password: document.getElementById('l-pw').value });
+        if (r.error) throw r.error;
         closeAuth(); await loadUserTier(); updateUI(); notify('✅ Bienvenue !', 'success');
     } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; }
 }
@@ -503,8 +537,7 @@ async function doRegister(e) {
         var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } });
         if (r.error) throw r.error;
         var signInR = await db.auth.signInWithPassword({ email: emailVal, password: pwVal });
-        if (signInR.error) throw signInR.error;
-        var newUserId = signInR.data.user ? signInR.data.user.id : null;
+        if (signInR.error) throw signInR.error;        var newUserId = signInR.data.user ? signInR.data.user.id : null;
         if (newUserId) {
             await ensureUserData(newUserId);
             await grantSignupBonus(newUserId);
@@ -537,7 +570,8 @@ async function saveTransaction(type, title, amount) {
     var d = await getUserData();
     var up = { points: d.points + amount };
     if (amount > 0) up.total_earned = (d.total_earned || 0) + amount;
-    if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1;    await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' });
+    if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1;
+    await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' });
 }
 function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
@@ -552,8 +586,7 @@ async function doLogout() {
 async function updateUI() {
     var logged = await isLogged(); var user = await getUser();
     document.getElementById('user-stats').classList.toggle('show', logged);
-    document.getElementById('user-avatar').classList.toggle('show', logged);
-    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
+    document.getElementById('user-avatar').classList.toggle('show', logged);    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
     var qs = document.getElementById('quick-stats');
     if (logged) { qs.classList.add('show'); } else { qs.classList.remove('show'); }
     if (logged) {
@@ -586,7 +619,8 @@ function openLB(url, type) {
 function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }
 document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
 async function dlLB() {
-    if (!lbUrl) return;    try { var r = await fetch(lbUrl); var b = await r.blob(); var ext = lbType === 'video' ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(lbUrl, '_blank'); }
+    if (!lbUrl) return;
+    try { var r = await fetch(lbUrl); var b = await r.blob(); var ext = lbType === 'video' ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(lbUrl, '_blank'); }
 }
 async function dlDirect(btn) {
     var card = btn.closest('.result-card'); var media = card.querySelector('img') || card.querySelector('video');
@@ -601,8 +635,7 @@ async function loadStudio() {
     var grid = document.getElementById('results-grid');
     try {
         var result = await db.storage.from(BUCKET).list('', { limit: 20, sortBy: { column: 'created_at', order: 'desc' } });
-        if (!result.data || result.data.length === 0) return;
-        var now = Date.now(); grid.innerHTML = '';
+        if (!result.data || result.data.length === 0) return;        var now = Date.now(); grid.innerHTML = '';
         result.data.forEach(function(file) {
             var createdAt = new Date(file.created_at).getTime();
             if ((now - createdAt) < 3600000) {
@@ -635,7 +668,8 @@ async function uploadToStorage(mediaUrl, type) {
 }
 
 async function generate() {
-    var p = document.getElementById('prompt').value.trim();    if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
+    var p = document.getElementById('prompt').value.trim();
+    if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
     var logged = await isLogged();
     if (!logged) { openAuth(); return; }
     await loadUserTier();
@@ -650,8 +684,7 @@ async function generate() {
     if (curType === 'video') {
         card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération vidéo...</div></div><video muted loop playsinline style="opacity:0;transition:opacity 0.3s"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
     } else {
-        card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération IA...</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
-    }
+        card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération IA...</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';    }
     grid.insertBefore(card, grid.firstChild);
     var st = Date.now();
     var tmr = document.getElementById(tmrId);
@@ -684,11 +717,15 @@ async function generate() {
                 media.onmouseleave = function() { media.pause(); media.currentTime = 0; };
             }
             card.onclick = function() { openLB(url, curType); };
-            uploadToStorage(url, curType);            saveTransaction('spent', 'Génération ' + curType, -cost).then(function() {
+            uploadToStorage(url, curType);
+            saveTransaction('spent', 'Génération ' + curType, -cost).then(function() {
                 updateUI();
-                if (currentUser) checkAndGrantBadge(currentUser.id);
+                // Vérification badge après génération réussie
+                if (currentUser && currentUser.id) {
+                    checkAndGrantBadge(currentUser.id);
+                }
             });
-            if (currentUser) {
+            if (currentUser && currentUser.id) {
                 validatePendingReferral(currentUser.id);
                 getUserData().then(function(freshData) {
                     var newGen = (freshData.total_generated || 0) + 1;
@@ -696,8 +733,7 @@ async function generate() {
                 });
             }
             notify('✅ Générée en ' + elapsed + 's ! (-' + cost + ' pts)', 'success');
-            setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);
-        }
+            setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);        }
 
         if (curType === 'video') {
             media.onloadeddata = onLoad;
