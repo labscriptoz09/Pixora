@@ -186,6 +186,7 @@
 </div>
 
 <main class="main">
+    <!-- DASHBOARD -->
     <div class="admin-section active" id="sec-dashboard">
         <div class="page-header"><div><div class="page-title">Centre de Commandement</div><div class="page-subtitle">Vue d'ensemble en temps réel de Pixora</div></div><button class="btn btn-outline btn-sm" onclick="loadDashboard()"><i class="fas fa-sync"></i> Actualiser</button></div>
         <div class="stats-grid">
@@ -193,11 +194,12 @@
             <div class="stat-card green"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div class="stat-value" id="dashActiveToday">-</div><div class="stat-label">Actifs Aujourd'hui</div></div>
             <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-value" id="dashPointsDistributed">-</div><div class="stat-label">Points Distribués</div></div>
             <div class="stat-card pink"><div class="stat-icon"><i class="fas fa-image"></i></div><div class="stat-value" id="dashGenerations">-</div><div class="stat-label">Générations Totales</div></div>
-            <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-ad"></i></div><div class="stat-value" id="dashActiveAds">-</div><div class="stat-label">Pubs Actives</div></div>
-            <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>        </div>
+            <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-ad"></i></div><div class="stat-value" id="dashActiveAds">-</div><div class="stat-label">Pubs Actives</div></div>            <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>
+        </div>
         <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-stream"></i> Activité Récente</div></div><div class="table-container"><table><thead><tr><th>Type</th><th>Détail</th><th>User</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentActivity"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- MODÈLES IMAGE (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-models-image">
         <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="modelImageForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Image</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
@@ -211,7 +213,8 @@
     </div>
 
     <!-- ============================================= -->
-    <!-- MODÈLES VIDÉO — FORMULAIRE ÉTENDU (V6.1) -->
+    <!-- MODÈLES VIDÉO — V6.1 AVEC CHAMPS ÉTENDUS     -->
+    <!-- MODIFICATIONS #1 et #2 : Formulaire + Tableau -->
     <!-- ============================================= -->
     <div class="admin-section" id="sec-models-video">
         <div class="page-header"><div><div class="page-title">Modèles Vidéo</div><div class="page-subtitle">Gérer les générateurs vidéo IA (résolution, durée, fps, mode)</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('video')"><i class="fas fa-plus"></i> Ajouter</button></div>
@@ -226,276 +229,23 @@
                 <div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="vidModelCost" value="18"></div>
                 <div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="vidModelOrder" value="0"></div>
             </div>
-            <!-- NOUVEAUX CHAMPS VIDÉO -->
+            <!-- NOUVEAUX CHAMPS VIDÉO (MODIFICATION #1) -->
             <div class="form-row">
                 <div class="form-group"><label class="form-label">Résolution</label><select class="form-select" id="vidModelResolution"><option value="512x320">512×320 (Rapide)</option><option value="720x480">720×480 (Standard)</option><option value="1280x720">1280×720 (HD)</option></select></div>
                 <div class="form-group"><label class="form-label">Nombre de frames</label><input type="number" class="form-input" id="vidModelFrames" value="81" min="16" max="241"></div>
                 <div class="form-group"><label class="form-label">FPS</label><select class="form-select" id="vidModelFps"><option value="16">16 fps (Standard)</option><option value="24">24 fps (Cinéma)</option><option value="30">30 fps (Fluide)</option></select></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label class="form-label">Mode</label><select class="form-select" idLéonard, **SQL validé. Étape 2 : Admin.html complet livré.** ✅
-
-Voici le fichier **COMPLET** avec les 6 modifications vidéo intégrées. Remplace ton `admin.html` par celui-ci.
-
-### 📋 RÉCAPITULATIF DES 6 MODIFICATIONS
-
-| # | Modification | Détail |
-|---|-------------|--------|
-| 1 | Formulaire Vidéo étendu | +Résolution, +Frames, +FPS, +Mode T2V/I2V, +Toggle Img2Vid |
-| 2 | Tableau Vidéo étendu | 5 nouvelles colonnes affichées |
-| 3 | `openModelForm('video')` | Initialise les 5 nouveaux champs || 4 | `editModel('video')` | Pré-remplit depuis la DB |
-| 5 | `saveModel('video')` | Sauvegarde les 5 champs dans `generator_models` |
-| 6 | `loadModels('video')` | Affiche les 5 champs dans le tableau |
-
-### ⛔ RIEN D'AUTRE TOUCHÉ
-Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
-
----
-
-```html
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixora Admin | Centre de Commandement</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root{--bg:#050508;--surface:#0f0f14;--surface2:#16161e;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--info:#3B82F6;--warn:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;overflow:hidden}
-        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-        .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:100}
-        .sidebar-logo{padding:1.2rem 1.5rem;display:flex;align-items:center;gap:0.7rem;border-bottom:1px solid var(--border)}
-        .sidebar-logo svg{width:32px;height:32px}
-        .sidebar-logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .sidebar-nav{flex:1;overflow-y:auto;padding:0.8rem}
-        .nav-section{margin-bottom:0.5rem}
-        .nav-section-title{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);padding:0.5rem 0.8rem;margin-bottom:0.2rem}
-        .nav-item{display:flex;align-items:center;gap:0.7rem;padding:0.65rem 0.8rem;border-radius:10px;font-size:0.85rem;color:var(--muted);cursor:pointer;transition:all 0.2s;position:relative;border:none;background:none;width:100%;text-align:left}
-        .nav-item:hover{background:rgba(139,92,246,0.08);color:var(--text)}
-        .nav-item.active{background:rgba(139,92,246,0.15);color:var(--accent);border-left:3px solid var(--accent)}
-        .nav-item i{width:20px;text-align:center;font-size:0.9rem}
-        .nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:0.6rem;padding:0.15rem 0.5rem;border-radius:10px;font-weight:700;font-family:var(--mono)}
-        .sidebar-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--dim)}
-        .main{margin-left:260px;flex:1;height:100vh;overflow-y:auto;padding:2rem}
-        .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
-        .page-title{font-size:1.6rem;font-weight:800}
-        .page-subtitle{font-size:0.85rem;color:var(--muted);margin-top:0.2rem}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
-        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.3rem;position:relative;overflow:hidden}
-        .stat-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
-        .stat-card.purple::before{background:var(--accent)}.stat-card.green::before{background:var(--success)}.stat-card.gold::before{background:var(--gold)}.stat-card.pink::before{background:var(--accent2)}.stat-card.blue::before{background:var(--info)}.stat-card.warn::before{background:var(--warn)}
-        .stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:0.8rem}
-        .stat-card.purple .stat-icon{background:rgba(139,92,246,0.15);color:var(--accent)}
-        .stat-card.green .stat-icon{background:rgba(16,185,129,0.15);color:var(--success)}
-        .stat-card.gold .stat-icon{background:rgba(251,191,36,0.15);color:var(--gold)}
-        .stat-card.pink .stat-icon{background:rgba(236,72,153,0.15);color:var(--accent2)}        .stat-card.blue .stat-icon{background:rgba(59,130,246,0.15);color:var(--info)}
-        .stat-card.warn .stat-icon{background:rgba(249,115,22,0.15);color:var(--warn)}
-        .stat-value{font-size:2rem;font-weight:800;font-family:var(--mono);line-height:1}
-        .stat-label{color:var(--muted);font-size:0.7rem;margin-top:0.4rem;text-transform:uppercase;letter-spacing:0.5px}
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
-        .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-        .card-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
-        .card-title i{color:var(--accent)}
-        .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem}
-        .form-group{display:flex;flex-direction:column;gap:0.3rem}
-        .form-label{font-size:0.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
-        .form-input,.form-select,.form-textarea{width:100%;padding:0.7rem 0.9rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:0.85rem;outline:none;transition:border-color 0.2s}
-        .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
-        .form-textarea{min-height:80px;resize:vertical;font-family:var(--mono);font-size:0.8rem}
-        .form-select{cursor:pointer}
-        .btn{padding:0.6rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem;border:none}
-        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
-        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.3)}
-        .btn-success{background:var(--success);color:white}
-        .btn-success:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
-        .btn-danger{background:var(--danger);color:white}
-        .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
-        .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-        .btn-sm{padding:0.4rem 0.8rem;font-size:0.75rem;border-radius:8px}
-        .btn-test{background:var(--info);color:white}
-        .btn-test:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
-        .btn-test.testing{opacity:0.7;cursor:wait}
-        .table-container{overflow-x:auto}
-        table{width:100%;border-collapse:collapse;font-size:0.85rem}
-        th{text-align:left;padding:0.8rem;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border)}
-        td{padding:0.8rem;border-bottom:1px solid var(--border);color:var(--text)}
-        tr:last-child td{border-bottom:none}
-        tr:hover td{background:rgba(255,255,255,0.02)}
-        .action-btns{display:flex;gap:0.3rem;justify-content:flex-end}
-        .toggle{position:relative;width:40px;height:22px;cursor:pointer;display:inline-block}
-        .toggle input{opacity:0;width:0;height:0}
-        .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:0.3s}
-        .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s}
-        .toggle input:checked+.toggle-slider{background:var(--success)}
-        .toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
-        .notif-panel{position:fixed;top:0;right:-400px;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:200;transition:right 0.3s ease;display:flex;flex-direction:column}
-        .notif-panel.open{right:0}
-        .notif-header{padding:1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-        .notif-list{flex:1;overflow-y:auto;padding:0.5rem}
-        .notif-item{padding:0.8rem;border-radius:10px;margin-bottom:0.4rem;background:var(--bg);border:1px solid var(--border);font-size:0.8rem;cursor:pointer;transition:all 0.2s}
-        .notif-item:hover{border-color:var(--accent)}
-        .notif-item.unread{border-left:3px solid var(--accent)}
-        .notif-time{font-size:0.65rem;color:var(--dim);margin-top:0.3rem;font-family:var(--mono)}
-        .notif-type{font-weight:600;margin-bottom:0.2rem}
-        .notif-type.user{color:var(--accent)}.notif-type.payment{color:var(--gold)}.notif-type.error{color:var(--danger)}.notif-type.gen{color:var(--success)}.notif-type.config{color:var(--info)}        .login-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
-        .login-overlay.hidden{display:none!important}
-        .login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;text-align:center}
-        .login-box h2{margin-bottom:0.5rem;font-weight:800}
-        .login-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem}
-        .login-error{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:var(--danger);padding:0.6rem;border-radius:8px;font-size:0.8rem;margin-bottom:1rem;display:none}
-        .admin-section{display:none}.admin-section.active{display:block;animation:fadeIn 0.3s}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .api-test-result{margin-top:0.5rem;padding:0.6rem;border-radius:8px;font-size:0.8rem;font-family:var(--mono);display:none;word-break:break-all}
-        .api-test-result.success{background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
-        .api-test-result.error{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
-        .inline-points-edit{display:flex;gap:0.3rem;align-items:center}
-        .inline-points-edit input{width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--gold)}
-        .retention-card{border-left:4px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(251,191,36,0.03) 100%)}
-        .retention-card .card-title i{color:var(--gold)}
-        .tasks-card{border-left:4px solid var(--info);background:linear-gradient(135deg,var(--surface) 0%,rgba(59,130,246,0.03) 100%)}
-        .tasks-card .card-title i{color:var(--info)}
-        .referral-card{border-left:4px solid var(--accent2);background:linear-gradient(135deg,var(--surface) 0%,rgba(236,72,153,0.03) 100%)}
-        .referral-card .card-title i{color:var(--accent2)}
-        .shop-points-card{border-left:4px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(251,191,36,0.03) 100%)}
-        .shop-points-card .card-title i{color:var(--gold)}
-        .task-type-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}
-        .status-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px}
-        .status-pending{background:rgba(251,191,36,0.15);color:var(--gold)}
-        .status-valid{background:rgba(16,185,129,0.15);color:var(--success)}
-        @media(max-width:768px){
-            .sidebar{width:60px}
-            .sidebar-logo span,.nav-section-title,.nav-item span,.sidebar-footer{display:none}
-            .sidebar-logo{padding:1rem;justify-content:center}
-            .nav-item{justify-content:center;padding:0.8rem}
-            .nav-item.active{border-left:none;border-bottom:3px solid var(--accent)}
-            .main{margin-left:60px;padding:1rem}
-            .notif-panel{width:100%}
-            .stats-grid{grid-template-columns:repeat(2,1fr)}
-        }
-    </style>
-</head>
-<body>
-
-<div class="login-overlay" id="loginOverlay">
-    <div class="login-box">
-        <h2>🔐 Pixora Admin</h2>
-        <p>Accès réservé à l'administrateur autorisé</p>
-        <div class="login-error" id="loginError"></div>
-        <form onsubmit="handleAdminLogin(event)">
-            <div class="form-group" style="margin-bottom:1rem"><input type="email" class="form-input" placeholder="Email admin" required id="adminEmail"></div>
-            <div class="form-group" style="margin-bottom:1rem"><input type="password" class="form-input" placeholder="Mot de passe" required id="adminPass"></div>
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="btnAdminLogin"><i class="fas fa-sign-in-alt"></i> Accéder</button>
-        </form>
-    </div></div>
-
-<aside class="sidebar">
-    <div class="sidebar-logo">
-        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="alg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#alg)"/></svg>
-        <span>Pixora Admin</span>
-    </div>
-    <nav class="sidebar-nav">
-        <div class="nav-section">
-            <div class="nav-section-title">Principal</div>
-            <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></button>
-            <button class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></button>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Générateur IA</div>
-            <button class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></button>
-            <button class="nav-item" onclick="showSection('models-video')"><i class="fas fa-video"></i><span>Modèles Vidéo</span></button>
-            <button class="nav-item" onclick="showSection('apis')"><i class="fas fa-key"></i><span>Clés API + Test</span></button>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Monétisation</div>
-            <button class="nav-item" onclick="showSection('ad-networks')"><i class="fas fa-ad"></i><span>Régies Pub</span></button>
-            <button class="nav-item" onclick="showSection('internal-tasks')"><i class="fas fa-tasks"></i><span>Tâches Internes</span></button>
-            <button class="nav-item" onclick="showSection('referral')"><i class="fas fa-user-friends"></i><span>Parrainage</span></button>
-            <button class="nav-item" onclick="showSection('pricing')"><i class="fas fa-coins"></i><span>Points & Pricing</span></button>
-            <button class="nav-item" onclick="showSection('shop-config')"><i class="fas fa-shopping-bag"></i><span>Boutique</span></button>
-            <button class="nav-item" onclick="showSection('shop-points')"><i class="fas fa-gift"></i><span>Shop Points</span></button>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Site</div>
-            <button class="nav-item" onclick="showSection('social-links')"><i class="fas fa-share-alt"></i><span>Réseaux Sociaux</span></button>
-            <button class="nav-item" onclick="showSection('site-settings')"><i class="fas fa-cog"></i><span>Paramètres Site</span></button>
-            <button class="nav-item" onclick="showSection('seo')"><i class="fas fa-search"></i><span>SEO & Meta</span></button>
-            <button class="nav-item" onclick="showSection('legal')"><i class="fas fa-gavel"></i><span>Contenu Légal</span></button>
-        </div>
-        <div class="nav-section">
-            <div class="nav-section-title">Gestion</div>
-            <button class="nav-item" onclick="showSection('users')"><i class="fas fa-users"></i><span>Utilisateurs</span></button>
-            <button class="nav-item" onclick="showSection('logs')"><i class="fas fa-terminal"></i><span>Logs Système</span></button>
-            <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
-        </div>
-    </nav>
-    <div class="sidebar-footer">Pixora Admin v6.1<br>Connecté: <span id="adminEmailDisplay">-</span></div>
-</aside>
-
-<div class="notif-panel" id="notifPanel">
-    <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
-    <div class="notif-list" id="notifList"><div style="text-align:center;padding:2rem;color:var(--dim)">Chargement...</div></div>
-</div>
-<main class="main">
-    <div class="admin-section active" id="sec-dashboard">
-        <div class="page-header"><div><div class="page-title">Centre de Commandement</div><div class="page-subtitle">Vue d'ensemble en temps réel de Pixora</div></div><button class="btn btn-outline btn-sm" onclick="loadDashboard()"><i class="fas fa-sync"></i> Actualiser</button></div>
-        <div class="stats-grid">
-            <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="dashTotalUsers">-</div><div class="stat-label">Users Total</div></div>
-            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div class="stat-value" id="dashActiveToday">-</div><div class="stat-label">Actifs Aujourd'hui</div></div>
-            <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-value" id="dashPointsDistributed">-</div><div class="stat-label">Points Distribués</div></div>
-            <div class="stat-card pink"><div class="stat-icon"><i class="fas fa-image"></i></div><div class="stat-value" id="dashGenerations">-</div><div class="stat-label">Générations Totales</div></div>
-            <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-ad"></i></div><div class="stat-value" id="dashActiveAds">-</div><div class="stat-label">Pubs Actives</div></div>
-            <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>
-        </div>
-        <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-stream"></i> Activité Récente</div></div><div class="table-container"><table><thead><tr><th>Type</th><th>Détail</th><th>User</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentActivity"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
-
-    <div class="admin-section" id="sec-models-image">
-        <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card" id="modelImageForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Image</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
-            <input type="hidden" id="imgModelId">
-            <div class="form-row"><div class="form-group"><label class="form-label">Nom du modèle</label><input type="text" class="form-input" id="imgModelName" placeholder="ex: Flux Schnell"></div><div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="imgModelProvider" placeholder="ex: fal.ai"></div></div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Endpoint API</label><input type="text" class="form-input" id="imgModelEndpoint" placeholder="URL endpoint"></div><div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="imgModelCost" value="4"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="imgModelOrder" value="0"></div></div>
-            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="imgModelActive" checked><span class="toggle-slider"></span></label></div>
-            <button class="btn btn-success" onclick="saveModel('image')"><i class="fas fa-save"></i> Sauvegarder</button>
-        </div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Coût</th><th>Ordre</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="imgModelsTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
-
-    <!-- ============================================= -->
-    <!-- MODÈLES VIDÉO — FORMULAIRE ÉTENDU (V6.1) -->
-    <!-- ============================================= -->
-    <div class="admin-section" id="sec-models-video">
-        <div class="page-header"><div><div class="page-title">Modèles Vidéo</div><div class="page-subtitle">Gérer les générateurs vidéo IA (résolution, durée, fps, mode)</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('video')"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card" id="modelVideoForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Vidéo</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
-            <input type="hidden" id="vidModelId">
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Nom du modèle</label><input type="text" class="form-input" id="vidModelName" placeholder="ex: Wan 2.1 T2V"></div>
-                <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="vidModelProvider" placeholder="ex: Hugging Face"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Endpoint API</label><input type="text" class="form-input" id="vidModelEndpoint" placeholder="URL endpoint"></div>
-                <div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="vidModelCost" value="18"></div>
-                <div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="vidModelOrder" value="0"></div>
-            </div>
-            <!-- NOUVEAUX CHAMPS VIDÉO -->
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Résolution</label><select class="form-select" id="vidModelResolution"><option value="512x320">512×320 (Rapide)</option><option value="720x480">720×480 (Standard)</option><option value="1280x720">1280×720 (HD)</option></select></div>
-                <div class="form-group"><label class="form-label">Nombre de frames</label><input type="number" class="form-input" id="vidModelFrames" value="81" min="16" max="241"></div>
-                <div class="form-group"><label class="form-label">FPS</label><select class="form-select" id="vidModelFps"><option value="16">16 fps (Standard)</option><option value="24">24 fps (Cinéma)</option><option value="30">30 fps (Fluide)</option></select></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Mode</label><select class="form-select" id="vidModelMode"><option value="t2v">Text-to-Video (T2V)</option><option value="i2v">Image-to-Video (I2V)</option></select></div>                <div class="form-group"><label class="form-label">Supporte Img2Vid</label><label class="toggle"><input type="checkbox" id="vidModelImg2Vid"><span class="toggle-slider"></span></label></div>
+                <div class="form-group"><label class="form-label">Mode</label><select class="form-select" id="vidModelMode"><option value="t2v">Text-to-Video (T2V)</option><option value="i2v">Image-to-Video (I2V)</option></select></div>
+                <div class="form-group"><label class="form-label">Supporte Img2Vid</label><label class="toggle"><input type="checkbox" id="vidModelImg2Vid"><span class="toggle-slider"></span></label></div>
             </div>
             <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="vidModelActive" checked><span class="toggle-slider"></span></label></div>
             <button class="btn btn-success" onclick="saveModel('video')"><i class="fas fa-save"></i> Sauvegarder</button>
         </div>
-        <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Résolution</th><th>Frames</th><th>FPS</th><th>Mode</th><th>I2V</th><th>Coût</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="vidModelsTable"><tr><td colspan="10" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
-    </div>
+        <!-- TABLEAU VIDÉO ÉTENDU (MODIFICATION #2) -->
+        <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Provider</th><th>Résolution</th><th>Frames</th><th>FPS</th><th>Mode</th><th>I2V</th><th>Coût</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="vidModelsTable"><tr><td colspan="10" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>    </div>
 
+    <!-- CLÉS API (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-apis">
         <div class="page-header"><div><div class="page-title">Clés API + Test</div><div class="page-subtitle">Configurer et tester les clés API des providers IA</div></div><button class="btn btn-success btn-sm" onclick="saveApiKeys()"><i class="fas fa-save"></i> Sauvegarder Tout</button></div>
         <div class="card" style="border-left:4px solid var(--success);background:linear-gradient(135deg,var(--surface) 0%,rgba(16,185,129,0.03) 100%)">
@@ -515,6 +265,7 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
         <div class="card"><div id="apiKeysContainer"><div style="text-align:center;color:var(--dim);padding:1rem"><i class="fas fa-spinner fa-spin"></i> Chargement...</div></div></div>
     </div>
 
+    <!-- RÉGIES PUB (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-ad-networks">
         <div class="page-header"><div><div class="page-title">Régies Publicitaires</div><div class="page-subtitle">Gérer les offres CPA et pubs CPM</div></div><button class="btn btn-primary btn-sm" onclick="openAdNetworkForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="adNetworkForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Régie</div><button class="btn btn-sm btn-outline" onclick="closeAdNetworkForm()">Annuler</button></div>
@@ -528,6 +279,7 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
         <div class="card"><div class="table-container"><table><thead><tr><th>Nom</th><th>Page</th><th>Type</th><th>Points</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead><tbody id="adNetworksTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- TÂCHES INTERNES (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-internal-tasks">
         <div class="page-header"><div><div class="page-title">Tâches Internes</div><div class="page-subtitle">Gérer les tâches quotidiennes qui remplissent la page Earn</div></div><button class="btn btn-primary btn-sm" onclick="openTaskForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card tasks-card" id="taskForm" style="display:none">
@@ -537,10 +289,10 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
                 <div class="form-group"><label class="form-label">Nom de la tâche</label><input type="text" class="form-input" id="taskName" placeholder="ex: Voter pour une création"></div>
                 <div class="form-group"><label class="form-label">Description courte</label><input type="text" class="form-input" id="taskDesc" placeholder="ex: Donne ton avis sur une image"></div>
             </div>
-            <div class="form-row">                <div class="form-group"><label class="form-label">Points récompense</label><input type="number" class="form-input" id="taskPoints" value="2"></div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Points récompense</label><input type="number" class="form-input" id="taskPoints" value="2"></div>
                 <div class="form-group"><label class="form-label">Type</label><select class="form-select" id="taskType"><option value="vote">Vote</option><option value="comment">Commentaire</option><option value="share">Partage</option><option value="profile">Profil</option><option value="badge">Badge</option><option value="daily">Quotidienne</option><option value="social">Réseau Social</option></select></div>
-                <div class="form-group"><label class="form-label">Limite / jour</label><input type="number" class="form-input" id="taskLimit" value="5"></div>
-                <div class="form-group"><label class="form-label">Ordre d'affichage</label><input type="number" class="form-input" id="taskOrder" value="0"></div>
+                <div class="form-group"><label class="form-label">Limite / jour</label><input type="number" class="form-input" id="taskLimit" value="5"></div>                <div class="form-group"><label class="form-label">Ordre d'affichage</label><input type="number" class="form-input" id="taskOrder" value="0"></div>
             </div>
             <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="taskActive" checked><span class="toggle-slider"></span></label></div>
             <button class="btn btn-success" onclick="saveInternalTask()"><i class="fas fa-save"></i> Sauvegarder</button>
@@ -555,6 +307,7 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
         </div>
     </div>
 
+    <!-- PARRAINAGE (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-referral">
         <div class="page-header"><div><div class="page-title">Système de Parrainage</div><div class="page-subtitle">Configuration et suivi des parrainages</div></div><button class="btn btn-success btn-sm" onclick="saveReferralConfig()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card referral-card">
@@ -577,6 +330,7 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
         </div>
     </div>
 
+    <!-- PRICING (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-pricing">
         <div class="page-header"><div><div class="page-title">Points & Pricing</div><div class="page-subtitle">Modifier les coûts, récompenses et rétention quotidienne par tier</div></div><button class="btn btn-success btn-sm" onclick="savePricing()"><i class="fas fa-save"></i> Sauvegarder Tout</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-globe"></i> Tier 1 (FR, US, DE, GB...)</div><div class="form-row"><div class="form-group"><label class="form-label">Image (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.image" value="4"></div><div class="form-group"><label class="form-label">Vidéo (pts)</label><input type="number" class="form-input pricing-t1" data-key="costs.video" value="18"></div><div class="form-group"><label class="form-label">Récompense Vidéo</label><input type="number" class="form-input pricing-t1" data-key="rewards.video" value="8"></div><div class="form-group"><label class="form-label">Récompense Survey</label><input type="number" class="form-input pricing-t1" data-key="rewards.survey" value="20"></div><div class="form-group"><label class="form-label">Récompense Sponsor</label><input type="number" class="form-input pricing-t1" data-key="rewards.sponsor" value="2"></div><div class="form-group"><label class="form-label">Streak</label><input type="number" class="form-input pricing-t1" data-key="rewards.streak" value="3"></div><div class="form-group"><label class="form-label">Partage</label><input type="number" class="form-input pricing-t1" data-key="rewards.share" value="5"></div><div class="form-group"><label class="form-label">Limite Vidéo/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.video" value="3"></div><div class="form-group"><label class="form-label">Limite Sponsor/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.sponsor" value="5"></div><div class="form-group"><label class="form-label">Limite Partage/jour</label><input type="number" class="form-input pricing-t1" data-key="limits.share" value="1"></div></div></div>
@@ -586,13 +340,14 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
         <div class="card retention-card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-fire"></i> Rétention Quotidienne (Bonus + Streak)</div>
             <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem">Configure les points distribués automatiquement à la connexion quotidienne.</p>
             <div class="card-title" style="margin-bottom:0.8rem;font-size:0.9rem"><i class="fas fa-globe" style="font-size:0.8rem"></i> Tier 1</div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t1" data-rkey="bonus_login" value="5"></div><div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t1" data-rkey="streak_j1_3" value="3"></div><div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t1" data-rkey="streak_j4_6" value="7"></div><div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t1" data-rkey="streak_j7" value="10"></div></div>            <div class="card-title" style="margin-bottom:0.8rem;font-size:0.9rem"><i class="fas fa-globe-americas" style="font-size:0.8rem"></i> Tier 2</div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t2" data-rkey="bonus_login" value="3"></div><div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t2" data-rkey="streak_j1_3" value="2"></div><div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t2" data-rkey="streak_j4_6" value="4"></div><div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t2" data-rkey="streak_j7" value="6"></div></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t1" data-rkey="bonus_login" value="5"></div><div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t1" data-rkey="streak_j1_3" value="3"></div><div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t1" data-rkey="streak_j4_6" value="7"></div><div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t1" data-rkey="streak_j7" value="10"></div></div>
+            <div class="card-title" style="margin-bottom:0.8rem;font-size:0.9rem"><i class="fas fa-globe-americas" style="font-size:0.8rem"></i> Tier 2</div>            <div class="form-row"><div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t2" data-rkey="bonus_login" value="3"></div><div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t2" data-rkey="streak_j1_3" value="2"></div><div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t2" data-rkey="streak_j4_6" value="4"></div><div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t2" data-rkey="streak_j7" value="6"></div></div>
             <div class="card-title" style="margin-bottom:0.8rem;font-size:0.9rem"><i class="fas fa-globe-asia" style="font-size:0.8rem"></i> Tier 3</div>
             <div class="form-row"><div class="form-group"><label class="form-label">Bonus Connexion</label><input type="number" class="form-input retention-t3" data-rkey="bonus_login" value="2"></div><div class="form-group"><label class="form-label">Streak J1-3</label><input type="number" class="form-input retention-t3" data-rkey="streak_j1_3" value="1"></div><div class="form-group"><label class="form-label">Streak J4-6</label><input type="number" class="form-input retention-t3" data-rkey="streak_j4_6" value="3"></div><div class="form-group"><label class="form-label">Streak J7+</label><input type="number" class="form-input retention-t3" data-rkey="streak_j7" value="4"></div></div>
         </div>
     </div>
 
+    <!-- SHOP CONFIG (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-shop-config">
         <div class="page-header"><div><div class="page-title">Configuration Boutique</div><div class="page-subtitle">Gérer les packs et abonnements</div></div><button class="btn btn-success btn-sm" onclick="saveShopConfig()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-box"></i> Packs Disponibles</div><div id="packsContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addPackField()"><i class="fas fa-plus"></i> Ajouter un pack</button></div>
@@ -600,6 +355,7 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
         <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Devise</label><select class="form-select" id="shopCurrency"><option value="EUR">EUR (€)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option></select></div><div class="form-group"><label class="form-label">Stripe Key (publique)</label><input type="text" class="form-input" id="stripeKey" placeholder="pk_live_..."></div><div class="form-group"><label class="form-label">PayPal Client ID</label><input type="text" class="form-input" id="paypalClientId" placeholder="Client ID"></div></div></div>
     </div>
 
+    <!-- SHOP POINTS (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-shop-points">
         <div class="page-header"><div><div class="page-title">Shop Points (V1)</div><div class="page-subtitle">Gérer les items échangeables contre des points uniquement</div></div><button class="btn btn-primary btn-sm" onclick="openShopItemForm()"><i class="fas fa-plus"></i> Ajouter un item</button></div>
         <div class="card shop-points-card" id="shopItemForm" style="display:none">
@@ -634,39 +390,47 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
                 Chaque achat déduit les points du solde utilisateur et insère une ligne dans la table <code>purchases</code>.<br>
                 Cette section est <strong>indépendante</strong> de la "Configuration Boutique" (Stripe/PayPal) qui servira plus tard pour les paiements réels.
             </p>
-        </div>
-    </div>
+        </div>    </div>
+
+    <!-- RÉSEAUX SOCIAUX (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-social-links">
         <div class="page-header"><div><div class="page-title">Réseaux Sociaux</div><div class="page-subtitle">Liens affichés dans le footer et le profil</div></div><button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div id="socialLinksContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addSocialField()"><i class="fas fa-plus"></i> Ajouter un réseau</button></div>
     </div>
 
+    <!-- PARAMÈTRES SITE (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-site-settings">
         <div class="page-header"><div><div class="page-title">Paramètres du Site</div><div class="page-subtitle">Personnalisation globale sans toucher au code</div></div><button class="btn btn-success btn-sm" onclick="saveSiteSettings()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Nom du site</label><input type="text" class="form-input" id="settingSiteName" value="Pixora"></div><div class="form-group"><label class="form-label">Logo URL</label><input type="text" class="form-input" id="settingLogoUrl" placeholder="URL logo SVG/PNG"></div><div class="form-group"><label class="form-label">Favicon URL</label><input type="text" class="form-input" id="settingFavicon" placeholder="URL favicon"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Couleur Primaire</label><input type="color" class="form-input" id="settingColorPrimary" value="#8B5CF6" style="height:40px"></div><div class="form-group"><label class="form-label">Couleur Secondaire</label><input type="color" class="form-input" id="settingColorSecondary" value="#EC4899" style="height:40px"></div><div class="form-group"><label class="form-label">Langue par défaut</label><select class="form-select" id="settingLang"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option></select></div></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Texte Hero Section</label><textarea class="form-textarea" id="settingHeroText">Générez des images et vidéos IA de haute qualité. Gagnez des points, créez sans limite.</textarea></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Footer Copyright</label><input type="text" class="form-input" id="settingCopyright" value="© 2026 Pixora. Tous droits réservés."></div><div class="form-group"><label class="form-label">Mode Maintenance</label><label class="toggle"><input type="checkbox" id="settingMaintenance"><span class="toggle-slider"></span></label><span style="font-size:0.75rem;color:var(--muted);margin-left:0.5rem">Affiche un bandeau sur toutes les pages</span></div></div>
     </div>
 
+    <!-- SEO (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-seo">
         <div class="page-header"><div><div class="page-title">SEO & Métadonnées</div><div class="page-subtitle">Optimisation pour les moteurs de recherche</div></div><button class="btn btn-success btn-sm" onclick="saveSeo()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Title Tag</label><input type="text" class="form-input" id="seoTitle" value="Pixora - Générateur IA Gratuit"></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Meta Description</label><textarea class="form-textarea" id="seoDescription">Générez des images et vidéos IA gratuitement avec Pixora. Gagnez des points en complétant des tâches.</textarea></div><div class="form-row"><div class="form-group"><label class="form-label">OG Image URL</label><input type="text" class="form-input" id="seoOgImage" placeholder="URL image partage"></div><div class="form-group"><label class="form-label">Canonical URL</label><input type="text" class="form-input" id="seoCanonical" value="https://pixoraia.netlify.app/"></div></div><div class="form-group" style="margin-bottom:1rem"><label class="form-label">Robots.txt</label><textarea class="form-textarea" id="seoRobots">User-agent: *\nAllow: /\nSitemap: https://pixoraia.netlify.app/sitemap.xml</textarea></div></div>
     </div>
 
+    <!-- LÉGAL (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-legal">
         <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité, Mentions Légales</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-file-contract"></i> Conditions Générales d'Utilisation</div><textarea class="form-textarea" id="legalCgu" style="min-height:200px"></textarea></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Politique de Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:200px"></textarea></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
     </div>
+
+    <!-- UTILISATEURS (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-users">
         <div class="page-header"><div><div class="page-title">Utilisateurs</div><div class="page-subtitle">Gérer les comptes et les points</div></div><div style="display:flex;gap:0.5rem"><input type="text" class="form-input" placeholder="Rechercher email/pseudo..." id="userSearch" style="width:250px" oninput="searchUsers()"><button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i></button></div></div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Pseudo</th><th>Email</th><th>Points</th><th>Streak</th><th>Dernière connexion</th><th style="text-align:right">Actions</th></tr></thead><tbody id="usersTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- LOGS (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-logs">
         <div class="page-header"><div><div class="page-title">Logs Système</div><div class="page-subtitle">Erreurs, performances et activité</div></div><button class="btn btn-outline btn-sm" onclick="loadLogs()"><i class="fas fa-sync"></i> Actualiser</button></div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Date</th><th>Type</th><th>Message</th><th>Détails</th></tr></thead><tbody id="logsTable"><tr><td colspan="4" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
+    <!-- SÉCURITÉ (IDENTIQUE V6.0) -->
     <div class="admin-section" id="sec-security">
         <div class="page-header"><div><div class="page-title">Sécurité Admin</div><div class="page-subtitle">Protection de l'accès administrateur</div></div></div>
         <div class="card">
@@ -675,8 +439,7 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
             <div class="form-row" style="align-items:flex-end">
                 <div class="form-group" style="flex:1"><label class="form-label">Ajouter un email admin</label><input type="email" class="form-input" id="newAdminEmail" placeholder="nouvel-admin@exemple.com"></div>
                 <div class="form-group"><button class="btn btn-success btn-sm" onclick="addAdminEmail()"><i class="fas fa-plus"></i> Ajouter</button></div>
-            </div>
-            <div class="table-container" style="margin-top:1rem">
+            </div>            <div class="table-container" style="margin-top:1rem">
                 <table>
                     <thead><tr><th>Email</th><th>Ajouté le</th><th style="text-align:right">Action</th></tr></thead>
                     <tbody id="whitelistTable"><tr><td colspan="3" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
@@ -684,7 +447,8 @@ Image, Shop, Earn, Gallery, CSS, Auth = **IDENTIQUES**
             </div>
         </div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-key"></i> Changer le mot de passe</div><div class="form-row"><div class="form-group"><label class="form-label">Nouveau mot de passe</label><input type="password" class="form-input" id="newAdminPass"></div><div class="form-group"><label class="form-label">Confirmer</label><input type="password" class="form-input" id="confirmAdminPass"></div></div><button class="btn btn-primary btn-sm" onclick="changeAdminPassword()"><i class="fas fa-save"></i> Modifier</button></div>
-        <div class="card"><button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Se déconnecter</button></div>    </div>
+        <div class="card"><button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Se déconnecter</button></div>
+    </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -696,44 +460,110 @@ var notifications = [];
 var unreadCount = 0;
 var isAdminVerified = false;
 
-function showLoginError(msg) { var el = document.getElementById('loginError'); el.textContent = msg; el.style.display = 'block'; }
-function hideLoginError() { document.getElementById('loginError').style.display = 'none'; }
+// =============================================
+// SÉCURITÉ VIA TABLE admin_whitelist
+// =============================================
+function showLoginError(msg) {
+    var el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+function hideLoginError() {
+    document.getElementById('loginError').style.display = 'none';
+}
 
 async function verifyAdminAccess(email) {
-    try { var result = await db.from('admin_whitelist').select('email').eq('email', email).limit(1); if (result.error) { console.error('Whitelist query error:', result.error.message); return false; } if (!result.data || result.data.length === 0) { return false; } return true; } catch(e) { console.error('Verify admin error:', e); return false; }
+    try {
+        var result = await db.from('admin_whitelist').select('email').eq('email', email).limit(1);
+        if (result.error) { console.error('Whitelist query error:', result.error.message); return false; }
+        if (!result.data || result.data.length === 0) { return false; }
+        return true;
+    } catch(e) { console.error('Verify admin error:', e); return false; }
 }
 
 async function handleAdminLogin(e) {
-    e.preventDefault(); hideLoginError();
+    e.preventDefault();
+    hideLoginError();
     var email = document.getElementById('adminEmail').value.trim().toLowerCase();
     var pass = document.getElementById('adminPass').value;
     var btn = document.getElementById('btnAdminLogin');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-    try {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';    try {
         var result = await db.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw new Error(result.error.message);
         if (!result.data.session) throw new Error('Session non créée');
         var isAuthorized = await verifyAdminAccess(email);
-        if (!isAuthorized) { await db.auth.signOut(); showLoginError('⛔ Accès refusé. Cet email n\'est pas dans la liste des administrateurs autorisés.'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder'; return; }
-        isAdminVerified = true; document.getElementById('loginOverlay').classList.add('hidden'); document.getElementById('adminEmailDisplay').textContent = email; initAdmin();
-    } catch (err) { showLoginError('❌ ' + err.message); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder'; }
+        if (!isAuthorized) {
+            await db.auth.signOut();
+            showLoginError('⛔ Accès refusé. Cet email n\'est pas dans la liste des administrateurs autorisés.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder';
+            return;
+        }
+        isAdminVerified = true;
+        document.getElementById('loginOverlay').classList.add('hidden');
+        document.getElementById('adminEmailDisplay').textContent = email;
+        initAdmin();
+    } catch (err) {
+        showLoginError('❌ ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accéder';
+    }
 }
 
-function logoutAdmin() { isAdminVerified = false; db.auth.signOut(); location.reload(); }
+function logoutAdmin() {
+    isAdminVerified = false;
+    db.auth.signOut();
+    location.reload();
+}
 
 async function loadAdminWhitelist() {
-    try { var result = await db.from('admin_whitelist').select('*').order('added_at', { ascending: false }); var tbody = document.getElementById('whitelistTable');
-        if (result.data && result.data.length > 0) { tbody.innerHTML = result.data.map(function(row) { var date = row.added_at ? new Date(row.added_at).toLocaleString('fr-FR') : '-'; return '<tr><td style="font-family:var(--mono);font-size:0.8rem">' + row.email + '</td><td style="font-size:0.75rem;color:var(--dim)">' + date + '</td><td style="text-align:right"><button class="btn btn-sm btn-danger" onclick="removeAdminEmail(\'' + row.email + '\')"><i class="fas fa-trash"></i></button></td></tr>'; }).join(''); }
-        else { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--warn)">⚠️ Aucun admin dans la whitelist ! Ajoutez votre email.</td></tr>'; }
-    } catch(e) { document.getElementById('whitelistTable').innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--danger)">Erreur chargement : ' + e.message + '</td></tr>'; }
+    try {
+        var result = await db.from('admin_whitelist').select('*').order('added_at', { ascending: false });
+        var tbody = document.getElementById('whitelistTable');
+        if (result.data && result.data.length > 0) {
+            tbody.innerHTML = result.data.map(function(row) {
+                var date = row.added_at ? new Date(row.added_at).toLocaleString('fr-FR') : '-';
+                return '<tr><td style="font-family:var(--mono);font-size:0.8rem">' + row.email + '</td><td style="font-size:0.75rem;color:var(--dim)">' + date + '</td><td style="text-align:right"><button class="btn btn-sm btn-danger" onclick="removeAdminEmail(\'' + row.email + '\')"><i class="fas fa-trash"></i></button></td></tr>';
+            }).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--warn)">⚠️ Aucun admin dans la whitelist ! Ajoutez votre email.</td></tr>';
+        }
+    } catch(e) {
+        document.getElementById('whitelistTable').innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--danger)">Erreur chargement : ' + e.message + '</td></tr>';
+    }
 }
 
-async function addAdminEmail() { var email = document.getElementById('newAdminEmail').value.trim().toLowerCase(); if (!email || !email.includes('@')) { alert('Email invalide'); return; } try { var result = await db.from('admin_whitelist').insert({ email: email, added_by: 'admin' }); if (result.error) throw new Error(result.error.message); document.getElementById('newAdminEmail').value = ''; loadAdminWhitelist(); addNotification('config', 'Admin ajouté : ' + email); alert('✅ Email ajouté à la whitelist !'); } catch(e) { alert('❌ Erreur : ' + e.message); } }
-async function removeAdminEmail(email) { if (!confirm('Retirer ' + email + ' de la whitelist ?')) return; try { var result = await db.from('admin_whitelist').delete().eq('email', email); if (result.error) throw new Error(result.error.message); loadAdminWhitelist(); addNotification('config', 'Admin retiré : ' + email); alert('✅ Email retiré de la whitelist !'); } catch(e) { alert('❌ Erreur : ' + e.message); } }
+async function addAdminEmail() {
+    var email = document.getElementById('newAdminEmail').value.trim().toLowerCase();
+    if (!email || !email.includes('@')) { alert('Email invalide'); return; }
+    try {        var result = await db.from('admin_whitelist').insert({ email: email, added_by: 'admin' });
+        if (result.error) throw new Error(result.error.message);
+        document.getElementById('newAdminEmail').value = '';
+        loadAdminWhitelist();
+        addNotification('config', 'Admin ajouté : ' + email);
+        alert('✅ Email ajouté à la whitelist !');
+    } catch(e) { alert('❌ Erreur : ' + e.message); }
+}
 
+async function removeAdminEmail(email) {
+    if (!confirm('Retirer ' + email + ' de la whitelist ?')) return;
+    try {
+        var result = await db.from('admin_whitelist').delete().eq('email', email);
+        if (result.error) throw new Error(result.error.message);
+        loadAdminWhitelist();
+        addNotification('config', 'Admin retiré : ' + email);
+        alert('✅ Email retiré de la whitelist !');
+    } catch(e) { alert('❌ Erreur : ' + e.message); }
+}
+
+// =============================================
+// NAVIGATION
+// =============================================
 function showSection(name) {
     if (!isAdminVerified) return;
-    document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });    document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+    document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
     document.getElementById('sec-' + name).classList.add('active');
     var navItems = document.querySelectorAll('.nav-item');
     var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'ad-networks':6, 'internal-tasks':7, referral:8, pricing:9, 'shop-config':10, 'shop-points':11, 'social-links':13, 'site-settings':14, seo:15, legal:16, users:18, logs:19, security:20 };
@@ -742,47 +572,93 @@ function showSection(name) {
     if (loaders[name]) loaders[name]();
 }
 
+// =============================================
+// NOTIFICATIONS
+// =============================================
 function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('open'); }
 function addNotification(type, message) { notifications.unshift({ type:type, message:message, time:new Date(), read:false }); unreadCount++; updateNotifUI(); }
-function updateNotifUI() { var badge = document.getElementById('notifBadge'); badge.textContent = unreadCount; badge.style.display = unreadCount > 0 ? 'block' : 'none'; var list = document.getElementById('notifList'); if (!notifications.length) { list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim)">Aucune notification</div>'; return; } list.innerHTML = notifications.map(function(n) { var icons = { user:'fa-user-plus', payment:'fa-credit-card', error:'fa-exclamation-triangle', gen:'fa-sparkles', config:'fa-cog' }; return '<div class="notif-item '+(n.read?'':'unread')+'" onclick="markRead(this)"><div class="notif-type '+n.type+'"><i class="fas '+(icons[n.type]||'fa-info-circle')+'"></i> '+n.type.toUpperCase()+'</div><div>'+n.message+'</div><div class="notif-time">'+n.time.toLocaleTimeString('fr-FR')+'</div></div>'; }).join(''); }
+function updateNotifUI() {
+    var badge = document.getElementById('notifBadge'); badge.textContent = unreadCount; badge.style.display = unreadCount > 0 ? 'block' : 'none';
+    var list = document.getElementById('notifList');
+    if (!notifications.length) { list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--dim)">Aucune notification</div>'; return; }
+    list.innerHTML = notifications.map(function(n) {
+        var icons = { user:'fa-user-plus', payment:'fa-credit-card', error:'fa-exclamation-triangle', gen:'fa-sparkles', config:'fa-cog' };
+        return '<div class="notif-item '+(n.read?'':'unread')+'" onclick="markRead(this)"><div class="notif-type '+n.type+'"><i class="fas '+(icons[n.type]||'fa-info-circle')+'"></i> '+n.type.toUpperCase()+'</div><div>'+n.message+'</div><div class="notif-time">'+n.time.toLocaleTimeString('fr-FR')+'</div></div>';
+    }).join('');
+}
 function markRead(el) { el.classList.remove('unread'); unreadCount = Math.max(0, unreadCount-1); updateNotifUI(); }
-
+// =============================================
+// DASHBOARD
+// =============================================
 async function loadDashboard() {
     try {
-        var usersResult = await db.from('users').select('id', { count:'exact' }); document.getElementById('dashTotalUsers').textContent = usersResult.count || 0;
-        var today = new Date().toISOString().split('T')[0]; var activeResult = await db.from('daily_usage').select('user_id', { count:'exact' }).eq('date', today); document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
-        var txResult = await db.from('transactions').select('amount').eq('type', 'earned'); var totalPoints = 0; if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; }); document.getElementById('dashPointsDistributed').textContent = totalPoints.toLocaleString();
-        var genResult = await db.from('user_data').select('total_generated'); var totalGen = 0; if (genResult.data) genResult.data.forEach(function(u) { totalGen += (u.total_generated || 0); }); document.getElementById('dashGenerations').textContent = totalGen.toLocaleString();
-        var adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single(); var ads = adsResult.data?.value || []; document.getElementById('dashActiveAds').textContent = ads.filter(function(a){return a.active}).length;
-        var todayTx = await db.from('transactions').select('user_id').eq('type','earned').gte('created_at', today+'T00:00:00'); var uniqueEarners = new Set((todayTx.data||[]).map(function(t){return t.user_id})).size; document.getElementById('dashTodayEarners').textContent = uniqueEarners;
-        var recentTx = await db.from('transactions').select('*, users(email)').order('created_at',{ascending:false}).limit(8); var recentClicks = await db.from('ad_clicks').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
-        var activity = []; (recentTx.data||[]).forEach(function(t){activity.push({type:t.type,detail:t.title,user:t.users?t.users.email:'-',points:t.amount,date:t.created_at})}); (recentClicks.data||[]).forEach(function(c){activity.push({type:'task',detail:'✅ '+(c.ad_name||'Offre'),user:c.users?c.users.email:'-',points:0,date:c.created_at})}); activity.sort(function(a,b){return new Date(b.date)-new Date(a.date)});
+        var usersResult = await db.from('users').select('id', { count:'exact' });
+        document.getElementById('dashTotalUsers').textContent = usersResult.count || 0;
+        var today = new Date().toISOString().split('T')[0];
+        var activeResult = await db.from('daily_usage').select('user_id', { count:'exact' }).eq('date', today);
+        document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
+        var txResult = await db.from('transactions').select('amount').eq('type', 'earned');
+        var totalPoints = 0; if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; });
+        document.getElementById('dashPointsDistributed').textContent = totalPoints.toLocaleString();
+        var genResult = await db.from('user_data').select('total_generated');
+        var totalGen = 0; if (genResult.data) genResult.data.forEach(function(u) { totalGen += (u.total_generated || 0); });
+        document.getElementById('dashGenerations').textContent = totalGen.toLocaleString();
+        var adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+        var ads = adsResult.data?.value || [];
+        document.getElementById('dashActiveAds').textContent = ads.filter(function(a){return a.active}).length;
+        var todayTx = await db.from('transactions').select('user_id').eq('type','earned').gte('created_at', today+'T00:00:00');
+        var uniqueEarners = new Set((todayTx.data||[]).map(function(t){return t.user_id})).size;
+        document.getElementById('dashTodayEarners').textContent = uniqueEarners;
+        var recentTx = await db.from('transactions').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
+        var recentClicks = await db.from('ad_clicks').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
+        var activity = [];
+        (recentTx.data||[]).forEach(function(t){activity.push({type:t.type,detail:t.title,user:t.users?t.users.email:'-',points:t.amount,date:t.created_at})});
+        (recentClicks.data||[]).forEach(function(c){activity.push({type:'task',detail:'✅ '+(c.ad_name||'Offre'),user:c.users?c.users.email:'-',points:0,date:c.created_at})});
+        activity.sort(function(a,b){return new Date(b.date)-new Date(a.date)});
         var tbody = document.getElementById('dashRecentActivity');
-        if (activity.length) { tbody.innerHTML = activity.slice(0,10).map(function(a){ var colors={earned:'var(--success)',spent:'var(--danger)',task:'var(--info)',purchased:'var(--gold)'}; return '<tr><td style="color:'+(colors[a.type]||'var(--text)')+';font-weight:600">'+a.type.toUpperCase()+'</td><td>'+a.detail+'</td><td style="font-size:0.8rem">'+a.user+'</td><td style="font-family:var(--mono);color:'+(a.points>0?'var(--success)':'var(--dim)')+'">'+(a.points>0?'+'+a.points:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(a.date).toLocaleString('fr-FR')+'</td></tr>'; }).join(''); }
-        else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucune activité récente</td></tr>'; }
+        if (activity.length) {
+            tbody.innerHTML = activity.slice(0,10).map(function(a){
+                var colors={earned:'var(--success)',spent:'var(--danger)',task:'var(--info)',purchased:'var(--gold)'};
+                return '<tr><td style="color:'+(colors[a.type]||'var(--text)')+';font-weight:600">'+a.type.toUpperCase()+'</td><td>'+a.detail+'</td><td style="font-size:0.8rem">'+a.user+'</td><td style="font-family:var(--mono);color:'+(a.points>0?'var(--success)':'var(--dim)')+'">'+(a.points>0?'+'+a.points:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(a.date).toLocaleString('fr-FR')+'</td></tr>';
+            }).join('');
+        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucune activité récente</td></tr>'; }
     } catch(err) { console.error('Dashboard error:', err); }
 }
 
 // =============================================
-// MODÈLES IMAGE / VIDÉO — V6.1 AVEC CHAMPS VIDÉO ÉTENDUS
+// MODÈLES IMAGE / VIDÉO
+// MODIFICATIONS #3, #4, #5, #6 intégrées ici
 // =============================================
 async function loadModels(type) {
     var result = await db.from('generator_models').select('*').eq('type',type).order('sort_order');
     var tbody = document.getElementById(type==='image'?'imgModelsTable':'vidModelsTable');
-    if (result.data&&result.data.length) {
+    if (result.data && result.data.length) {
         if (type === 'video') {
-            // TABLEAU VIDÉO ÉTENDU (MODIFICATION #6)
-            tbody.innerHTML = result.data.map(function(m){
-                var modeColors = {t2v:'var(--info)',i2v:'var(--accent2)'};
+            // MODIFICATION #6 : Tableau vidéo étendu avec 5 nouvelles colonnes
+            tbody.innerHTML = result.data.map(function(m) {                var modeColors = {t2v:'var(--info)',i2v:'var(--accent2)'};
                 var modeColor = modeColors[m.mode] || 'var(--muted)';
-                return '<tr><td>'+m.name+'</td><td>'+m.provider+'</td><td style="font-family:var(--mono);font-size:0.8rem">'+(m.resolution||'512x320')+'</td><td style="font-family:var(--mono)">'+(m.num_frames||81)+'</td><td style="font-family:var(--mono)">'+(m.fps||16)+'</td><td><span style="font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:'+modeColor+'">'+(m.mode||'t2v').toUpperCase()+'</span></td><td>'+(m.supports_img2vid?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">—</span>')+'</td><td style="font-family:var(--mono);color:var(--gold)">'+m.cost_points+'</td><td>'+(m.is_active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editModel(\''+type+'\',\''+m.id+'\')"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="deleteModel(\''+m.id+'\',\''+type+'\')"><i class="fas fa-trash"></i></button></div></td></tr>';
+                return '<tr>' +
+                    '<td>' + m.name + '</td>' +
+                    '<td>' + m.provider + '</td>' +
+                    '<td style="font-family:var(--mono);font-size:0.8rem">' + (m.resolution || '512x320') + '</td>' +
+                    '<td style="font-family:var(--mono)">' + (m.num_frames || 81) + '</td>' +
+                    '<td style="font-family:var(--mono)">' + (m.fps || 16) + '</td>' +
+                    '<td><span style="font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:' + modeColor + '">' + (m.mode || 't2v').toUpperCase() + '</span></td>' +
+                    '<td>' + (m.supports_img2vid ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">—</span>') + '</td>' +
+                    '<td style="font-family:var(--mono);color:var(--gold)">' + m.cost_points + '</td>' +
+                    '<td>' + (m.is_active ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td>' +
+                    '<td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editModel(\'video\',\'' + m.id + '\')"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="deleteModel(\'' + m.id + '\',\'video\')"><i class="fas fa-trash"></i></button></div></td>' +
+                    '</tr>';
             }).join('');
         } else {
-            tbody.innerHTML = result.data.map(function(m){
+            tbody.innerHTML = result.data.map(function(m) {
                 return '<tr><td>'+m.name+'</td><td>'+m.provider+'</td><td style="font-family:var(--mono);color:var(--gold)">'+m.cost_points+'</td><td>'+m.sort_order+'</td><td>'+(m.is_active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editModel(\''+type+'\',\''+m.id+'\')"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="deleteModel(\''+m.id+'\',\''+type+'\')"><i class="fas fa-trash"></i></button></div></td></tr>';
             }).join('');
         }
-    } else { tbody.innerHTML = '<tr><td colspan="'+(type==='video'?10:6)+'" style="text-align:center;color:var(--dim)">Aucun modèle '+type+'</td></tr>'; }}
+    } else {
+        tbody.innerHTML = '<tr><td colspan="' + (type==='video'?10:6) + '" style="text-align:center;color:var(--dim)">Aucun modèle '+type+'</td></tr>';
+    }
+}
 
 // MODIFICATION #3 : openModelForm initialise les nouveaux champs vidéo
 function openModelForm(type) {
@@ -791,65 +667,176 @@ function openModelForm(type) {
     document.getElementById(type==='image'?'imgModelName':'vidModelName').value='';
     document.getElementById(type==='image'?'imgModelProvider':'vidModelProvider').value='';
     document.getElementById(type==='image'?'imgModelEndpoint':'vidModelEndpoint').value='';
-    document.getElementById(type==='image'?'imgModelCost':'vidModelCost').value=type==='image'?4:18;
+    document.getElementById(type==='image'?'imgModelCost':'vidModelCost').value = type==='image' ? 4 : 18;
     document.getElementById(type==='image'?'imgModelOrder':'vidModelOrder').value=0;
     document.getElementById(type==='image'?'imgModelActive':'vidModelActive').checked=true;
     if (type === 'video') {
-        document.getElementById('vidModelResolution').value='512x320';
-        document.getElementById('vidModelFrames').value=81;
-        document.getElementById('vidModelFps').value='16';
-        document.getElementById('vidModelMode').value='t2v';
-        document.getElementById('vidModelImg2Vid').checked=false;
+        document.getElementById('vidModelResolution').value = '512x320';
+        document.getElementById('vidModelFrames').value = 81;
+        document.getElementById('vidModelFps').value = '16';
+        document.getElementById('vidModelMode').value = 't2v';
+        document.getElementById('vidModelImg2Vid').checked = false;
     }
 }
 
-function closeModelForm() { document.getElementById('modelImageForm').style.display='none'; document.getElementById('modelVideoForm').style.display='none'; }
+function closeModelForm() {
+    document.getElementById('modelImageForm').style.display='none';
+    document.getElementById('modelVideoForm').style.display='none';
+}
 
-// MODIFICATION #4 : editModel pré-remplit les nouveaux champs vidéo
-async function editModel(type,id) {
-    var r=await db.from('generator_models').select('*').eq('id',id).single(); if(!r.data)return;
-    var m=r.data,p=type==='image'?'img':'vid';
+// MODIFICATION #4 : editModel pré-remplit les nouveaux champs vidéoasync function editModel(type, id) {
+    var r = await db.from('generator_models').select('*').eq('id', id).single();
+    if (!r.data) return;
+    var m = r.data;
+    var p = type==='image' ? 'img' : 'vid';
     document.getElementById(p+'ModelForm').style.display='block';
-    document.getElementById(p+'ModelId').value=m.id;
-    document.getElementById(p+'ModelName').value=m.name;
-    document.getElementById(p+'ModelProvider').value=m.provider;
-    document.getElementById(p+'ModelEndpoint').value=m.api_endpoint||'';
-    document.getElementById(p+'ModelCost').value=m.cost_points;
-    document.getElementById(p+'ModelOrder').value=m.sort_order;
-    document.getElementById(p+'ModelActive').checked=m.is_active;
+    document.getElementById(p+'ModelId').value = m.id;
+    document.getElementById(p+'ModelName').value = m.name;
+    document.getElementById(p+'ModelProvider').value = m.provider;
+    document.getElementById(p+'ModelEndpoint').value = m.api_endpoint || '';
+    document.getElementById(p+'ModelCost').value = m.cost_points;
+    document.getElementById(p+'ModelOrder').value = m.sort_order;
+    document.getElementById(p+'ModelActive').checked = m.is_active;
     if (type === 'video') {
-        document.getElementById('vidModelResolution').value=m.resolution||'512x320';
-        document.getElementById('vidModelFrames').value=m.num_frames||81;
-        document.getElementById('vidModelFps').value=m.fps||16;
-        document.getElementById('vidModelMode').value=m.mode||'t2v';
-        document.getElementById('vidModelImg2Vid').checked=!!m.supports_img2vid;
+        document.getElementById('vidModelResolution').value = m.resolution || '512x320';
+        document.getElementById('vidModelFrames').value = m.num_frames || 81;
+        document.getElementById('vidModelFps').value = m.fps || 16;
+        document.getElementById('vidModelMode').value = m.mode || 't2v';
+        document.getElementById('vidModelImg2Vid').checked = !!m.supports_img2vid;
     }
 }
 
 // MODIFICATION #5 : saveModel sauvegarde les nouveaux champs vidéo
 async function saveModel(type) {
-    var p=type==='image'?'img':'vid',id=document.getElementById(p+'ModelId').value;
-    var data={name:document.getElementById(p+'ModelName').value.trim(),type:type,provider:document.getElementById(p+'ModelProvider').value.trim(),api_endpoint:document.getElementById(p+'ModelEndpoint').value.trim(),cost_points:parseInt(document.getElementById(p+'ModelCost').value)||4,sort_order:parseInt(document.getElementById(p+'ModelOrder').value)||0,is_active:document.getElementById(p+'ModelActive').checked};
+    var p = type==='image' ? 'img' : 'vid';
+    var id = document.getElementById(p+'ModelId').value;
+    var data = {
+        name: document.getElementById(p+'ModelName').value.trim(),
+        type: type,
+        provider: document.getElementById(p+'ModelProvider').value.trim(),
+        api_endpoint: document.getElementById(p+'ModelEndpoint').value.trim(),
+        cost_points: parseInt(document.getElementById(p+'ModelCost').value) || 4,
+        sort_order: parseInt(document.getElementById(p+'ModelOrder').value) || 0,
+        is_active: document.getElementById(p+'ModelActive').checked
+    };
     if (type === 'video') {
-        data.resolution = document.getElementById('vidModelResolution').value;        data.num_frames = parseInt(document.getElementById('vidModelFrames').value) || 81;
+        data.resolution = document.getElementById('vidModelResolution').value;
+        data.num_frames = parseInt(document.getElementById('vidModelFrames').value) || 81;
         data.fps = parseInt(document.getElementById('vidModelFps').value) || 16;
         data.mode = document.getElementById('vidModelMode').value;
         data.supports_img2vid = document.getElementById('vidModelImg2Vid').checked;
     }
-    if(!data.name||!data.provider){alert('Nom et Provider requis');return}
-    if(id){await db.from('generator_models').update(data).eq('id',id)}else{await db.from('generator_models').insert(data)}
-    closeModelForm();loadModels(type);addNotification('config','Modèle '+type+' sauvegardé');
+    if (!data.name || !data.provider) { alert('Nom et Provider requis'); return; }
+    if (id) {
+        await db.from('generator_models').update(data).eq('id', id);
+    } else {
+        await db.from('generator_models').insert(data);
+    }
+    closeModelForm();
+    loadModels(type);    addNotification('config', 'Modèle ' + type + ' sauvegardé');
 }
 
-async function deleteModel(id,type) { if(!confirm('Supprimer ce modèle ?'))return; await db.from('generator_models').delete().eq('id',id); loadModels(type); addNotification('config','Modèle supprimé'); }
+async function deleteModel(id, type) {
+    if (!confirm('Supprimer ce modèle ?')) return;
+    await db.from('generator_models').delete().eq('id', id);
+    loadModels(type);
+    addNotification('config', 'Modèle supprimé');
+}
 
-async function loadSiteApiConfig() { var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single(); var keys = r.data ? r.data.value : {}; if (keys['fal.ai']) { document.getElementById('siteApiKey').value = keys['fal.ai']; } else { document.getElementById('siteApiKey').placeholder = 'Aucune clé fal.ai configurée'; } }
-async function testSiteApi() { var btn = document.getElementById('btn-test-site'); var resultDiv = document.getElementById('test-result-site'); var endpoint = document.getElementById('siteApiEndpoint').value.trim(); var key = document.getElementById('siteApiKey').value.trim(); var prompt = document.getElementById('siteApiPrompt').value.trim() || 'test cat'; if (!endpoint || !key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Endpoint et clé API requis'; resultDiv.style.display='block'; return; } btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Génération...'; resultDiv.style.display='none'; try { var response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Key ' + key }, body: JSON.stringify({ prompt: prompt, width: 256, height: 256, num_images: 1 }) }); btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération'; if (response.ok) { var data = await response.json(); var imgUrl = ''; if (data.images && data.images.length > 0) imgUrl = data.images[0].url; else if (data.output && data.output.images && data.output.images.length > 0) imgUrl = data.output.images[0].url; var html = '<i class="fas fa-check"></i> ✅ API fonctionnelle ! (' + response.status + ')'; if (imgUrl) html += '<br><img src="' + imgUrl + '" style="max-width:200px;border-radius:8px;margin-top:0.5rem">'; else html += '<br><small>Réponse : ' + JSON.stringify(data).substring(0, 300) + '</small>'; resultDiv.className='api-test-result success'; resultDiv.innerHTML = html; } else { var errText = await response.text(); resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur ' + response.status + '<br><small>' + errText.substring(0, 300) + '</small>'; } } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ ' + err.message; } resultDiv.style.display='block'; }
-async function loadApiKeys() { loadSiteApiConfig(); var result = await db.from('admin_config').select('*').eq('key','api_keys').single(); var keys = result.data ? result.data.value : {}; var providers = [{id:'fal.ai',name:'fal.ai (Flux + Wan 2.1)',testUrl:'https://rest.alpha.fal.ai/models'},{id:'replicate',name:'Replicate',testUrl:'https://api.replicate.com/v1/models'},{id:'stability',name:'Stability AI',testUrl:'https://api.stability.ai/v2beta/stable-image/generate/core'},{id:'kling',name:'Kling AI',testUrl:''},{id:'tencent',name:'Tencent Hunyuan',testUrl:''},{id:'runway',name:'Runway ML',testUrl:''},{id:'pika',name:'Pika Labs',testUrl:''},{id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}]; var html = ''; providers.forEach(function(p) { html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>'; }); document.getElementById('apiKeysContainer').innerHTML = html; }
-async function testApiKey(provider, testUrl) { var btn = document.getElementById('btn-test-'+provider); var resultDiv = document.getElementById('test-result-'+provider); var keyInput = document.querySelector('.api-key-input[data-provider="'+provider+'"]'); var key = keyInput.value.trim(); if (!key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Aucune clé saisie'; resultDiv.style.display='block'; return; } if (!testUrl) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-info-circle"></i> Test auto non disponible pour '+provider+'. Vérifiez manuellement.'; resultDiv.style.display='block'; return; } btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Test...'; resultDiv.style.display='none'; try { var headers = {'Content-Type':'application/json'}; if (provider==='fal.ai') headers['Authorization'] = 'Key '+key; else if (provider==='replicate'||provider==='stability'||provider==='openai') headers['Authorization'] = 'Bearer '+key; var response = await fetch(testUrl, {method:'GET',headers:headers}); btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester'; if (response.ok) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-check"></i> ✅ Clé valide ! ('+response.status+')'; } else { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Clé invalide ('+response.status+')'; } } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur : '+err.message; } resultDiv.style.display='block'; }
-async function saveApiKeys() { var keys = {}; document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()}); await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !'); }
+// =============================================
+// TEST API SITE + CLÉS API (IDENTIQUE V6.0)
+// =============================================
+async function loadSiteApiConfig() {
+    var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
+    var keys = r.data ? r.data.value : {};
+    if (keys['fal.ai']) { document.getElementById('siteApiKey').value = keys['fal.ai']; }
+    else { document.getElementById('siteApiKey').placeholder = 'Aucune clé fal.ai configurée'; }
+}
 
-async function loadAdNetworks() { var result = await db.from('admin_config').select('*').eq('key','ad_networks').single(); var networks = result.data ? result.data.value : []; window._adNetworks = networks; var tbody = document.getElementById('adNetworksTable'); if (networks.length) { tbody.innerHTML = networks.map(function(n,i){ return '<tr><td>'+n.name+'</td><td style="text-transform:capitalize">'+(n.page||'-')+'</td><td><span style="font-family:var(--mono);font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.2rem 0.5rem;border-radius:4px;color:var(--muted)">'+(n.type||'smartlink')+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+n.points+'</td><td>'+(n.active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editAdNetwork('+i+')" title="Modifier"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline" onclick="duplicateAdNetwork('+i+')" title="Dupliquer"><i class="fas fa-copy"></i></button><button class="btn btn-sm btn-outline" onclick="toggleAdNetwork('+i+')" title="'+(n.active?'Désactiver':'Activer')+'"><i class="fas fa-'+(n.active?'pause':'play')+'"></i></button><button class="btn btn-sm btn-danger" onclick="deleteAdNetwork('+i+')" title="Supprimer"><i class="fas fa-trash"></i></button></div></td></tr>'; }).join(''); } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie configurée</td></tr>'; } }
+async function testSiteApi() {
+    var btn = document.getElementById('btn-test-site');
+    var resultDiv = document.getElementById('test-result-site');
+    var endpoint = document.getElementById('siteApiEndpoint').value.trim();
+    var key = document.getElementById('siteApiKey').value.trim();
+    var prompt = document.getElementById('siteApiPrompt').value.trim() || 'test cat';
+    if (!endpoint || !key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Endpoint et clé API requis'; resultDiv.style.display='block'; return; }
+    btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Génération...';
+    resultDiv.style.display='none';
+    try {
+        var response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Key ' + key }, body: JSON.stringify({ prompt: prompt, width: 256, height: 256, num_images: 1 }) });
+        btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération';
+        if (response.ok) {
+            var data = await response.json();
+            var imgUrl = '';
+            if (data.images && data.images.length > 0) imgUrl = data.images[0].url;
+            else if (data.output && data.output.images && data.output.images.length > 0) imgUrl = data.output.images[0].url;
+            var html = '<i class="fas fa-check"></i> ✅ API fonctionnelle ! (' + response.status + ')';
+            if (imgUrl) html += '<br><img src="' + imgUrl + '" style="max-width:200px;border-radius:8px;margin-top:0.5rem">';
+            else html += '<br><small>Réponse : ' + JSON.stringify(data).substring(0, 300) + '</small>';
+            resultDiv.className='api-test-result success'; resultDiv.innerHTML = html;
+        } else {
+            var errText = await response.text();
+            resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur ' + response.status + '<br><small>' + errText.substring(0, 300) + '</small>';
+        }
+    } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ ' + err.message; }
+    resultDiv.style.display='block';
+}
+
+async function loadApiKeys() {    loadSiteApiConfig();
+    var result = await db.from('admin_config').select('*').eq('key','api_keys').single();
+    var keys = result.data ? result.data.value : {};
+    var providers = [
+        {id:'fal.ai',name:'fal.ai (Flux + Wan 2.1)',testUrl:'https://rest.alpha.fal.ai/models'},
+        {id:'replicate',name:'Replicate',testUrl:'https://api.replicate.com/v1/models'},
+        {id:'stability',name:'Stability AI',testUrl:'https://api.stability.ai/v2beta/stable-image/generate/core'},
+        {id:'kling',name:'Kling AI',testUrl:''},{id:'tencent',name:'Tencent Hunyuan',testUrl:''},
+        {id:'runway',name:'Runway ML',testUrl:''},{id:'pika',name:'Pika Labs',testUrl:''},
+        {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}
+    ];
+    var html = '';
+    providers.forEach(function(p) {
+        html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
+    });
+    document.getElementById('apiKeysContainer').innerHTML = html;
+}
+
+async function testApiKey(provider, testUrl) {
+    var btn = document.getElementById('btn-test-'+provider); var resultDiv = document.getElementById('test-result-'+provider);
+    var keyInput = document.querySelector('.api-key-input[data-provider="'+provider+'"]'); var key = keyInput.value.trim();
+    if (!key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Aucune clé saisie'; resultDiv.style.display='block'; return; }
+    if (!testUrl) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-info-circle"></i> Test auto non disponible pour '+provider+'. Vérifiez manuellement.'; resultDiv.style.display='block'; return; }
+    btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Test...'; resultDiv.style.display='none';
+    try {
+        var headers = {'Content-Type':'application/json'};
+        if (provider==='fal.ai') headers['Authorization'] = 'Key '+key;
+        else if (provider==='replicate'||provider==='stability'||provider==='openai') headers['Authorization'] = 'Bearer '+key;
+        var response = await fetch(testUrl, {method:'GET',headers:headers});
+        btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester';
+        if (response.ok) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-check"></i> ✅ Clé valide ! ('+response.status+')'; }
+        else { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Clé invalide ('+response.status+')'; }
+    } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur : '+err.message; }
+    resultDiv.style.display='block';
+}
+
+async function saveApiKeys() {
+    var keys = {};
+    document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
+    await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'});
+    addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');
+}
+
+// =============================================
+// RÉGIES PUB (IDENTIQUE V6.0)
+// =============================================
+async function loadAdNetworks() {
+    var result = await db.from('admin_config').select('*').eq('key','ad_networks').single();
+    var networks = result.data ? result.data.value : []; window._adNetworks = networks;
+    var tbody = document.getElementById('adNetworksTable');    if (networks.length) {
+        tbody.innerHTML = networks.map(function(n,i){
+            return '<tr><td>'+n.name+'</td><td style="text-transform:capitalize">'+(n.page||'-')+'</td><td><span style="font-family:var(--mono);font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.2rem 0.5rem;border-radius:4px;color:var(--muted)">'+(n.type||'smartlink')+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+n.points+'</td><td>'+(n.active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editAdNetwork('+i+')" title="Modifier"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline" onclick="duplicateAdNetwork('+i+')" title="Dupliquer"><i class="fas fa-copy"></i></button><button class="btn btn-sm btn-outline" onclick="toggleAdNetwork('+i+')" title="'+(n.active?'Désactiver':'Activer')+'"><i class="fas fa-'+(n.active?'pause':'play')+'"></i></button><button class="btn btn-sm btn-danger" onclick="deleteAdNetwork('+i+')" title="Supprimer"><i class="fas fa-trash"></i></button></div></td></tr>';
+        }).join('');
+    } else { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucune régie configurée</td></tr>'; }
+}
 function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=5; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }
 function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }
 function editAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=i; document.getElementById('adNetName').value=n.name; document.getElementById('adNetType').value=n.type||'smartlink'; document.getElementById('adNetPage').value=n.page||'earn'; document.getElementById('adNetPosition').value=n.position||'top'; document.getElementById('adNetLink').value=n.link||n.code||''; document.getElementById('adNetPoints').value=n.points; document.getElementById('adNetOrder').value=n.order||0; document.getElementById('adNetActive').checked=n.active!==false; }
@@ -858,49 +845,230 @@ async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetw
 async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }
 async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie supprimée'); }
 
-var DEFAULT_TASKS = [{name:'Voter pour une création',desc:'Donne ton avis sur une image de la galerie',points:2,type:'vote',limit:5,order:1,active:true},{name:'Commenter une création',desc:'Laisse un commentaire constructif',points:2,type:'comment',limit:3,order:2,active:true},{name:'Partager le site',desc:'Partage Pixora sur tes réseaux sociaux',points:3,type:'share',limit:1,order:3,active:true},{name:'Compléter son profil',desc:'Ajoute un pseudo et un avatar',points:3,type:'profile',limit:1,order:4,active:true},{name:'Badge Créateur Actif',desc:'Génère 5 images ou vidéos aujourd\'hui',points:5,type:'badge',limit:1,order:5,active:true}];
-async function loadInternalTasks() { var result = await db.from('admin_config').select('*').eq('key','internal_tasks').single(); var tasks = result.data ? result.data.value : null; if (!tasks || tasks.length === 0) { tasks = DEFAULT_TASKS; await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); } window._internalTasks = tasks; renderTasksTable(tasks); }
-function renderTasksTable(tasks) { var tbody = document.getElementById('tasksTable'); if (!tasks || tasks.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--dim)">Aucune tâche configurée</td></tr>'; return; } tbody.innerHTML = tasks.map(function(t, i) { return '<tr><td>'+t.name+'</td><td><span class="task-type-badge">'+t.type+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+t.points+'</td><td style="font-family:var(--mono)">'+t.limit+'</td><td>'+t.order+'</td><td>'+(t.active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editTask('+i+')" title="Modifier"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="deleteInternalTask('+i+')" title="Supprimer"><i class="fas fa-trash"></i></button></div></td></tr>'; }).join(''); }
+// =============================================
+// TÂCHES INTERNES (IDENTIQUE V6.0)
+// =============================================
+var DEFAULT_TASKS = [
+    {name:'Voter pour une création',desc:'Donne ton avis sur une image de la galerie',points:2,type:'vote',limit:5,order:1,active:true},
+    {name:'Commenter une création',desc:'Laisse un commentaire constructif',points:2,type:'comment',limit:3,order:2,active:true},
+    {name:'Partager le site',desc:'Partage Pixora sur tes réseaux sociaux',points:3,type:'share',limit:1,order:3,active:true},
+    {name:'Compléter son profil',desc:'Ajoute un pseudo et un avatar',points:3,type:'profile',limit:1,order:4,active:true},
+    {name:'Badge Créateur Actif',desc:'Génère 5 images ou vidéos aujourd\'hui',points:5,type:'badge',limit:1,order:5,active:true}
+];
+async function loadInternalTasks() {
+    var result = await db.from('admin_config').select('*').eq('key','internal_tasks').single();
+    var tasks = result.data ? result.data.value : null;
+    if (!tasks || tasks.length === 0) { tasks = DEFAULT_TASKS; await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); }
+    window._internalTasks = tasks; renderTasksTable(tasks);
+}
+function renderTasksTable(tasks) {
+    var tbody = document.getElementById('tasksTable');
+    if (!tasks || tasks.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--dim)">Aucune tâche configurée</td></tr>'; return; }
+    tbody.innerHTML = tasks.map(function(t, i) {
+        return '<tr><td>'+t.name+'</td><td><span class="task-type-badge">'+t.type+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+t.points+'</td><td style="font-family:var(--mono)">'+t.limit+'</td><td>'+t.order+'</td><td>'+(t.active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editTask('+i+')" title="Modifier"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="deleteInternalTask('+i+')" title="Supprimer"><i class="fas fa-trash"></i></button></div></td></tr>';
+    }).join('');
+}
 function openTaskForm() { document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=''; document.getElementById('taskName').value=''; document.getElementById('taskDesc').value=''; document.getElementById('taskPoints').value=2; document.getElementById('taskType').value='vote'; document.getElementById('taskLimit').value=5; document.getElementById('taskOrder').value=0; document.getElementById('taskActive').checked=true; }
 function closeTaskForm() { document.getElementById('taskForm').style.display='none'; }
 function editTask(index) { var t=window._internalTasks[index]; if(!t)return; document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=index; document.getElementById('taskName').value=t.name; document.getElementById('taskDesc').value=t.desc||''; document.getElementById('taskPoints').value=t.points; document.getElementById('taskType').value=t.type; document.getElementById('taskLimit').value=t.limit; document.getElementById('taskOrder').value=t.order||0; document.getElementById('taskActive').checked=t.active!==false; }
 async function saveInternalTask() { var index=document.getElementById('taskId').value; var data={name:document.getElementById('taskName').value.trim(),desc:document.getElementById('taskDesc').value.trim(),points:parseInt(document.getElementById('taskPoints').value)||0,type:document.getElementById('taskType').value,limit:parseInt(document.getElementById('taskLimit').value)||1,order:parseInt(document.getElementById('taskOrder').value)||0,active:document.getElementById('taskActive').checked}; if(!data.name){alert('Nom requis');return} var tasks=window._internalTasks||[]; if(index!==''){tasks[parseInt(index)]=data}else{tasks.push(data)} tasks.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); closeTaskForm(); loadInternalTasks(); addNotification('config','Tâche "'+data.name+'" sauvegardée'); }
 async function deleteInternalTask(index) { if(!confirm('Supprimer cette tâche ?'))return; window._internalTasks.splice(index,1); await db.from('admin_config').upsert({key:'internal_tasks',value:window._internalTasks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadInternalTasks(); addNotification('config','Tâche supprimée'); }
 
-async function loadReferrals() { var configResult = await db.from('admin_config').select('*').eq('key','referral_config').single(); var config = configResult.data ? configResult.data.value : {enabled:true, points:10, condition:'signup_gen'}; document.getElementById('refEnabled').checked = config.enabled !== false; document.getElementById('refPoints').value = config.points || 10; document.getElementById('refCondition').value = config.condition || 'signup_gen'; try { var refResult = await db.from('referrals').select('*, sponsor:users!referrals_sponsor_id_fkey(email), referred:users!referrals_referred_id_fkey(email)').order('created_at',{ascending:false}).limit(50); var tbody = document.getElementById('referralsTable'); if (refResult.data && refResult.data.length) { tbody.innerHTML = refResult.data.map(function(r) { var statusClass = r.validated ? 'status-valid' : 'status-pending'; var statusText = r.validated ? 'Validé' : 'En attente'; return '<tr><td style="font-size:0.8rem">'+(r.sponsor?.email||'-')+'</td><td style="font-size:0.8rem">'+(r.referred?.email||'-')+'</td><td><span class="status-badge '+statusClass+'">'+statusText+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+(r.validated?r.points||10:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(r.created_at).toLocaleString('fr-FR')+'</td></tr>'; }).join(''); } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>'; } } catch(err) { document.getElementById('referralsTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--warn)">Table referrals non créée. Exécutez le SQL dans Supabase.</td></tr>'; } }
-async function saveReferralConfig() { var config = { enabled: document.getElementById('refEnabled').checked, points: parseInt(document.getElementById('refPoints').value) || 10, condition: document.getElementById('refCondition').value }; await db.from('admin_config').upsert({key:'referral_config',value:config,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Parrainage configuré : '+config.points+' pts/filleul'); alert('✅ Configuration parrainage sauvegardée !'); }
+// =============================================
+// PARRAINAGE (IDENTIQUE V6.0)
+// =============================================
+async function loadReferrals() {
+    var configResult = await db.from('admin_config').select('*').eq('key','referral_config').single();
+    var config = configResult.data ? configResult.data.value : {enabled:true, points:10, condition:'signup_gen'};
+    document.getElementById('refEnabled').checked = config.enabled !== false;    document.getElementById('refPoints').value = config.points || 10;
+    document.getElementById('refCondition').value = config.condition || 'signup_gen';
+    try {
+        var refResult = await db.from('referrals').select('*, sponsor:users!referrals_sponsor_id_fkey(email), referred:users!referrals_referred_id_fkey(email)').order('created_at',{ascending:false}).limit(50);
+        var tbody = document.getElementById('referralsTable');
+        if (refResult.data && refResult.data.length) {
+            tbody.innerHTML = refResult.data.map(function(r) {
+                var statusClass = r.validated ? 'status-valid' : 'status-pending'; var statusText = r.validated ? 'Validé' : 'En attente';
+                return '<tr><td style="font-size:0.8rem">'+(r.sponsor?.email||'-')+'</td><td style="font-size:0.8rem">'+(r.referred?.email||'-')+'</td><td><span class="status-badge '+statusClass+'">'+statusText+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+(r.validated?r.points||10:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(r.created_at).toLocaleString('fr-FR')+'</td></tr>';
+            }).join('');
+        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>'; }
+    } catch(err) { document.getElementById('referralsTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--warn)">Table referrals non créée. Exécutez le SQL dans Supabase.</td></tr>'; }
+}
+async function saveReferralConfig() {
+    var config = { enabled: document.getElementById('refEnabled').checked, points: parseInt(document.getElementById('refPoints').value) || 10, condition: document.getElementById('refCondition').value };
+    await db.from('admin_config').upsert({key:'referral_config',value:config,updated_at:new Date().toISOString()},{onConflict:'key'});
+    addNotification('config','Parrainage configuré : '+config.points+' pts/filleul'); alert('✅ Configuration parrainage sauvegardée !');
+}
 
-async function loadPricing() { var r = await db.from('admin_config').select('*').eq('key','tiers').single(); if (r.data && r.data.value) { var tiers = r.data.value; [1,2,3].forEach(function(t) { var tier = tiers[t]; if (!tier) return; document.querySelectorAll('.pricing-t'+t).forEach(function(input) { var parts = input.dataset.key.split('.'); if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]]; }); }); } var b = await db.from('admin_config').select('*').eq('key','signup_bonus').single(); if (b.data) document.getElementById('signupBonus').value = b.data.value; var ret = await db.from('admin_config').select('*').eq('key','retention_config').single(); if (ret.data && ret.data.value) { var rc = ret.data.value; [1,2,3].forEach(function(t) { var tierData = rc[t]; if (!tierData) return; document.querySelectorAll('.retention-t'+t).forEach(function(input) { var rkey = input.dataset.rkey; if (tierData[rkey] !== undefined) input.value = tierData[rkey]; }); }); } }
-async function savePricing() { var tiers = {}; [1,2,3].forEach(function(t) { tiers[t] = { costs:{}, rewards:{}, limits:{} }; document.querySelectorAll('.pricing-t'+t).forEach(function(input) { var parts = input.dataset.key.split('.'); tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0; }); }); await db.from('admin_config').upsert({key:'tiers', value:tiers, updated_at:new Date().toISOString()}, {onConflict:'key'}); await db.from('admin_config').upsert({key:'signup_bonus', value:parseInt(document.getElementById('signupBonus').value)||15, updated_at:new Date().toISOString()}, {onConflict:'key'}); var retention = {}; [1,2,3].forEach(function(t) { retention[t] = {}; document.querySelectorAll('.retention-t'+t).forEach(function(input) { retention[t][input.dataset.rkey] = parseInt(input.value) || 0; }); }); await db.from('admin_config').upsert({key:'retention_config', value:retention, updated_at:new Date().toISOString()}, {onConflict:'key'}); addNotification('config', 'Pricing + Rétention sauvegardés'); alert('✅ Pricing + Rétention Quotidienne sauvegardés !'); }
+// =============================================
+// PRICING + RÉTENTION (IDENTIQUE V6.0)
+// =============================================
+async function loadPricing() {
+    var r = await db.from('admin_config').select('*').eq('key','tiers').single();
+    if (r.data && r.data.value) { var tiers = r.data.value; [1,2,3].forEach(function(t) { var tier = tiers[t]; if (!tier) return; document.querySelectorAll('.pricing-t'+t).forEach(function(input) { var parts = input.dataset.key.split('.'); if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]]; }); }); }
+    var b = await db.from('admin_config').select('*').eq('key','signup_bonus').single();
+    if (b.data) document.getElementById('signupBonus').value = b.data.value;
+    var ret = await db.from('admin_config').select('*').eq('key','retention_config').single();
+    if (ret.data && ret.data.value) { var rc = ret.data.value; [1,2,3].forEach(function(t) { var tierData = rc[t]; if (!tierData) return; document.querySelectorAll('.retention-t'+t).forEach(function(input) { var rkey = input.dataset.rkey; if (tierData[rkey] !== undefined) input.value = tierData[rkey]; }); }); }
+}
+async function savePricing() {
+    var tiers = {}; [1,2,3].forEach(function(t) { tiers[t] = { costs:{}, rewards:{}, limits:{} }; document.querySelectorAll('.pricing-t'+t).forEach(function(input) { var parts = input.dataset.key.split('.'); tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0; }); });
+    await db.from('admin_config').upsert({key:'tiers', value:tiers, updated_at:new Date().toISOString()}, {onConflict:'key'});
+    await db.from('admin_config').upsert({key:'signup_bonus', value:parseInt(document.getElementById('signupBonus').value)||15, updated_at:new Date().toISOString()}, {onConflict:'key'});
+    var retention = {}; [1,2,3].forEach(function(t) { retention[t] = {}; document.querySelectorAll('.retention-t'+t).forEach(function(input) { retention[t][input.dataset.rkey] = parseInt(input.value) || 0; }); });
+    await db.from('admin_config').upsert({key:'retention_config', value:retention, updated_at:new Date().toISOString()}, {onConflict:'key'});
+    addNotification('config', 'Pricing + Rétention sauvegardés'); alert('✅ Pricing + Rétention Quotidienne sauvegardés !');
+}
 
+// =============================================
+// SHOP CONFIG (IDENTIQUE V6.0)
+// =============================================
 async function loadShopConfig() { var r=await db.from('admin_config').select('*').eq('key','shop_config').single(); var c=r.data?r.data.value:{packs:[],subs:[],currency:'EUR',stripe_key:'',paypal_client_id:''}; document.getElementById('shopCurrency').value=c.currency||'EUR'; document.getElementById('stripeKey').value=c.stripe_key||''; document.getElementById('paypalClientId').value=c.paypal_client_id||''; var ph='';(c.packs||[]).forEach(function(p){ph+='<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="'+p.name+'"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="'+p.points+'"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="'+p.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('packsContainer').innerHTML=ph||'<div style="color:var(--dim);font-size:0.85rem">Aucun pack</div>'; var sh='';(c.subs||[]).forEach(function(s){sh+='<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="'+s.name+'"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="'+s.points+'"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="'+s.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('subsContainer').innerHTML=sh||'<div style="color:var(--dim);font-size:0.85rem">Aucun abonnement</div>'; }
 function addPackField() { document.getElementById('packsContainer').insertAdjacentHTML('beforeend','<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Pack Name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 function addSubField() { document.getElementById('subsContainer').insertAdjacentHTML('beforeend','<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Plan Name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 async function saveShopConfig() { var packs=[],subs=[]; document.querySelectorAll('.pack-row').forEach(function(r){var n=r.querySelector('.pack-name').value.trim();if(n)packs.push({name:n,points:parseInt(r.querySelector('.pack-points').value)||0,price:parseFloat(r.querySelector('.pack-price').value)||0})}); document.querySelectorAll('.sub-row').forEach(function(r){var n=r.querySelector('.sub-name').value.trim();if(n)subs.push({name:n,points:parseInt(r.querySelector('.sub-points').value)||0,price:parseFloat(r.querySelector('.sub-price').value)||0})}); await db.from('admin_config').upsert({key:'shop_config',value:{packs:packs,subs:subs,currency:document.getElementById('shopCurrency').value,stripe_key:document.getElementById('stripeKey').value.trim(),paypal_client_id:document.getElementById('paypalClientId').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Boutique sauvegardée'); alert('✅ Boutique sauvegardée !'); }
 
-var _shopItems = [];
-async function loadShopItems() { try { var result = await db.from('admin_config').select('*').eq('key', 'shop_items').single(); _shopItems = result.data ? result.data.value : []; var stats = await loadShopStats(); renderShopItemsTable(stats); } catch(e) { document.getElementById('shopItemsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--danger)">Erreur : ' + e.message + '</td></tr>'; } }
-async function loadShopStats() { var statsMap = {}; try { var result = await db.from('purchases').select('name'); if (result.data) { result.data.forEach(function(p) { statsMap[p.name] = (statsMap[p.name] || 0) + 1; }); } } catch(e) {} return statsMap; }function renderShopItemsTable(stats) { var tbody = document.getElementById('shopItemsTable'); if (!_shopItems || _shopItems.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--dim)">Aucun item configuré. Cliquez sur "Ajouter un item".</td></tr>'; return; } tbody.innerHTML = _shopItems.map(function(item, i) { var purchaseCount = stats[item.name] || 0; var typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' }; var typeColor = typeColors[item.type] || 'var(--muted)'; return '<tr><td style="font-weight:600">' + item.name + '</td><td><span style="font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:' + typeColor + '">' + (item.type || 'pack').toUpperCase() + '</span></td><td style="font-family:var(--mono);color:var(--gold);font-weight:700">' + (item.cost || 0) + '</td><td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted)">' + (item.icon || '-') + '</td><td style="font-family:var(--mono)">' + (item.order || 0) + '</td><td style="font-family:var(--mono);color:var(--info)">' + purchaseCount + '</td><td>' + (item.active !== false ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editShopItem(' + i + ')" title="Modifier"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline" onclick="toggleShopItem(' + i + ')" title="' + (item.active !== false ? 'Désactiver' : 'Activer') + '"><i class="fas fa-' + (item.active !== false ? 'pause' : 'play') + '"></i></button><button class="btn btn-sm btn-danger" onclick="deleteShopItem(' + i + ')" title="Supprimer"><i class="fas fa-trash"></i></button></div></td></tr>'; }).join(''); }
-function openShopItemForm() { document.getElementById('shopItemForm').style.display = 'block'; document.getElementById('shopItemId').value = ''; document.getElementById('shopItemName').value = ''; document.getElementById('shopItemDesc').value = ''; document.getElementById('shopItemCost').value = 50; document.getElementById('shopItemType').value = 'badge'; document.getElementById('shopItemIcon').value = 'fa-gift'; document.getElementById('shopItemOrder').value = 0; document.getElementById('shopItemActive').checked = true; }
-function closeShopItemForm() { document.getElementById('shopItemForm').style.display = 'none'; }
-function editShopItem(index) { var item = _shopItems[index]; if (!item) return; document.getElementById('shopItemForm').style.display = 'block'; document.getElementById('shopItemId').value = index; document.getElementById('shopItemName').value = item.name || ''; document.getElementById('shopItemDesc').value = item.desc || ''; document.getElementById('shopItemCost').value = item.cost || 50; document.getElementById('shopItemType').value = item.type || 'badge'; document.getElementById('shopItemIcon').value = item.icon || 'fa-gift'; document.getElementById('shopItemOrder').value = item.order || 0; document.getElementById('shopItemActive').checked = item.active !== false; }
-async function saveShopItem() { var index = document.getElementById('shopItemId').value; var data = { name: document.getElementById('shopItemName').value.trim(), desc: document.getElementById('shopItemDesc').value.trim(), cost: parseInt(document.getElementById('shopItemCost').value) || 0, type: document.getElementById('shopItemType').value, icon: document.getElementById('shopItemIcon').value.trim() || 'fa-gift', order: parseInt(document.getElementById('shopItemOrder').value) || 0, active: document.getElementById('shopItemActive').checked }; if (!data.name) { alert('Nom requis'); return; } if (data.cost <= 0) { alert('Le coût doit être supérieur à 0'); return; } if (index !== '') { _shopItems[parseInt(index)] = data; } else { _shopItems.push(data); } _shopItems.sort(function(a, b) { return (a.order || 0) - (b.order || 0); }); await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' }); closeShopItemForm(); loadShopItems(); addNotification('config', 'Item shop "' + data.name + '" sauvegardé'); alert('✅ Item shop sauvegardé !'); }
-async function toggleShopItem(index) { _shopItems[index].active = !_shopItems[index].active; await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' }); loadShopItems(); }
-async function deleteShopItem(index) { var name = _shopItems[index].name; if (!confirm('Supprimer "' + name + '" du shop points ?')) return; _shopItems.splice(index, 1); await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' }); loadShopItems(); addNotification('config', 'Item shop "' + name + '" supprimé'); }
+// =============================================
+// SHOP POINTS (IDENTIQUE V6.0)
+// =============================================var _shopItems = [];
+async function loadShopItems() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'shop_items').single();
+        _shopItems = result.data ? result.data.value : [];
+        var stats = await loadShopStats();
+        renderShopItemsTable(stats);
+    } catch(e) {
+        document.getElementById('shopItemsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--danger)">Erreur : ' + e.message + '</td></tr>';
+    }
+}
+async function loadShopStats() {
+    var statsMap = {};
+    try {
+        var result = await db.from('purchases').select('name');
+        if (result.data) {
+            result.data.forEach(function(p) {
+                statsMap[p.name] = (statsMap[p.name] || 0) + 1;
+            });
+        }
+    } catch(e) { /* Table purchases vide ou inexistante */ }
+    return statsMap;
+}
+function renderShopItemsTable(stats) {
+    var tbody = document.getElementById('shopItemsTable');
+    if (!_shopItems || _shopItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--dim)">Aucun item configuré. Cliquez sur "Ajouter un item".</td></tr>';
+        return;
+    }
+    tbody.innerHTML = _shopItems.map(function(item, i) {
+        var purchaseCount = stats[item.name] || 0;
+        var typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' };
+        var typeColor = typeColors[item.type] || 'var(--muted)';
+        return '<tr>' +
+            '<td style="font-weight:600">' + item.name + '</td>' +
+            '<td><span style="font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:' + typeColor + '">' + (item.type || 'pack').toUpperCase() + '</span></td>' +
+            '<td style="font-family:var(--mono);color:var(--gold);font-weight:700">' + (item.cost || 0) + '</td>' +
+            '<td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted)">' + (item.icon || '-') + '</td>' +
+            '<td style="font-family:var(--mono)">' + (item.order || 0) + '</td>' +
+            '<td style="font-family:var(--mono);color:var(--info)">' + purchaseCount + '</td>' +
+            '<td>' + (item.active !== false ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td>' +
+            '<td style="text-align:right"><div class="action-btns">' +
+            '<button class="btn btn-sm btn-outline" onclick="editShopItem(' + i + ')" title="Modifier"><i class="fas fa-pen"></i></button>' +
+            '<button class="btn btn-sm btn-outline" onclick="toggleShopItem(' + i + ')" title="' + (item.active !== false ? 'Désactiver' : 'Activer') + '"><i class="fas fa-' + (item.active !== false ? 'pause' : 'play') + '"></i></button>' +
+            '<button class="btn btn-sm btn-danger" onclick="deleteShopItem(' + i + ')" title="Supprimer"><i class="fas fa-trash"></i></button>' +
+            '</div></td></tr>';
+    }).join('');
+}
+function openShopItemForm() {
+    document.getElementById('shopItemForm').style.display = 'block';    document.getElementById('shopItemId').value = '';
+    document.getElementById('shopItemName').value = '';
+    document.getElementById('shopItemDesc').value = '';
+    document.getElementById('shopItemCost').value = 50;
+    document.getElementById('shopItemType').value = 'badge';
+    document.getElementById('shopItemIcon').value = 'fa-gift';
+    document.getElementById('shopItemOrder').value = 0;
+    document.getElementById('shopItemActive').checked = true;
+}
+function closeShopItemForm() {
+    document.getElementById('shopItemForm').style.display = 'none';
+}
+function editShopItem(index) {
+    var item = _shopItems[index];
+    if (!item) return;
+    document.getElementById('shopItemForm').style.display = 'block';
+    document.getElementById('shopItemId').value = index;
+    document.getElementById('shopItemName').value = item.name || '';
+    document.getElementById('shopItemDesc').value = item.desc || '';
+    document.getElementById('shopItemCost').value = item.cost || 50;
+    document.getElementById('shopItemType').value = item.type || 'badge';
+    document.getElementById('shopItemIcon').value = item.icon || 'fa-gift';
+    document.getElementById('shopItemOrder').value = item.order || 0;
+    document.getElementById('shopItemActive').checked = item.active !== false;
+}
+async function saveShopItem() {
+    var index = document.getElementById('shopItemId').value;
+    var data = {
+        name: document.getElementById('shopItemName').value.trim(),
+        desc: document.getElementById('shopItemDesc').value.trim(),
+        cost: parseInt(document.getElementById('shopItemCost').value) || 0,
+        type: document.getElementById('shopItemType').value,
+        icon: document.getElementById('shopItemIcon').value.trim() || 'fa-gift',
+        order: parseInt(document.getElementById('shopItemOrder').value) || 0,
+        active: document.getElementById('shopItemActive').checked
+    };
+    if (!data.name) { alert('Nom requis'); return; }
+    if (data.cost <= 0) { alert('Le coût doit être supérieur à 0'); return; }
+    if (index !== '') {
+        _shopItems[parseInt(index)] = data;
+    } else {
+        _shopItems.push(data);
+    }
+    _shopItems.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+    await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    closeShopItemForm();
+    loadShopItems();
+    addNotification('config', 'Item shop "' + data.name + '" sauvegardé');
+    alert('✅ Item shop sauvegardé !');
+}async function toggleShopItem(index) {
+    _shopItems[index].active = !_shopItems[index].active;
+    await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    loadShopItems();
+}
+async function deleteShopItem(index) {
+    var name = _shopItems[index].name;
+    if (!confirm('Supprimer "' + name + '" du shop points ?')) return;
+    _shopItems.splice(index, 1);
+    await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    loadShopItems();
+    addNotification('config', 'Item shop "' + name + '" supprimé');
+}
 
+// =============================================
+// SOCIAL LINKS (IDENTIQUE V6.0)
+// =============================================
 async function loadSocialLinks() { var r=await db.from('admin_config').select('*').eq('key','social_links').single(); var links=r.data?r.data.value:[]; var h=''; links.forEach(function(l){h+='<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" value="'+l.name+'"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" value="'+l.url+'"></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" value="'+(l.icon||'')+'" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('socialLinksContainer').innerHTML=h||'<div style="color:var(--dim);font-size:0.85rem">Aucun lien social</div>'; }
 function addSocialField() { document.getElementById('socialLinksContainer').insertAdjacentHTML('beforeend','<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" placeholder="Twitter"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" placeholder="https://twitter.com/..."></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 async function saveSocialLinks() { var links=[]; document.querySelectorAll('.social-row').forEach(function(r){var n=r.querySelector('.social-name').value.trim();if(n)links.push({name:n,url:r.querySelector('.social-url').value.trim(),icon:r.querySelector('.social-icon').value.trim()})}); await db.from('admin_config').upsert({key:'social_links',value:links,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Réseaux sociaux sauvegardés'); alert('✅ Réseaux sociaux sauvegardés !'); }
 
+// =============================================
+// SITE SETTINGS (IDENTIQUE V6.0)
+// =============================================
 async function loadSiteSettings() { var r=await db.from('admin_config').select('*').eq('key','site_settings').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('settingSiteName').value=s.name||'Pixora';document.getElementById('settingLogoUrl').value=s.logo_url||'';document.getElementById('settingFavicon').value=s.favicon||'';document.getElementById('settingColorPrimary').value=s.color_primary||'#8B5CF6';document.getElementById('settingColorSecondary').value=s.color_secondary||'#EC4899';document.getElementById('settingLang').value=s.lang||'fr';document.getElementById('settingHeroText').value=s.hero_text||'';document.getElementById('settingCopyright').value=s.copyright||'';document.getElementById('settingMaintenance').checked=!!s.maintenance} }
 async function saveSiteSettings() { await db.from('admin_config').upsert({key:'site_settings',value:{name:document.getElementById('settingSiteName').value.trim(),logo_url:document.getElementById('settingLogoUrl').value.trim(),favicon:document.getElementById('settingFavicon').value.trim(),color_primary:document.getElementById('settingColorPrimary').value,color_secondary:document.getElementById('settingColorSecondary').value,lang:document.getElementById('settingLang').value,hero_text:document.getElementById('settingHeroText').value.trim(),copyright:document.getElementById('settingCopyright').value.trim(),maintenance:document.getElementById('settingMaintenance').checked},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Paramètres site sauvegardés'); alert('✅ Paramètres sauvegardés !'); }
 
+// =============================================
+// SEO (IDENTIQUE V6.0)
+// =============================================
 async function loadSeo() { var r=await db.from('admin_config').select('*').eq('key','seo').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('seoTitle').value=s.title||'';document.getElementById('seoDescription').value=s.description||'';document.getElementById('seoOgImage').value=s.og_image||'';document.getElementById('seoCanonical').value=s.canonical||'';document.getElementById('seoRobots').value=s.robots||''} }
 async function saveSeo() { await db.from('admin_config').upsert({key:'seo',value:{title:document.getElementById('seoTitle').value.trim(),description:document.getElementById('seoDescription').value.trim(),og_image:document.getElementById('seoOgImage').value.trim(),canonical:document.getElementById('seoCanonical').value.trim(),robots:document.getElementById('seoRobots').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','SEO sauvegardé'); alert('✅ SEO sauvegardé !'); }
 
+// =============================================
+// LEGAL (IDENTIQUE V6.0)
+// =============================================
 async function loadLegal() { var r=await db.from('admin_config').select('*').eq('key','legal').single(); if(r.data&&r.data.value){document.getElementById('legalCgu').value=r.data.value.cgu||'';document.getElementById('legalPrivacy').value=r.data.value.privacy||'';document.getElementById('legalMentions').value=r.data.value.mentions||''} }
 async function saveLegal() { await db.from('admin_config').upsert({key:'legal',value:{cgu:document.getElementById('legalCgu').value,privacy:document.getElementById('legalPrivacy').value,mentions:document.getElementById('legalMentions').value},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Contenu légal sauvegardé'); alert('✅ Contenu légal sauvegardé !'); }
 
+// =============================================
+// USERS (IDENTIQUE V6.0)
+// =============================================
 async function loadUsers() { var r=await db.from('users').select('id,email,name,created_at'); var ud=await db.from('user_data').select('*'); var um={}; if(ud.data)ud.data.forEach(function(d){um[d.user_id]=d}); window._allUsers=r.data||[]; window._usersMap=um; renderUsersTable(window._allUsers,um); }
 function renderUsersTable(users,um) { var tb=document.getElementById('usersTable'); if(!users.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun utilisateur</td></tr>';return} tb.innerHTML=users.map(function(u){var d=um[u.id]||{};return '<tr><td>'+(u.name||'-')+'</td><td style="font-size:0.8rem">'+u.email+'</td><td><div class="inline-points-edit"><span style="font-family:var(--mono);color:var(--gold);min-width:40px">'+(d.points||0)+'</span><input type="number" id="pts-'+u.id+'" value="'+(d.points||0)+'"><button class="btn btn-sm btn-success" onclick="saveUserPoints(\''+u.id+'\')"><i class="fas fa-save"></i></button></div></td><td>J'+(d.streak||1)+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(d.last_login||'-')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\''+u.id+'\')" title="Ajouter"><i class="fas fa-plus"></i></button><button class="btn btn-sm btn-danger" onclick="banUser(\''+u.id+'\')" title="Bannir"><i class="fas fa-ban"></i></button></div></td></tr>'}).join(''); }
 function searchUsers() { var q=document.getElementById('userSearch').value.toLowerCase(); var f=window._allUsers.filter(function(u){return(u.email&&u.email.toLowerCase().includes(q))||(u.name&&u.name.toLowerCase().includes(q))}); renderUsersTable(f,window._usersMap||{}); }
@@ -908,16 +1076,49 @@ async function saveUserPoints(uid) { var np=parseInt(document.getElementById('pt
 async function addPointsToUser(uid) { var a=prompt('Combien de points ajouter ?'); if(!a||isNaN(a))return; a=parseInt(a); await db.from('transactions').insert({user_id:uid,type:'earned',title:'Ajout admin',amount:a}); var d=await db.from('user_data').select('*').eq('user_id',uid).single(); if(d.data){await db.from('user_data').update({points:d.data.points+a,total_earned:(d.data.total_earned||0)+a}).eq('user_id',uid)} loadUsers(); addNotification('user',a+' points ajoutés'); }
 async function banUser(uid) { if(!confirm('Bannir cet utilisateur ?'))return; await db.from('user_data').update({points:0,streak:0}).eq('user_id',uid); loadUsers(); addNotification('user','Utilisateur banni'); }
 
+// =============================================// LOGS (IDENTIQUE V6.0)
+// =============================================
 async function loadLogs() { var r=await db.from('admin_config').select('*').eq('key','system_logs').single(); var logs=r.data?r.data.value:[]; var tb=document.getElementById('logsTable'); if(logs.length){tb.innerHTML=logs.slice().reverse().slice(0,50).map(function(l){var colors={error:'var(--danger)',warn:'var(--warn)',info:'var(--accent)',success:'var(--success)'};return '<tr><td style="font-size:0.75rem;font-family:var(--mono);white-space:nowrap">'+new Date(l.time).toLocaleString('fr-FR')+'</td><td style="color:'+(colors[l.type]||'var(--text)')+';font-weight:600">'+l.type.toUpperCase()+'</td><td>'+l.message+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(l.details||'-')+'</td></tr>'}).join('')}else{tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--dim)">Aucun log</td></tr>'} }
 
+// =============================================
+// SECURITY (IDENTIQUE V6.0)
+// =============================================
 async function changeAdminPassword() { var np=document.getElementById('newAdminPass').value,cp=document.getElementById('confirmAdminPass').value; if(np!==cp){alert('Mots de passe différents');return} if(np.length<8){alert('Minimum 8 caractères');return} await db.auth.updateUser({password:np}); alert('✅ Mot de passe modifié !'); document.getElementById('newAdminPass').value=''; document.getElementById('confirmAdminPass').value=''; }
 
-function subscribeRealtime() { db.channel('admin-realtime').on('postgres_changes',{event:'INSERT',schema:'public',table:'users'},function(p){addNotification('user','Nouveau compte : '+(p.new.email||'inconnu'))}).on('postgres_changes',{event:'INSERT',schema:'public',table:'transactions'},function(p){if(p.new.type==='purchased')addNotification('payment','Paiement : '+p.new.title);if(p.new.type==='earned'&&p.new.amount>=50)addNotification('gen','Génération : '+p.new.title)}).subscribe(); }
+// =============================================
+// REALTIME (IDENTIQUE V6.0)
+// =============================================
+function subscribeRealtime() {
+    db.channel('admin-realtime')
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'users'},function(p){addNotification('user','Nouveau compte : '+(p.new.email||'inconnu'))})
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'transactions'},function(p){if(p.new.type==='purchased')addNotification('payment','Paiement : '+p.new.title);if(p.new.type==='earned'&&p.new.amount>=50)addNotification('gen','Génération : '+p.new.title)})
+        .subscribe();
+}
 
+// =============================================
+// INIT (IDENTIQUE V6.0)
+// =============================================
 async function initAdmin() { subscribeRealtime(); loadDashboard(); updateNotifUI(); }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    try { var r = await db.auth.getSession(); if (r.data.session && r.data.session.user) { var email = r.data.session.user.email.toLowerCase(); var isAuthorized = await verifyAdminAccess(email); if (!isAuthorized) { await db.auth.signOut(); showLoginError('⛔ Session expirée ou accès non autorisé. Veuillez vous reconnecter.'); return; } isAdminVerified = true; document.getElementById('loginOverlay').classList.add('hidden'); document.getElementById('adminEmailDisplay').textContent = email; initAdmin(); } } catch(err) { console.error('Session check error:', err); }
+    try {
+        var r = await db.auth.getSession();
+        if (r.data.session && r.data.session.user) {
+            var email = r.data.session.user.email.toLowerCase();
+            var isAuthorized = await verifyAdminAccess(email);
+            if (!isAuthorized) {
+                await db.auth.signOut();
+                showLoginError('⛔ Session expirée ou accès non autorisé. Veuillez vous reconnecter.');
+                return;
+            }
+            isAdminVerified = true;
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('adminEmailDisplay').textContent = email;
+            initAdmin();
+        }
+    } catch(err) {
+        console.error('Session check error:', err);
+    }
 });
 </script>
 </body>
