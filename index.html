@@ -166,7 +166,6 @@
         .social-btn.github i{color:#ffffff;font-size:1.1rem}
         .auth-footer{margin-top:1.2rem;font-size:0.72rem;color:var(--dim)}
         .auth-footer a{color:var(--prim);font-weight:500}
-        /* DISCOUNT BADGE STYLE */
         .discount-badge{display:inline-flex;align-items:center;gap:0.3rem;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(249,115,22,0.2));border:1px solid rgba(251,191,36,0.4);color:var(--gold);font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:6px;margin-top:4px;font-family:var(--mono)}
         .cost-original{text-decoration:line-through;opacity:0.5;font-size:0.6rem;margin-right:4px}
     </style>
@@ -194,8 +193,8 @@
             <button class="auth-tab active" onclick="switchTab('login')">Connexion</button>
             <button class="auth-tab" onclick="switchTab('register')">Inscription</button>
         </div>
-        <div class="form-section active" id="sec-login">            <form onsubmit="doLogin(event)">
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
+        <div class="form-section active" id="sec-login">
+            <form onsubmit="doLogin(event)">                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
                 <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
             </form>
@@ -243,8 +242,8 @@
     <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
     <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
 </nav>
-<main class="main-content">    <div class="hero"><h1>Générez l'impossible</h1><p>Images et vidéos IA professionnelles. Gratuit. Sans limite.</p></div>
-    <div class="quick-stats" id="quick-stats">
+<main class="main-content">
+    <div class="hero"><h1>Générez l'impossible</h1><p>Images et vidéos IA professionnelles. Gratuit. Sans limite.</p></div>    <div class="quick-stats" id="quick-stats">
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl">Points</div></div>
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl">Streak</div></div>
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-image"></i></div><div class="stat-val" id="stat-generated">0</div><div class="stat-lbl">Créations</div></div>
@@ -292,95 +291,28 @@ var currentTier = 1;
 var pendingReferrer = null;
 var API_KEYS = {};
 var currentDiscountUntil = null;
+var discountTimerInterval = null;
 var API_PROVIDERS = [
-    {
-        id: 'fal.ai',
-        name: 'fal.ai',
-        types: ['image'],
-        endpoint: 'https://queue.fal.run/fal-ai/flux/schnell',
-        authHeader: function(k){ return { 'Authorization': 'Key ' + k }; },
-        buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; },
-        parseUrl: function(d){
-            if (d.images && d.images[0] && d.images[0].url) return d.images[0].url;
-            if (d.output && d.output.images && d.output.images[0] && d.output.images[0].url) return d.output.images[0].url;
-            return null;
-        }
-    },
-    {
-        id: 'leonardo',
-        name: 'Leonardo.Ai',
-        types: ['image'],
-        endpoint: 'https://cloud.leonardo.ai/api/rest/v1/generations',
-        authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; },
-        buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; },
-        parseUrl: function(d){
-            if (d.generations && d.generations[0] && d.generations[0].generated_images && d.generations[0].generated_images[0]) return d.generations[0].generated_images[0].url;
-            return null;
-        }
-    },
-    {
-        id: 'tensor',
-        name: 'Tensor.Art',
-        types: ['image'],
-        endpoint: 'https://api.tensor.art/v1/generate',
-        authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; },
-        buildBody: function(p){ return { prompt: p, width: 512, height: 512 }; },
-        parseUrl: function(d){
-            if (d.images && d.images[0] && d.images[0].url) return d.images[0].url;
-            return null;
-        }
-    }
+    { id: 'fal.ai', name: 'fal.ai', types: ['image'], endpoint: 'https://queue.fal.run/fal-ai/flux/schnell', authHeader: function(k){ return { 'Authorization': 'Key ' + k }; }, buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; }, parseUrl: function(d){ if (d.images && d.images[0] && d.images[0].url) return d.images[0].url; if (d.output && d.output.images && d.output.images[0] && d.output.images[0].url) return d.output.images[0].url; return null; } },
+    { id: 'leonardo', name: 'Leonardo.Ai', types: ['image'], endpoint: 'https://cloud.leonardo.ai/api/rest/v1/generations', authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; }, buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; }, parseUrl: function(d){ if (d.generations && d.generations[0] && d.generations[0].generated_images && d.generations[0].generated_images[0]) return d.generations[0].generated_images[0].url; return null; } },
+    { id: 'tensor', name: 'Tensor.Art', types: ['image'], endpoint: 'https://api.tensor.art/v1/generate', authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; }, buildBody: function(p){ return { prompt: p, width: 512, height: 512 }; }, parseUrl: function(d){ if (d.images && d.images[0] && d.images[0].url) return d.images[0].url; return null; } }
 ];
 
-async function loadApiKeys() {
-    try {
-        var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
-        if (r.data && r.data.value) API_KEYS = r.data.value;
-    } catch(e) { console.error('Load API keys error:', e); }
-}
-
-function getPollinationsUrl(prompt, type) {
-    var seed = Math.floor(Math.random() * 100000);
-    var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed;    if (type === 'video') url += '&type=video';
-    return url;
-}
+async function loadApiKeys() { try { var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single(); if (r.data && r.data.value) API_KEYS = r.data.value; } catch(e) { console.error('Load API keys error:', e); } }
+function getPollinationsUrl(prompt, type) { var seed = Math.floor(Math.random() * 100000); var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed; if (type === 'video') url += '&type=video'; return url; }
 
 async function generateWithFallback(prompt, type) {
     for (var i = 0; i < API_PROVIDERS.length; i++) {
-        var provider = API_PROVIDERS[i];
-        if (provider.types.indexOf(type) === -1) continue;
-        var key = API_KEYS[provider.id];
-        if (!key) continue;
-        try {
-            var headers = { 'Content-Type': 'application/json' };
-            var authH = provider.authHeader(key);
-            for (var k in authH) { headers[k] = authH[k]; }
-            var response = await fetch(provider.endpoint, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(provider.buildBody(prompt))
-            });
-            if (!response.ok) continue;
-            var contentType = response.headers.get('content-type') || '';
-            if (contentType.indexOf('application/json') === -1) continue;
-            var data = await response.json();
-            var url = provider.parseUrl(data);
-            if (url) return { url: url, provider: provider.name };
-        } catch(e) {
-            console.warn('API ' + provider.id + ' failed:', e.message);
-            continue;
-        }
+        var provider = API_PROVIDERS[i]; if (provider.types.indexOf(type) === -1) continue; var key = API_KEYS[provider.id]; if (!key) continue;
+        try { var headers = { 'Content-Type': 'application/json' }; var authH = provider.authHeader(key); for (var k in authH) { headers[k] = authH[k]; } var response = await fetch(provider.endpoint, { method: 'POST', headers: headers, body: JSON.stringify(provider.buildBody(prompt)) }); if (!response.ok) continue; var contentType = response.headers.get('content-type') || ''; if (contentType.indexOf('application/json') === -1) continue; var data = await response.json(); var url = provider.parseUrl(data); if (url) return { url: url, provider: provider.name }; } catch(e) { console.warn('API ' + provider.id + ' failed:', e.message); continue; }
     }
     return { url: getPollinationsUrl(prompt, type), provider: 'Pollinations' };
 }
 
-async function loadDynamicConfig() {
-    try { var r = await db.from('admin_config').select('*').eq('key', 'tiers').single(); if (r.data && r.data.value) CONFIG_TIERS = r.data.value; } catch (err) { console.error('Config error:', err); }
-    updateCostUI();
-}
+async function loadDynamicConfig() { try { var r = await db.from('admin_config').select('*').eq('key', 'tiers').single(); if (r.data && r.data.value) CONFIG_TIERS = r.data.value; } catch (err) { console.error('Config error:', err); } updateCostUI(); }
 
 // =============================================
-// MODIFICATION #3 : updateCostUI avec support discount
+// CORRECTION : updateCostUI avec timer en temps réel
 // =============================================
 function updateCostUI() {
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
@@ -391,349 +323,158 @@ function updateCostUI() {
     var vidEl = document.getElementById('cost-video');
     var banner = document.getElementById('discount-banner');
     var timerEl = document.getElementById('discount-timer');
+
     if (isDiscounted) {
         var discImg = Math.ceil(imgCost / 2);
         var discVid = Math.ceil(vidCost / 2);
         imgEl.innerHTML = '<span class="cost-original">' + imgCost + '</span>' + discImg + ' pts';
         vidEl.innerHTML = '<span class="cost-original">' + vidCost + '</span>' + discVid + ' pts';
         banner.style.display = 'block';
-        var remaining = new Date(currentDiscountUntil) - new Date();
-        var hours = Math.floor(remaining / 3600000);
-        var mins = Math.floor((remaining % 3600000) / 60000);
-        timerEl.textContent = 'Expire dans ' + hours + 'h ' + mins + 'min';
+        if (!discountTimerInterval) {
+            discountTimerInterval = setInterval(function() {
+                var remaining = new Date(currentDiscountUntil) - new Date();
+                if (remaining <= 0) {
+                    clearInterval(discountTimerInterval);
+                    discountTimerInterval = null;
+                    currentDiscountUntil = null;
+                    updateCostUI();
+                    return;
+                }
+                var hours = Math.floor(remaining / 3600000);
+                var mins = Math.floor((remaining % 3600000) / 60000);                var secs = Math.floor((remaining % 60000) / 1000);
+                timerEl.textContent = 'Expire dans ' + hours + 'h ' + mins + 'min ' + secs + 's';
+            }, 1000);
+        }
     } else {
         imgEl.textContent = imgCost + ' pts';
         vidEl.textContent = vidCost + ' pts';
         banner.style.display = 'none';
         timerEl.textContent = '';
+        if (discountTimerInterval) { clearInterval(discountTimerInterval); discountTimerInterval = null; }
     }
 }
 
-function detectReferral() {
-    var params = new URLSearchParams(window.location.search);
-    var ref = params.get('ref');
-    if (ref && ref.length > 10) { pendingReferrer = ref; localStorage.setItem('pixora_ref', ref); }
-    else { pendingReferrer = localStorage.getItem('pixora_ref'); }
-}
-async function processReferral(newUserId) {
-    var referrerId = pendingReferrer || localStorage.getItem('pixora_ref');
-    if (!referrerId || referrerId === newUserId) return;
-    try {
-        var refConfigR = await db.from('admin_config').select('value').eq('key','referral_config').single();
-        var config = (refConfigR.data && refConfigR.data.value) ? refConfigR.data.value : { enabled:true, points:10 };
-        if (!config.enabled) return;
-        var existR = await db.from('referrals').select('id').eq('sponsor_id', referrerId).eq('referred_id', newUserId).single();
-        if (existR.data) return;
-        await db.from('referrals').insert({ sponsor_id: referrerId, referred_id: newUserId, points: config.points || 10, validated: false });
-        localStorage.removeItem('pixora_ref'); pendingReferrer = null;
-    } catch(e) { console.error('Referral error:', e); }
-}
-async function validatePendingReferral(userId) {
-    try {
-        var refsR = await db.from('referrals').select('id').eq('referred_id', userId).eq('validated', false);
-        var refs = refsR.data || [];
-        for (var i = 0; i < refs.length; i++) {
-            await db.from('referrals').update({ validated: true }).eq('id', refs[i].id);
-        }
-    } catch(e) { console.error('Validate referral error:', e); }
-}
-async function ensureUserData(userId) {
-    try {
-        var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single();        if (!existing.data) {
-            await db.from('user_data').insert({ user_id: userId, points: 0, streak: 0, last_login: null, total_generated: 0, total_earned: 0, tier: 1 });
-        }
-    } catch(e) { console.error('Ensure user_data error:', e); }
-}
-async function grantSignupBonus(userId) {
-    try {
-        var bonusR = await db.from('admin_config').select('value').eq('key','signup_bonus').single();
-        var bonus = (bonusR.data && bonusR.data.value !== undefined) ? bonusR.data.value : 15;
-        if (bonus <= 0) return;
-        var existR = await db.from('transactions').select('id').eq('user_id', userId).eq('title', 'Bonus inscription').single();
-        if (existR.data) return;
-        var ud = await db.from('user_data').select('points,total_earned').eq('user_id', userId).single();
-        var curPts = (ud.data && ud.data.points) || 0;
-        var curEarned = (ud.data && ud.data.total_earned) || 0;
-        await db.from('user_data').update({ points: curPts + bonus, total_earned: curEarned + bonus }).eq('user_id', userId);
-        await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Bonus inscription', amount: bonus });
-    } catch(e) { console.error('Signup bonus error:', e); }
-}
+function detectReferral() { var params = new URLSearchParams(window.location.search); var ref = params.get('ref'); if (ref && ref.length > 10) { pendingReferrer = ref; localStorage.setItem('pixora_ref', ref); } else { pendingReferrer = localStorage.getItem('pixora_ref'); } }
+async function processReferral(newUserId) { var referrerId = pendingReferrer || localStorage.getItem('pixora_ref'); if (!referrerId || referrerId === newUserId) return; try { var refConfigR = await db.from('admin_config').select('value').eq('key','referral_config').single(); var config = (refConfigR.data && refConfigR.data.value) ? refConfigR.data.value : { enabled:true, points:10 }; if (!config.enabled) return; var existR = await db.from('referrals').select('id').eq('sponsor_id', referrerId).eq('referred_id', newUserId).single(); if (existR.data) return; await db.from('referrals').insert({ sponsor_id: referrerId, referred_id: newUserId, points: config.points || 10, validated: false }); localStorage.removeItem('pixora_ref'); pendingReferrer = null; } catch(e) { console.error('Referral error:', e); } }
+async function validatePendingReferral(userId) { try { var refsR = await db.from('referrals').select('id').eq('referred_id', userId).eq('validated', false); var refs = refsR.data || []; for (var i = 0; i < refs.length; i++) { await db.from('referrals').update({ validated: true }).eq('id', refs[i].id); } } catch(e) { console.error('Validate referral error:', e); } }
+async function ensureUserData(userId) { try { var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single(); if (!existing.data) { await db.from('user_data').insert({ user_id: userId, points: 0, streak: 0, last_login: null, total_generated: 0, total_earned: 0, tier: 1 }); } } catch(e) { console.error('Ensure user_data error:', e); } }
+async function grantSignupBonus(userId) { try { var bonusR = await db.from('admin_config').select('value').eq('key','signup_bonus').single(); var bonus = (bonusR.data && bonusR.data.value !== undefined) ? bonusR.data.value : 15; if (bonus <= 0) return; var existR = await db.from('transactions').select('id').eq('user_id', userId).eq('title', 'Bonus inscription').single(); if (existR.data) return; var ud = await db.from('user_data').select('points,total_earned').eq('user_id', userId).single(); var curPts = (ud.data && ud.data.points) || 0; var curEarned = (ud.data && ud.data.total_earned) || 0; await db.from('user_data').update({ points: curPts + bonus, total_earned: curEarned + bonus }).eq('user_id', userId); await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Bonus inscription', amount: bonus }); } catch(e) { console.error('Signup bonus error:', e); } }
+
+// =============================================
+// CORRECTION CRITIQUE : loadUserTier lit discount_via getUserData (select *)
+// Au lieu de faire une requête séparée select('tier,discount_until') qui peut échouer
+// =============================================
 async function loadUserTier() {
-    try { var u = await getUser(); if (!u) { currentTier = 1; currentDiscountUntil = null; updateCostUI(); return; } var r = await db.from('user_data').select('tier,discount_until').eq('user_id', u.id).single(); currentTier = (r.data && r.data.tier) || 1; currentDiscountUntil = (r.data && r.data.discount_until) || null; } catch(e) { currentTier = 1; currentDiscountUntil = null; }
+    try {
+        var u = await getUser();
+        if (!u) { currentTier = 1; currentDiscountUntil = null; updateCostUI(); return; }
+        // Utilise getUserData() qui fait select('*') → garantit que discount_until est lu
+        var d = await getUserData();
+        currentTier = d.tier || 1;
+        currentDiscountUntil = d.discount_until || null;
+        console.log('[DISCOUNT DEBUG] tier=' + currentTier + ', discount_until=' + currentDiscountUntil);
+    } catch(e) {
+        console.error('[DISCOUNT DEBUG] loadUserTier error:', e);
+        currentTier = 1;
+        currentDiscountUntil = null;
+    }
     updateCostUI();
 }
-function notify(m, t) {
-    t = t || 'success';
-    var n = document.getElementById('notif');
-    document.getElementById('notif-text').textContent = m;
-    n.className = 'notification show ' + t;
-    setTimeout(function() { n.classList.remove('show'); }, 3000);
-}
+
+function notify(m, t) { t = t || 'success'; var n = document.getElementById('notif'); document.getElementById('notif-text').textContent = m; n.className = 'notification show ' + t; setTimeout(function() { n.classList.remove('show'); }, 3000); }
 async function getUser() { var r = await db.auth.getUser(); return r.data.user; }
 async function isLogged() { return !!await getUser(); }
 function openAuth() { document.getElementById('auth-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
 function closeAuth() { document.getElementById('auth-modal').classList.remove('active'); document.body.style.overflow = ''; }
 document.getElementById('auth-modal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });
-function switchTab(m) {
-    document.querySelectorAll('.auth-tab').forEach(function(t, i) { t.classList.toggle('active', i === (m === 'login' ? 0 : 1)); });
-    document.getElementById('sec-login').classList.toggle('active', m === 'login');
-    document.getElementById('sec-register').classList.toggle('active', m !== 'login');
-}
-async function doLogin(e) {
-    e.preventDefault();
-    var btn = document.getElementById('btn-login');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
-    try {
-        var r = await db.auth.signInWithPassword({ email: document.getElementById('l-email').value.trim(), password: document.getElementById('l-pw').value });
-        if (r.error) throw r.error;
-        closeAuth(); await loadUserTier(); updateUI(); notify('✅ Bienvenue !', 'success');
-    } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; }
-}async function doRegister(e) {
-    e.preventDefault();
-    var btn = document.getElementById('btn-reg');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';
-    try {
-        var emailVal = document.getElementById('r-email').value.trim();
-        var pwVal = document.getElementById('r-pw').value;
-        var nameVal = document.getElementById('r-name').value.trim();
-        var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } });
-        if (r.error) throw r.error;
-        var signInR = await db.auth.signInWithPassword({ email: emailVal, password: pwVal });
-        if (signInR.error) throw signInR.error;
-        var newUserId = signInR.data.user ? signInR.data.user.id : null;
-        if (newUserId) {
-            await ensureUserData(newUserId);
-            await grantSignupBonus(newUserId);
-            await processReferral(newUserId);
-        }
-        closeAuth(); await loadUserTier(); updateUI();
-        notify('🎉 Compte créé ! +15 pts bonus', 'success');
-    } catch (err) {
-        var msg = '❌ Erreur inscription';
-        if (err.message) {
-            if (err.message.indexOf('already registered') !== -1) msg = '❌ Cet email est déjà utilisé';
-            else if (err.message.indexOf('password') !== -1) msg = '❌ Mot de passe trop court';
-            else msg = '❌ ' + err.message;
-        }
-        notify(msg, 'error');
-        btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte';
-    }
-}
-async function loginWithGoogle() {
-    try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pixora-gold-eight.vercel.app' } }); } catch (err) { notify('❌ Erreur Google Login', 'error'); }
-}
+function switchTab(m) { document.querySelectorAll('.auth-tab').forEach(function(t, i) { t.classList.toggle('active', i === (m === 'login' ? 0 : 1)); }); document.getElementById('sec-login').classList.toggle('active', m === 'login'); document.getElementById('sec-register').classList.toggle('active', m !== 'login'); }
 
-// =============================================
-// MODIFICATION #1 : getUserData lit aussi discount_until
-// =============================================
+async function doLogin(e) { e.preventDefault(); var btn = document.getElementById('btn-login'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...'; try { var r = await db.auth.signInWithPassword({ email: document.getElementById('l-email').value.trim(), password: document.getElementById('l-pw').value }); if (r.error) throw r.error; closeAuth(); await loadUserTier(); updateUI(); notify('✅ Bienvenue !', 'success'); } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; } }
+async function doRegister(e) { e.preventDefault(); var btn = document.getElementById('btn-reg'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...'; try { var emailVal = document.getElementById('r-email').value.trim(); var pwVal = document.getElementById('r-pw').value; var nameVal = document.getElementById('r-name').value.trim(); var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } }); if (r.error) throw r.error; var signInR = await db.auth.signInWithPassword({ email: emailVal, password: pwVal }); if (signInR.error) throw signInR.error; var newUserId = signInR.data.user ? signInR.data.user.id : null; if (newUserId) { await ensureUserData(newUserId); await grantSignupBonus(newUserId); await processReferral(newUserId); } closeAuth(); await loadUserTier(); updateUI(); notify('🎉 Compte créé ! +15 pts bonus', 'success'); } catch (err) { var msg = '❌ Erreur inscription'; if (err.message) { if (err.message.indexOf('already registered') !== -1) msg = '❌ Cet email est déjà utilisé'; else if (err.message.indexOf('password') !== -1) msg = '❌ Mot de passe trop court'; else msg = '❌ ' + err.message; } notify(msg, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; } }async function loginWithGoogle() { try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pixora-gold-eight.vercel.app' } }); } catch (err) { notify('❌ Erreur Google Login', 'error'); } }
+
 async function getUserData() {
-    var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0, user_id: null, discount_until: null };
+    var u = await getUser();
+    if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0, user_id: null, discount_until: null, tier: 1 };
     var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
-    var d = r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 }; d.user_id = u.id;
+    var d = r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0, tier: 1 };
+    d.user_id = u.id;
     d.discount_until = d.discount_until || null;
+    d.tier = d.tier || 1;
     return d;
 }
 
-async function saveTransaction(type, title, amount) {
-    var u = await getUser(); if (!u) return;
-    await db.from('transactions').insert({ user_id: u.id, type: type, title: title, amount: amount });
-    var d = await getUserData();    var up = { points: d.points + amount };
-    if (amount > 0) up.total_earned = (d.total_earned || 0) + amount;
-    if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1;
-    await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' });
-}
+async function saveTransaction(type, title, amount) { var u = await getUser(); if (!u) return; await db.from('transactions').insert({ user_id: u.id, type: type, title: title, amount: amount }); var d = await getUserData(); var up = { points: d.points + amount }; if (amount > 0) up.total_earned = (d.total_earned || 0) + amount; if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1; await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' }); }
 function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
-document.addEventListener('click', function(e) {
-    var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar'); var mob = document.getElementById('mob-profile');
-    if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu();
-});
-async function doLogout() {
-    await db.auth.signOut(); closeUserMenu(); currentTier = 1; currentDiscountUntil = null; updateCostUI(); updateUI(); notify('👋 Déconnecté', 'success');
-    setTimeout(function() { location.reload(); }, 800);
-}
+document.addEventListener('click', function(e) { var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar'); var mob = document.getElementById('mob-profile'); if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu(); });
+async function doLogout() { await db.auth.signOut(); closeUserMenu(); currentTier = 1; currentDiscountUntil = null; if (discountTimerInterval) { clearInterval(discountTimerInterval); discountTimerInterval = null; } updateCostUI(); updateUI(); notify('👋 Déconnecté', 'success'); setTimeout(function() { location.reload(); }, 800); }
+
 async function updateUI() {
     var logged = await isLogged(); var user = await getUser();
-    document.getElementById('user-stats').classList.toggle('show', logged);
-    document.getElementById('user-avatar').classList.toggle('show', logged);
-    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
-    var qs = document.getElementById('quick-stats');
-    if (logged) { qs.classList.add('show'); } else { qs.classList.remove('show'); }
+    document.getElementById('user-stats').classList.toggle('show', logged); document.getElementById('user-avatar').classList.toggle('show', logged); document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
+    var qs = document.getElementById('quick-stats'); if (logged) { qs.classList.add('show'); } else { qs.classList.remove('show'); }
     if (logged) {
         var d = await getUserData();
-        document.getElementById('header-points').textContent = d.points || 0;
-        document.getElementById('nav-points-badge').textContent = d.points || 0;
-        document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';
-        document.getElementById('stat-points').textContent = d.points || 0;
-        document.getElementById('stat-streak').textContent = d.streak || 1;
-        document.getElementById('stat-generated').textContent = d.total_generated || 0;
-        document.getElementById('stat-earned').textContent = d.total_earned || 0;
-        var name = user.user_metadata && user.user_metadata.name ? user.user_metadata.name : 'Utilisateur';
-        var initial = name.charAt(0).toUpperCase();
-        document.getElementById('avatar-initial').textContent = initial;
-        document.getElementById('menu-avatar').textContent = initial;
-        document.getElementById('menu-name').textContent = name;
-        document.getElementById('menu-email').textContent = user.email;
-        document.getElementById('menu-points').textContent = d.points || 0;
+        document.getElementById('header-points').textContent = d.points || 0; document.getElementById('nav-points-badge').textContent = d.points || 0; document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';
+        document.getElementById('stat-points').textContent = d.points || 0; document.getElementById('stat-streak').textContent = d.streak || 1; document.getElementById('stat-generated').textContent = d.total_generated || 0; document.getElementById('stat-earned').textContent = d.total_earned || 0;
+        var name = user.user_metadata && user.user_metadata.name ? user.user_metadata.name : 'Utilisateur'; var initial = name.charAt(0).toUpperCase();
+        document.getElementById('avatar-initial').textContent = initial; document.getElementById('menu-avatar').textContent = initial; document.getElementById('menu-name').textContent = name; document.getElementById('menu-email').textContent = user.email; document.getElementById('menu-points').textContent = d.points || 0;
     }
 }
-function openLB(url, type) {
-    lbUrl = url; lbType = type || 'image';
-    var c = document.getElementById('lb-container'); c.innerHTML = '';
-    if (lbType === 'video') {
-        var v = document.createElement('video'); v.src = url; v.controls = true; v.autoplay = true; v.loop = true;
-        v.style.cssText = 'max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)'; c.appendChild(v);
-    } else { var i = document.createElement('img'); i.src = url; i.alt = 'Zoom'; c.appendChild(i); }
-    document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden';
-}
-function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
-async function dlLB() {
-    if (!lbUrl) return;
-    try { var r = await fetch(lbUrl); var b = await r.blob(); var ext = lbType === 'video' ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(lbUrl, '_blank'); }
-}
-async function dlDirect(btn) {
-    var card = btn.closest('.result-card'); var media = card.querySelector('img') || card.querySelector('video');
-    if (!media || !media.src) return;
-    try { var r = await fetch(media.src); var b = await r.blob(); var isV = media.tagName === 'VIDEO'; var ext = isV ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(media.src, '_blank'); }
-}
-function selType(t) {
-    curType = t;
-    document.querySelectorAll('.type-btn').forEach(function(c, i) { c.classList.toggle('active', (t === 'image' && i === 0) || (t === 'video' && i === 1)); });
-}
-async function loadStudio() {
-    var grid = document.getElementById('results-grid');
-    try {
-        var result = await db.storage.from(BUCKET).list('', { limit: 20, sortBy: { column: 'created_at', order: 'desc' } });
-        if (!result.data || result.data.length === 0) return;
-        var now = Date.now(); grid.innerHTML = '';
-        result.data.forEach(function(file) {
-            var createdAt = new Date(file.created_at).getTime();
-            if ((now - createdAt) < 3600000) {
-                var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
-                var url = urlData.data.publicUrl;
-                var isVideo = file.name.indexOf('_video_') !== -1;
-                var card = document.createElement('div'); card.className = 'result-card';
-                if (isVideo) {
-                    card.innerHTML = '<video src="' + url + '" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
-                    var vid = card.querySelector('video'); vid.onmouseenter = function() { vid.play(); }; vid.onmouseleave = function() { vid.pause(); vid.currentTime = 0; };
-                } else {
-                    card.innerHTML = '<img src="' + url + '" alt="Création" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
-                }
-                card.onclick = function() { openLB(url, isVideo ? 'video' : 'image'); };
-                grid.appendChild(card);
-                setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000 - (now - createdAt));
-            }
-        });
-    } catch (err) { console.error('Studio load error:', err); }
-}
-async function uploadToStorage(mediaUrl, type) {
-    try {
-        var response = await fetch(mediaUrl); var blob = await response.blob();
-        var prefix = type === 'video' ? '_video_' : '_img_';
-        var fileName = Date.now() + prefix + Math.floor(Math.random() * 100000) + (type === 'video' ? '.mp4' : '.jpg');
-        var contentType = type === 'video' ? 'video/mp4' : 'image/jpeg';
-        await db.storage.from(BUCKET).upload(fileName, blob, { contentType: contentType, upsert: false });
-        loadStudio();
-    } catch (err) { console.error('Upload failed:', err); }
-}
-// =============================================
-// MODIFICATION #2 : generate() avec calcul discount selon tier
-// =============================================
+
+function openLB(url, type) { lbUrl = url; lbType = type || 'image'; var c = document.getElementById('lb-container'); c.innerHTML = ''; if (lbType === 'video') { var v = document.createElement('video'); v.src = url; v.controls = true; v.autoplay = true; v.loop = true; v.style.cssText = 'max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)'; c.appendChild(v); } else { var i = document.createElement('img'); i.src = url; i.alt = 'Zoom'; c.appendChild(i); } document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }
+document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
+async function dlLB() { if (!lbUrl) return; try { var r = await fetch(lbUrl); var b = await r.blob(); var ext = lbType === 'video' ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(lbUrl, '_blank'); } }
+async function dlDirect(btn) { var card = btn.closest('.result-card'); var media = card.querySelector('img') || card.querySelector('video'); if (!media || !media.src) return; try { var r = await fetch(media.src); var b = await r.blob(); var isV = media.tagName === 'VIDEO'; var ext = isV ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(media.src, '_blank'); } }
+function selType(t) { curType = t; document.querySelectorAll('.type-btn').forEach(function(c, i) { c.classList.toggle('active', (t === 'image' && i === 0) || (t === 'video' && i === 1)); }); }
+
+async function loadStudio() { var grid = document.getElementById('results-grid'); try { var result = await db.storage.from(BUCKET).list('', { limit: 20, sortBy: { column: 'created_at', order: 'desc' } }); if (!result.data || result.data.length === 0) return; var now = Date.now(); grid.innerHTML = ''; result.data.forEach(function(file) { var createdAt = new Date(file.created_at).getTime(); if ((now - createdAt) < 3600000) { var urlData = db.storage.from(BUCKET).getPublicUrl(file.name); var url = urlData.data.publicUrl; var isVideo = file.name.indexOf('_video_') !== -1; var card = document.createElement('div'); card.className = 'result-card'; if (isVideo) { card.innerHTML = '<video src="' + url + '" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>'; var vid = card.querySelector('video'); vid.onmouseenter = function() { vid.play(); }; vid.onmouseleave = function() { vid.pause(); vid.currentTime = 0; }; } else { card.innerHTML = '<img src="' + url + '" alt="Création" loading="lazy"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>'; } card.onclick = function() { openLB(url, isVideo ? 'video' : 'image'); }; grid.appendChild(card); setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000 - (now - createdAt)); } }); } catch (err) { console.error('Studio load error:', err); } }
+async function uploadToStorage(mediaUrl, type) { try { var response = await fetch(mediaUrl); var blob = await response.blob(); var prefix = type === 'video' ? '_video_' : '_img_'; var fileName = Date.now() + prefix + Math.floor(Math.random() * 100000) + (type === 'video' ? '.mp4' : '.jpg'); var contentType = type === 'video' ? 'video/mp4' : 'image/jpeg'; await db.storage.from(BUCKET).upload(fileName, blob, { contentType: contentType, upsert: false }); loadStudio(); } catch (err) { console.error('Upload failed:', err); } }
+
 async function generate() {
-    var p = document.getElementById('prompt').value.trim();
-    if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
-    var logged = await isLogged();
-    if (!logged) { openAuth(); return; }
+    var p = document.getElementById('prompt').value.trim(); if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
+    var logged = await isLogged(); if (!logged) { openAuth(); return; }
     await loadUserTier();
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
     var userData = await getUserData();
-
-    // Calcul du coût avec discount si actif
     var baseCost = curType === 'image' ? c.costs.image : c.costs.video;
-    var isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();
-    var cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
-
+    var isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();    var cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
     if (userData.points < cost) { notify('Points insuffisants ! Visitez la page Points.', 'error'); return; }
     notify('🎨 Génération en cours...', 'success');
-    var grid = document.getElementById('results-grid');
-    var card = document.createElement('div'); card.className = 'result-card';
+    var grid = document.getElementById('results-grid'); var card = document.createElement('div'); card.className = 'result-card';
     var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-    if (curType === 'video') {
-        card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération vidéo...</div></div><video muted loop playsinline style="opacity:0;transition:opacity 0.3s"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
-    } else {
-        card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération IA...</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';
-    }
+    if (curType === 'video') { card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération vidéo...</div></div><video muted loop playsinline style="opacity:0;transition:opacity 0.3s"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>'; } else { card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération IA...</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>'; }
     grid.insertBefore(card, grid.firstChild);
-    var st = Date.now();
-    var tmr = document.getElementById(tmrId);
-    var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
-    var media = curType === 'video' ? card.querySelector('video') : card.querySelector('img');
-    var loaded = false;
-    var currentUser = await getUser();
-
+    var st = Date.now(); var tmr = document.getElementById(tmrId); var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
+    var media = curType === 'video' ? card.querySelector('video') : card.querySelector('img'); var loaded = false; var currentUser = await getUser();
     try {
-        var result = await generateWithFallback(p, curType);
-        var url = result.url;
-        var providerName = result.provider;
-
-        if (providerName !== 'fal.ai' && providerName !== 'Pollinations') {
-            notify('⚡ Via ' + providerName, 'success');
-        }
-
+        var result = await generateWithFallback(p, curType); var url = result.url; var providerName = result.provider;
+        if (providerName !== 'fal.ai' && providerName !== 'Pollinations') { notify('⚡ Via ' + providerName, 'success'); }
         media.src = url;
-
         function onLoad() {
-            if (loaded) return;
-            loaded = true;            clearInterval(iv);
-            var elapsed = ((Date.now() - st) / 1000).toFixed(1);
-            var to = card.querySelector('.timer-overlay');
-            if (to) to.remove();
-            media.style.opacity = '1';
-            if (curType === 'video') {
-                media.onmouseenter = function() { media.play(); };
-                media.onmouseleave = function() { media.pause(); media.currentTime = 0; };
-            }
-            card.onclick = function() { openLB(url, curType); };
-            uploadToStorage(url, curType);
-            saveTransaction('spent', 'Génération ' + curType + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() {
-                updateUI();
-            });
-            if (currentUser && currentUser.id) {
-                validatePendingReferral(currentUser.id);
-                getUserData().then(function(freshData) {
-                    var newGen = (freshData.total_generated || 0) + 1;
-                    db.from('user_data').update({ total_generated: newGen }).eq('user_id', currentUser.id).catch(function(){});
-                });
-            }
-            var discountMsg = isDiscounted ? ' 🔥 -50%' : '';
-            notify('✅ Générée en ' + elapsed + 's ! (-' + cost + ' pts' + discountMsg + ')', 'success');
+            if (loaded) return; loaded = true; clearInterval(iv);
+            var elapsed = ((Date.now() - st) / 1000).toFixed(1); var to = card.querySelector('.timer-overlay'); if (to) to.remove(); media.style.opacity = '1';
+            if (curType === 'video') { media.onmouseenter = function() { media.play(); }; media.onmouseleave = function() { media.pause(); media.currentTime = 0; }; }
+            card.onclick = function() { openLB(url, curType); }; uploadToStorage(url, curType);
+            saveTransaction('spent', 'Génération ' + curType + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
+            if (currentUser && currentUser.id) { validatePendingReferral(currentUser.id); getUserData().then(function(freshData) { var newGen = (freshData.total_generated || 0) + 1; db.from('user_data').update({ total_generated: newGen }).eq('user_id', currentUser.id).catch(function(){}); }); }
+            var discountMsg = isDiscounted ? ' 🔥 -50%' : ''; notify('✅ Générée en ' + elapsed + 's ! (-' + cost + ' pts' + discountMsg + ')', 'success');
             setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);
         }
-
-        if (curType === 'video') {
-            media.onloadeddata = onLoad;
-            media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération vidéo échouée.', 'error'); };
-        } else {
-            media.onload = onLoad;
-            media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération échouée. Réessayez.', 'error'); };
-        }
-
-    } catch(err) {
-        clearInterval(iv);
-        card.remove();
-        notify('❌ Erreur génération. Réessayez.', 'error');
-    }
+        if (curType === 'video') { media.onloadeddata = onLoad; media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération vidéo échouée.', 'error'); }; } else { media.onload = onLoad; media.onerror = function() { clearInterval(iv); card.remove(); notify('❌ Génération échouée. Réessayez.', 'error'); }; }
+    } catch(err) { clearInterval(iv); card.remove(); notify('❌ Erreur génération. Réessayez.', 'error'); }
 }
 
 var authNotified = false;
 db.auth.onAuthStateChange(async function(event) {
-    if (event === 'SIGNED_IN') {
-        await loadUserTier(); updateUI(); closeAuth();
-        if (!authNotified) { notify('✅ Connecté !', 'success'); authNotified = true; setTimeout(function() { authNotified = false; }, 3000); }
-    } else if (event === 'SIGNED_OUT') { currentTier = 1; currentDiscountUntil = null; updateCostUI(); updateUI(); authNotified = false; }
+    if (event === 'SIGNED_IN') { await loadUserTier(); updateUI(); closeAuth(); if (!authNotified) { notify('✅ Connecté !', 'success'); authNotified = true; setTimeout(function() { authNotified = false; }, 3000); } }
+    else if (event === 'SIGNED_OUT') { currentTier = 1; currentDiscountUntil = null; if (discountTimerInterval) { clearInterval(discountTimerInterval); discountTimerInterval = null; } updateCostUI(); updateUI(); authNotified = false; }
     else if (event === 'TOKEN_REFRESHED') { updateUI(); }
 });
-document.addEventListener('DOMContentLoaded', async function() {    detectReferral();
+
+document.addEventListener('DOMContentLoaded', async function() {
+    detectReferral();
     await loadApiKeys();
     await loadDynamicConfig();
     await loadUserTier();
