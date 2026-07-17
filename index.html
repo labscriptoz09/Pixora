@@ -166,6 +166,9 @@
         .social-btn.github i{color:#ffffff;font-size:1.1rem}
         .auth-footer{margin-top:1.2rem;font-size:0.72rem;color:var(--dim)}
         .auth-footer a{color:var(--prim);font-weight:500}
+        /* DISCOUNT BADGE STYLE */
+        .discount-badge{display:inline-flex;align-items:center;gap:0.3rem;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(249,115,22,0.2));border:1px solid rgba(251,191,36,0.4);color:var(--gold);font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:6px;margin-top:4px;font-family:var(--mono)}
+        .cost-original{text-decoration:line-through;opacity:0.5;font-size:0.6rem;margin-right:4px}
     </style>
 </head>
 <body>
@@ -191,10 +194,10 @@
             <button class="auth-tab active" onclick="switchTab('login')">Connexion</button>
             <button class="auth-tab" onclick="switchTab('register')">Inscription</button>
         </div>
-        <div class="form-section active" id="sec-login">
-            <form onsubmit="doLogin(event)">
+        <div class="form-section active" id="sec-login">            <form onsubmit="doLogin(event)">
                 <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
-                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>                <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
+                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
+                <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
             </form>
         </div>
         <div class="form-section" id="sec-register">
@@ -240,10 +243,10 @@
     <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
     <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
 </nav>
-<main class="main-content">
-    <div class="hero"><h1>Générez l'impossible</h1><p>Images et vidéos IA professionnelles. Gratuit. Sans limite.</p></div>
+<main class="main-content">    <div class="hero"><h1>Générez l'impossible</h1><p>Images et vidéos IA professionnelles. Gratuit. Sans limite.</p></div>
     <div class="quick-stats" id="quick-stats">
-        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl">Points</div></div>        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl">Points</div></div>
+        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl">Streak</div></div>
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-image"></i></div><div class="stat-val" id="stat-generated">0</div><div class="stat-lbl">Créations</div></div>
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-coins"></i></div><div class="stat-val" id="stat-earned">0</div><div class="stat-lbl">Total Gagné</div></div>
     </div>
@@ -255,6 +258,10 @@
         <div class="type-selector">
             <button class="type-btn active" onclick="selType('image')"><i class="fas fa-image"></i><span class="type-name">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
             <button class="type-btn" onclick="selType('video')"><i class="fas fa-video"></i><span class="type-name">Vidéo</span><span class="type-cost" id="cost-video">18 pts</span></button>
+        </div>
+        <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem">
+            <span class="discount-badge"><i class="fas fa-fire"></i> -50% ACTIF</span>
+            <span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span>
         </div>
         <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> Générer</button>
     </div>
@@ -284,7 +291,7 @@ var CONFIG_TIERS = JSON.parse(JSON.stringify(DEFAULT_TIERS));
 var currentTier = 1;
 var pendingReferrer = null;
 var API_KEYS = {};
-
+var currentDiscountUntil = null;
 var API_PROVIDERS = [
     {
         id: 'fal.ai',
@@ -292,7 +299,8 @@ var API_PROVIDERS = [
         types: ['image'],
         endpoint: 'https://queue.fal.run/fal-ai/flux/schnell',
         authHeader: function(k){ return { 'Authorization': 'Key ' + k }; },
-        buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; },        parseUrl: function(d){
+        buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; },
+        parseUrl: function(d){
             if (d.images && d.images[0] && d.images[0].url) return d.images[0].url;
             if (d.output && d.output.images && d.output.images[0] && d.output.images[0].url) return d.output.images[0].url;
             return null;
@@ -333,15 +341,15 @@ async function loadApiKeys() {
 
 function getPollinationsUrl(prompt, type) {
     var seed = Math.floor(Math.random() * 100000);
-    var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed;
-    if (type === 'video') url += '&type=video';
+    var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed;    if (type === 'video') url += '&type=video';
     return url;
 }
 
 async function generateWithFallback(prompt, type) {
     for (var i = 0; i < API_PROVIDERS.length; i++) {
         var provider = API_PROVIDERS[i];
-        if (provider.types.indexOf(type) === -1) continue;        var key = API_KEYS[provider.id];
+        if (provider.types.indexOf(type) === -1) continue;
+        var key = API_KEYS[provider.id];
         if (!key) continue;
         try {
             var headers = { 'Content-Type': 'application/json' };
@@ -370,11 +378,37 @@ async function loadDynamicConfig() {
     try { var r = await db.from('admin_config').select('*').eq('key', 'tiers').single(); if (r.data && r.data.value) CONFIG_TIERS = r.data.value; } catch (err) { console.error('Config error:', err); }
     updateCostUI();
 }
+
+// =============================================
+// MODIFICATION #3 : updateCostUI avec support discount
+// =============================================
 function updateCostUI() {
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
-    document.getElementById('cost-image').textContent = c.costs.image + ' pts';
-    document.getElementById('cost-video').textContent = c.costs.video + ' pts';
+    var isDiscounted = currentDiscountUntil && new Date(currentDiscountUntil) > new Date();
+    var imgCost = c.costs.image;
+    var vidCost = c.costs.video;
+    var imgEl = document.getElementById('cost-image');
+    var vidEl = document.getElementById('cost-video');
+    var banner = document.getElementById('discount-banner');
+    var timerEl = document.getElementById('discount-timer');
+    if (isDiscounted) {
+        var discImg = Math.ceil(imgCost / 2);
+        var discVid = Math.ceil(vidCost / 2);
+        imgEl.innerHTML = '<span class="cost-original">' + imgCost + '</span>' + discImg + ' pts';
+        vidEl.innerHTML = '<span class="cost-original">' + vidCost + '</span>' + discVid + ' pts';
+        banner.style.display = 'block';
+        var remaining = new Date(currentDiscountUntil) - new Date();
+        var hours = Math.floor(remaining / 3600000);
+        var mins = Math.floor((remaining % 3600000) / 60000);
+        timerEl.textContent = 'Expire dans ' + hours + 'h ' + mins + 'min';
+    } else {
+        imgEl.textContent = imgCost + ' pts';
+        vidEl.textContent = vidCost + ' pts';
+        banner.style.display = 'none';
+        timerEl.textContent = '';
+    }
 }
+
 function detectReferral() {
     var params = new URLSearchParams(window.location.search);
     var ref = params.get('ref');
@@ -390,7 +424,8 @@ async function processReferral(newUserId) {
         if (!config.enabled) return;
         var existR = await db.from('referrals').select('id').eq('sponsor_id', referrerId).eq('referred_id', newUserId).single();
         if (existR.data) return;
-        await db.from('referrals').insert({ sponsor_id: referrerId, referred_id: newUserId, points: config.points || 10, validated: false });        localStorage.removeItem('pixora_ref'); pendingReferrer = null;
+        await db.from('referrals').insert({ sponsor_id: referrerId, referred_id: newUserId, points: config.points || 10, validated: false });
+        localStorage.removeItem('pixora_ref'); pendingReferrer = null;
     } catch(e) { console.error('Referral error:', e); }
 }
 async function validatePendingReferral(userId) {
@@ -404,8 +439,7 @@ async function validatePendingReferral(userId) {
 }
 async function ensureUserData(userId) {
     try {
-        var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single();
-        if (!existing.data) {
+        var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single();        if (!existing.data) {
             await db.from('user_data').insert({ user_id: userId, points: 0, streak: 0, last_login: null, total_generated: 0, total_earned: 0, tier: 1 });
         }
     } catch(e) { console.error('Ensure user_data error:', e); }
@@ -425,7 +459,7 @@ async function grantSignupBonus(userId) {
     } catch(e) { console.error('Signup bonus error:', e); }
 }
 async function loadUserTier() {
-    try { var u = await getUser(); if (!u) { currentTier = 1; return; } var r = await db.from('user_data').select('tier').eq('user_id', u.id).single(); currentTier = (r.data && r.data.tier) || 1; } catch(e) { currentTier = 1; }
+    try { var u = await getUser(); if (!u) { currentTier = 1; currentDiscountUntil = null; updateCostUI(); return; } var r = await db.from('user_data').select('tier,discount_until').eq('user_id', u.id).single(); currentTier = (r.data && r.data.tier) || 1; currentDiscountUntil = (r.data && r.data.discount_until) || null; } catch(e) { currentTier = 1; currentDiscountUntil = null; }
     updateCostUI();
 }
 function notify(m, t) {
@@ -439,7 +473,8 @@ async function getUser() { var r = await db.auth.getUser(); return r.data.user; 
 async function isLogged() { return !!await getUser(); }
 function openAuth() { document.getElementById('auth-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
 function closeAuth() { document.getElementById('auth-modal').classList.remove('active'); document.body.style.overflow = ''; }
-document.getElementById('auth-modal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });function switchTab(m) {
+document.getElementById('auth-modal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });
+function switchTab(m) {
     document.querySelectorAll('.auth-tab').forEach(function(t, i) { t.classList.toggle('active', i === (m === 'login' ? 0 : 1)); });
     document.getElementById('sec-login').classList.toggle('active', m === 'login');
     document.getElementById('sec-register').classList.toggle('active', m !== 'login');
@@ -453,8 +488,7 @@ async function doLogin(e) {
         if (r.error) throw r.error;
         closeAuth(); await loadUserTier(); updateUI(); notify('✅ Bienvenue !', 'success');
     } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; }
-}
-async function doRegister(e) {
+}async function doRegister(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-reg');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';
@@ -488,15 +522,22 @@ async function doRegister(e) {
 async function loginWithGoogle() {
     try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pixora-gold-eight.vercel.app' } }); } catch (err) { notify('❌ Erreur Google Login', 'error'); }
 }
-async function getUserData() {    var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0, user_id: null };
+
+// =============================================
+// MODIFICATION #1 : getUserData lit aussi discount_until
+// =============================================
+async function getUserData() {
+    var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0, user_id: null, discount_until: null };
     var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
-    var d = r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 }; d.user_id = u.id; return d;
+    var d = r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 }; d.user_id = u.id;
+    d.discount_until = d.discount_until || null;
+    return d;
 }
+
 async function saveTransaction(type, title, amount) {
     var u = await getUser(); if (!u) return;
     await db.from('transactions').insert({ user_id: u.id, type: type, title: title, amount: amount });
-    var d = await getUserData();
-    var up = { points: d.points + amount };
+    var d = await getUserData();    var up = { points: d.points + amount };
     if (amount > 0) up.total_earned = (d.total_earned || 0) + amount;
     if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1;
     await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' });
@@ -508,7 +549,7 @@ document.addEventListener('click', function(e) {
     if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu();
 });
 async function doLogout() {
-    await db.auth.signOut(); closeUserMenu(); currentTier = 1; updateCostUI(); updateUI(); notify('👋 Déconnecté', 'success');
+    await db.auth.signOut(); closeUserMenu(); currentTier = 1; currentDiscountUntil = null; updateCostUI(); updateUI(); notify('👋 Déconnecté', 'success');
     setTimeout(function() { location.reload(); }, 800);
 }
 async function updateUI() {
@@ -537,15 +578,15 @@ async function updateUI() {
     }
 }
 function openLB(url, type) {
-    lbUrl = url; lbType = type || 'image';    var c = document.getElementById('lb-container'); c.innerHTML = '';
+    lbUrl = url; lbType = type || 'image';
+    var c = document.getElementById('lb-container'); c.innerHTML = '';
     if (lbType === 'video') {
         var v = document.createElement('video'); v.src = url; v.controls = true; v.autoplay = true; v.loop = true;
         v.style.cssText = 'max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)'; c.appendChild(v);
     } else { var i = document.createElement('img'); i.src = url; i.alt = 'Zoom'; c.appendChild(i); }
     document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden';
 }
-function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }
-document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
+function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lb-container').innerHTML = ''; lbUrl = ''; lbType = 'image'; }document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
 async function dlLB() {
     if (!lbUrl) return;
     try { var r = await fetch(lbUrl); var b = await r.blob(); var ext = lbType === 'video' ? '.mp4' : '.jpg'; var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + ext; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); notify('📥 Téléchargé !', 'success'); } catch(e) { window.open(lbUrl, '_blank'); }
@@ -586,7 +627,8 @@ async function loadStudio() {
     } catch (err) { console.error('Studio load error:', err); }
 }
 async function uploadToStorage(mediaUrl, type) {
-    try {        var response = await fetch(mediaUrl); var blob = await response.blob();
+    try {
+        var response = await fetch(mediaUrl); var blob = await response.blob();
         var prefix = type === 'video' ? '_video_' : '_img_';
         var fileName = Date.now() + prefix + Math.floor(Math.random() * 100000) + (type === 'video' ? '.mp4' : '.jpg');
         var contentType = type === 'video' ? 'video/mp4' : 'image/jpeg';
@@ -594,7 +636,9 @@ async function uploadToStorage(mediaUrl, type) {
         loadStudio();
     } catch (err) { console.error('Upload failed:', err); }
 }
-
+// =============================================
+// MODIFICATION #2 : generate() avec calcul discount selon tier
+// =============================================
 async function generate() {
     var p = document.getElementById('prompt').value.trim();
     if (!p) { notify('Veuillez entrer un prompt', 'error'); return; }
@@ -602,8 +646,13 @@ async function generate() {
     if (!logged) { openAuth(); return; }
     await loadUserTier();
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
-    var cost = curType === 'image' ? c.costs.image : c.costs.video;
     var userData = await getUserData();
+
+    // Calcul du coût avec discount si actif
+    var baseCost = curType === 'image' ? c.costs.image : c.costs.video;
+    var isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();
+    var cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
+
     if (userData.points < cost) { notify('Points insuffisants ! Visitez la page Points.', 'error'); return; }
     notify('🎨 Génération en cours...', 'success');
     var grid = document.getElementById('results-grid');
@@ -646,7 +695,7 @@ async function generate() {
             }
             card.onclick = function() { openLB(url, curType); };
             uploadToStorage(url, curType);
-            saveTransaction('spent', 'Génération ' + curType, -cost).then(function() {
+            saveTransaction('spent', 'Génération ' + curType + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() {
                 updateUI();
             });
             if (currentUser && currentUser.id) {
@@ -656,7 +705,8 @@ async function generate() {
                     db.from('user_data').update({ total_generated: newGen }).eq('user_id', currentUser.id).catch(function(){});
                 });
             }
-            notify('✅ Générée en ' + elapsed + 's ! (-' + cost + ' pts)', 'success');
+            var discountMsg = isDiscounted ? ' 🔥 -50%' : '';
+            notify('✅ Générée en ' + elapsed + 's ! (-' + cost + ' pts' + discountMsg + ')', 'success');
             setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 3600000);
         }
 
@@ -680,11 +730,11 @@ db.auth.onAuthStateChange(async function(event) {
     if (event === 'SIGNED_IN') {
         await loadUserTier(); updateUI(); closeAuth();
         if (!authNotified) { notify('✅ Connecté !', 'success'); authNotified = true; setTimeout(function() { authNotified = false; }, 3000); }
-    } else if (event === 'SIGNED_OUT') { currentTier = 1; updateCostUI(); updateUI(); authNotified = false; }
+    } else if (event === 'SIGNED_OUT') { currentTier = 1; currentDiscountUntil = null; updateCostUI(); updateUI(); authNotified = false; }
     else if (event === 'TOKEN_REFRESHED') { updateUI(); }
 });
-document.addEventListener('DOMContentLoaded', async function() {
-    detectReferral();    await loadApiKeys();
+document.addEventListener('DOMContentLoaded', async function() {    detectReferral();
+    await loadApiKeys();
     await loadDynamicConfig();
     await loadUserTier();
     await updateUI();
