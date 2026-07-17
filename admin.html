@@ -105,6 +105,8 @@
         .tasks-card .card-title i{color:var(--info)}
         .referral-card{border-left:4px solid var(--accent2);background:linear-gradient(135deg,var(--surface) 0%,rgba(236,72,153,0.03) 100%)}
         .referral-card .card-title i{color:var(--accent2)}
+        .shop-points-card{border-left:4px solid var(--gold);background:linear-gradient(135deg,var(--surface) 0%,rgba(251,191,36,0.03) 100%)}
+        .shop-points-card .card-title i{color:var(--gold)}
         .task-type-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}
         .status-badge{font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px}
         .status-pending{background:rgba(251,191,36,0.15);color:var(--gold)}
@@ -143,9 +145,9 @@
     </div>
     <nav class="sidebar-nav">
         <div class="nav-section">
-            <div class="nav-section-title">Principal</div>
-            <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></button>
-            <button class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></button>        </div>
+            <div class="nav-section-title">Principal</div>            <button class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></button>
+            <button class="nav-item" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span>Notifications</span><span class="nav-badge" id="notifBadge" style="display:none">0</span></button>
+        </div>
         <div class="nav-section">
             <div class="nav-section-title">Générateur IA</div>
             <button class="nav-item" onclick="showSection('models-image')"><i class="fas fa-image"></i><span>Modèles Image</span></button>
@@ -159,6 +161,7 @@
             <button class="nav-item" onclick="showSection('referral')"><i class="fas fa-user-friends"></i><span>Parrainage</span></button>
             <button class="nav-item" onclick="showSection('pricing')"><i class="fas fa-coins"></i><span>Points & Pricing</span></button>
             <button class="nav-item" onclick="showSection('shop-config')"><i class="fas fa-shopping-bag"></i><span>Boutique</span></button>
+            <button class="nav-item" onclick="showSection('shop-points')"><i class="fas fa-gift"></i><span>Shop Points</span></button>
         </div>
         <div class="nav-section">
             <div class="nav-section-title">Site</div>
@@ -174,7 +177,7 @@
             <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v5.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v6.0<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 
 <div class="notif-panel" id="notifPanel">
@@ -191,10 +194,10 @@
             <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-value" id="dashPointsDistributed">-</div><div class="stat-label">Points Distribués</div></div>
             <div class="stat-card pink"><div class="stat-icon"><i class="fas fa-image"></i></div><div class="stat-value" id="dashGenerations">-</div><div class="stat-label">Générations Totales</div></div>
             <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-ad"></i></div><div class="stat-value" id="dashActiveAds">-</div><div class="stat-label">Pubs Actives</div></div>
-            <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>
-        </div>
+            <div class="stat-card warn"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="dashTodayEarners">-</div><div class="stat-label">Gagnants Aujourd'hui</div></div>        </div>
         <div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-stream"></i> Activité Récente</div></div><div class="table-container"><table><thead><tr><th>Type</th><th>Détail</th><th>User</th><th>Points</th><th>Date</th></tr></thead><tbody id="dashRecentActivity"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
+
     <div class="admin-section" id="sec-models-image">
         <div class="page-header"><div><div class="page-title">Modèles Image</div><div class="page-subtitle">Gérer les générateurs d'images IA</div></div><button class="btn btn-primary btn-sm" onclick="openModelForm('image')"><i class="fas fa-plus"></i> Ajouter</button></div>
         <div class="card" id="modelImageForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Modèle Image</div><button class="btn btn-sm btn-outline" onclick="closeModelForm()">Annuler</button></div>
@@ -240,10 +243,10 @@
 
     <div class="admin-section" id="sec-ad-networks">
         <div class="page-header"><div><div class="page-title">Régies Publicitaires</div><div class="page-subtitle">Gérer les offres CPA et pubs CPM</div></div><button class="btn btn-primary btn-sm" onclick="openAdNetworkForm()"><i class="fas fa-plus"></i> Ajouter</button></div>
-        <div class="card" id="adNetworkForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Régie</div><button class="btn btn-sm btn-outline" onclick="closeAdNetworkForm()">Annuler</button></div>
-            <input type="hidden" id="adNetId">
+        <div class="card" id="adNetworkForm" style="display:none"><div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Régie</div><button class="btn btn-sm btn-outline" onclick="closeAdNetworkForm()">Annuler</button></div>            <input type="hidden" id="adNetId">
             <div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input" id="adNetName" placeholder="ex: Monetag Earn #1"></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="adNetType"><option value="smartlink">Smartlink / Direct Link (CPA)</option><option value="native">Native Banner (CPM)</option><option value="banner">Bannière 300x250 (CPM)</option><option value="banner_728">Bannière 728x90 (CPM)</option><option value="popunder">Popunder (CPM)</option><option value="social_bar">Social Bar (CPM)</option><option value="video">Vidéo Récompensée (CPA)</option></select></div></div>
-            <div class="form-row"><div class="form-group"><label class="form-label">Page cible</label><select class="form-select" id="adNetPage"><option value="earn">Earn</option><option value="index">Index</option><option value="galerie">Galerie</option><option value="profile">Profile</option><option value="shop">Shop</option></select></div><div class="form-group"><label class="form-label">Position</label><select class="form-select" id="adNetPosition"><option value="top">Haut</option><option value="middle">Milieu</option><option value="bottom">Bas</option><option value="auto">Auto</option></select></div></div>            <div class="form-row"><div class="form-group"><label class="form-label">Lien / Code HTML</label><input type="text" class="form-input" id="adNetLink" placeholder="URL ou code"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input" id="adNetPoints" value="5"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="adNetOrder" value="0"></div></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Page cible</label><select class="form-select" id="adNetPage"><option value="earn">Earn</option><option value="index">Index</option><option value="galerie">Galerie</option><option value="profile">Profile</option><option value="shop">Shop</option></select></div><div class="form-group"><label class="form-label">Position</label><select class="form-select" id="adNetPosition"><option value="top">Haut</option><option value="middle">Milieu</option><option value="bottom">Bas</option><option value="auto">Auto</option></select></div></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Lien / Code HTML</label><input type="text" class="form-input" id="adNetLink" placeholder="URL ou code"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input" id="adNetPoints" value="5"></div><div class="form-group"><label class="form-label">Ordre</label><input type="number" class="form-input" id="adNetOrder" value="0"></div></div>
             <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="adNetActive" checked><span class="toggle-slider"></span></label></div>
             <button class="btn btn-success" onclick="saveAdNetwork()"><i class="fas fa-save"></i> Sauvegarder</button>
         </div>
@@ -289,10 +292,10 @@
             </div>
             <p style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">Chaque utilisateur a un lien unique : <code style="color:var(--accent)">votre-site.com/?ref=USER_ID</code>. Les points sont crédités automatiquement quand la condition est remplie.</p>
         </div>
-        <div class="card">
-            <div class="card-header"><div class="card-title"><i class="fas fa-list"></i> Parrainages Récents</div><button class="btn btn-sm btn-outline" onclick="loadReferrals()"><i class="fas fa-sync"></i></button></div>
+        <div class="card">            <div class="card-header"><div class="card-title"><i class="fas fa-list"></i> Parrainages Récents</div><button class="btn btn-sm btn-outline" onclick="loadReferrals()"><i class="fas fa-sync"></i></button></div>
             <div class="table-container">
-                <table>                    <thead><tr><th>Parrain</th><th>Filleul</th><th>Statut</th><th>Points</th><th>Date</th></tr></thead>
+                <table>
+                    <thead><tr><th>Parrain</th><th>Filleul</th><th>Statut</th><th>Points</th><th>Date</th></tr></thead>
                     <tbody id="referralsTable"><tr><td colspan="5" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
                 </table>
             </div>
@@ -316,11 +319,54 @@
         </div>
     </div>
 
+    <!-- SECTION SHOP CONFIG EXISTANTE (V2 - PAIEMENT RÉEL) - AUCUNE MODIFICATION -->
     <div class="admin-section" id="sec-shop-config">
         <div class="page-header"><div><div class="page-title">Configuration Boutique</div><div class="page-subtitle">Gérer les packs et abonnements</div></div><button class="btn btn-success btn-sm" onclick="saveShopConfig()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-box"></i> Packs Disponibles</div><div id="packsContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addPackField()"><i class="fas fa-plus"></i> Ajouter un pack</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-crown"></i> Abonnements</div><div id="subsContainer"></div><button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addSubField()"><i class="fas fa-plus"></i> Ajouter un abonnement</button></div>
         <div class="card"><div class="form-row"><div class="form-group"><label class="form-label">Devise</label><select class="form-select" id="shopCurrency"><option value="EUR">EUR (€)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option></select></div><div class="form-group"><label class="form-label">Stripe Key (publique)</label><input type="text" class="form-input" id="stripeKey" placeholder="pk_live_..."></div><div class="form-group"><label class="form-label">PayPal Client ID</label><input type="text" class="form-input" id="paypalClientId" placeholder="Client ID"></div></div></div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- NOUVELLE SECTION SHOP POINTS (V1 - POINTS ONLY) -->
+    <!-- ============================================= -->
+    <div class="admin-section" id="sec-shop-points">
+        <div class="page-header"><div><div class="page-title">Shop Points (V1)</div><div class="page-subtitle">Gérer les items échangeables contre des points uniquement</div></div><button class="btn btn-primary btn-sm" onclick="openShopItemForm()"><i class="fas fa-plus"></i> Ajouter un item</button></div>
+
+        <div class="card shop-points-card" id="shopItemForm" style="display:none">
+            <div class="card-header"><div class="card-title"><i class="fas fa-edit"></i> Formulaire Item Shop Points</div><button class="btn btn-sm btn-outline" onclick="closeShopItemForm()">Annuler</button></div>
+            <input type="hidden" id="shopItemId">
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Nom de l'item</label><input type="text" class="form-input" id="shopItemName" placeholder="ex: Badge Explorateur"></div>
+                <div class="form-group"><label class="form-label">Description</label><input type="text" class="form-input" id="shopItemDesc" placeholder="ex: Badge exclusif sur votre profil"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Coût (points)</label><input type="number" class="form-input" id="shopItemCost" value="50"></div>                <div class="form-group"><label class="form-label">Type</label><select class="form-select" id="shopItemType"><option value="badge">Badge</option><option value="tier">Tier Temporaire</option><option value="pack">Pack Points</option><option value="cosmetic">Cosmétique</option></select></div>
+                <div class="form-group"><label class="form-label">Icône FontAwesome</label><input type="text" class="form-input" id="shopItemIcon" placeholder="fa-trophy" value="fa-gift"></div>
+                <div class="form-group"><label class="form-label">Ordre d'affichage</label><input type="number" class="form-input" id="shopItemOrder" value="0"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Actif</label><label class="toggle"><input type="checkbox" id="shopItemActive" checked><span class="toggle-slider"></span></label></div>
+            <button class="btn btn-success" onclick="saveShopItem()"><i class="fas fa-save"></i> Sauvegarder</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><div class="card-title"><i class="fas fa-store"></i> Items du Shop Points</div><button class="btn btn-sm btn-outline" onclick="loadShopItems()"><i class="fas fa-sync"></i></button></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Nom</th><th>Type</th><th>Coût (pts)</th><th>Icône</th><th>Ordre</th><th>Achats</th><th>Actif</th><th style="text-align:right">Actions</th></tr></thead>
+                    <tbody id="shopItemsTable"><tr><td colspan="8" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Comment ça marche</div>
+            <p style="font-size:0.85rem;color:var(--muted);line-height:1.6">
+                Les items configurés ici apparaîtront dans <strong>shop.html</strong> et seront achetables avec les <strong>points utilisateurs</strong> uniquement.<br>
+                Chaque achat déduit les points du solde utilisateur et insère une ligne dans la table <code>purchases</code>.<br>
+                Cette section est <strong>indépendante</strong> de la "Configuration Boutique" (Stripe/PayPal) qui servira plus tard pour les paiements réels.
+            </p>
+        </div>
     </div>
 
     <div class="admin-section" id="sec-social-links">
@@ -341,9 +387,9 @@
     <div class="admin-section" id="sec-legal">
         <div class="page-header"><div><div class="page-title">Contenu Légal</div><div class="page-subtitle">CGU, Politique de Confidentialité, Mentions Légales</div></div><button class="btn btn-success btn-sm" onclick="saveLegal()"><i class="fas fa-save"></i> Sauvegarder</button></div>
         <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-file-contract"></i> Conditions Générales d'Utilisation</div><textarea class="form-textarea" id="legalCgu" style="min-height:200px"></textarea></div>
-        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Politique de Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:200px"></textarea></div>        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
+        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-user-shield"></i> Politique de Confidentialité</div><textarea class="form-textarea" id="legalPrivacy" style="min-height:200px"></textarea></div>
+        <div class="card"><div class="card-title" style="margin-bottom:1rem"><i class="fas fa-info-circle"></i> Mentions Légales</div><textarea class="form-textarea" id="legalMentions" style="min-height:200px"></textarea></div>
     </div>
-
     <div class="admin-section" id="sec-users">
         <div class="page-header"><div><div class="page-title">Utilisateurs</div><div class="page-subtitle">Gérer les comptes et les points</div></div><div style="display:flex;gap:0.5rem"><input type="text" class="form-input" placeholder="Rechercher email/pseudo..." id="userSearch" style="width:250px" oninput="searchUsers()"><button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i></button></div></div>
         <div class="card"><div class="table-container"><table><thead><tr><th>Pseudo</th><th>Email</th><th>Points</th><th>Streak</th><th>Dernière connexion</th><th style="text-align:right">Actions</th></tr></thead><tbody id="usersTable"><tr><td colspan="6" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
@@ -354,7 +400,6 @@
         <div class="card"><div class="table-container"><table><thead><tr><th>Date</th><th>Type</th><th>Message</th><th>Détails</th></tr></thead><tbody id="logsTable"><tr><td colspan="4" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody></table></div></div>
     </div>
 
-    <!-- MODIFICATION #4 : Section Sécurité refondue avec admin_whitelist -->
     <div class="admin-section" id="sec-security">
         <div class="page-header"><div><div class="page-title">Sécurité Admin</div><div class="page-subtitle">Protection de l'accès administrateur</div></div></div>
         <div class="card">
@@ -386,37 +431,25 @@ var unreadCount = 0;
 var isAdminVerified = false;
 
 // =============================================
-// MODIFICATION #1 : SÉCURITÉ VIA TABLE admin_whitelist
-// Ne lit PLUS admin_config.admin_emails (qui causait le bug)
+// SÉCURITÉ VIA TABLE admin_whitelist
 // =============================================
 function showLoginError(msg) {
-    var el = document.getElementById('loginError');    el.textContent = msg;
+    var el = document.getElementById('loginError');
+    el.textContent = msg;
     el.style.display = 'block';
 }
 function hideLoginError() {
-    document.getElementById('loginError').style.display = 'none';
-}
+    document.getElementById('loginError').style.display = 'none';}
 
 async function verifyAdminAccess(email) {
     try {
-        // Lire la table admin_whitelist (RLS indépendant de admin_config)
         var result = await db.from('admin_whitelist').select('email').eq('email', email).limit(1);
-        if (result.error) {
-            console.error('Whitelist query error:', result.error.message);
-            return false;
-        }
-        // Si aucune ligne trouvée → pas admin
-        if (!result.data || result.data.length === 0) {
-            return false;
-        }
+        if (result.error) { console.error('Whitelist query error:', result.error.message); return false; }
+        if (!result.data || result.data.length === 0) { return false; }
         return true;
-    } catch(e) {
-        console.error('Verify admin error:', e);
-        return false;
-    }
+    } catch(e) { console.error('Verify admin error:', e); return false; }
 }
 
-// MODIFICATION #2 : handleAdminLogin ne crée JAMAIS de whitelist automatiquement
 async function handleAdminLogin(e) {
     e.preventDefault();
     hideLoginError();
@@ -425,12 +458,10 @@ async function handleAdminLogin(e) {
     var btn = document.getElementById('btnAdminLogin');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-
     try {
         var result = await db.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw new Error(result.error.message);
         if (!result.data.session) throw new Error('Session non créée');
-
         var isAuthorized = await verifyAdminAccess(email);
         if (!isAuthorized) {
             await db.auth.signOut();
@@ -456,10 +487,8 @@ function logoutAdmin() {
     location.reload();
 }
 
-// MODIFICATION #5 : Nouvelles fonctions whitelist
 async function loadAdminWhitelist() {
-    try {
-        var result = await db.from('admin_whitelist').select('*').order('added_at', { ascending: false });
+    try {        var result = await db.from('admin_whitelist').select('*').order('added_at', { ascending: false });
         var tbody = document.getElementById('whitelistTable');
         if (result.data && result.data.length > 0) {
             tbody.innerHTML = result.data.map(function(row) {
@@ -484,10 +513,9 @@ async function addAdminEmail() {
         loadAdminWhitelist();
         addNotification('config', 'Admin ajouté : ' + email);
         alert('✅ Email ajouté à la whitelist !');
-    } catch(e) {
-        alert('❌ Erreur : ' + e.message);
-    }
+    } catch(e) { alert('❌ Erreur : ' + e.message); }
 }
+
 async function removeAdminEmail(email) {
     if (!confirm('Retirer ' + email + ' de la whitelist ?')) return;
     try {
@@ -496,9 +524,7 @@ async function removeAdminEmail(email) {
         loadAdminWhitelist();
         addNotification('config', 'Admin retiré : ' + email);
         alert('✅ Email retiré de la whitelist !');
-    } catch(e) {
-        alert('❌ Erreur : ' + e.message);
-    }
+    } catch(e) { alert('❌ Erreur : ' + e.message); }
 }
 
 // =============================================
@@ -510,9 +536,8 @@ function showSection(name) {
     document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
     document.getElementById('sec-' + name).classList.add('active');
     var navItems = document.querySelectorAll('.nav-item');
-    var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'ad-networks':6, 'internal-tasks':7, referral:8, pricing:9, 'shop-config':10, 'social-links':12, 'site-settings':13, seo:14, legal:15, users:17, logs:18, security:19 };
-    if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');
-    var loaders = { dashboard:loadDashboard, 'models-image':function(){loadModels('image')}, 'models-video':function(){loadModels('video')}, apis:loadApiKeys, 'ad-networks':loadAdNetworks, 'internal-tasks':loadInternalTasks, referral:loadReferrals, pricing:loadPricing, 'shop-config':loadShopConfig, 'social-links':loadSocialLinks, 'site-settings':loadSiteSettings, seo:loadSeo, legal:loadLegal, users:loadUsers, logs:loadLogs, security:loadAdminWhitelist };
+    var map = { dashboard:0, 'models-image':2, 'models-video':3, apis:4, 'ad-networks':6, 'internal-tasks':7, referral:8, pricing:9, 'shop-config':10, 'shop-points':11, 'social-links':13, 'site-settings':14, seo:15, legal:16, users:18, logs:19, security:20 };
+    if (map[name] !== undefined && navItems[map[name]]) navItems[map[name]].classList.add('active');    var loaders = { dashboard:loadDashboard, 'models-image':function(){loadModels('image')}, 'models-video':function(){loadModels('video')}, apis:loadApiKeys, 'ad-networks':loadAdNetworks, 'internal-tasks':loadInternalTasks, referral:loadReferrals, pricing:loadPricing, 'shop-config':loadShopConfig, 'shop-points':loadShopItems, 'social-links':loadSocialLinks, 'site-settings':loadSiteSettings, seo:loadSeo, legal:loadLegal, users:loadUsers, logs:loadLogs, security:loadAdminWhitelist };
     if (loaders[name]) loaders[name]();
 }
 
@@ -537,7 +562,8 @@ function markRead(el) { el.classList.remove('unread'); unreadCount = Math.max(0,
 // =============================================
 async function loadDashboard() {
     try {
-        var usersResult = await db.from('users').select('id', { count:'exact' });        document.getElementById('dashTotalUsers').textContent = usersResult.count || 0;
+        var usersResult = await db.from('users').select('id', { count:'exact' });
+        document.getElementById('dashTotalUsers').textContent = usersResult.count || 0;
         var today = new Date().toISOString().split('T')[0];
         var activeResult = await db.from('daily_usage').select('user_id', { count:'exact' }).eq('date', today);
         document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
@@ -560,8 +586,7 @@ async function loadDashboard() {
         (recentClicks.data||[]).forEach(function(c){activity.push({type:'task',detail:'✅ '+(c.ad_name||'Offre'),user:c.users?c.users.email:'-',points:0,date:c.created_at})});
         activity.sort(function(a,b){return new Date(b.date)-new Date(a.date)});
         var tbody = document.getElementById('dashRecentActivity');
-        if (activity.length) {
-            tbody.innerHTML = activity.slice(0,10).map(function(a){
+        if (activity.length) {            tbody.innerHTML = activity.slice(0,10).map(function(a){
                 var colors={earned:'var(--success)',spent:'var(--danger)',task:'var(--info)',purchased:'var(--gold)'};
                 return '<tr><td style="color:'+(colors[a.type]||'var(--text)')+';font-weight:600">'+a.type.toUpperCase()+'</td><td>'+a.detail+'</td><td style="font-size:0.8rem">'+a.user+'</td><td style="font-family:var(--mono);color:'+(a.points>0?'var(--success)':'var(--dim)')+'">'+(a.points>0?'+'+a.points:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(a.date).toLocaleString('fr-FR')+'</td></tr>';
             }).join('');
@@ -586,6 +611,7 @@ function closeModelForm() { document.getElementById('modelImageForm').style.disp
 async function editModel(type,id) { var r=await db.from('generator_models').select('*').eq('id',id).single(); if(!r.data)return; var m=r.data,p=type==='image'?'img':'vid'; document.getElementById(p+'ModelForm').style.display='block'; document.getElementById(p+'ModelId').value=m.id; document.getElementById(p+'ModelName').value=m.name; document.getElementById(p+'ModelProvider').value=m.provider; document.getElementById(p+'ModelEndpoint').value=m.api_endpoint||''; document.getElementById(p+'ModelCost').value=m.cost_points; document.getElementById(p+'ModelOrder').value=m.sort_order; document.getElementById(p+'ModelActive').checked=m.is_active; }
 async function saveModel(type) { var p=type==='image'?'img':'vid',id=document.getElementById(p+'ModelId').value; var data={name:document.getElementById(p+'ModelName').value.trim(),type:type,provider:document.getElementById(p+'ModelProvider').value.trim(),api_endpoint:document.getElementById(p+'ModelEndpoint').value.trim(),cost_points:parseInt(document.getElementById(p+'ModelCost').value)||4,sort_order:parseInt(document.getElementById(p+'ModelOrder').value)||0,is_active:document.getElementById(p+'ModelActive').checked}; if(!data.name||!data.provider){alert('Nom et Provider requis');return} if(id){await db.from('generator_models').update(data).eq('id',id)}else{await db.from('generator_models').insert(data)} closeModelForm();loadModels(type);addNotification('config','Modèle '+type+' sauvegardé'); }
 async function deleteModel(id,type) { if(!confirm('Supprimer ce modèle ?'))return; await db.from('generator_models').delete().eq('id',id); loadModels(type); addNotification('config','Modèle supprimé'); }
+
 // =============================================
 // TEST API SITE + CLÉS API
 // =============================================
@@ -609,8 +635,7 @@ async function testSiteApi() {
         btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération';
         if (response.ok) {
             var data = await response.json();
-            var imgUrl = '';
-            if (data.images && data.images.length > 0) imgUrl = data.images[0].url;
+            var imgUrl = '';            if (data.images && data.images.length > 0) imgUrl = data.images[0].url;
             else if (data.output && data.output.images && data.output.images.length > 0) imgUrl = data.output.images[0].url;
             var html = '<i class="fas fa-check"></i> ✅ API fonctionnelle ! (' + response.status + ')';
             if (imgUrl) html += '<br><img src="' + imgUrl + '" style="max-width:200px;border-radius:8px;margin-top:0.5rem">';
@@ -635,7 +660,8 @@ async function loadApiKeys() {
         {id:'runway',name:'Runway ML',testUrl:''},{id:'pika',name:'Pika Labs',testUrl:''},
         {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}
     ];
-    var html = '';    providers.forEach(function(p) {
+    var html = '';
+    providers.forEach(function(p) {
         html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
     });
     document.getElementById('apiKeysContainer').innerHTML = html;
@@ -658,8 +684,7 @@ async function testApiKey(provider, testUrl) {
     resultDiv.style.display='block';
 }
 async function saveApiKeys() {
-    var keys = {};
-    document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
+    var keys = {};    document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
     await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'});
     addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');
 }
@@ -684,6 +709,7 @@ async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return
 async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetworks[i].active; await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); }
 async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }
 async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie supprimée'); }
+
 // =============================================
 // TÂCHES INTERNES
 // =============================================
@@ -707,8 +733,7 @@ function renderTasksTable(tasks) {
         return '<tr><td>'+t.name+'</td><td><span class="task-type-badge">'+t.type+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+t.points+'</td><td style="font-family:var(--mono)">'+t.limit+'</td><td>'+t.order+'</td><td>'+(t.active?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--dim)">❌</span>')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="editTask('+i+')" title="Modifier"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-danger" onclick="deleteInternalTask('+i+')" title="Supprimer"><i class="fas fa-trash"></i></button></div></td></tr>';
     }).join('');
 }
-function openTaskForm() { document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=''; document.getElementById('taskName').value=''; document.getElementById('taskDesc').value=''; document.getElementById('taskPoints').value=2; document.getElementById('taskType').value='vote'; document.getElementById('taskLimit').value=5; document.getElementById('taskOrder').value=0; document.getElementById('taskActive').checked=true; }
-function closeTaskForm() { document.getElementById('taskForm').style.display='none'; }
+function openTaskForm() { document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=''; document.getElementById('taskName').value=''; document.getElementById('taskDesc').value=''; document.getElementById('taskPoints').value=2; document.getElementById('taskType').value='vote'; document.getElementById('taskLimit').value=5; document.getElementById('taskOrder').value=0; document.getElementById('taskActive').checked=true; }function closeTaskForm() { document.getElementById('taskForm').style.display='none'; }
 function editTask(index) { var t=window._internalTasks[index]; if(!t)return; document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=index; document.getElementById('taskName').value=t.name; document.getElementById('taskDesc').value=t.desc||''; document.getElementById('taskPoints').value=t.points; document.getElementById('taskType').value=t.type; document.getElementById('taskLimit').value=t.limit; document.getElementById('taskOrder').value=t.order||0; document.getElementById('taskActive').checked=t.active!==false; }
 async function saveInternalTask() { var index=document.getElementById('taskId').value; var data={name:document.getElementById('taskName').value.trim(),desc:document.getElementById('taskDesc').value.trim(),points:parseInt(document.getElementById('taskPoints').value)||0,type:document.getElementById('taskType').value,limit:parseInt(document.getElementById('taskLimit').value)||1,order:parseInt(document.getElementById('taskOrder').value)||0,active:document.getElementById('taskActive').checked}; if(!data.name){alert('Nom requis');return} var tasks=window._internalTasks||[]; if(index!==''){tasks[parseInt(index)]=data}else{tasks.push(data)} tasks.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); closeTaskForm(); loadInternalTasks(); addNotification('config','Tâche "'+data.name+'" sauvegardée'); }
 async function deleteInternalTask(index) { if(!confirm('Supprimer cette tâche ?'))return; window._internalTasks.splice(index,1); await db.from('admin_config').upsert({key:'internal_tasks',value:window._internalTasks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadInternalTasks(); addNotification('config','Tâche supprimée'); }
@@ -733,7 +758,8 @@ async function loadReferrals() {
         } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>'; }
     } catch(err) { document.getElementById('referralsTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--warn)">Table referrals non créée. Exécutez le SQL dans Supabase.</td></tr>'; }
 }
-async function saveReferralConfig() {    var config = { enabled: document.getElementById('refEnabled').checked, points: parseInt(document.getElementById('refPoints').value) || 10, condition: document.getElementById('refCondition').value };
+async function saveReferralConfig() {
+    var config = { enabled: document.getElementById('refEnabled').checked, points: parseInt(document.getElementById('refPoints').value) || 10, condition: document.getElementById('refCondition').value };
     await db.from('admin_config').upsert({key:'referral_config',value:config,updated_at:new Date().toISOString()},{onConflict:'key'});
     addNotification('config','Parrainage configuré : '+config.points+' pts/filleul'); alert('✅ Configuration parrainage sauvegardée !');
 }
@@ -757,14 +783,137 @@ async function savePricing() {
     await db.from('admin_config').upsert({key:'retention_config', value:retention, updated_at:new Date().toISOString()}, {onConflict:'key'});
     addNotification('config', 'Pricing + Rétention sauvegardés'); alert('✅ Pricing + Rétention Quotidienne sauvegardés !');
 }
-
 // =============================================
-// SHOP
+// SHOP CONFIG (V2 - PAIEMENT RÉEL) - AUCUNE MODIFICATION
 // =============================================
 async function loadShopConfig() { var r=await db.from('admin_config').select('*').eq('key','shop_config').single(); var c=r.data?r.data.value:{packs:[],subs:[],currency:'EUR',stripe_key:'',paypal_client_id:''}; document.getElementById('shopCurrency').value=c.currency||'EUR'; document.getElementById('stripeKey').value=c.stripe_key||''; document.getElementById('paypalClientId').value=c.paypal_client_id||''; var ph='';(c.packs||[]).forEach(function(p){ph+='<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="'+p.name+'"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="'+p.points+'"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="'+p.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('packsContainer').innerHTML=ph||'<div style="color:var(--dim);font-size:0.85rem">Aucun pack</div>'; var sh='';(c.subs||[]).forEach(function(s){sh+='<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="'+s.name+'"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="'+s.points+'"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="'+s.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('subsContainer').innerHTML=sh||'<div style="color:var(--dim);font-size:0.85rem">Aucun abonnement</div>'; }
 function addPackField() { document.getElementById('packsContainer').insertAdjacentHTML('beforeend','<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Pack Name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 function addSubField() { document.getElementById('subsContainer').insertAdjacentHTML('beforeend','<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Plan Name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 async function saveShopConfig() { var packs=[],subs=[]; document.querySelectorAll('.pack-row').forEach(function(r){var n=r.querySelector('.pack-name').value.trim();if(n)packs.push({name:n,points:parseInt(r.querySelector('.pack-points').value)||0,price:parseFloat(r.querySelector('.pack-price').value)||0})}); document.querySelectorAll('.sub-row').forEach(function(r){var n=r.querySelector('.sub-name').value.trim();if(n)subs.push({name:n,points:parseInt(r.querySelector('.sub-points').value)||0,price:parseFloat(r.querySelector('.sub-price').value)||0})}); await db.from('admin_config').upsert({key:'shop_config',value:{packs:packs,subs:subs,currency:document.getElementById('shopCurrency').value,stripe_key:document.getElementById('stripeKey').value.trim(),paypal_client_id:document.getElementById('paypalClientId').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Boutique sauvegardée'); alert('✅ Boutique sauvegardée !'); }
+
+// =============================================
+// SHOP POINTS (V1 - POINTS ONLY) - NOUVEAU
+// =============================================
+var _shopItems = [];
+
+async function loadShopItems() {
+    try {
+        var result = await db.from('admin_config').select('*').eq('key', 'shop_items').single();
+        _shopItems = result.data ? result.data.value : [];
+        var stats = await loadShopStats();
+        renderShopItemsTable(stats);
+    } catch(e) {
+        document.getElementById('shopItemsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--danger)">Erreur : ' + e.message + '</td></tr>';
+    }
+}
+
+async function loadShopStats() {
+    var statsMap = {};
+    try {
+        var result = await db.from('purchases').select('item_name');
+        if (result.data) {
+            result.data.forEach(function(p) {
+                statsMap[p.item_name] = (statsMap[p.item_name] || 0) + 1;
+            });
+        }
+    } catch(e) { /* Table purchases vide ou inexistante */ }
+    return statsMap;
+}
+
+function renderShopItemsTable(stats) {
+    var tbody = document.getElementById('shopItemsTable');
+    if (!_shopItems || _shopItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--dim)">Aucun item configuré. Cliquez sur "Ajouter un item".</td></tr>';
+        return;
+    }
+    tbody.innerHTML = _shopItems.map(function(item, i) {
+        var purchaseCount = stats[item.name] || 0;
+        var typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' };
+        var typeColor = typeColors[item.type] || 'var(--muted)';
+        return '<tr>' +
+            '<td style="font-weight:600">' + item.name + '</td>' +            '<td><span style="font-family:var(--mono);font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;background:rgba(255,255,255,0.05);color:' + typeColor + '">' + (item.type || 'pack').toUpperCase() + '</span></td>' +
+            '<td style="font-family:var(--mono);color:var(--gold);font-weight:700">' + (item.cost || 0) + '</td>' +
+            '<td style="font-family:var(--mono);font-size:0.8rem;color:var(--muted)">' + (item.icon || '-') + '</td>' +
+            '<td style="font-family:var(--mono)">' + (item.order || 0) + '</td>' +
+            '<td style="font-family:var(--mono);color:var(--info)">' + purchaseCount + '</td>' +
+            '<td>' + (item.active !== false ? '<span style="color:var(--success)">✅</span>' : '<span style="color:var(--dim)">❌</span>') + '</td>' +
+            '<td style="text-align:right"><div class="action-btns">' +
+            '<button class="btn btn-sm btn-outline" onclick="editShopItem(' + i + ')" title="Modifier"><i class="fas fa-pen"></i></button>' +
+            '<button class="btn btn-sm btn-outline" onclick="toggleShopItem(' + i + ')" title="' + (item.active !== false ? 'Désactiver' : 'Activer') + '"><i class="fas fa-' + (item.active !== false ? 'pause' : 'play') + '"></i></button>' +
+            '<button class="btn btn-sm btn-danger" onclick="deleteShopItem(' + i + ')" title="Supprimer"><i class="fas fa-trash"></i></button>' +
+            '</div></td></tr>';
+    }).join('');
+}
+
+function openShopItemForm() {
+    document.getElementById('shopItemForm').style.display = 'block';
+    document.getElementById('shopItemId').value = '';
+    document.getElementById('shopItemName').value = '';
+    document.getElementById('shopItemDesc').value = '';
+    document.getElementById('shopItemCost').value = 50;
+    document.getElementById('shopItemType').value = 'badge';
+    document.getElementById('shopItemIcon').value = 'fa-gift';
+    document.getElementById('shopItemOrder').value = 0;
+    document.getElementById('shopItemActive').checked = true;
+}
+
+function closeShopItemForm() {
+    document.getElementById('shopItemForm').style.display = 'none';
+}
+
+function editShopItem(index) {
+    var item = _shopItems[index];
+    if (!item) return;
+    document.getElementById('shopItemForm').style.display = 'block';
+    document.getElementById('shopItemId').value = index;
+    document.getElementById('shopItemName').value = item.name || '';
+    document.getElementById('shopItemDesc').value = item.desc || '';
+    document.getElementById('shopItemCost').value = item.cost || 50;
+    document.getElementById('shopItemType').value = item.type || 'badge';
+    document.getElementById('shopItemIcon').value = item.icon || 'fa-gift';
+    document.getElementById('shopItemOrder').value = item.order || 0;
+    document.getElementById('shopItemActive').checked = item.active !== false;
+}
+
+async function saveShopItem() {
+    var index = document.getElementById('shopItemId').value;
+    var data = {
+        name: document.getElementById('shopItemName').value.trim(),
+        desc: document.getElementById('shopItemDesc').value.trim(),
+        cost: parseInt(document.getElementById('shopItemCost').value) || 0,        type: document.getElementById('shopItemType').value,
+        icon: document.getElementById('shopItemIcon').value.trim() || 'fa-gift',
+        order: parseInt(document.getElementById('shopItemOrder').value) || 0,
+        active: document.getElementById('shopItemActive').checked
+    };
+    if (!data.name) { alert('Nom requis'); return; }
+    if (data.cost <= 0) { alert('Le coût doit être supérieur à 0'); return; }
+    if (index !== '') {
+        _shopItems[parseInt(index)] = data;
+    } else {
+        _shopItems.push(data);
+    }
+    _shopItems.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+    await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    closeShopItemForm();
+    loadShopItems();
+    addNotification('config', 'Item shop "' + data.name + '" sauvegardé');
+    alert('✅ Item shop sauvegardé !');
+}
+
+async function toggleShopItem(index) {
+    _shopItems[index].active = !_shopItems[index].active;
+    await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    loadShopItems();
+}
+
+async function deleteShopItem(index) {
+    var name = _shopItems[index].name;
+    if (!confirm('Supprimer "' + name + '" du shop points ?')) return;
+    _shopItems.splice(index, 1);
+    await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+    loadShopItems();
+    addNotification('config', 'Item shop "' + name + '" supprimé');
+}
 
 // =============================================
 // SOCIAL LINKS
@@ -780,9 +929,9 @@ async function loadSiteSettings() { var r=await db.from('admin_config').select('
 async function saveSiteSettings() { await db.from('admin_config').upsert({key:'site_settings',value:{name:document.getElementById('settingSiteName').value.trim(),logo_url:document.getElementById('settingLogoUrl').value.trim(),favicon:document.getElementById('settingFavicon').value.trim(),color_primary:document.getElementById('settingColorPrimary').value,color_secondary:document.getElementById('settingColorSecondary').value,lang:document.getElementById('settingLang').value,hero_text:document.getElementById('settingHeroText').value.trim(),copyright:document.getElementById('settingCopyright').value.trim(),maintenance:document.getElementById('settingMaintenance').checked},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Paramètres site sauvegardés'); alert('✅ Paramètres sauvegardés !'); }
 
 // =============================================
-// SEO
-// =============================================
-async function loadSeo() { var r=await db.from('admin_config').select('*').eq('key','seo').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('seoTitle').value=s.title||'';document.getElementById('seoDescription').value=s.description||'';document.getElementById('seoOgImage').value=s.og_image||'';document.getElementById('seoCanonical').value=s.canonical||'';document.getElementById('seoRobots').value=s.robots||''} }async function saveSeo() { await db.from('admin_config').upsert({key:'seo',value:{title:document.getElementById('seoTitle').value.trim(),description:document.getElementById('seoDescription').value.trim(),og_image:document.getElementById('seoOgImage').value.trim(),canonical:document.getElementById('seoCanonical').value.trim(),robots:document.getElementById('seoRobots').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','SEO sauvegardé'); alert('✅ SEO sauvegardé !'); }
+// SEO// =============================================
+async function loadSeo() { var r=await db.from('admin_config').select('*').eq('key','seo').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('seoTitle').value=s.title||'';document.getElementById('seoDescription').value=s.description||'';document.getElementById('seoOgImage').value=s.og_image||'';document.getElementById('seoCanonical').value=s.canonical||'';document.getElementById('seoRobots').value=s.robots||''} }
+async function saveSeo() { await db.from('admin_config').upsert({key:'seo',value:{title:document.getElementById('seoTitle').value.trim(),description:document.getElementById('seoDescription').value.trim(),og_image:document.getElementById('seoOgImage').value.trim(),canonical:document.getElementById('seoCanonical').value.trim(),robots:document.getElementById('seoRobots').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','SEO sauvegardé'); alert('✅ SEO sauvegardé !'); }
 
 // =============================================
 // LEGAL
@@ -825,8 +974,6 @@ function subscribeRealtime() {
 // =============================================
 async function initAdmin() { subscribeRealtime(); loadDashboard(); updateNotifUI(); }
 
-// MODIFICATION #3 : DOMContentLoaded v5.0 — Vérification stricte via admin_whitelist
-// NE CRÉE JAMAIS de whitelist automatiquement
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         var r = await db.auth.getSession();
