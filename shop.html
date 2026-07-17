@@ -129,6 +129,7 @@
         let shopItems = [];
         let discountUntil = null;
         let timerInterval = null;
+        let currentUserPoints = 0; // Variable globale pour stocker les points
 
         async function init() {
             const { data: { user: u }, error } = await db.auth.getUser();
@@ -141,11 +142,16 @@
         }
 
         async function updateBalance() {
-            const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+            const { data, error } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+            if (error) {
+                console.error('Error fetching points:', error);
+                return;            }
             const points = data?.points || 0;
+            currentUserPoints = points; // Stocker dans la variable globale
             document.getElementById('pointsDisplay').innerText = points.toLocaleString();
             document.getElementById('balanceAmount').innerText = points.toLocaleString();
         }
+
         async function loadDiscountStatus() {
             try {
                 const { data } = await db.from('user_data').select('discount_until').eq('user_id', user.id).single();
@@ -188,13 +194,14 @@
                     return;
                 }
 
-                const { data: purchases } = await db.from('purchases').select('name').eq('user_id', user.id);
-                const purchasedNames = new Set((purchases || []).map(p => p.name));
+                const { data: purchases } = await db.from('purchases').select('name').eq('user_id', user.id);                const purchasedNames = new Set((purchases || []).map(p => p.name));
 
-                // CORRECTION BUG : Remplacer virgules ET espaces
-                const userPoints = parseInt(document.getElementById('pointsDisplay').innerText.replace(/[, ]/g, '')) || 0;
+                // CORRECTION : Utiliser currentUserPoints (déjà mis à jour par updateBalance)
+                // PAS de lecture depuis le DOM
+                const userPoints = currentUserPoints;
 
-                grid.innerHTML = activeItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => {                    const isPurchased = purchasedNames.has(item.name);
+                grid.innerHTML = activeItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => {
+                    const isPurchased = purchasedNames.has(item.name);
                     const canAfford = userPoints >= (item.cost || 0);
                     const typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' };
                     const typeColor = typeColors[item.type] || 'var(--muted)';
@@ -236,14 +243,14 @@
             const confirmMsg = `Confirmer l'achat de "${item.name}" pour ${item.cost} points ?`;
             if (!confirm(confirmMsg)) return;
 
-            try {
-                const { data: userData } = await db.from('user_data').select('points,discount_until').eq('user_id', user.id).single();
+            try {                const { data: userData } = await db.from('user_data').select('points,discount_until').eq('user_id', user.id).single();
                 const currentPoints = userData?.points || 0;
 
                 if (currentPoints < item.cost) {
                     showToast('Points insuffisants', true);
                     return;
                 }
+
                 const newPoints = currentPoints - item.cost;
                 const itemName = item.name.trim();
 
@@ -285,14 +292,14 @@
             const tbody = document.getElementById('historyTable');
             try {
                 const { data: purchases } = await db.from('purchases').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20);
-
                 if (!purchases || purchases.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">Aucun achat pour le moment</td></tr>';
                     return;
                 }
 
                 tbody.innerHTML = purchases.map(p => `
-                    <tr>                        <td style="font-weight:600">${p.name || '-'}</td>
+                    <tr>
+                        <td style="font-weight:600">${p.name || '-'}</td>
                         <td style="font-family:var(--mono);color:var(--gold)">-${p.points_spent || 0}</td>
                         <td style="font-size:0.75rem;color:var(--dim)">${new Date(p.created_at).toLocaleString('fr-FR')}</td>
                     </tr>
