@@ -2,380 +2,251 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pixora - Boutique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique | Pixora</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{
-            --bg:#050507;
-            --surf:rgba(24,24,27,0.6);
-            --elev:rgba(39,39,42,0.8);
-            --border:rgba(63,63,70,0.5);
-            --glow:rgba(139,92,246,0.25);
-            --prim:#8B5CF6;
-            --sec:#EC4899;
-            --gold:#FBBF24;
-            --success:#10B981;
-            --text:#FAFAFA;
-            --muted:#A1A1AA;
-            --dim:#71717A;
-            --font:'Inter',sans-serif;
-            --mono:'JetBrains Mono',monospace;
-            --hdr:rgba(20,20,23,0.85);
-        }
+        :root{--bg:#050508;--surface:#0f0f14;--border:#1a1a24;--accent:#8B5CF6;--accent2:#EC4899;--gold:#FBBF24;--success:#10B981;--text:#FAFAFA;--muted:#A1A1AA;--dim:#52525B;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
-        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
-        .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}
-        .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}
-        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
-        a{text-decoration:none;color:inherit}
-        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit}
-
-        /* HEADER */
-        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
-        .header-logo{display:flex;align-items:center;gap:0.5rem}
-        .header-logo svg{width:28px;height:28px}
-        .logo-text{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
-        .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
-        .user-stats.show{display:flex}
-        .stat-icon{color:var(--gold);font-size:0.75rem}
-        .stat-points{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold)}
-        .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:white;cursor:pointer}
-        .user-avatar.show{display:flex}
-        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem}        @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
-
-        /* USER MENU */
-        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s;z-index:1001}
-        .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
-        .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}
-        .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white}
-        .menu-info{flex:1;min-width:0}
-        .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
-        .menu-points-bar i{color:var(--gold);font-size:0.75rem}
-        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
-        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
-        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer}
-        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
-        .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem}
-        .menu-item.danger{color:var(--danger)}
-        .menu-item.danger i{color:var(--danger)}
-        .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}
-
-        /* MOBILE NAV */
-        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
-        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;color:var(--muted);transition:all 0.3s}
-        .nav-item i{font-size:1.2rem}
-        .nav-item span{font-size:0.58rem;font-weight:600}
-        .nav-item[data-nav="studio"].active{color:var(--prim)}
-        .nav-item[data-nav="gallery"].active{color:#3B82F6}
-        .nav-item[data-nav="points"].active{color:var(--gold)}
-        .nav-item[data-nav="profile"].active{color:var(--sec)}
-
-        /* SHOP CONTENT */
-        .shop-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
-        @media(min-width:768px){.shop-content{margin-top:60px;padding:1.5rem}}
-        .shop-hero{text-align:center;padding:1.5rem 1rem;margin-bottom:2rem}
-        .shop-hero h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--prim) 50%,var(--sec) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;letter-spacing:-0.03em}
-        .shop-hero p{color:var(--muted);font-size:0.9rem}
-        .section-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
-        .section-label i{color:var(--prim)}
-
-        /* PACKS GRID */
-        .packs-grid,.subs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.8rem;margin-bottom:2rem}
-        .pack-card,.sub-card{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:1.3rem;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);position:relative;overflow:hidden}
-        .pack-card:hover,.sub-card:hover{transform:translateY(-3px);border-color:rgba(139,92,246,0.3);box-shadow:0 10px 40px rgba(139,92,246,0.15)}
-        .pack-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--prim),var(--sec));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;margin-bottom:0.8rem;box-shadow:0 8px 20px rgba(139,92,246,0.3)}
-        .pack-name{font-size:1rem;font-weight:700;margin-bottom:0.2rem}
-        .pack-points{font-family:var(--mono);font-size:1.3rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem}
-        .pack-desc{font-size:0.75rem;color:var(--muted);margin-bottom:1.2rem;min-height:32px}
-        .pack-price{display:flex;align-items:baseline;gap:0.3rem;margin-bottom:0.8rem}
-        .price-amount{font-size:1.8rem;font-weight:800}        .price-currency{font-size:0.9rem;color:var(--muted)}
-        .buy-btn{width:100%;padding:0.75rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:600;font-size:0.9rem;box-shadow:0 4px 15px rgba(139,92,246,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s}
-        .buy-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
-
-        /* SUBSCRIPTIONS */
-        .sub-card.featured{border-color:var(--prim);box-shadow:0 0 30px rgba(139,92,246,0.15)}
-        .sub-name{font-size:1.1rem;font-weight:700;margin-bottom:0.4rem}
-        .sub-price{display:flex;align-items:baseline;gap:0.3rem;margin-bottom:0.8rem}
-        .sub-price .price-amount{font-size:2rem}
-        .sub-period{color:var(--muted);font-size:0.85rem}
-        .sub-features{list-style:none;margin-bottom:1.2rem}
-        .sub-features li{display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;font-size:0.8rem;color:var(--muted)}
-        .sub-features li i{color:var(--success);font-size:0.75rem}
-        .subscribe-btn{width:100%;padding:0.75rem;background:transparent;border:2px solid var(--prim);color:var(--prim);border-radius:12px;font-weight:600;font-size:0.9rem;cursor:pointer;transition:all 0.3s}
-        .subscribe-btn:hover{background:var(--prim);color:white}
-        .sub-card.featured .subscribe-btn{background:linear-gradient(135deg,var(--prim),var(--sec));border:none;color:white}
-
-        /* TRUST */
-        .trust-section{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;padding:1.5rem 1rem;border-top:1px solid var(--border);margin-top:1.5rem}
-        .trust-item{display:flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.75rem}
-        .trust-item i{color:var(--success)}
-
-        /* FOOTER */
-        .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
-        .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}
-        .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
-        .site-footer a:hover{color:var(--prim)}
-
-        /* NOTIFICATION */
-        .notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s;display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
-        .notification.show{transform:translateX(-50%) translateY(0)}
-        .notification.success{border-color:var(--success)}.notification.success i{color:var(--success)}
-        .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}
-
-        @media(max-width:768px){.shop-hero h1{font-size:1.4rem}.packs-grid,.subs-grid{grid-template-columns:1fr}}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column}
+        header{padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50}
+        .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none}
+        .logo svg{width:28px;height:28px}
+        .logo span{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .balance-pill{display:flex;align-items:center;gap:0.5rem;background:var(--surface);padding:0.5rem 1rem;border-radius:100px;border:1px solid var(--border);font-weight:600;font-size:0.9rem}
+        .balance-pill i{color:var(--gold)}
+        .balance-pill span{font-family:var(--mono)}
+        main{flex:1;padding:2rem 1.5rem;max-width:900px;margin:0 auto;width:100%}
+        .page-header{text-align:center;margin-bottom:2.5rem}
+        .page-title{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
+        .page-subtitle{color:var(--muted);font-size:1rem}
+        .balance-card{background:linear-gradient(135deg,rgba(251,191,36,0.1),rgba(139,92,246,0.1));border:1px solid rgba(251,191,36,0.3);border-radius:16px;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+        .balance-left{display:flex;align-items:center;gap:1rem}
+        .balance-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#F59E0B);display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#000}
+        .balance-info h3{font-size:1.1rem;font-weight:700;margin-bottom:0.2rem}
+        .balance-info p{color:var(--muted);font-size:0.85rem}
+        .balance-amount{font-family:var(--mono);font-size:2rem;font-weight:800;color:var(--gold)}
+        .btn-earn{padding:0.7rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;text-decoration:none}
+        .btn-earn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.3)}
+        .section-title{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+        .section-title i{color:var(--accent)}
+        .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:2.5rem}
+        .shop-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;gap:0.8rem;transition:all 0.2s;position:relative}
+        .shop-item:hover{border-color:var(--accent)}
+        .shop-item-header{display:flex;justify-content:space-between;align-items:flex-start}
+        .shop-item-icon{width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--accent)}
+        .shop-item-type{font-family:var(--mono);font-size:0.7rem;padding:0.3rem 0.6rem;border-radius:6px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}
+        .shop-item-name{font-size:1rem;font-weight:600}
+        .shop-item-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}
+        .shop-item-cost{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);margin-top:0.5rem}
+        .btn-buy{width:100%;padding:0.8rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;margin-top:auto}
+        .btn-buy:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.3)}
+        .btn-buy:disabled{background:var(--border);color:var(--dim);cursor:not-allowed;transform:none;box-shadow:none}
+        .btn-buy.purchased{background:var(--success);color:white}
+        .history-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
+        .history-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:1rem}
+        .history-table th{text-align:left;padding:0.8rem;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border)}        .history-table td{padding:0.8rem;border-bottom:1px solid var(--border);color:var(--text)}
+        .history-table tr:last-child td{border-bottom:none}
+        .empty-state{text-align:center;padding:3rem;color:var(--dim)}
+        .empty-state i{font-size:3rem;margin-bottom:1rem;opacity:0.3}
+        .toast{position:fixed;bottom:2rem;right:2rem;background:var(--surface);border:1px solid var(--success);border-radius:12px;padding:1rem 1.5rem;display:flex;align-items:center;gap:0.8rem;box-shadow:0 10px 30px rgba(0,0,0,0.5);z-index:1000;animation:slideIn 0.3s}
+        .toast.error{border-color:var(--danger)}
+        .toast i{font-size:1.2rem;color:var(--success)}
+        .toast.error i{color:var(--danger)}
+        @keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
+        @media(max-width:768px){.shop-grid{grid-template-columns:1fr}.balance-card{flex-direction:column;text-align:center}.balance-left{flex-direction:column}}
     </style>
 </head>
 <body>
-
-<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
-<div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
-
-<!-- HEADER -->
-<header class="site-header">
-    <a href="index.html" class="header-logo">
-        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-        <span class="logo-text">Pixora</span>
-    </a>
-    <div class="header-right">
-        <div class="user-stats" id="user-stats">            <i class="fas fa-bolt stat-icon"></i>
-            <span class="stat-points" id="header-points">0</span>
+    <header>
+        <a href="/index.html" class="logo">
+            <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
+            <span>Pixora</span>
+        </a>
+        <div class="balance-pill">
+            <i class="fas fa-coins"></i>
+            <span id="pointsDisplay">---</span>
         </div>
-        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu()">U</div>
-        <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'">Connexion</button>
+    </header>
 
-        <!-- USER MENU -->
-        <div class="user-menu" id="user-menu">
-            <div class="menu-header">
-                <div class="menu-avatar" id="menu-avatar">U</div>
-                <div class="menu-info">
-                    <div class="menu-name" id="menu-name">Utilisateur</div>
-                    <div class="menu-email" id="menu-email">email@example.com</div>
+    <main>
+        <div class="page-header">
+            <h1 class="page-title">Boutique</h1>
+            <p class="page-subtitle">Échange tes points contre des récompenses exclusives</p>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-left">
+                <div class="balance-icon"><i class="fas fa-wallet"></i></div>
+                <div class="balance-info">
+                    <h3>Ton Solde</h3>
+                    <p>Points disponibles</p>
                 </div>
             </div>
-            <div class="menu-points-bar">
-                <i class="fas fa-bolt"></i>
-                <span id="menu-points">0</span>
-                <small>points</small>
-            </div>
-            <div class="menu-item" onclick="window.location.href='profile.html'">
-                <i class="fas fa-user"></i><span>Mon profil</span>
-            </div>
-            <div class="menu-item" onclick="window.location.href='earn.html'">
-                <i class="fas fa-coins"></i><span>Gagner des points</span>
-            </div>
-            <div class="menu-item" onclick="window.location.href='shop.html'">
-                <i class="fas fa-shopping-bag"></i><span>Mes achats</span>
-            </div>
-            <div class="menu-divider"></div>
-            <div class="menu-item danger" onclick="doLogout()">
-                <i class="fas fa-sign-out-alt"></i><span>Déconnexion</span>
-            </div>
+            <div class="balance-amount" id="balanceAmount">---</div>
+            <a href="/earn.html" class="btn-earn"><i class="fas fa-plus"></i> Gagner plus</a>
         </div>
-    </div>
-</header>
 
-<!-- MOBILE NAV -->
-<nav class="nav-mobile">
-    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
-    <a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
-    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span>Points</span></a>
-    <a href="#" class="nav-item" data-nav="profile" onclick="event.preventDefault();toggleUserMenu()"><i class="fas fa-user"></i></a>
-</nav>
-
-<!-- MAIN CONTENT -->
-<main class="shop-content">
-    <div class="shop-hero">
-        <h1>Rechargez Pixora</h1>
-        <p>Obtenez des crédits pour générer des images et vidéos IA sans limite.</p>    </div>
-
-    <div class="section-label"><i class="fas fa-coins"></i><span>Packs de Points</span></div>
-    <div class="packs-grid" id="packsGrid">
-        <div style="text-align:center;padding:2rem;color:var(--muted);grid-column:1/-1"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:0.5rem"></i><p>Chargement...</p></div>
-    </div>
-
-    <div class="section-label"><i class="fas fa-crown"></i><span>Abonnements Mensuels</span></div>
-    <div class="subs-grid" id="subsGrid">
-        <div style="text-align:center;padding:2rem;color:var(--muted);grid-column:1/-1"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:0.5rem"></i><p>Chargement...</p></div>
-    </div>
-
-    <div class="trust-section">
-        <div class="trust-item"><i class="fas fa-lock"></i><span>Paiement sécurisé</span></div>
-        <div class="trust-item"><i class="fas fa-credit-card"></i><span>Stripe & PayPal</span></div>
-        <div class="trust-item"><i class="fas fa-undo"></i><span>Remboursement 7j</span></div>
-    </div>
-
-    <footer class="site-footer">
-        <div class="footer-links">
-            <a href="index.html">Studio</a>
-            <a href="earn.html">Points</a>
-            <a href="gallery.html">Galerie</a>
-            <a href="profile.html">Profil</a>
-            <a href="privacy.html">Confidentialité</a>
+        <div class="section-title"><i class="fas fa-store"></i> Items Disponibles</div>
+        <div class="shop-grid" id="shopGrid">
+            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
         </div>
-        <div>© 2026 Pixora. Tous droits réservés.</div>
-    </footer>
-</main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        <div class="section-title"><i class="fas fa-history"></i> Historique des Achats</div>
+        <div class="history-card">
+            <table class="history-table">                <thead><tr><th>Item</th><th>Points</th><th>Date</th></tr></thead>
+                <tbody id="historyTable"><tr><td colspan="3" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
+            </table>
+        </div>
+    </main>
 
-// === NOTIFICATION ===
-function notify(m, t) {
-    t = t || 'success';
-    var n = document.getElementById('notif');
-    document.getElementById('notif-text').textContent = m;
-    n.className = 'notification show ' + t;
-    setTimeout(function() { n.classList.remove('show'); }, 3000);
-}
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let user = null;
+        let shopItems = [];
 
-// === USER MENU ===
-function toggleUserMenu() {
-    document.getElementById('user-menu').classList.toggle('show');
-}
-document.addEventListener('click', function(e) {    var menu = document.getElementById('user-menu');
-    var avatar = document.getElementById('user-avatar');
-    if (!menu.contains(e.target) && !avatar.contains(e.target)) menu.classList.remove('show');
-});
+        async function init() {
+            const { data: { user: u }, error } = await db.auth.getUser();
+            if (error || !u) { window.location.href = '/index.html'; return; }
+            user = u;
+            await updateBalance();
+            await loadShopItems();
+            await loadHistory();
+        }
 
-async function doLogout() {
-    await db.auth.signOut();
-    toggleUserMenu();
-    updateUI();
-    notify('👋 Déconnecté', 'success');
-    setTimeout(function() { location.reload(); }, 800);
-}
+        async function updateBalance() {
+            const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+            const points = data?.points || 0;
+            document.getElementById('pointsDisplay').innerText = points.toLocaleString();
+            document.getElementById('balanceAmount').innerText = points.toLocaleString();
+        }
 
-// === USER DATA ===
-async function getUserData() {
-    var u = await db.auth.getUser(); if (!u.data.user) return { points: 0, streak: 1, total_earned: 0 };
-    var r = await db.from('user_data').select('*').eq('user_id', u.data.user.id).single();
-    return r.data || { points: 0, streak: 1, total_earned: 0 };
-}
+        async function loadShopItems() {
+            const grid = document.getElementById('shopGrid');
+            try {
+                const { data: config } = await db.from('admin_config').select('value').eq('key', 'shop_items').single();
+                shopItems = config?.value || [];
+                const activeItems = shopItems.filter(item => item.active !== false);
+                
+                if (activeItems.length === 0) {
+                    grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun item disponible</p><p style="font-size:0.85rem;margin-top:0.5rem">Reviens plus tard !</p></div>';
+                    return;
+                }
 
-// === UPDATE UI ===
-async function updateUI() {
-    var user = await db.auth.getUser();
-    var logged = user.data.user;
+                const { data: purchases } = await db.from('purchases').select('item_name').eq('user_id', user.id);
+                const purchasedItems = new Set((purchases || []).map(p => p.item_name));
 
-    document.getElementById('user-stats').classList.toggle('show', !!logged);
-    document.getElementById('user-avatar').classList.toggle('show', !!logged);
-    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
+                grid.innerHTML = activeItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => {
+                    const isPurchased = purchasedItems.has(item.name);
+                    const userPoints = parseInt(document.getElementById('pointsDisplay').innerText.replace(/,/g, '')) || 0;
+                    const canAfford = userPoints >= (item.cost || 0);
+                    const typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' };                    const typeColor = typeColors[item.type] || 'var(--muted)';
+                    
+                    let btnText = 'Acheter';
+                    let btnClass = 'btn-buy';
+                    let btnDisabled = false;
+                    
+                    if (isPurchased && item.type !== 'pack') {
+                        btnText = 'Déjà acheté';
+                        btnClass += ' purchased';
+                        btnDisabled = true;
+                    } else if (!canAfford) {
+                        btnText = 'Points insuffisants';
+                        btnDisabled = true;
+                    }
 
-    if (logged) {
-        var d = await getUserData();
-        document.getElementById('header-points').textContent = d.points || 0;
-        document.getElementById('menu-points').textContent = d.points || 0;
+                    return `<div class="shop-item">
+                        <div class="shop-item-header">
+                            <div class="shop-item-icon"><i class="fas ${item.icon || 'fa-gift'}"></i></div>
+                            <span class="shop-item-type" style="color:${typeColor}">${item.type || 'pack'}</span>
+                        </div>
+                        <div class="shop-item-name">${item.name}</div>
+                        <div class="shop-item-desc">${item.desc || 'Récompense exclusive'}</div>
+                        <div class="shop-item-cost">${item.cost || 0} pts</div>
+                        <button class="${btnClass}" onclick="purchaseItem(${shopItems.indexOf(item)})" ${btnDisabled ? 'disabled' : ''}>${btnText}</button>
+                    </div>`;
+                }).join('');
+            } catch(e) {
+                console.error('Load shop error:', e);
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p style="color:var(--danger)">Erreur de chargement</p></div>';
+            }
+        }
 
-        var name = logged.user_metadata?.name || 'Utilisateur';
-        var initial = name.charAt(0).toUpperCase();
-        document.getElementById('user-avatar').textContent = initial;
-        document.getElementById('menu-avatar').textContent = initial;
-        document.getElementById('menu-name').textContent = name;
-        document.getElementById('menu-email').textContent = logged.email;
-    }
-}
+        async function purchaseItem(index) {
+            const item = shopItems[index];
+            if (!item) return;
 
-// === SHOP CONFIG ===
-async function loadShopConfig() {
-    try {
-        var configResult = await db.from('admin_config').select('*').eq('key', 'shop_config').single();
-        if (configResult.data && configResult.data.value) return configResult.data.value;
-    } catch (err) { console.error('Shop config error:', err); }
-    return {        packs: [
-            { name: 'Starter', points: 100, price: 0.99 },
-            { name: 'Popular', points: 500, price: 4.99 },
-            { name: 'Best Value', points: 1200, price: 9.99 },
-            { name: 'Pro', points: 2500, price: 19.99 }
-        ],
-        subs: [
-            { name: 'Basic', points: 2000, price: 9.99 },
-            { name: 'Pro', points: 5000, price: 19.99 },
-            { name: 'Elite', points: 12000, price: 39.99 }
-        ],
-        currency: 'EUR'
-    };
-}
+            const confirmMsg = `Confirmer l'achat de "${item.name}" pour ${item.cost} points ?`;
+            if (!confirm(confirmMsg)) return;
 
-async function renderShop() {
-    var config = await loadShopConfig();
-    var currency = config.currency || 'EUR';
+            try {
+                const { data: userData } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+                const currentPoints = userData?.points || 0;
+                
+                if (currentPoints < item.cost) {
+                    showToast('Points insuffisants', true);
+                    return;
+                }
 
-    var packsHtml = (config.packs || []).map(function(p) {
-        return '<div class="pack-card">' +
-            '<div class="pack-icon"><i class="fas fa-bolt"></i></div>' +
-            '<div class="pack-name">' + p.name + '</div>' +
-            '<div class="pack-points">' + p.points + ' pts</div>' +
-            '<div class="pack-desc">~' + Math.floor(p.points / 15) + ' images</div>' +
-            '<div class="pack-price"><span class="price-amount">' + p.price + '</span><span class="price-currency">' + currency + '</span></div>' +
-            '<button class="buy-btn" onclick="buyPack(\'' + p.name.replace(/'/g, "\\'") + '\',' + p.points + ',' + p.price + ')"><i class="fas fa-shopping-cart"></i> Acheter</button>' +
-            '</div>';
-    }).join('');
-    document.getElementById('packsGrid').innerHTML = packsHtml;
+                const newPoints = currentPoints - item.cost;
+                await Promise.all([                    db.from('user_data').update({ points: newPoints }).eq('user_id', user.id),
+                    db.from('purchases').insert({ user_id: user.id, item_name: item.name, item_type: item.type, points_spent: item.cost }),
+                    db.from('transactions').insert({ user_id: user.id, type: 'spent', title: `Achat: ${item.name}`, amount: -item.cost })
+                ]);
 
-    var subsHtml = (config.subs || []).map(function(s) {
-        return '<div class="sub-card">' +
-            '<div class="sub-name">' + s.name + '</div>' +
-            '<div class="sub-price"><span class="price-amount">' + s.price + '</span><span class="sub-period">' + currency + '/mois</span></div>' +
-            '<ul class="sub-features">' +
-            '<li><i class="fas fa-check"></i> ' + s.points + ' pts/mois</li>' +
-            '<li><i class="fas fa-check"></i> Vidéos incluses</li>' +
-            '<li><i class="fas fa-check"></i> Support prioritaire</li>' +
-            '</ul>' +
-            '<button class="subscribe-btn" onclick="subscribe(\'' + s.name.replace(/'/g, "\\'") + '\',' + s.points + ',' + s.price + ')">S\'abonner</button>' +
-            '</div>';
-    }).join('');
-    document.getElementById('subsGrid').innerHTML = subsHtml;
-}
+                showToast(`✅ ${item.name} acheté ! -${item.cost} pts`);
+                await updateBalance();
+                await loadShopItems();
+                await loadHistory();
+            } catch(e) {
+                console.error('Purchase error:', e);
+                showToast('Erreur lors de l\'achat', true);
+            }
+        }
 
-// === BUY PACK ===
-async function buyPack(name, points, price) {
-    var user = await db.auth.getUser();
-    if (!user.data.user) { notify('Connectez-vous d\'abord', 'error'); return; }
-    await db.from('transactions').insert({ user_id: user.data.user.id, type: 'purchased', title: 'Pack ' + name, amount: points });
+        async function loadHistory() {
+            const tbody = document.getElementById('historyTable');
+            try {
+                const { data: purchases } = await db.from('purchases').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20);
+                
+                if (!purchases || purchases.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">Aucun achat pour le moment</td></tr>';
+                    return;
+                }
 
-    var data = await getUserData();
-    await db.from('user_data').update({
-        points: (data.points || 0) + points,
-        total_earned: (data.total_earned || 0) + points
-    }).eq('user_id', user.data.user.id);
+                tbody.innerHTML = purchases.map(p => `
+                    <tr>
+                        <td style="font-weight:600">${p.item_name}</td>
+                        <td style="font-family:var(--mono);color:var(--gold)">-${p.points_spent || 0}</td>
+                        <td style="font-size:0.75rem;color:var(--dim)">${new Date(p.created_at).toLocaleString('fr-FR')}</td>
+                    </tr>
+                `).join('');
+            } catch(e) {
+                console.error('Load history error:', e);
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">Erreur de chargement</td></tr>';
+            }
+        }
 
-    await updateUI();
-    notify('✅ ' + points + ' points ajoutés !', 'success');
-}
+        function showToast(message, isError = false) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error' : ''}`;
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s reverse';
+                setTimeout(() => toast.remove(), 300);            }, 3000);
+        }
 
-// === SUBSCRIBE ===
-async function subscribe(plan, points, price) {
-    var user = await db.auth.getUser();
-    if (!user.data.user) { notify('Connectez-vous d\'abord', 'error'); return; }
-
-    await db.from('transactions').insert({ user_id: user.data.user.id, type: 'purchased', title: 'Abonnement ' + plan, amount: points });
-
-    var data = await getUserData();
-    await db.from('user_data').update({
-        points: (data.points || 0) + points,
-        total_earned: (data.total_earned || 0) + points
-    }).eq('user_id', user.data.user.id);
-
-    await updateUI();
-    notify('✅ Abonnement activé !', 'success');
-}
-
-// === INIT ===
-document.addEventListener('DOMContentLoaded', async function() {
-    await updateUI();
-    await renderShop();
-});
-</script>
+        init();
+    </script>
 </body>
 </html>
