@@ -30,7 +30,6 @@
         .balance-amount{font-family:var(--mono);font-size:2rem;font-weight:800;color:var(--gold)}
         .btn-earn{padding:0.7rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;text-decoration:none}
         .btn-earn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.3)}
-        /* DISCOUNT STATUS CARD */
         .discount-status{background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(249,115,22,0.1));border:1px solid rgba(251,191,36,0.4);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:2rem;display:none;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
         .discount-status.active{display:flex}
         .discount-left{display:flex;align-items:center;gap:0.8rem}
@@ -47,8 +46,8 @@
         .shop-item-icon{width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--accent)}
         .shop-item-type{font-family:var(--mono);font-size:0.7rem;padding:0.3rem 0.6rem;border-radius:6px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}
         .shop-item-name{font-size:1rem;font-weight:600}
-        .shop-item-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}        .shop-item-cost{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);margin-top:0.5rem}
-        .btn-buy{width:100%;padding:0.8rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;margin-top:auto}
+        .shop-item-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}
+        .shop-item-cost{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);margin-top:0.5rem}        .btn-buy{width:100%;padding:0.8rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;margin-top:auto}
         .btn-buy:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.3)}
         .btn-buy:disabled{background:var(--border);color:var(--dim);cursor:not-allowed;transform:none;box-shadow:none}
         .btn-buy.purchased{background:var(--success);color:white}
@@ -96,9 +95,8 @@
             <div class="balance-amount" id="balanceAmount">---</div>
             <a href="/earn.html" class="btn-earn"><i class="fas fa-plus"></i> Gagner plus</a>
         </div>
-        <!-- SECTION DISCOUNT STATUS (CORRECTION #4) -->
-        <div class="discount-status" id="discountStatus">
-            <div class="discount-left">
+
+        <div class="discount-status" id="discountStatus">            <div class="discount-left">
                 <div class="discount-icon"><i class="fas fa-fire"></i></div>
                 <div class="discount-info">
                     <h4>🔥 -50% ACTIF sur les images</h4>
@@ -145,12 +143,9 @@
         async function updateBalance() {
             const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
             const points = data?.points || 0;
-            document.getElementById('pointsDisplay').innerText = points.toLocaleString();            document.getElementById('balanceAmount').innerText = points.toLocaleString();
+            document.getElementById('pointsDisplay').innerText = points.toLocaleString();
+            document.getElementById('balanceAmount').innerText = points.toLocaleString();
         }
-
-        // =============================================
-        // CORRECTION #4 & #6 : Discount Status + Timer
-        // =============================================
         async function loadDiscountStatus() {
             try {
                 const { data } = await db.from('user_data').select('discount_until').eq('user_id', user.id).single();
@@ -181,9 +176,6 @@
             timerEl.textContent = String(hours).padStart(2,'0') + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
         }
 
-        // =============================================
-        // CORRECTION #1 & #5 : loadShopItems avec colonne name
-        // =============================================
         async function loadShopItems() {
             const grid = document.getElementById('shopGrid');
             try {
@@ -195,15 +187,14 @@
                     grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun item disponible</p><p style="font-size:0.85rem;margin-top:0.5rem">Reviens plus tard !</p></div>';
                     return;
                 }
-                // CORRECTION #1 : Lire 'name' au lieu de 'item_name'
+
                 const { data: purchases } = await db.from('purchases').select('name').eq('user_id', user.id);
                 const purchasedNames = new Set((purchases || []).map(p => p.name));
 
-                const userPoints = parseInt(document.getElementById('pointsDisplay').innerText.replace(/,/g, '')) || 0;
+                // CORRECTION BUG : Remplacer virgules ET espaces
+                const userPoints = parseInt(document.getElementById('pointsDisplay').innerText.replace(/[, ]/g, '')) || 0;
 
-                grid.innerHTML = activeItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => {
-                    // CORRECTION #5 : Comparaison avec 'name' + packs rechargeables
-                    const isPurchased = purchasedNames.has(item.name);
+                grid.innerHTML = activeItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => {                    const isPurchased = purchasedNames.has(item.name);
                     const canAfford = userPoints >= (item.cost || 0);
                     const typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' };
                     const typeColor = typeColors[item.type] || 'var(--muted)';
@@ -212,7 +203,6 @@
                     let btnClass = 'btn-buy';
                     let btnDisabled = false;
 
-                    // Les packs sont rechargeables, les autres sont uniques
                     if (isPurchased && item.type !== 'pack') {
                         btnText = 'Déjà acheté';
                         btnClass += ' purchased';
@@ -239,11 +229,9 @@
             }
         }
 
-        // =============================================
-        // CORRECTION #2 & #3 : purchaseItem avec nom correct + discount
-        // =============================================
         async function purchaseItem(index) {
-            const item = shopItems[index];            if (!item) return;
+            const item = shopItems[index];
+            if (!item) return;
 
             const confirmMsg = `Confirmer l'achat de "${item.name}" pour ${item.cost} points ?`;
             if (!confirm(confirmMsg)) return;
@@ -256,18 +244,15 @@
                     showToast('Points insuffisants', true);
                     return;
                 }
-
                 const newPoints = currentPoints - item.cost;
                 const itemName = item.name.trim();
 
-                // CORRECTION #3 : Si Pack Économie → écrire discount_until = NOW() + 24h
                 let userUpdate = { points: newPoints };
                 if (itemName === 'Pack Économie') {
                     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
                     userUpdate.discount_until = expiresAt;
                 }
 
-                // CORRECTION #2 : Insertion avec colonnes correctes (name, type, points_spent, details)
                 await Promise.all([
                     db.from('user_data').update(userUpdate).eq('user_id', user.id),
                     db.from('purchases').insert({
@@ -292,12 +277,10 @@
                 await loadHistory();
             } catch(e) {
                 console.error('Purchase error:', e);
-                showToast('Erreur lors de l\'achat', true);            }
+                showToast('Erreur lors de l\'achat', true);
+            }
         }
 
-        // =============================================
-        // CORRECTION #1 (historique) : Lire 'name' au lieu de 'item_name'
-        // =============================================
         async function loadHistory() {
             const tbody = document.getElementById('historyTable');
             try {
@@ -309,8 +292,7 @@
                 }
 
                 tbody.innerHTML = purchases.map(p => `
-                    <tr>
-                        <td style="font-weight:600">${p.name || '-'}</td>
+                    <tr>                        <td style="font-weight:600">${p.name || '-'}</td>
                         <td style="font-family:var(--mono);color:var(--gold)">-${p.points_spent || 0}</td>
                         <td style="font-size:0.75rem;color:var(--dim)">${new Date(p.created_at).toLocaleString('fr-FR')}</td>
                     </tr>
