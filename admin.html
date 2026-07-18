@@ -161,7 +161,7 @@
             <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v6.1<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v6.2<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 <div class="notif-panel" id="notifPanel">
     <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
@@ -330,7 +330,7 @@ async function verifyAdminAccess(email) {
     try {
         var result = await db.from('admin_whitelist').select('email').eq('email', email).limit(1);
         if (result.error) { console.error('Whitelist error:', result.error); showLoginError('🔴 Erreur DB : ' + (result.error.message || 'inconnue')); return false; }
-        if (!result.data || result.data.length === 0) { showLoginError(' Email non autorisé. Ajoute-le dans admin_whitelist.'); return false; }
+        if (!result.data || result.data.length === 0) { showLoginError('⛔ Email non autorisé. Ajoute-le dans admin_whitelist.'); return false; }
         return true;
     } catch(e) { console.error('Verify error:', e); showLoginError('🔴 Erreur système : ' + (e.message || 'inconnue')); return false; }
 }
@@ -505,90 +505,9 @@ async function deleteModel(id, type) {
     await db.from('generator_models').delete().eq('id', id);
     loadModels(type); addNotification('config', 'Modèle supprimé');
 }
-// =============================================
-// API KEYS + TEST (IDENTIQUE V6.0)
-// =============================================
-async function loadSiteApiConfig() {
-    var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
-    var keys = r.data ? r.data.value : {};
-    if (keys['fal.ai']) { document.getElementById('siteApiKey').value = keys['fal.ai']; }
-    else { document.getElementById('siteApiKey').placeholder = 'Aucune clé fal.ai configurée'; }
-}
-
-async function testSiteApi() {
-    var btn = document.getElementById('btn-test-site');
-    var resultDiv = document.getElementById('test-result-site');
-    var endpoint = document.getElementById('siteApiEndpoint').value.trim();
-    var key = document.getElementById('siteApiKey').value.trim();
-    var prompt = document.getElementById('siteApiPrompt').value.trim() || 'test cat';
-    if (!endpoint || !key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Endpoint et clé API requis'; resultDiv.style.display='block'; return; }
-    btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Génération...';
-    resultDiv.style.display='none';
-    try {
-        var response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Key ' + key }, body: JSON.stringify({ prompt: prompt, width: 256, height: 256, num_images: 1 }) });
-        btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération';
-        if (response.ok) {
-            var data = await response.json();
-            var imgUrl = '';
-            if (data.images && data.images.length > 0) imgUrl = data.images[0].url;
-            else if (data.output && data.output.images && data.output.images.length > 0) imgUrl = data.output.images[0].url;
-            var html = '<i class="fas fa-check"></i> ✅ API fonctionnelle ! (' + response.status + ')';
-            if (imgUrl) html += '<br><img src="' + imgUrl + '" style="max-width:200px;border-radius:8px;margin-top:0.5rem">';
-            else html += '<br><small>Réponse : ' + JSON.stringify(data).substring(0, 300) + '</small>';
-            resultDiv.className='api-test-result success'; resultDiv.innerHTML = html;
-        } else {
-            var errText = await response.text();
-            resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur ' + response.status + '<br><small>' + errText.substring(0, 300) + '</small>';
-        }
-    } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ ' + err.message; }
-    resultDiv.style.display='block';
-}
-
-async function loadApiKeys() {
-    loadSiteApiConfig();
-    var result = await db.from('admin_config').select('*').eq('key','api_keys').single();
-    var keys = result.data ? result.data.value : {};
-    var providers = [
-        {id:'fal.ai',name:'fal.ai (Flux + Wan 2.1)',testUrl:'https://rest.alpha.fal.ai/models'},
-        {id:'replicate',name:'Replicate',testUrl:'https://api.replicate.com/v1/models'},
-        {id:'stability',name:'Stability AI',testUrl:'https://api.stability.ai/v2beta/stable-image/generate/core'},
-        {id:'kling',name:'Kling AI',testUrl:''},{id:'tencent',name:'Tencent Hunyuan',testUrl:''},
-        {id:'runway',name:'Runway ML',testUrl:''},{id:'pika',name:'Pika Labs',testUrl:''},
-        {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}    ];
-    var html = '';
-    providers.forEach(function(p) {
-        html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
-    });
-    document.getElementById('apiKeysContainer').innerHTML = html;
-}
-
-async function testApiKey(provider, testUrl) {
-    var btn = document.getElementById('btn-test-'+provider); var resultDiv = document.getElementById('test-result-'+provider);
-    var keyInput = document.querySelector('.api-key-input[data-provider="'+provider+'"]'); var key = keyInput.value.trim();
-    if (!key) { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> Aucune clé saisie'; resultDiv.style.display='block'; return; }
-    if (!testUrl) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-info-circle"></i> Test auto non disponible pour '+provider+'. Vérifiez manuellement.'; resultDiv.style.display='block'; return; }
-    btn.classList.add('testing'); btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Test...'; resultDiv.style.display='none';
-    try {
-        var headers = {'Content-Type':'application/json'};
-        if (provider==='fal.ai') headers['Authorization'] = 'Key '+key;
-        else if (provider==='replicate'||provider==='stability'||provider==='openai') headers['Authorization'] = 'Bearer '+key;
-        var response = await fetch(testUrl, {method:'GET',headers:headers});
-        btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester';
-        if (response.ok) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-check"></i> ✅ Clé valide ! ('+response.status+')'; }
-        else { resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Clé invalide ('+response.status+')'; }
-    } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur : '+err.message; }
-    resultDiv.style.display='block';
-}
-
-async function saveApiKeys() {
-    var keys = {};
-    document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
-    await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'});
-    addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');
-}
 
 // =============================================
-// API KEYS + TEST (IDENTIQUE V6.0)
+// API KEYS + TEST — v6.2 AVEC HUGGING FACE
 // =============================================
 async function loadSiteApiConfig() {
     var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
@@ -618,8 +537,7 @@ async function testSiteApi() {
             if (imgUrl) html += '<br><img src="' + imgUrl + '" style="max-width:200px;border-radius:8px;margin-top:0.5rem">';
             else html += '<br><small>Réponse : ' + JSON.stringify(data).substring(0, 300) + '</small>';
             resultDiv.className='api-test-result success'; resultDiv.innerHTML = html;
-        } else {
-            var errText = await response.text();
+        } else {            var errText = await response.text();
             resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur ' + response.status + '<br><small>' + errText.substring(0, 300) + '</small>';
         }
     } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ ' + err.message; }
@@ -631,12 +549,14 @@ async function loadApiKeys() {
     var result = await db.from('admin_config').select('*').eq('key','api_keys').single();
     var keys = result.data ? result.data.value : {};
     var providers = [
+        {id:'huggingface',name:'Hugging Face (Vidéo)',testUrl:'https://api-inference.huggingface.co/models'},
         {id:'fal.ai',name:'fal.ai (Flux + Wan 2.1)',testUrl:'https://rest.alpha.fal.ai/models'},
         {id:'replicate',name:'Replicate',testUrl:'https://api.replicate.com/v1/models'},
         {id:'stability',name:'Stability AI',testUrl:'https://api.stability.ai/v2beta/stable-image/generate/core'},
         {id:'kling',name:'Kling AI',testUrl:''},{id:'tencent',name:'Tencent Hunyuan',testUrl:''},
         {id:'runway',name:'Runway ML',testUrl:''},{id:'pika',name:'Pika Labs',testUrl:''},
-        {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}    ];
+        {id:'openai',name:'OpenAI',testUrl:'https://api.openai.com/v1/models'}
+    ];
     var html = '';
     providers.forEach(function(p) {
         html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
@@ -653,7 +573,7 @@ async function testApiKey(provider, testUrl) {
     try {
         var headers = {'Content-Type':'application/json'};
         if (provider==='fal.ai') headers['Authorization'] = 'Key '+key;
-        else if (provider==='replicate'||provider==='stability'||provider==='openai') headers['Authorization'] = 'Bearer '+key;
+        else if (provider==='replicate'||provider==='stability'||provider==='openai'||provider==='huggingface') headers['Authorization'] = 'Bearer '+key;
         var response = await fetch(testUrl, {method:'GET',headers:headers});
         btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester';
         if (response.ok) { resultDiv.className='api-test-result success'; resultDiv.innerHTML='<i class="fas fa-check"></i> ✅ Clé valide ! ('+response.status+')'; }
@@ -666,8 +586,7 @@ async function saveApiKeys() {
     var keys = {};
     document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
     await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'});
-    addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');
-}
+    addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');}
 
 // =============================================
 // RÉGIES PUB (IDENTIQUE V6.0)
@@ -685,7 +604,8 @@ async function loadAdNetworks() {
 function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=5; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }
 function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }
 function editAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=i; document.getElementById('adNetName').value=n.name; document.getElementById('adNetType').value=n.type||'smartlink'; document.getElementById('adNetPage').value=n.page||'earn'; document.getElementById('adNetPosition').value=n.position||'top'; document.getElementById('adNetLink').value=n.link||n.code||''; document.getElementById('adNetPoints').value=n.points; document.getElementById('adNetOrder').value=n.order||0; document.getElementById('adNetActive').checked=n.active!==false; }
-async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; var c=JSON.parse(JSON.stringify(n)); c.name+=' (copie)'; c.active=false; window._adNetworks.push(c); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie dupliquée'); }async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetworks[i].active; await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); }
+async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; var c=JSON.parse(JSON.stringify(n)); c.name+=' (copie)'; c.active=false; window._adNetworks.push(c); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie dupliquée'); }
+async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetworks[i].active; await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); }
 async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }
 async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie supprimée'); }
 
@@ -715,8 +635,7 @@ function renderTasksTable(tasks) {
 function openTaskForm() { document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=''; document.getElementById('taskName').value=''; document.getElementById('taskDesc').value=''; document.getElementById('taskPoints').value=2; document.getElementById('taskType').value='vote'; document.getElementById('taskLimit').value=5; document.getElementById('taskOrder').value=0; document.getElementById('taskActive').checked=true; }
 function closeTaskForm() { document.getElementById('taskForm').style.display='none'; }
 function editTask(index) { var t=window._internalTasks[index]; if(!t)return; document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=index; document.getElementById('taskName').value=t.name; document.getElementById('taskDesc').value=t.desc||''; document.getElementById('taskPoints').value=t.points; document.getElementById('taskType').value=t.type; document.getElementById('taskLimit').value=t.limit; document.getElementById('taskOrder').value=t.order||0; document.getElementById('taskActive').checked=t.active!==false; }
-async function saveInternalTask() { var index=document.getElementById('taskId').value; var data={name:document.getElementById('taskName').value.trim(),desc:document.getElementById('taskDesc').value.trim(),points:parseInt(document.getElementById('taskPoints').value)||0,type:document.getElementById('taskType').value,limit:parseInt(document.getElementById('taskLimit').value)||1,order:parseInt(document.getElementById('taskOrder').value)||0,active:document.getElementById('taskActive').checked}; if(!data.name){alert('Nom requis');return} var tasks=window._internalTasks||[]; if(index!==''){tasks[parseInt(index)]=data}else{tasks.push(data)} tasks.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); closeTaskForm(); loadInternalTasks(); addNotification('config','Tâche "'+data.name+'" sauvegardée'); }
-async function deleteInternalTask(index) { if(!confirm('Supprimer cette tâche ?'))return; window._internalTasks.splice(index,1); await db.from('admin_config').upsert({key:'internal_tasks',value:window._internalTasks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadInternalTasks(); addNotification('config','Tâche supprimée'); }
+async function saveInternalTask() { var index=document.getElementById('taskId').value; var data={name:document.getElementById('taskName').value.trim(),desc:document.getElementById('taskDesc').value.trim(),points:parseInt(document.getElementById('taskPoints').value)||0,type:document.getElementById('taskType').value,limit:parseInt(document.getElementById('taskLimit').value)||1,order:parseInt(document.getElementById('taskOrder').value)||0,active:document.getElementById('taskActive').checked}; if(!data.name){alert('Nom requis');return} var tasks=window._internalTasks||[]; if(index!==''){tasks[parseInt(index)]=data}else{tasks.push(data)} tasks.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); closeTaskForm(); loadInternalTasks(); addNotification('config','Tâche "'+data.name+'" sauvegardée'); }async function deleteInternalTask(index) { if(!confirm('Supprimer cette tâche ?'))return; window._internalTasks.splice(index,1); await db.from('admin_config').upsert({key:'internal_tasks',value:window._internalTasks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadInternalTasks(); addNotification('config','Tâche supprimée'); }
 
 // =============================================
 // PARRAINAGE (IDENTIQUE V6.0)
@@ -734,7 +653,8 @@ async function loadReferrals() {
             tbody.innerHTML = refResult.data.map(function(r) {
                 var statusClass = r.validated ? 'status-valid' : 'status-pending'; var statusText = r.validated ? 'Validé' : 'En attente';
                 return '<tr><td style="font-size:0.8rem">'+(r.sponsor?.email||'-')+'</td><td style="font-size:0.8rem">'+(r.referred?.email||'-')+'</td><td><span class="status-badge '+statusClass+'">'+statusText+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+(r.validated?r.points||10:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(r.created_at).toLocaleString('fr-FR')+'</td></tr>';
-            }).join('');        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>'; }
+            }).join('');
+        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>'; }
     } catch(err) { document.getElementById('referralsTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--warn)">Table referrals non créée. Exécutez le SQL dans Supabase.</td></tr>'; }
 }
 async function saveReferralConfig() {
@@ -764,8 +684,7 @@ async function savePricing() {
 }
 
 // =============================================
-// SHOP CONFIG (IDENTIQUE V6.0)
-// =============================================
+// SHOP CONFIG (IDENTIQUE V6.0)// =============================================
 async function loadShopConfig() { var r=await db.from('admin_config').select('*').eq('key','shop_config').single(); var c=r.data?r.data.value:{packs:[],subs:[],currency:'EUR',stripe_key:'',paypal_client_id:''}; document.getElementById('shopCurrency').value=c.currency||'EUR'; document.getElementById('stripeKey').value=c.stripe_key||''; document.getElementById('paypalClientId').value=c.paypal_client_id||''; var ph='';(c.packs||[]).forEach(function(p){ph+='<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="'+p.name+'"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="'+p.points+'"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="'+p.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('packsContainer').innerHTML=ph||'<div style="color:var(--dim);font-size:0.85rem">Aucun pack</div>'; var sh='';(c.subs||[]).forEach(function(s){sh+='<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="'+s.name+'"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="'+s.points+'"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="'+s.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('subsContainer').innerHTML=sh||'<div style="color:var(--dim);font-size:0.85rem">Aucun abonnement</div>'; }
 function addPackField() { document.getElementById('packsContainer').insertAdjacentHTML('beforeend','<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Pack Name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 function addSubField() { document.getElementById('subsContainer').insertAdjacentHTML('beforeend','<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Plan Name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
@@ -783,7 +702,8 @@ async function loadShopItems() {
         renderShopItemsTable(stats);
     } catch(e) {
         document.getElementById('shopItemsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--danger)">Erreur : ' + e.message + '</td></tr>';
-    }}
+    }
+}
 async function loadShopStats() {
     var statsMap = {};
     try {
@@ -813,8 +733,7 @@ async function saveShopItem() {
     if (index !== '') { _shopItems[parseInt(index)] = data; } else { _shopItems.push(data); }
     _shopItems.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
     await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    closeShopItemForm(); loadShopItems(); addNotification('config', 'Item shop "' + data.name + '" sauvegardé'); alert('✅ Item shop sauvegardé !');
-}
+    closeShopItemForm(); loadShopItems(); addNotification('config', 'Item shop "' + data.name + '" sauvegardé'); alert('✅ Item shop sauvegardé !');}
 async function toggleShopItem(index) { _shopItems[index].active = !_shopItems[index].active; await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' }); loadShopItems(); }
 async function deleteShopItem(index) { var name = _shopItems[index].name; if (!confirm('Supprimer "' + name + '" du shop points ?')) return; _shopItems.splice(index, 1); await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' }); loadShopItems(); addNotification('config', 'Item shop "' + name + '" supprimé'); }
 
@@ -832,7 +751,8 @@ async function loadSiteSettings() { var r=await db.from('admin_config').select('
 async function saveSiteSettings() { await db.from('admin_config').upsert({key:'site_settings',value:{name:document.getElementById('settingSiteName').value.trim(),logo_url:document.getElementById('settingLogoUrl').value.trim(),favicon:document.getElementById('settingFavicon').value.trim(),color_primary:document.getElementById('settingColorPrimary').value,color_secondary:document.getElementById('settingColorSecondary').value,lang:document.getElementById('settingLang').value,hero_text:document.getElementById('settingHeroText').value.trim(),copyright:document.getElementById('settingCopyright').value.trim(),maintenance:document.getElementById('settingMaintenance').checked},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Paramètres site sauvegardés'); alert('✅ Paramètres sauvegardés !'); }
 
 // =============================================
-// SEO (IDENTIQUE V6.0)// =============================================
+// SEO (IDENTIQUE V6.0)
+// =============================================
 async function loadSeo() { var r=await db.from('admin_config').select('*').eq('key','seo').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('seoTitle').value=s.title||'';document.getElementById('seoDescription').value=s.description||'';document.getElementById('seoOgImage').value=s.og_image||'';document.getElementById('seoCanonical').value=s.canonical||'';document.getElementById('seoRobots').value=s.robots||''} }
 async function saveSeo() { await db.from('admin_config').upsert({key:'seo',value:{title:document.getElementById('seoTitle').value.trim(),description:document.getElementById('seoDescription').value.trim(),og_image:document.getElementById('seoOgImage').value.trim(),canonical:document.getElementById('seoCanonical').value.trim(),robots:document.getElementById('seoRobots').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','SEO sauvegardé'); alert('✅ SEO sauvegardé !'); }
 
@@ -862,8 +782,7 @@ async function loadLogs() { var r=await db.from('admin_config').select('*').eq('
 // =============================================
 async function changeAdminPassword() { var np=document.getElementById('newAdminPass').value,cp=document.getElementById('confirmAdminPass').value; if(np!==cp){alert('Mots de passe différents');return} if(np.length<8){alert('Minimum 8 caractères');return} await db.auth.updateUser({password:np}); alert('✅ Mot de passe modifié !'); document.getElementById('newAdminPass').value=''; document.getElementById('confirmAdminPass').value=''; }
 
-// =============================================
-// REALTIME (IDENTIQUE V6.0)
+// =============================================// REALTIME (IDENTIQUE V6.0)
 // =============================================
 function subscribeRealtime() {
     db.channel('admin-realtime')
@@ -881,7 +800,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     try {
         var r = await db.auth.getSession();
         if (r.data.session && r.data.session.user) {
-            var email = r.data.session.user.email.toLowerCase();            var isAuthorized = await verifyAdminAccess(email);
+            var email = r.data.session.user.email.toLowerCase();
+            var isAuthorized = await verifyAdminAccess(email);
             if (!isAuthorized) {
                 await db.auth.signOut();
                 showLoginError('⛔ Session expirée ou accès non autorisé. Veuillez vous reconnecter.');
