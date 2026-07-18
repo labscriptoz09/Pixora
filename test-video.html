@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Vidéo Backend</title></head>
+<body>
+<h2>🧪 Test Backend Vidéo</h2>
+<p id="status">En attente...</p>
+<button onclick="run()">▶️ Lancer le test</button>
+<pre id="log" style="background:#1e1e2e;color:#f8f8f2;padding:10px;max-height:300px;overflow-y:auto"></pre>
+
+<script>
+async function run() {
+    const el = document.getElementById('status');
+    const log = document.getElementById('log');
+    el.textContent = '🚀 Envoi à /api/generate-video...';
+    log.textContent = '';
+
+    try {
+        const res = await fetch('/api/generate-video', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: 'a cat running in a field' })
+        });
+
+        const json = await res.json();
+        log.textContent = JSON.stringify(json, null, 2);
+        
+        if (json.url) {
+            el.innerHTML = '✅ VIDÉO GÉNÉRÉE !<br><a href="' + json.url + '" target="_blank">👉 Ouvrir la vidéo</a>';
+            el.style.color = 'limegreen';
+        } else if (json.error) {
+            el.innerHTML = '❌ ERREUR : ' + json.error + '<br><small>' + (json.details || '') + '</small>';
+            el.style.color = 'tomato';
+        } else {
+            el.textContent = '⚠️ Réponse inattendue';
+        }
+    } catch(e) {
+        el.innerHTML = '❌ Exception : ' + e.message;
+        log.textContent = e.stack || e.toString();
+        el.style.color = 'tomato';
+    }
+}
+</script>
+</body>
+</html>
