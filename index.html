@@ -292,7 +292,11 @@ var pendingReferrer = null;
 var API_KEYS = {};
 var currentDiscountUntil = null;
 var discountTimerInterval = null;
+// =============================================
+// v4.2 — HUGGING FACE SVD AJOUTÉ COMME PROVIDER VIDÉO
+// =============================================
 var API_PROVIDERS = [
+    { id: 'huggingface', name: 'Hugging Face', types: ['video'], endpoint: 'https://api-inference.huggingface.co/models/stabilityai/stable-video-diffusion-img2vid-xt', authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; }, buildBody: function(p){ return { inputs: p }; }, parseUrl: function(d){ if (d.video && d.video.url) return d.video.url; if (d.output && d.output.video && d.output.video.url) return d.output.video.url; if (typeof d === 'string' && d.indexOf('http') === 0) return d; return null; } },
     { id: 'fal.ai', name: 'fal.ai', types: ['image'], endpoint: 'https://queue.fal.run/fal-ai/flux/schnell', authHeader: function(k){ return { 'Authorization': 'Key ' + k }; }, buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; }, parseUrl: function(d){ if (d.images && d.images[0] && d.images[0].url) return d.images[0].url; if (d.output && d.output.images && d.output.images[0] && d.output.images[0].url) return d.output.images[0].url; return null; } },
     { id: 'leonardo', name: 'Leonardo.Ai', types: ['image'], endpoint: 'https://cloud.leonardo.ai/api/rest/v1/generations', authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; }, buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; }, parseUrl: function(d){ if (d.generations && d.generations[0] && d.generations[0].generated_images && d.generations[0].generated_images[0]) return d.generations[0].generated_images[0].url; return null; } },
     { id: 'tensor', name: 'Tensor.Art', types: ['image'], endpoint: 'https://api.tensor.art/v1/generate', authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; }, buildBody: function(p){ return { prompt: p, width: 512, height: 512 }; }, parseUrl: function(d){ if (d.images && d.images[0] && d.images[0].url) return d.images[0].url; return null; } }
@@ -311,9 +315,6 @@ async function generateWithFallback(prompt, type) {
 
 async function loadDynamicConfig() { try { var r = await db.from('admin_config').select('*').eq('key', 'tiers').single(); if (r.data && r.data.value) CONFIG_TIERS = r.data.value; } catch (err) { console.error('Config error:', err); } updateCostUI(); }
 
-// =============================================
-// CORRECTION : updateCostUI avec timer en temps réel
-// =============================================
 function updateCostUI() {
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
     var isDiscounted = currentDiscountUntil && new Date(currentDiscountUntil) > new Date();
@@ -340,8 +341,8 @@ function updateCostUI() {
                     updateCostUI();
                     return;
                 }
-                var hours = Math.floor(remaining / 3600000);
-                var mins = Math.floor((remaining % 3600000) / 60000);                var secs = Math.floor((remaining % 60000) / 1000);
+                var hours = Math.floor(remaining / 3600000);                var mins = Math.floor((remaining % 3600000) / 60000);
+                var secs = Math.floor((remaining % 60000) / 1000);
                 timerEl.textContent = 'Expire dans ' + hours + 'h ' + mins + 'min ' + secs + 's';
             }, 1000);
         }
@@ -360,15 +361,10 @@ async function validatePendingReferral(userId) { try { var refsR = await db.from
 async function ensureUserData(userId) { try { var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single(); if (!existing.data) { await db.from('user_data').insert({ user_id: userId, points: 0, streak: 0, last_login: null, total_generated: 0, total_earned: 0, tier: 1 }); } } catch(e) { console.error('Ensure user_data error:', e); } }
 async function grantSignupBonus(userId) { try { var bonusR = await db.from('admin_config').select('value').eq('key','signup_bonus').single(); var bonus = (bonusR.data && bonusR.data.value !== undefined) ? bonusR.data.value : 15; if (bonus <= 0) return; var existR = await db.from('transactions').select('id').eq('user_id', userId).eq('title', 'Bonus inscription').single(); if (existR.data) return; var ud = await db.from('user_data').select('points,total_earned').eq('user_id', userId).single(); var curPts = (ud.data && ud.data.points) || 0; var curEarned = (ud.data && ud.data.total_earned) || 0; await db.from('user_data').update({ points: curPts + bonus, total_earned: curEarned + bonus }).eq('user_id', userId); await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Bonus inscription', amount: bonus }); } catch(e) { console.error('Signup bonus error:', e); } }
 
-// =============================================
-// CORRECTION CRITIQUE : loadUserTier lit discount_via getUserData (select *)
-// Au lieu de faire une requête séparée select('tier,discount_until') qui peut échouer
-// =============================================
 async function loadUserTier() {
     try {
         var u = await getUser();
         if (!u) { currentTier = 1; currentDiscountUntil = null; updateCostUI(); return; }
-        // Utilise getUserData() qui fait select('*') → garantit que discount_until est lu
         var d = await getUserData();
         currentTier = d.tier || 1;
         currentDiscountUntil = d.discount_until || null;
@@ -390,11 +386,11 @@ document.getElementById('auth-modal').addEventListener('click', function(e) { if
 function switchTab(m) { document.querySelectorAll('.auth-tab').forEach(function(t, i) { t.classList.toggle('active', i === (m === 'login' ? 0 : 1)); }); document.getElementById('sec-login').classList.toggle('active', m === 'login'); document.getElementById('sec-register').classList.toggle('active', m !== 'login'); }
 
 async function doLogin(e) { e.preventDefault(); var btn = document.getElementById('btn-login'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...'; try { var r = await db.auth.signInWithPassword({ email: document.getElementById('l-email').value.trim(), password: document.getElementById('l-pw').value }); if (r.error) throw r.error; closeAuth(); await loadUserTier(); updateUI(); notify('✅ Bienvenue !', 'success'); } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; } }
-async function doRegister(e) { e.preventDefault(); var btn = document.getElementById('btn-reg'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...'; try { var emailVal = document.getElementById('r-email').value.trim(); var pwVal = document.getElementById('r-pw').value; var nameVal = document.getElementById('r-name').value.trim(); var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } }); if (r.error) throw r.error; var signInR = await db.auth.signInWithPassword({ email: emailVal, password: pwVal }); if (signInR.error) throw signInR.error; var newUserId = signInR.data.user ? signInR.data.user.id : null; if (newUserId) { await ensureUserData(newUserId); await grantSignupBonus(newUserId); await processReferral(newUserId); } closeAuth(); await loadUserTier(); updateUI(); notify('🎉 Compte créé ! +15 pts bonus', 'success'); } catch (err) { var msg = '❌ Erreur inscription'; if (err.message) { if (err.message.indexOf('already registered') !== -1) msg = '❌ Cet email est déjà utilisé'; else if (err.message.indexOf('password') !== -1) msg = '❌ Mot de passe trop court'; else msg = '❌ ' + err.message; } notify(msg, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; } }async function loginWithGoogle() { try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pixora-gold-eight.vercel.app' } }); } catch (err) { notify('❌ Erreur Google Login', 'error'); } }
+async function doRegister(e) { e.preventDefault(); var btn = document.getElementById('btn-reg'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...'; try { var emailVal = document.getElementById('r-email').value.trim(); var pwVal = document.getElementById('r-pw').value; var nameVal = document.getElementById('r-name').value.trim(); var r = await db.auth.signUp({ email: emailVal, password: pwVal, options: { data: { name: nameVal } } }); if (r.error) throw r.error; var signInR = await db.auth.signInWithPassword({ email: emailVal, password: pwVal }); if (signInR.error) throw signInR.error; var newUserId = signInR.data.user ? signInR.data.user.id : null; if (newUserId) { await ensureUserData(newUserId); await grantSignupBonus(newUserId); await processReferral(newUserId); } closeAuth(); await loadUserTier(); updateUI(); notify('🎉 Compte créé ! +15 pts bonus', 'success'); } catch (err) { var msg = '❌ Erreur inscription'; if (err.message) { if (err.message.indexOf('already registered') !== -1) msg = '❌ Cet email est déjà utilisé'; else if (err.message.indexOf('password') !== -1) msg = '❌ Mot de passe trop court'; else msg = '❌ ' + err.message; } notify(msg, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; } }
+async function loginWithGoogle() { try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://pixora-gold-eight.vercel.app' } }); } catch (err) { notify('❌ Erreur Google Login', 'error'); } }
 
 async function getUserData() {
-    var u = await getUser();
-    if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0, user_id: null, discount_until: null, tier: 1 };
+    var u = await getUser();    if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0, user_id: null, discount_until: null, tier: 1 };
     var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
     var d = r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0, tier: 1 };
     d.user_id = u.id;
@@ -439,11 +435,11 @@ async function generate() {
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
     var userData = await getUserData();
     var baseCost = curType === 'image' ? c.costs.image : c.costs.video;
-    var isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();    var cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
+    var isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();
+    var cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
     if (userData.points < cost) { notify('Points insuffisants ! Visitez la page Points.', 'error'); return; }
     notify('🎨 Génération en cours...', 'success');
-    var grid = document.getElementById('results-grid'); var card = document.createElement('div'); card.className = 'result-card';
-    var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+    var grid = document.getElementById('results-grid'); var card = document.createElement('div'); card.className = 'result-card';    var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
     if (curType === 'video') { card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération vidéo...</div></div><video muted loop playsinline style="opacity:0;transition:opacity 0.3s"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>'; } else { card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">Génération IA...</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s"><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>'; }
     grid.insertBefore(card, grid.firstChild);
     var st = Date.now(); var tmr = document.getElementById(tmrId); var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
