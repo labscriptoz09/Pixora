@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>DEBUG HF Video</title>
+    <style>body{font-family:sans-serif;padding:20px;background:#0f0f14;color:#fafafa}</style>
+</head>
+<body>
+<h1>🔍 Debug Hugging Face Video</h1>
+<p><strong>Clé API :</strong> <span id="key">chargement...</span></p>
+<p><strong>Statut :</strong> <span id="status" style="color:#FBBF24">En attente...</span></p>
+<p><strong>Réponse :</strong> <textarea id="resp" rows="8" cols="80" style="width:100%;background:#16161e;border:1px solid #3b3b4a;padding:10px;font-family:monospace"></textarea></p>
+<button onclick="testHF()">▶️ Tester ZeroScope (T2V)</button>
+<button onclick="testPollinations()">🔄 Test Pollinations (fallback)</button>
+
+<script>
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadApiKey() {
+    try {
+        const r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
+        if (r.data && r.data.value) {
+            const keys = r.data.value;
+            document.getElementById('key').textContent = keys.huggingface ? '✅ Trouvée' : '❌ Absente';
+            return keys.huggingface || null;
+        } else {
+            document.getElementById('key').textContent = '❌ Aucune clé API';
+            return null;
+        }
+    } catch(e) {
+        document.getElementById('key').textContent = '❌ Erreur: ' + e.message;
+        return null;
+    }
+}
+
+async function testHF() {
+    const key = await loadApiKey();
+    if (!key) { document.getElementById('status').textContent = '❌ Clé manquante'; return; }
+
+    document.getElementById('status').textContent = '⏳ Envoi à Hugging Face...';
+    const prompt = 'a cat running in a field';
+    const url = 'https://api-inference.huggingface.co/models/cerspense/zeroscope_v2_576w';
+    const headers = {
+        'Authorization': 'Bearer ' + key,
+        'Content-Type': 'application/json'
+    };
+    const body = JSON.stringify({
+        inputs: prompt,        parameters: { num_frames: 24, width: 576, height: 320, fps: 24 }
+    });
+
+    try {
+        const res = await fetch(url, { method: 'POST', headers, body });
+        document.getElementById('status').textContent = `HTTP ${res.status} — Content-Type: ${res.headers.get('content-type')}`;
+        document.getElementById('resp').value = `Status: ${res.status}\nHeaders:\n${JSON.stringify(Object.fromEntries(res.headers), null, 2)}`;
+
+        if (res.ok) {
+            // Vérifie si c'est un blob vidéo
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('video/') || contentType.includes('octet-stream')) {
+                document.getElementById('status').style.color = '#10B981';
+                document.getElementById('status').textContent += ' → 🎥 BLOB VIDÉO détecté !';
+                const blob = await res.blob();
+                document.getElementById('resp').value += `\n\n✅ Blob size: ${blob.size} bytes`;
+                // Créer un lien de téléchargement temporaire
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'debug-video.mp4';
+                link.textContent = '📥 Télécharger le blob (MP4)';
+                link.style.display = 'block';
+                link.style.marginTop = '10px';
+                document.body.appendChild(link);
+            } else {
+                document.getElementById('status').style.color = '#F97316';
+                document.getElementById('status').textContent += ' → ⚠️ Pas un blob vidéo (JSON attendu)';
+                const json = await res.json();
+                document.getElementById('resp').value += `\n\nJSON:\n${JSON.stringify(json, null, 2)}`;
+            }
+        } else {
+            document.getElementById('status').style.color = '#EF4444';
+            document.getElementById('status').textContent += ' → ❌ Échec HTTP';
+            const text = await res.text();
+            document.getElementById('resp').value += `\n\nError body:\n${text}`;
+        }
+    } catch(e) {
+        document.getElementById('status').style.color = '#EF4444';
+        document.getElementById('status').textContent = '❌ Exception: ' + e.message;
+        document.getElementById('resp').value = e.stack || e.toString();
+    }
+}
+
+async function testPollinations() {
+    document.getElementById('status').textContent = '⏳ Test Pollinations...';
+    try {
+        const prompt = encodeURIComponent('a cat running in a field');
+        const url = `https://image.pollinations.ai/prompt/${prompt}?width=512&height=512&type=video`;
+        const res = await fetch(url);
+        document.getElementById('status').textContent = `Pollinations: ${res.status}`;        if (res.ok) {
+            const blob = await res.blob();
+            document.getElementById('resp').value = `✅ Pollinations OK — size: ${blob.size} bytes`;
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'pollinations-debug.mp4';
+            link.textContent = '📥 Télécharger Pollinations (MP4)';
+            link.style.display = 'block';
+            link.style.marginTop = '10px';
+            document.body.appendChild(link);
+        } else {
+            document.getElementById('resp').value = `❌ Pollinations error: ${await res.text()}`;
+        }
+    } catch(e) {
+        document.getElementById('resp').value = '❌ ' + e.message;
+    }
+}
+</script>
+</body>
+</html>
