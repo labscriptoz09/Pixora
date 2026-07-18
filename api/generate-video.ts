@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.SUPABASE_URL!;
-const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE!;
+// @ts-ignore
+const SUPABASE_URL = process.env.SUPABASE_URL;
+// @ts-ignore
+const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE;
 
 export default async function handler(req: Request) {
     if (req.method !== 'POST') {
@@ -12,7 +14,9 @@ export default async function handler(req: Request) {
     }
 
     try {
-        const { prompt } = await req.json();
+        const body = await req.json();
+        const prompt = body.prompt;
+        
         if (!prompt || typeof prompt !== 'string') {
             return new Response(JSON.stringify({ error: 'Prompt requis' }), { 
                 status: 400,
@@ -79,9 +83,9 @@ export default async function handler(req: Request) {
             headers: { 'Content-Type': 'application/json' }
         });
 
-    } catch (e) {
+    } catch (e: any) {
         console.error('Erreur backend:', e);
-        return new Response(JSON.stringify({ error: 'Internal server error', message: e instanceof Error ? e.message : 'Unknown' }), { 
+        return new Response(JSON.stringify({ error: 'Internal server error', message: e.message || 'Unknown' }), { 
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });
