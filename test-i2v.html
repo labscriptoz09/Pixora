@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test I2V - Pixora</title>
+    <style>
+        body{font-family:sans-serif;padding:20px;background:#0f0f14;color:#fafafa;max-width:600px;margin:0 auto}
+        h1{font-size:1.2rem;margin-bottom:1rem}
+        .step{padding:10px;margin:8px 0;border-radius:8px;font-size:0.85rem}
+        .pending{background:#1e1e2e;border:1px solid #3b3b4a}
+        .success{background:rgba(16,185,129,0.15);border:1px solid #10B981;color:#10B981}
+        .error{background:rgba(239,68,68,0.15);border:1px solid #EF4444;color:#EF4444}
+        .loading{background:rgba(139,92,246,0.15);border:1px solid #8B5CF6;color:#8B5CF6}
+        button{padding:12px 24px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:1rem}
+        button:disabled{opacity:0.5;cursor:not-allowed}
+        img,video{max-width:100%;border-radius:12px;margin-top:10px;display:block}
+        pre{background:#16161e;padding:10px;border-radius:8px;font-size:0.7rem;overflow-x:auto;margin-top:8px;white-space:pre-wrap;word-break:break-all}
+    </style>
+</head>
+<body>
+<h1>🧪 Test I2V : fal.ai Image → HF Vidéo</h1>
+
+<div id="step1" class="step pending">⏳ Étape 1 : Charger les clés API...</div>
+<div id="step2" class="step pending">⏳ Étape 2 : Générer image via fal.ai...</div>
+<div id="step3" class="step pending">⏳ Étape 3 : Envoyer image à HF I2V...</div>
+<div id="step4" class="step pending">⏳ Étape 4 : Afficher la vidéo...</div>
+
+<button id="btn" onclick="runTest()">▶️ Lancer le test complet</button>
+
+<div id="result"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function setStep(id, status, msg) {
+    var el = document.getElementById(id);
+    el.className = 'step ' + status;
+    el.textContent = msg;
+}
+
+async function runTest() {
+    var btn = document.getElementById('btn');
+    var result = document.getElementById('result');
+    btn.disabled = true;
+    btn.textContent = '⏳ Test en cours...';
+    result.innerHTML = '';
+    try {
+        // ÉTAPE 1 : Charger les clés
+        setStep('step1', 'loading', '🔄 Chargement des clés API...');
+        var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
+        if (!r.data || !r.data.value) throw new Error('Aucune clé API trouvée dans admin_config');
+        var keys = r.data.value;
+        var falKey = keys['fal.ai'];
+        var hfKey = keys['huggingface'];
+        if (!falKey) throw new Error('Clé fal.ai manquante');
+        if (!hfKey) throw new Error('Clé huggingface manquante');
+        setStep('step1', 'success', '✅ Clés chargées : fal.ai + huggingface');
+
+        // ÉTAPE 2 : Générer image via fal.ai
+        setStep('step2', 'loading', '🔄 Génération image via fal.ai Flux Schnell...');
+        var prompt = 'a cat running in a field, cinematic lighting, 4k';
+        var imgRes = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Key ' + falKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prompt: prompt, width: 512, height: 512, num_images: 1 })
+        });
+        if (!imgRes.ok) throw new Error('fal.ai erreur ' + imgRes.status + ': ' + await imgRes.text());
+        var imgData = await imgRes.json();
+        var imageUrl = (imgData.images && imgData.images[0] && imgData.images[0].url) ? imgData.images[0].url : null;
+        if (!imageUrl) throw new Error('Aucune URL image reçue de fal.ai');
+        setStep('step2', 'success', '✅ Image générée : ' + imageUrl.substring(0, 80) + '...');
+        result.innerHTML += '<img src="' + imageUrl + '" alt="Image initiale">';
+
+        // ÉTAPE 3 : Envoyer image à HF stable-video-diffusion-img2vid-xt
+        setStep('step3', 'loading', '🔄 Envoi à HF I2V (patientez 15-30s)...');
+        var vidRes = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-video-diffusion-img2vid-xt', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + hfKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                inputs: imageUrl,
+                parameters: {
+                    num_frames: 25,
+                    fps: 6,
+                    motion_bucket_id: 127,
+                    cond_aug: 0.02
+                }
+            })
+        });
+        var contentType = vidRes.headers.get('content-type') || '';
+        var videoUrl = null;
+
+        if (contentType.includes('video/') || contentType.includes('octet-stream')) {
+            // HF retourne un blob binaire
+            var blob = await vidRes.blob();
+            videoUrl = URL.createObjectURL(blob);
+            setStep('step3', 'success', '✅ Vidéo reçue (blob, ' + Math.round(blob.size / 1024) + ' KB)');
+        } else if (contentType.includes('application/json')) {
+            // HF retourne du JSON avec URL
+            var vidData = await vidRes.json();
+            videoUrl = vidData.video?.url || vidData.output?.video?.url || null;
+            if (!videoUrl) throw new Error('JSON reçu mais aucune URL vidéo : ' + JSON.stringify(vidData).substring(0, 200));
+            setStep('step3', 'success', '✅ Vidéo reçue (URL JSON)');
+        } else {
+            throw new Error('Type de réponse inattendu : ' + contentType);
+        }
+
+        // ÉTAPE 4 : Afficher la vidéo
+        setStep('step4', 'success', '✅ VIDÉO PRÊTE !');
+        result.innerHTML += '<video src="' + videoUrl + '" controls autoplay loop muted style="margin-top:15px"></video>';
+        result.innerHTML += '<pre>SUCCESS\nImage: ' + imageUrl + '\nVideo: ' + (videoUrl.startsWith('blob:') ? 'blob (' + Math.round(blob.size / 1024) + ' KB)' : videoUrl) + '</pre>';
+
+        btn.textContent = '✅ TEST RÉUSSI !';
+        btn.style.background = '#10B981';
+
+    } catch(e) {
+        console.error('Test error:', e);
+        var failedStep = document.querySelector('.step.loading');
+        if (failedStep) {
+            failedStep.className = 'step error';
+            failedStep.textContent = '❌ ' + e.message;
+        }
+        result.innerHTML += '<pre class="error">ERREUR:\n' + e.message + '\n\nStack:\n' + (e.stack || '') + '</pre>';
+        btn.textContent = '❌ TEST ÉCHOUÉ';
+        btn.style.background = '#EF4444';
+    }
+
+    btn.disabled = false;
+}
+</script>
+</body>
+</html>
