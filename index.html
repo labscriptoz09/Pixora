@@ -260,7 +260,7 @@
         </div>
         <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem">
             <span class="discount-badge"><i class="fas fa-fire"></i> -50% ACTIF</span>
-            <span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer">Expire dans 2h 15min</span>
+            <span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span>
         </div>
         <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> Générer</button>
     </div>
@@ -292,7 +292,6 @@ var pendingReferrer = null;
 var API_KEYS = {};
 var currentDiscountUntil = null;
 var discountTimerInterval = null;
-// ✅ PROVIDER VIDÉO — ZeroScope T2V (corrigé pour blob)
 var API_PROVIDERS = [
     { 
         id: 'huggingface', 
@@ -312,11 +311,9 @@ var API_PROVIDERS = [
             };
         },
         parseUrl: function(response, contentType) {
-            // Si c'est un blob vidéo (HF), on crée une URL directement
             if (contentType && (contentType.includes('video/') || contentType.includes('octet-stream'))) {
                 return URL.createObjectURL(response);
             }
-            // Sinon, on tente le JSON (pour les autres providers)
             try {
                 var data = response;
                 if (typeof data === 'string' && data.startsWith('http')) return data;
@@ -341,10 +338,10 @@ var API_PROVIDERS = [
     },
     { 
         id: 'leonardo', 
-        name: 'Leonardo.Ai',         types: ['image'], 
+        name: 'Leonardo.Ai', 
+        types: ['image'], 
         endpoint: 'https://cloud.leonardo.ai/api/rest/v1/generations',
-        authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; },
-        buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; },
+        authHeader: function(k){ return { 'Authorization': 'Bearer ' + k }; },        buildBody: function(p){ return { prompt: p, width: 512, height: 512, num_images: 1 }; },
         parseUrl: function(data){
             if (data.generations && data.generations[0] && data.generations[0].generated_images && data.generations[0].generated_images[0])
                 return data.generations[0].generated_images[0].url;
@@ -368,7 +365,6 @@ var API_PROVIDERS = [
 async function loadApiKeys() { try { var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single(); if (r.data && r.data.value) API_KEYS = r.data.value; } catch(e) { console.error('Load API keys error:', e); } }
 function getPollinationsUrl(prompt, type) { var seed = Math.floor(Math.random() * 100000); var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed; if (type === 'video') url += '&type=video'; return url; }
 
-// ✅ CORRECTION CRITIQUE : gestion du blob vidéo HF
 async function generateWithFallback(prompt, type) {
     for (var i = 0; i < API_PROVIDERS.length; i++) {
         var provider = API_PROVIDERS[i]; 
@@ -385,19 +381,16 @@ async function generateWithFallback(prompt, type) {
                 body: JSON.stringify(provider.buildBody(prompt))
             });
             if (!response.ok) continue;
-
             var contentType = response.headers.get('content-type') || '';
-            // 🔑 Cas HF : retourne un blob vidéo (pas JSON)
             if (contentType.includes('video/') || contentType.includes('octet-stream')) {
                 var blob = await response.blob();
-                var url = URL.createObjectURL(blob);                return { url: url, provider: provider.name };
+                var url = URL.createObjectURL(blob);
+                return { url: url, provider: provider.name };
             }
-            // Autres providers : JSON
             var data = await response.json();
             var url = provider.parseUrl(data, contentType);
             if (url) return { url: url, provider: provider.name };
-        } catch(e) { console.warn('API ' + provider.id + ' failed:', e.message); continue; }
-    }
+        } catch(e) { console.warn('API ' + provider.id + ' failed:', e.message); continue; }    }
     return { url: getPollinationsUrl(prompt, type), provider: 'Pollinations' };
 }
 
@@ -439,14 +432,14 @@ function updateCostUI() {
         imgEl.textContent = imgCost + ' pts';
         vidEl.textContent = vidCost + ' pts';
         banner.style.display = 'none';
-        timerEl.textContent = '';        if (discountTimerInterval) { clearInterval(discountTimerInterval); discountTimerInterval = null; }
+        timerEl.textContent = '';
+        if (discountTimerInterval) { clearInterval(discountTimerInterval); discountTimerInterval = null; }
     }
 }
 
 function detectReferral() { var params = new URLSearchParams(window.location.search); var ref = params.get('ref'); if (ref && ref.length > 10) { pendingReferrer = ref; localStorage.setItem('pixora_ref', ref); } else { pendingReferrer = localStorage.getItem('pixora_ref'); } }
 async function processReferral(newUserId) { var referrerId = pendingReferrer || localStorage.getItem('pixora_ref'); if (!referrerId || referrerId === newUserId) return; try { var refConfigR = await db.from('admin_config').select('value').eq('key','referral_config').single(); var config = (refConfigR.data && refConfigR.data.value) ? refConfigR.data.value : { enabled:true, points:10 }; if (!config.enabled) return; var existR = await db.from('referrals').select('id').eq('sponsor_id', referrerId).eq('referred_id', newUserId).single(); if (existR.data) return; await db.from('referrals').insert({ sponsor_id: referrerId, referred_id: newUserId, points: config.points || 10, validated: false }); localStorage.removeItem('pixora_ref'); pendingReferrer = null; } catch(e) { console.error('Referral error:', e); } }
-async function validatePendingReferral(userId) { try { var refsR = await db.from('referrals').select('id').eq('referred_id', userId).eq('validated', false); var refs = refsR.data || []; for (var i = 0; i < refs.length; i++) { await db.from('referrals').update({ validated: true }).eq('id', refs[i].id); } } catch(e) { console.error('Validate referral error:', e); } }
-async function ensureUserData(userId) { try { var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single(); if (!existing.data) { await db.from('user_data').insert({ user_id: userId, points: 0, streak: 0, last_login: null, total_generated: 0, total_earned: 0, tier: 1 }); } } catch(e) { console.error('Ensure user_data error:', e); } }
+async function validatePendingReferral(userId) { try { var refsR = await db.from('referrals').select('id').eq('referred_id', userId).eq('validated', false); var refs = refsR.data || []; for (var i = 0; i < refs.length; i++) { await db.from('referrals').update({ validated: true }).eq('id', refs[i].id); } } catch(e) { console.error('Validate referral error:', e); } }async function ensureUserData(userId) { try { var existing = await db.from('user_data').select('user_id').eq('user_id', userId).single(); if (!existing.data) { await db.from('user_data').insert({ user_id: userId, points: 0, streak: 0, last_login: null, total_generated: 0, total_earned: 0, tier: 1 }); } } catch(e) { console.error('Ensure user_data error:', e); } }
 async function grantSignupBonus(userId) { try { var bonusR = await db.from('admin_config').select('value').eq('key','signup_bonus').single(); var bonus = (bonusR.data && bonusR.data.value !== undefined) ? bonusR.data.value : 15; if (bonus <= 0) return; var existR = await db.from('transactions').select('id').eq('user_id', userId).eq('title', 'Bonus inscription').single(); if (existR.data) return; var ud = await db.from('user_data').select('points,total_earned').eq('user_id', userId).single(); var curPts = (ud.data && ud.data.points) || 0; var curEarned = (ud.data && ud.data.total_earned) || 0; await db.from('user_data').update({ points: curPts + bonus, total_earned: curEarned + bonus }).eq('user_id', userId); await db.from('transactions').insert({ user_id: userId, type: 'earned', title: 'Bonus inscription', amount: bonus }); } catch(e) { console.error('Signup bonus error:', e); } }
 
 async function loadUserTier() {
@@ -488,14 +481,14 @@ async function getUserData() {
     return d;
 }
 
-async function saveTransaction(type, title, amount) { var u = await getUser(); if (!u) return; await db.from('transactions').insert({ user_id: u.id, type: type, title: title, amount: amount }); var d = await getUserData(); var up = { points: d.points + amount }; if (amount > 0) up.total_earned = (d.total_earned || 0) + amount; if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1; await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' }); }function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
+async function saveTransaction(type, title, amount) { var u = await getUser(); if (!u) return; await db.from('transactions').insert({ user_id: u.id, type: type, title: title, amount: amount }); var d = await getUserData(); var up = { points: d.points + amount }; if (amount > 0) up.total_earned = (d.total_earned || 0) + amount; if (type === 'spent') up.total_generated = (d.total_generated || 0) + 1; await db.from('user_data').upsert(Object.assign({ user_id: u.id }, up), { onConflict: 'user_id' }); }
+function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
 document.addEventListener('click', function(e) { var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar'); var mob = document.getElementById('mob-profile'); if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu(); });
 async function doLogout() { await db.auth.signOut(); closeUserMenu(); currentTier = 1; currentDiscountUntil = null; if (discountTimerInterval) { clearInterval(discountTimerInterval); discountTimerInterval = null; } updateCostUI(); updateUI(); notify('👋 Déconnecté', 'success'); setTimeout(function() { location.reload(); }, 800); }
 
 async function updateUI() {
-    var logged = await isLogged(); var user = await getUser();
-    document.getElementById('user-stats').classList.toggle('show', logged); document.getElementById('user-avatar').classList.toggle('show', logged); document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
+    var logged = await isLogged(); var user = await getUser();    document.getElementById('user-stats').classList.toggle('show', logged); document.getElementById('user-avatar').classList.toggle('show', logged); document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
     var qs = document.getElementById('quick-stats'); if (logged) { qs.classList.add('show'); } else { qs.classList.remove('show'); }
     if (logged) {
         var d = await getUserData();
@@ -534,10 +527,29 @@ async function generate() {
     var st = Date.now(); var tmr = document.getElementById(tmrId); var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
     var media = curType === 'video' ? card.querySelector('video') : card.querySelector('img'); var loaded = false; var currentUser = await getUser();
     try {
-        var result = await generateWithFallback(p, curType); var url = result.url; var providerName = result.provider;
+        var result;
+        if (curType === 'video') {
+            // ✅ UTILISATION DU BACKEND EXTERNE FONCTIONNEL
+            notify('🎥 Génération vidéo via backend (patientez 30-60s)...', 'success');
+            const res = await fetch('https://pixora-video-backend.vercel.app/api/generate-video', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + API_KEYS.huggingface
+                },
+                body: JSON.stringify({ prompt: p })            });
+            const json = await res.json();
+            if (json.error) throw new Error(json.error);
+            if (!json.url) throw new Error('Aucune URL reçue');
+            result = { url: json.url, provider: 'Hugging Face (backend)' };
+        } else {
+            result = await generateWithFallback(p, curType);
+        }
+        var url = result.url; var providerName = result.provider;
         if (providerName !== 'fal.ai' && providerName !== 'Pollinations') { notify('⚡ Via ' + providerName, 'success'); }
         media.src = url;
-        function onLoad() {            if (loaded) return; loaded = true; clearInterval(iv);
+        function onLoad() {
+            if (loaded) return; loaded = true; clearInterval(iv);
             var elapsed = ((Date.now() - st) / 1000).toFixed(1); var to = card.querySelector('.timer-overlay'); if (to) to.remove(); media.style.opacity = '1';
             if (curType === 'video') { media.onmouseenter = function() { media.play(); }; media.onmouseleave = function() { media.pause(); media.currentTime = 0; }; }
             card.onclick = function() { openLB(url, curType); }; uploadToStorage(url, curType);
@@ -567,4 +579,4 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 </script>
 </body>
-</html>
+</html>>
