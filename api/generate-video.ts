@@ -4,12 +4,20 @@ const SUPABASE_URL = process.env.SUPABASE_URL!;
 const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE!;
 
 export default async function handler(req: Request) {
-    if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+    if (req.method !== 'POST') {
+        return new Response(JSON.stringify({ error: 'Method not allowed' }), { 
+            status: 405,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 
     try {
         const { prompt } = await req.json();
         if (!prompt || typeof prompt !== 'string') {
-            return new Response(JSON.stringify({ error: 'Prompt requis' }), { status: 400 });
+            return new Response(JSON.stringify({ error: 'Prompt requis' }), { 
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
@@ -21,7 +29,10 @@ export default async function handler(req: Request) {
             .single();
 
         if (cfgErr || !config?.value?.huggingface) {
-            return new Response(JSON.stringify({ error: 'Clé Hugging Face manquante' }), { status: 500 });
+            return new Response(JSON.stringify({ error: 'Clé Hugging Face manquante' }), { 
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
         const hfKey = config.value.huggingface;
 
@@ -39,7 +50,10 @@ export default async function handler(req: Request) {
 
         if (!hfRes.ok) {
             const text = await hfRes.text();
-            return new Response(JSON.stringify({ error: `HF ${hfRes.status}`, details: text }), { status: hfRes.status });
+            return new Response(JSON.stringify({ error: `HF ${hfRes.status}`, details: text }), { 
+                status: hfRes.status,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
 
         const videoBlob = await hfRes.blob();
@@ -53,7 +67,10 @@ export default async function handler(req: Request) {
             });
 
         if (uploadErr) {
-            return new Response(JSON.stringify({ error: 'Upload échoué' }), { status: 500 });
+            return new Response(JSON.stringify({ error: 'Upload échoué' }), { 
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
 
         const { data: publicUrl } = supabase.storage.from('pixora-gallery').getPublicUrl(fileName);
@@ -63,7 +80,10 @@ export default async function handler(req: Request) {
         });
 
     } catch (e) {
-        console.error('Erreur:', e);
-        return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500 });
+        console.error('Erreur backend:', e);
+        return new Response(JSON.stringify({ error: 'Internal server error', message: e instanceof Error ? e.message : 'Unknown' }), { 
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
-    }
+}
