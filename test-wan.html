@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LTX Distilled v6 - Pixora</title>
+<title>LTX Distilled v7 - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
@@ -16,11 +16,12 @@
   .mbtn.t2v{border-color:#10B981;background:rgba(16,185,129,.12)}
   .mbtn.i2v{border-color:#8B5CF6}
   .mbtn.off{border-color:#52525b;color:#71717A;cursor:not-allowed}
+  .mbtn.active{outline:2px solid #10B981}
   .mbtn small{display:block;font-weight:400;color:#A1A1AA;font-size:.66rem;margin-top:3px;white-space:pre-wrap}
   textarea{width:100%;min-height:56px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.88rem;font-family:inherit;box-sizing:border-box;margin-top:8px}
   input.k{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.85rem;box-sizing:border-box;margin-top:8px;font-family:monospace}
   .knote{color:#A1A1AA;font-size:.68rem;margin-top:4px}
-  #gen{border:1px solid #3b3b4a;border-radius:12px;background:#16161e;padding:12px;margin-top:12px;display:none}
+  #gen{border:1px solid #3b3b4a;border-radius:12px;background:#16161e;padding:12px;margin-top:12px}
   button.go{padding:12px 18px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
   button.go:disabled{opacity:.45;cursor:not-allowed}
   button.ghost{padding:9px 14px;background:#1e1e2e;border:1px solid #3b3b4a;color:#fafafa;border-radius:10px;font-size:.8rem;cursor:pointer;margin-top:8px}
@@ -38,23 +39,22 @@
 </style>
 </head>
 <body>
-<h1>🎞️ LTX Distilled v6 — badge aussi sur le rappel</h1>
-<div class="sub">v5 + le badge part maintenant sur le polling GET (Authorization seul, sans Content-Type). Le log affiche <b>auth sur polling: oui</b> pour le prouver. Spec inchangée. Sans clé = comme v5.</div>
+<h1>🎞️ LTX Distilled v7</h1>
+<div class="sub">Le formulaire (clé + prompt + bouton) est visible dès l'ouverture. T2V pré-sélectionné. Badge sur POST + upload + rappel.</div>
 
 <div id="cab">
   <div class="ctitle">✅ LTX câblé — choisis la recette</div>
-  <div class="cmeta">four: https://lightricks-ltx-video-distilled.hf.space
-badge: header Authorization sur POST + upload + POLLING (v6) · sans clé = pas de badge</div>
+  <div class="cmeta">four: https://lightricks-ltx-video-distilled.hf.space</div>
   <div class="modes">
-    <button class="mbtn t2v" onclick="selectMode('t2v')">🟢 Text-to-Video <small>/text_to_video · mode forcé text-to-video · RECOMMANDÉ</small></button>
-    <button class="mbtn i2v" onclick="selectMode('i2v')">🟣 Image-to-Video <small>/image_to_video · mode forcé image-to-video · on livre une image Pollinations</small></button>    <button class="mbtn off" disabled>⚪ Video-to-Video <small>existe mais exige une vidéo SOURCE → non câblé ici.</small></button>
+    <button class="mbtn t2v active" id="btnT2V" onclick="selectMode('t2v')">🟢 Text-to-Video <small>/text_to_video · RECOMMANDÉ</small></button>
+    <button class="mbtn i2v" id="btnI2V" onclick="selectMode('i2v')">🟣 Image-to-Video <small>/image_to_video · on livre une image Pollinations</small></button>    <button class="mbtn off" disabled>⚪ Video-to-Video <small>non câblé ici.</small></button>
   </div>
 </div>
 
 <div id="gen">
-  <div style="font-weight:700" id="gentitle">🎬 Générer</div>
-  <input class="k" id="hfkey" type="password" placeholder="Colle ton hf_… ici (badge gratuit, reste sur ton téléphone)" autocomplete="off" spellcheck="false">
-  <div class="knote">🔒 Jamais stocké, jamais envoyé ailleurs qu'au four, masqué dans le log. Laisse vide = pas de badge. (Colle le NOUVEAU hf_, pas celui qui a fuité dans le chat.)</div>
+  <div style="font-weight:700" id="gentitle">🎬 Text-to-Video → /text_to_video</div>
+  <input class="k" id="hfkey" type="password" placeholder="Colle ton NOUVEAU hf_… ici (reste sur ton téléphone)" autocomplete="off" spellcheck="false">
+  <div class="knote">🔒 Jamais stocké, masqué dans le log. Colle le NOUVEAU hf_ (pas celui du chat).</div>
   <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
   <button class="go" id="gbtn" onclick="generate()">▶️ Lancer la vraie vidéo (direct, sans livreur)</button>
   <div id="timer"></div>
@@ -75,7 +75,7 @@ badge: header Authorization sur POST + upload + POLLING (v6) · sans clé = pas 
 var BASE = 'https://lightricks-ltx-video-distilled.hf.space';
 var GEN_TIMEOUT = 240000;
 var SCAN_TIMEOUT = 25000;
-var chosen = null;
+var chosen = {source:'ltx', mode:'t2v'}; // pré-sélectionné
 var NEG = 'worst quality, inconsistent motion, blurry, jittery, distorted';
 
 function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…' : s; }
@@ -96,8 +96,7 @@ function nf(url, opts, timeoutMs){
   });
 }
 
-// ---- SPÉC ÉTIQUETÉE v4 (inchangée, prouvée) ----var SPEC_T2V = [
-  {l:'Prompt', c:'Textbox', d:'A majestic dragon flying over a medieval castle'},
+var SPEC_T2V = [  {l:'Prompt', c:'Textbox', d:'A majestic dragon flying over a medieval castle'},
   {l:'Negative Prompt', c:'Textbox', d:NEG},
   {l:'image_n', c:'Textbox', d:''},
   {l:'video_n', c:'Textbox', d:''},
@@ -142,12 +141,14 @@ function buildFromSpec(spec, overrides){
 }
 function valByLabel(spec, data, label){ for(var i=0;i<spec.length;i++){ if(spec[i].l===label) return data[i]; } return '(absent)'; }
 
-function selectMode(mode){
+function selectMode(mode, silent){
   chosen={source:'ltx', mode:mode};
-  var g=document.getElementById('gen'); g.style.display='block';
-  document.getElementById('gentitle').textContent = mode==='t2v'    ? '🎬 Text-to-Video → /text_to_video (mode forcé text-to-video)'
-    : '🎬 Image-to-Video → /image_to_video (mode forcé image-to-video)';
-  g.scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('gentitle').textContent = mode==='t2v'
+    ? '🎬 Text-to-Video → /text_to_video'
+    : '🎬 Image-to-Video → /image_to_video';  var bt=document.getElementById('btnT2V'), bi=document.getElementById('btnI2V');
+  if(bt) bt.className='mbtn t2v'+(mode==='t2v'?' active':'');
+  if(bi) bi.className='mbtn i2v'+(mode==='i2v'?' active':'');
+  if(!silent){ var g=document.getElementById('gen'); g.scrollIntoView({behavior:'smooth', block:'center'}); }
 }
 
 async function uploadImg(base, blob){
@@ -181,28 +182,26 @@ function parseSSE(text){
   return last;
 }
 
-// UN essai : badge sur POST + sur POLLING (v6). Pas de Content-Type sur le GET.
 async function oneShot(base, epName, data, spec, log){
-  log('› data.length='+data.length+' | Height='+valByLabel(spec,data,'Height')+' | Width='+valByLabel(spec,data,'Width')+' | mode='+valByLabel(spec,data,'task')+' | auth POST: '+authMask());
+  log('› length='+data.length+' | H='+valByLabel(spec,data,'Height')+' | W='+valByLabel(spec,data,'Width')+' | mode='+valByLabel(spec,data,'task')+' | auth POST='+authMask());
   log('› data = '+trunc(JSON.stringify(data),300));
   var postUrl=base+'/gradio_api/call/'+epName;
   log('› POST '+postUrl);
   var post=await nf(postUrl, {method:'POST', headers:Object.assign({'Content-Type':'application/json'}, authHeaders()), body:JSON.stringify({data:data})}, 60000);
-  if(post.kind==='cors') throw new Error('CORS sur /call (preflight Authorization refusé → plan C = mini-livreur)');
+  if(post.kind==='cors') throw new Error('CORS sur /call → plan C mini-livreur');
   if(post.kind==='timeout') throw new Error('timeout POST 60s');
-  if(post.status===401 || post.status===403) throw new Error('HTTP '+post.status+' → clé HF refusée/expirée. Révoque + recrée (Read) + recolle la NOUVELLE.');
-  if(post.status===429) throw new Error('file d\'attente (429) → retente dans ~1 min');
+  if(post.status===401 || post.status===403) throw new Error('HTTP '+post.status+' → clé refusée/expirée. Révoque + recrée (Read) + recolle la NOUVELLE.');
+  if(post.status===429) throw new Error('429 file d\'attente → retente dans ~1 min');
   if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,320)); }
-  var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('réponse non-json '+trunc(t2,160)); }
+  var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('non-json '+trunc(t2,160)); }
   var eid=ej&&(ej.event_id||ej.id);  if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),220));
-  log('› event_id='+eid+' → polling AVEC auth: '+authMask()+' …');
+  log('› event_id='+eid+' → polling AVEC auth='+authMask());
   var getUrl=base+'/gradio_api/call/'+epName+'/'+eid;
   var videoUrl=null, lastErr='', startPoll=Date.now();
   while(Date.now()-startPoll < GEN_TIMEOUT){
     await new Promise(function(r){ setTimeout(r,2500); });
-    // v6 : Authorization seul sur le GET (pas de Content-Type, pas de body)
     var g=await nf(getUrl, {headers:authHeaders()}, 60000);
-    if(g.kind==='cors'){ lastErr='CORS sur polling (le four refuse le header auth au rappel → plan C mini-livreur)'; break; }
+    if(g.kind==='cors'){ lastErr='CORS sur polling → plan C mini-livreur'; break; }
     if(g.kind==='timeout'){ log('› poll timeout 60s, retry…'); continue; }
     if(g.status===202){ continue; }
     if(!g.ok){ var t3=await g.r.text(); lastErr='poll HTTP '+g.status+' '+trunc(t3,240); break; }
@@ -210,7 +209,7 @@ async function oneShot(base, epName, data, spec, log){
     var parsed=parseSSE(txt);
     log('› réponse: '+trunc(JSON.stringify(parsed),340));
     videoUrl=extractVideo(base, parsed);
-    if(!videoUrl) lastErr='réponse sans URL vidéo (null ou format inattendu)';
+    if(!videoUrl) lastErr='réponse sans URL vidéo (null)';
     break;
   }
   return {videoUrl:videoUrl, lastErr:lastErr};
@@ -224,7 +223,7 @@ async function generate(){
   gbtn.disabled=true; gmedia.innerHTML=''; glog.style.display='block'; glog.textContent=''; fin.style.display='none';
   function log(s){ glog.textContent+=s+'\n'; glog.scrollTop=glog.scrollHeight; }
   var t0=Date.now();
-  var tick=setInterval(function(){ timer.textContent='⏳ GPU en chauffe / génération… '+Math.round((Date.now()-t0)/1000)+'s (sans livreur, on peut attendre)'; }, 500);
+  var tick=setInterval(function(){ timer.textContent='⏳ '+Math.round((Date.now()-t0)/1000)+'s (sans livreur)'; }, 500);
 
   try {
     var base=BASE, epName, spec, data;
@@ -234,41 +233,41 @@ async function generate(){
         data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'text-to-video'});
       } else {
         epName='image_to_video'; spec=SPEC_I2V;
-        log('› I2V : image Pollinations…');
+        log('› image Pollinations…');
         var poll='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=704&height=512&nologo=true&seed='+Math.floor(Math.random()*100000);
         var im=await nf(poll, null, 30000);
         if(im.kind!=='http'||!im.ok) throw new Error('image Pollinations injoignable');
         var blob=await im.r.blob();
-        log('› upload image cross-origin (avec badge si présent)…');
+        log('› upload image…');
         var path=await uploadImg(base, blob);
         var imageArg = path ? fileObj(base, path) : poll;
         log(path?'› upload OK':'› upload bloqué → fallback URL');
-        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg});      }
-    } else {
-      base=chosen.base; epName=chosen.ep.name; spec=null;
+        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg});
+      }    } else {
+      base=chosen.base; epName=chosen.ep.name; spec=SPEC_T2V;
       data=buildGeneric(chosen.ep.params, prompt, null);
     }
 
-    var r=await oneShot(base, epName, data, spec||SPEC_T2V, log);
+    var r=await oneShot(base, epName, data, spec, log);
     if(!r.videoUrl && /null|sans URL/i.test(r.lastErr||'')){
-      log('› null → 1 retry auto…');
+      log('› null → 1 retry…');
       await new Promise(function(res){ setTimeout(res,1500); });
-      r=await oneShot(base, epName, data, spec||SPEC_T2V, log);
+      r=await oneShot(base, epName, data, spec, log);
     }
 
     clearInterval(tick);
     var sec=((Date.now()-t0)/1000).toFixed(1);
     if(!r.videoUrl){
-      timer.textContent='❌ Échec en '+sec+'s';
+      timer.textContent='❌ '+sec+'s';
       fin.style.display='block'; fin.className='f-ko';
       fin.textContent='⚠️ '+r.lastErr;
       gbtn.disabled=false; return;
     }
-    timer.textContent='✅ Vidéo en '+sec+'s';
+    timer.textContent='✅ '+sec+'s';
     gmedia.innerHTML='<video src="'+r.videoUrl+'" controls autoplay loop muted playsinline></video>'
-      +'<br><a class="dl" href="'+r.videoUrl+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer la vidéo</a>';
+      +'<br><a class="dl" href="'+r.videoUrl+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer</a>';
     fin.style.display='block'; fin.className='f-ok';
-    fin.textContent='🎉 VRAIE VIDÉO IA via LTX, gratuite, SANS livreur, en '+sec+'s. Route 2 = GAGNÉE.';
+    fin.textContent='🎉 VIDÉO IA via LTX en '+sec+'s.';
     log('› VIDEO = '+r.videoUrl);
     gbtn.disabled=false;
 
@@ -283,7 +282,6 @@ async function generate(){
   }
 }
 
-// ---- radar blindé pour AUTRE space (inchangé) ----
 function slog(s){ var el=document.getElementById('slog'); el.textContent+=s+'\n'; el.scrollTop=el.scrollHeight; }
 function setSbox(cls, title){ var b=document.getElementById('sbox'); b.style.display='block'; b.className=cls; document.getElementById('stitle').textContent=title; }
 function hasImg(params){ for(var q=0;q<params.length;q++){ var c=String((params[q]&&params[q].component)||'').toLowerCase(); if(c==='image'||c==='file'||c==='uploadbutton'||c==='imageupload') return true; } return false; }
@@ -292,9 +290,9 @@ function buildGeneric(params, prompt, imageArg){
   var data=new Array(params.length); var imgIdx=-1, promptIdx=-1, fbText=-1;
   for(var i=0;i<params.length;i++){
     var p=params[i]||{}; var comp=String(p.component||'').toLowerCase(); var label=String(p.label||'').toLowerCase();
-    var isImg=(comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload');    var isText=(comp==='textbox'||comp==='text');
-    if(isImg && imgIdx<0) imgIdx=i;
-    if(isText){ var hp=label.indexOf('prompt')>=0; var neg=label.indexOf('neg')>=0; if(hp&&!neg&&promptIdx<0) promptIdx=i; else if(!neg&&fbText<0) fbText=i; }
+    var isImg=(comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload');
+    var isText=(comp==='textbox'||comp==='text');
+    if(isImg && imgIdx<0) imgIdx=i;    if(isText){ var hp=label.indexOf('prompt')>=0; var neg=label.indexOf('neg')>=0; if(hp&&!neg&&promptIdx<0) promptIdx=i; else if(!neg&&fbText<0) fbText=i; }
   }
   if(promptIdx<0) promptIdx=fbText;
   for(var j=0;j<params.length;j++){
@@ -312,36 +310,38 @@ async function scanOther(){
   var base=normUrl(document.getElementById('otherUrl').value);
   document.getElementById('spick').innerHTML=''; document.getElementById('slog').textContent='';
   if(!base){ alert('Colle une URL.'); return; }
-  setSbox('ld','🔄 Sondage (blindé)…'); slog('› base='+base);
+  setSbox('ld','🔄 Sondage…'); slog('› base='+base);
   try {
     var eps=['/gradio_api/info','/info','/config']; var disc=null;
     for(var i=0;i<eps.length;i++){
       slog('› GET '+eps[i]);
       var f=await nf(base+eps[i], null, SCAN_TIMEOUT);
-      if(f.kind==='timeout'){ slog('  timeout 25s'); continue; }
-      if(f.kind==='cors'){ slog('  CORS/réseau bloqué'); continue; }
+      if(f.kind==='timeout'){ slog('  timeout'); continue; }
+      if(f.kind==='cors'){ slog('  CORS bloqué'); continue; }
       if(!f.ok){ slog('  HTTP '+f.status); continue; }
       var txt=await f.r.text(); var p=null; try{ p=JSON.parse(txt); }catch(e){ p=null; }
       if(!p){ slog('  non-json'); continue; }
       var list=[]; var ne=p.named_endpoints;
       if(ne && typeof ne==='object' && !Array.isArray(ne)){ for(var k in ne){ var pr=(ne[k]&&ne[k].parameters)||[]; list.push({name:k.replace(/^\//,''), params:pr, type:hasImg(pr)?'i2v':'t2v'}); } }
       else if(Array.isArray(p.endpoints)){ for(var e2=0;e2<p.endpoints.length;e2++){ var en=p.endpoints[e2]; var nm=en.api_name!=null?en.api_name:en.fn_index; if(nm==null) continue; list.push({name:String(nm), params:(en.parameters||[]), type:hasImg(en.parameters||[])?'i2v':'t2v'}); } }
-      slog('  OK '+eps[i]+' → '+list.length+' endpoints'); disc={endpoints:list}; break;
+      slog('  OK → '+list.length+' endpoints'); disc={endpoints:list}; break;
     }
-    if(!disc){ setSbox('ko','❌ Ne décroche pas — essaie un autre Space'); return; }
-    if(!disc.endpoints.length){ setSbox('ko','❌ Aucun endpoint trouvé'); return; }
-    setSbox('ok','✅ Décroche — choisis un endpoint');
+    if(!disc){ setSbox('ko','❌ Ne décroche pas'); return; }
+    if(!disc.endpoints.length){ setSbox('ko','❌ Aucun endpoint'); return; }
+    setSbox('ok','✅ Décroche');
     var pick=document.getElementById('spick');
     for(var j=0;j<disc.endpoints.length;j++){
       (function(ep){
         var b=document.createElement('button'); b.className='ghost'; b.style.display='block'; b.style.width='100%'; b.style.textAlign='left'; b.style.marginTop='6px';
         b.textContent='/'+ep.name+' ('+ep.type.toUpperCase()+', '+ep.params.length+' params)';
-        b.onclick=function(){ chosen={source:'other', base:base, ep:ep}; var g=document.getElementById('gen'); g.style.display='block'; document.getElementById('gentitle').textContent='🎬 Autre Space → /'+ep.name; g.scrollIntoView({behavior:'smooth'}); };
+        b.onclick=function(){ chosen={source:'other', base:base, ep:ep}; document.getElementById('gentitle').textContent='🎬 Autre Space → /'+ep.name; document.getElementById('gen').scrollIntoView({behavior:'smooth'}); };
         pick.appendChild(b);
       })(disc.endpoints[j]);
     }
-  } catch(err){ setSbox('ko','❌ Exception : '+(err&&err.message?err.message:String(err))); slog('› EXCEPTION '+(err&&err.stack?err.stack:err)); }
-}</script>
+  } catch(err){ setSbox('ko','❌ '+(err&&err.message?err.message:String(err))); }
+}
+
+// au chargement : formulaire déjà visible (CSS), T2V pré-sélectionné sans sautwindow.addEventListener('load', function(){ selectMode('t2v', true); });
+</script>
 </body>
-</html>
 </html>
