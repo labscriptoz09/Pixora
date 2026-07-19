@@ -3,283 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Wan 2.2 I2V Fast - Pixora</title>
+<title>Test Wan via Proxy - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:640px;margin:0 auto}
-  h1{font-size:1.15rem;margin-bottom:.3rem}
-  .sub{color:#A1A1AA;font-size:.78rem;margin-bottom:1rem}
-  .step{padding:10px;margin:8px 0;border-radius:8px;font-size:.82rem;white-space:pre-wrap;word-break:break-word}
-  .pending{background:#1e1e2e;border:1px solid #3b3b4a}
-  .success{background:rgba(16,185,129,.15);border:1px solid #10B981;color:#10B981}
-  .error{background:rgba(239,68,68,.15);border:1px solid #EF4444;color:#EF4444}
-  .loading{background:rgba(139,92,246,.15);border:1px solid #8B5CF6;color:#8B5CF6}
-  button{padding:12px 24px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:1rem}
+  h1{font-size:1.15rem}
+  .sub{color:#A1A1AA;font-size:.78rem;margin:.3rem 0 1rem}
+  button{padding:12px 24px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%}
   button:disabled{opacity:.5;cursor:not-allowed}
-  img,video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
-  pre{background:#16161e;padding:10px;border-radius:8px;font-size:.68rem;overflow-x:auto;margin-top:8px;white-space:pre-wrap;word-break:break-all;max-height:260px;overflow-y:auto}
-  #log{font-size:.7rem;color:#cbd5e1}
-  .logline{padding:2px 0;border-bottom:1px solid #1e1e2e}
-  .ok{color:#10B981}.ko{color:#EF4444}.info{color:#8B5CF6}
+  #status{padding:10px;margin:10px 0;border-radius:8px;background:#1e1e2e;border:1px solid #3b3b4a;font-size:.85rem;white-space:pre-wrap;word-break:break-word}
+  .ok{border-color:#10B981;color:#10B981}.ko{border-color:#EF4444;color:#EF4444}.ld{border-color:#8B5CF6;color:#8B5CF6}
+  video,img{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
+  details{margin-top:12px}
+  summary{cursor:pointer;color:#8B5CF6;font-size:.8rem;font-weight:700}
+  pre{background:#16161e;padding:10px;border-radius:8px;font-size:.66rem;overflow:auto;max-height:340px;white-space:pre-wrap;word-break:break-all}
 </style>
 </head>
 <body>
-<h1>🧪 Test Wan 2.2 I2V (14B) Fast</h1>
-<div class="sub">Space Gradio ZeroGPU (gratuit). Découverte auto + appel en cascade. Aucun clé requise.</div>
+<h1>🧪 Test Wan 2.2 via Proxy serveur</h1>
+<div class="sub">Appelle /api/wan-proxy (même origine = zéro CORS). Aucune clé requise. 1er appel peut réveiller le GPU (~30-60s).</div>
 
-<div id="step1" class="step pending">⏳ Étape 1 : Découverte du Space (/info)...</div>
-<div id="step2" class="step pending">⏳ Étape 2 : Image via Pollinations...</div>
-<div id="step3" class="step pending">⏳ Étape 3 : Upload image + appel Wan...</div>
-<div id="step4" class="step pending">⏳ Étape 4 : Affichage vidéo...</div>
-
-<button id="btn" onclick="runTest()">▶️ Lancer le test Wan</button>
-
+<button id="btn" onclick="run()">▶️ Lancer le test Wan (proxy)</button>
+<div id="status" class="ld">En attente…</div>
 <div id="media"></div>
-<div id="log"></div>
+<details><summary>📋 Voir le journal technique (steps serveur)</summary><pre id="log">—</pre></details>
 
 <script>
-// ===== CONFIG (modifiable) =====
-var SPACE = 'https://kulkas2pintu-wan555.hf.space';
-var PROMPT = 'a cat running in a field, cinematic lighting, smooth motion';
-var POLL_IMG = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(PROMPT) + '?width=512&height=512&nologo=true&seed=' + Math.floor(Math.random()*100000);
-
-// ===== HELPERS UI =====
-function setStep(id, status, msg){ var el=document.getElementById(id); el.className='step '+status; el.textContent=msg; }
-function log(msg, kind){ var d=document.getElementById('log'); var l=document.createElement('div'); l.className='logline '+(kind||''); l.textContent='› '+msg; d.appendChild(l); d.scrollTop=d.scrollHeight; }
-function trunc(s,n){ s=String(s); return s.length>n ? s.substring(0,n)+'…[tronqué]' : s; }
-
-// fetch qui distingue CORS/network d'une erreur HTTPasync function safeFetch(url, opts){
+function setStatus(msg, cls){ var el=document.getElementById('status'); el.className=cls||''; el.textContent=msg; }
+async function run(){
+  var btn=document.getElementById('btn'); var media=document.getElementById('media'); var logEl=document.getElementById('log');
+  btn.disabled=true; btn.textContent='⏳ Génération en cours…'; media.innerHTML=''; logEl.textContent='—';
+  setStatus('🔄 Appel du proxy /api/wan-proxy … (patience, le GPU peut démarrer)', 'ld');
+  var t0=Date.now();
   try {
-    var r = await fetch(url, opts);
-    return { ok:r.ok, status:r.status, type:'http', resp:r };
-  } catch(e) {
-    return { ok:false, status:0, type:'cors', error:e.message };
-  }
-}
-
-// ===== ÉTAPE 1 : DÉCOUVERTE =====
-async function discover(){
-  var endpoints = ['/gradio_api/info','/info','/config'];
-  var raw = null, parsed = null;
-  for (var i=0;i<endpoints.length;i++){
-    var url = SPACE + endpoints[i];
-    log('GET '+url, 'info');
-    var f = await safeFetch(url);
-    if (f.type==='cors'){ log('  ❌ CORS/network bloqué sur '+url, 'ko'); continue; }
-    if (!f.ok){ log('  HTTP '+f.status, 'ko'); continue; }
-    var txt = await f.resp.text();
-    raw = txt;
-    try { parsed = JSON.parse(txt); } catch(e){ parsed = null; }
-    log('  ✅ '+endpoints[i]+' OK ('+txt.length+' octets)', 'ok');
-    break;
-  }
-  if (!parsed) return { raw:raw, apiNames:[], params:[], note:'info non parsé' };
-
-  // Extraire api_names + params (formats Gradio 4/5 et 3)
-  var apiNames = [], params = [];
-  if (Array.isArray(parsed.named_endpoints)){
-    // Gradio 4/5 : {named_endpoints:{"/predict":{parameters:[...]}}} ou array
-    var ne = parsed.named_endpoints;
-    var keys = Object.keys(ne);
-    for (var k=0;k<keys.length;k++){
-      var name = keys[k].replace(/^\//,'');
-      apiNames.push(name);
-      if (!params.length && ne[keys[k]] && ne[keys[k]].parameters) params = ne[keys[k]].parameters;
+    var r = await fetch('/api/wan-proxy', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt: 'a cat running in a field, cinematic lighting, smooth motion' })
+    });
+    var json = await r.json();
+    logEl.textContent = JSON.stringify(json.steps || json, null, 2);
+    var sec = ((Date.now()-t0)/1000).toFixed(1);
+    if (json.url) {
+      setStatus('✅ VIDÉO GÉNÉRÉE en '+sec+'s !', 'ok');
+      media.innerHTML = '<video src="'+json.url+'" controls autoplay loop muted playsinline></video><pre>url = '+json.url+'</pre>';
+      btn.textContent='✅ RÉUSSI'; btn.style.background='#10B981';
+    } else {
+      setStatus('❌ '+ (json.error||'erreur inconnue') +' ('+sec+'s)', 'ko');
+      btn.textContent='❌ ÉCHOUÉ'; btn.style.background='#EF4444';
     }
-  } else if (Array.isArray(parsed.endpoints)){
-    for (var e2=0;e2<parsed.endpoints.length;e2++){
-      if (parsed.endpoints[e2].api_name) apiNames.push(parsed.endpoints[e2].api_name);
-      if (!params.length && parsed.endpoints[e2].parameters) params = parsed.endpoints[e2].parameters;
-    }
-  } else if (parsed.api && parsed.api.length){
-    for (var a=0;a<parsed.api.length;a++){ if (parsed.api[a].api_name) apiNames.push(parsed.api[a].api_name); }
-  }
-  return { raw:raw, apiNames:apiNames, params:params, parsed:parsed };
-}
-
-// Construit data[] à partir de la signature découvertefunction buildData(params, imageArg, prompt){
-  if (!params || !params.length) return [imageArg, prompt];
-  var imgDone=false, promptDone=false, data=[];
-  for (var i=0;i<params.length;i++){
-    var p = params[i];
-    var comp = String(p.component||'').toLowerCase();
-    var props = p.props||{};
-    var label = String(props.label||'').toLowerCase();
-    if (!imgDone && (comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload')){
-      imgDone=true; data.push(imageArg); continue;
-    }
-    if (!promptDone && (comp==='textbox'||comp==='text')){
-      // priorise un champ "prompt" non négatif
-      if (label.indexOf('prompt')>=0 && label.indexOf('neg')<0){ promptDone=true; data.push(prompt); continue; }
-      if (label.indexOf('neg')<0 && !promptDone){ /* candidat */ }
-    }
-    // valeur par défaut du Space si disponible
-    if ('value' in props && props.value !== null && props.value !== undefined){ data.push(props.value); continue; }
-    if ('default' in props){ data.push(props.default); continue; }
-    // fallback par type
-    if (comp==='slider'||comp==='number') data.push(0);
-    else if (comp==='checkbox') data.push(false);
-    else data.push('');
-  }
-  // si prompt jamais placé, on force sur le 1er textbox trouvé
-  if (!promptDone){
-    for (var j=0;j<params.length;j++){
-      var c=String(params[j].component||'').toLowerCase();
-      if (c==='textbox'||c==='text'){ data[j]=prompt; break; }
-    }
-  }
-  return data;
-}
-
-// ===== ÉTAPE 2 : IMAGE =====
-async function buildImage(){
-  log('Image Pollinations: '+POLL_IMG, 'info');
-  var f = await safeFetch(POLL_IMG);
-  if (f.type==='cors' || !f.ok) throw new Error('Pollinations injoignable ('+(f.type==='cors'?'CORS':'HTTP '+f.status)+')');
-  var blob = await f.resp.blob();
-  log('  ✅ blob image '+Math.round(blob.size/1024)+' KB, type='+blob.type, 'ok');
-  return blob;
-}
-
-// Upload Gradio (retourne un path utilisable dans data)
-async function gradioUpload(blob){
-  var url = SPACE + '/gradio_api/upload';
-  var fd = new FormData();
-  fd.append('files', blob, 'init.jpg');
-  log('POST '+url+' (upload image)', 'info');  var f = await safeFetch(url, { method:'POST', body:fd });
-  if (f.type==='cors'){ log('  ❌ CORS sur upload', 'ko'); return null; }
-  if (!f.ok){ log('  ❌ upload HTTP '+f.status, 'ko'); return null; }
-  var arr = await f.resp.json();
-  log('  ✅ upload OK → '+JSON.stringify(arr), 'ok');
-  return Array.isArray(arr) ? arr[0] : null;
-}
-
-// ===== EXTRACTEUR VIDÉO (récursif) =====
-function resolveUrl(u){ if(!u) return null; if(/^https?:/i.test(u)) return u; if(u.indexOf('/gradio_api/')===0 || u.indexOf('/file=')>=0 || u.charAt(0)==='/') return SPACE+u; return null; }
-function extractVideo(node){
-  if (!node) return null;
-  if (typeof node==='string'){
-    if (/\.mp4(\?|$)/i.test(node)) return resolveUrl(node);
-    if (/^https?:/i.test(node) && /video|mp4/i.test(node)) return resolveUrl(node);
-    return null;
-  }
-  if (Array.isArray(node)){ for(var i=0;i<node.length;i++){ var v=extractVideo(node[i]); if(v) return v; } return null; }
-  if (typeof node==='object'){
-    // objet fichier Gradio
-    if (node.url){ var r=resolveUrl(node.url); if(r) return r; }
-    if (node.path){ var r2=resolveUrl(node.path); if(r2) return r2; }
-    if (node.video){ var r3=extractVideo(node.video); if(r3) return r3; }
-    var keys=Object.keys(node);
-    for(var k=0;k<keys.length;k++){ var v2=extractVideo(node[keys[k]]); if(v2) return v2; }
-  }
-  return null;
-}
-
-// ===== APPEL (cascade de stratégies) =====
-async function callWan(data){
-  var api = (window.__apiName || 'predict');
-  var strategies = [
-    { name:'Gradio4 async /gradio_api/call/'+api, run:async function(){
-        var r = await safeFetch(SPACE+'/gradio_api/call/'+api, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data}) });
-        if (r.type==='cors') throw new Error('CORS sur /gradio_api/call');
-        if (!r.ok) throw new Error('HTTP '+r.status+' : '+trunc(await r.resp.text(),200));
-        var j = await r.resp.json();
-        var eid = j.event_id || j.id;
-        if (!eid) throw new Error('Pas de event_id : '+trunc(JSON.stringify(j),200));
-        log('  event_id='+eid+' → polling…', 'info');
-        for (var t=0;t<60;t++){
-          await new Promise(function(res){ setTimeout(res,2000); });
-          setStep('step3','loading','🔄 Wan en cours… '+( (t+1)*2 )+'s');
-          var pr = await safeFetch(SPACE+'/gradio_api/call/'+api+'/'+eid);
-          if (pr.type==='cors') throw new Error('CORS sur polling');
-          if (pr.status===202) continue;
-          if (!pr.ok) throw new Error('polling HTTP '+pr.status);
-          var pj = await pr.resp.json();
-          log('  ✅ réponse finale: '+trunc(JSON.stringify(pj),400), 'ok');          return pj;
-        }
-        throw new Error('Polling timeout 120s');
-    }},
-    { name:'Gradio3 sync /api/'+api, run:async function(){
-        var r = await safeFetch(SPACE+'/api/'+api, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data}) });
-        if (r.type==='cors') throw new Error('CORS sur /api');
-        if (!r.ok) throw new Error('HTTP '+r.status+' : '+trunc(await r.resp.text(),200));
-        var j = await r.resp.json(); log('  ✅ sync: '+trunc(JSON.stringify(j),400),'ok'); return j;
-    }},
-    { name:'Gradio3 /run/'+api, run:async function(){
-        var r = await safeFetch(SPACE+'/run/'+api, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data}) });
-        if (r.type==='cors') throw new Error('CORS sur /run');
-        if (!r.ok) throw new Error('HTTP '+r.status+' : '+trunc(await r.resp.text(),200));
-        var j = await r.resp.json(); log('  ✅ run: '+trunc(JSON.stringify(j),400),'ok'); return j;
-    }},
-    { name:'Gradio3 /api/predict', run:async function(){
-        var r = await safeFetch(SPACE+'/api/predict', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data}) });
-        if (r.type==='cors') throw new Error('CORS sur /api/predict');
-        if (!r.ok) throw new Error('HTTP '+r.status+' : '+trunc(await r.resp.text(),200));
-        var j = await r.resp.json(); log('  ✅ predict: '+trunc(JSON.stringify(j),400),'ok'); return j;
-    }}
-  ];
-  var lastErr = null;
-  for (var s=0;s<strategies.length;s++){
-    log('── Tentative '+(s+1)+'/'+strategies.length+' : '+strategies[s].name, 'info');
-    try {
-      var res = await strategies[s].run();
-      return res;
-    } catch(e){
-      log('   échec: '+e.message, 'ko');
-      lastErr = e;
-      // si CORS, inutile de retenter les autres (même origine bloquée)
-      if (/CORS/.test(e.message)) break;
-    }
-  }
-  throw lastErr || new Error('Toutes les stratégies ont échoué');
-}
-
-// ===== ORCHESTRATION =====
-async function runTest(){
-  var btn=document.getElementById('btn'); var media=document.getElementById('media');
-  btn.disabled=true; btn.textContent='⏳ Test en cours…'; media.innerHTML=''; document.getElementById('log').innerHTML='';
-  try {
-    // Étape 1
-    setStep('step1','loading','🔄 Découverte du Space…');
-    var disc = await discover();
-    if (!disc.raw) throw new Error('Impossible de lire /info (CORS ou Space down/sleep). Réessaie dans 30s.');
-    window.__apiName = (disc.apiNames && disc.apiNames[0]) ? disc.apiNames[0] : 'predict';
-    setStep('step1','success','✅ api_names=['+disc.apiNames.join(', ')+'] | params='+(disc.params?disc.params.length:0)+' | endpoint choisi='+window.__apiName);    log('Signature params: '+trunc(JSON.stringify(disc.params),600), 'info');
-
-    // Étape 2
-    setStep('step2','loading','🔄 Image Pollinations…');
-    var blob = await buildImage();
-    var imgObjUrl = URL.createObjectURL(blob);
-    media.innerHTML = '<img src="'+imgObjUrl+'" alt="init">';
-    setStep('step2','success','✅ Image prête ('+Math.round(blob.size/1024)+' KB)');
-
-    // Étape 3 : upload puis appel
-    setStep('step3','loading','🔄 Upload + appel Wan (peut réveiller le GPU, 1er appel lent)…');
-    var uploadPath = await gradioUpload(blob);
-    var imageArg = uploadPath || imgObjUrl; // fallback URL directe si upload impossible
-    var data = buildData(disc.params, imageArg, PROMPT);
-    log('data[] construit = '+trunc(JSON.stringify(data),400), 'info');
-    var result = await callWan(data);
-
-    // Étape 4 : extraire vidéo
-    var videoUrl = extractVideo(result && (result.data || result));
-    if (!videoUrl){
-      // dernier recours : chercher un blob video dans la réponse ? non, on a du JSON. Echec clair.
-      throw new Error('Aucune URL vidéo trouvée dans la réponse. Réponse brute dans les logs.');
-    }
-    setStep('step4','success','✅ VIDÉO GÉNÉRÉE !');
-    media.innerHTML += '<video src="'+videoUrl+'" controls autoplay loop muted playsinline></video>';
-    media.innerHTML += '<pre>SUCCESS\nvideo = '+videoUrl+'</pre>';
-    btn.textContent='✅ TEST RÉUSSI'; btn.style.background='#10B981';
-    log('🎉 videoUrl = '+videoUrl, 'ok');
-
   } catch(e){
-    console.error(e);
-    // marque l'étape encore "loading" en erreur
-    var pend = document.querySelector('.step.loading');
-    if (pend){ pend.className='step error'; pend.textContent='❌ '+e.message; }
-    else { setStep('step4','error','❌ '+e.message); }
-    media.innerHTML += '<pre class="step error">ERREUR:\n'+e.message+'\n\nRegarde les logs › ci-dessus pour la cause exacte (CORS / format / sleep / params).</pre>';
-    btn.textContent='❌ TEST ÉCHOUÉ'; btn.style.background='#EF4444';
+    setStatus('❌ Exception réseau : '+e.message, 'ko');
+    logEl.textContent = String(e && e.stack || e);
+    btn.textContent='❌ ÉCHOUÉ'; btn.style.background='#EF4444';
   }
   btn.disabled=false;
 }
