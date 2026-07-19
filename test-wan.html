@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Plan C - Pixora</title>
+<title>Test Plan C — LTX</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:640px;margin:0 auto}
   h1{font-size:1.2rem;margin:.2rem 0}
@@ -19,8 +19,8 @@
 </style>
 </head>
 <body>
-<h1>🧪 Test Plan C</h1>
-<div class="sub">Appelle /api/gen-video (badge côté serveur). Cette version affiche l'erreur réelle du serveur (plus de « réponse vide »).</div>
+<h1>🧪 Test Plan C — LTX</h1>
+<div class="sub">Appelle /api/gen-video (badge côté serveur). Version nettoyée : une seule requête, erreur lisible.</div>
 
 <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
 <button id="btn" onclick="run()">▶️ Tester le plan C</button>
@@ -35,7 +35,7 @@ async function run(){
   var btn=document.getElementById('btn'), media=document.getElementById('media'), raw=document.getElementById('raw');
   var prompt=(document.getElementById('prompt').value||'').trim()||'a cat running in a field';
   btn.disabled=true; media.innerHTML=''; raw.style.display='none'; raw.textContent='';
-  setStatus('Appel /api/gen-video…','ld');
+  setStatus('Envoi à /api/gen-video…','ld');
   var t0=Date.now();
 
   try{
@@ -44,35 +44,27 @@ async function run(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({prompt:prompt})
     });
-    var sec=((Date.now()-t0)/1000).toFixed(1);
 
-    // lire le body UNE SEULE fois, selon le content-type
+    var sec=((Date.now()-t0)/1000).toFixed(1);
     var json=null, txt='';
-    var ct=(res.headers.get('content-type')||'').toLowerCase();
-    if(ct.indexOf('json')>=0){
-      try{ json=await res.json(); }catch(e){ txt=await res.text().catch(function(){return '';}); }
+    if(res.headers.get('content-type')?.includes('json')){
+      try{ json=await res.json(); }catch(e){ txt=await res.text().catch(()=> ''); }
     } else {
-      txt=await res.text().catch(function(){return '';});
+      txt=await res.text().catch(()=> '');
     }
 
-    // succès
     if(res.ok && json && json.url){
       media.innerHTML='<video src="'+json.url+'" controls autoplay loop muted playsinline></video>'
         +'<br><a class="dl" href="'+json.url+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer</a>';
       setStatus('✅ Vidéo en '+sec+'s','ok');
-      btn.disabled=false; return;
+    } else {
+      raw.style.display='block';
+      raw.textContent = json ? (json.error||'erreur sans message')+(json.raw?('\n\nRAW:\n'+json.raw):'') : ('HTTP '+res.status+' — '+txt || 'réponse vide');
+      setStatus('❌ HTTP '+res.status+' ('+sec+'s)','ko');
     }
-
-    // erreur : afficher le VRAI message serveur
-    var detail='';
-    if(json){ detail=(json.error||'erreur sans message')+(json.raw?('\n\nRAW:\n'+json.raw):''); }
-    else { detail=txt||'(aucun body reçu du serveur)'; }
-    raw.style.display='block'; raw.textContent=detail;
-    setStatus('❌ HTTP '+res.status+' ('+sec+'s)','ko');
-
   }catch(e){
     setStatus('❌ '+e.message,'ko');
-    raw.style.display='block'; raw.textContent='EXCEPTION CLIENT: '+e.message;
+    raw.style.display='block'; raw.textContent='EXCEPTION: '+e.message;
   }
   btn.disabled=false;
 }
