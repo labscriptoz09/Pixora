@@ -15,12 +15,12 @@
   #status.ok{color:#10B981}#status.ko{color:#EF4444}#status.ld{color:#8B5CF6}
   video{max-width:100%;border-radius:12px;margin-top:12px;display:block;background:#000}
   .dl{display:inline-block;margin-top:10px;padding:11px 18px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
-  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:280px;overflow:auto;margin-top:8px;color:#cbd5e1}
+  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:340px;overflow:auto;margin-top:8px;color:#cbd5e1}
 </style>
 </head>
 <body>
 <h1>🧪 Test Plan C</h1>
-<div class="sub">Appelle /api/gen-video (badge côté serveur). Zéro badge client, zéro URL Space.</div>
+<div class="sub">Appelle /api/gen-video (badge côté serveur). Cette version affiche l'erreur réelle du serveur (plus de « réponse vide »).</div>
 
 <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
 <button id="btn" onclick="run()">▶️ Tester le plan C</button>
@@ -44,27 +44,35 @@ async function run(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({prompt:prompt})
     });
-    var json=null; try{ json=await res.json(); }catch(e){}
     var sec=((Date.now()-t0)/1000).toFixed(1);
 
-    if(!res.ok || !json){
-      var txt=''; try{ txt=await res.text(); }catch(e){}
-      raw.style.display='block'; raw.textContent=txt||'(réponse vide)';
-      setStatus('❌ HTTP '+res.status+' ('+sec+'s)','ko');
-      btn.disabled=false; return;
+    // lire le body UNE SEULE fois, selon le content-type
+    var json=null, txt='';
+    var ct=(res.headers.get('content-type')||'').toLowerCase();
+    if(ct.indexOf('json')>=0){
+      try{ json=await res.json(); }catch(e){ txt=await res.text().catch(function(){return '';}); }
+    } else {
+      txt=await res.text().catch(function(){return '';});
     }
 
-    if(json.url){
+    // succès
+    if(res.ok && json && json.url){
       media.innerHTML='<video src="'+json.url+'" controls autoplay loop muted playsinline></video>'
         +'<br><a class="dl" href="'+json.url+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer</a>';
       setStatus('✅ Vidéo en '+sec+'s','ok');
-    } else {
-      raw.style.display='block'; raw.textContent=json.raw||json.error||JSON.stringify(json);
-      setStatus('❌ '+(json.error||'erreur inconnue')+' ('+sec+'s)','ko');
+      btn.disabled=false; return;
     }
+
+    // erreur : afficher le VRAI message serveur
+    var detail='';
+    if(json){ detail=(json.error||'erreur sans message')+(json.raw?('\n\nRAW:\n'+json.raw):''); }
+    else { detail=txt||'(aucun body reçu du serveur)'; }
+    raw.style.display='block'; raw.textContent=detail;
+    setStatus('❌ HTTP '+res.status+' ('+sec+'s)','ko');
+
   }catch(e){
     setStatus('❌ '+e.message,'ko');
-    raw.style.display='block'; raw.textContent=e.message;
+    raw.style.display='block'; raw.textContent='EXCEPTION CLIENT: '+e.message;
   }
   btn.disabled=false;
 }
