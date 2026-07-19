@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LingBot-Video T2V - Pixora</title>
+<title>CogVideoX-2B T2V - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:640px;margin:0 auto}
   h1{font-size:1.2rem;margin:.2rem 0}
   .sub{color:#A1A1AA;font-size:.76rem;margin-bottom:1rem}
+  input.f{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.82rem;box-sizing:border-box;font-family:monospace;margin-bottom:8px}
   input.k{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.85rem;box-sizing:border-box;font-family:monospace}
   .knote{color:#A1A1AA;font-size:.68rem;margin:4px 0 8px}
   textarea{width:100%;min-height:60px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.92rem;font-family:inherit;resize:vertical;box-sizing:border-box}
@@ -23,9 +24,10 @@
 </style>
 </head>
 <body>
-<h1>🎬 LingBot-Video — Text→Video</h1>
-<div class="sub">MOE 3B actifs · 480p · ZeroGPU. Réglage rapide : steps=4, fast=true, 832×480 (16:9), 2s, enhance=on.</div>
+<h1>🎬 CogVideoX-2B — Text→Video</h1>
+<div class="sub">2B · /generate 3 params · steps forcé bas (8) · enhance NON appelé. URL du Space modifiable si le host est faux.</div>
 
+<input class="f" id="spaceUrl" value="https://zai-org-cogvideox-2b-space.hf.space">
 <input class="k" id="hfkey" type="password" placeholder="Colle ton NOUVEAU hf_… ici" autocomplete="off" spellcheck="false">
 <div class="knote">🔒 Jamais stocké, masqué. Colle le NOUVEAU hf_ (pas celui du chat).</div>
 <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
@@ -35,29 +37,18 @@
 <details><summary>Détails techniques (replié)</summary><pre id="log">—</pre></details>
 
 <script>
-var BASE='https://victor-lingbot-video.hf.space';
 var GEN_TIMEOUT=240000;
 
-// negative_prompt par défaut EXACT du four (chaîne JSON littérale, une seule ligne)
-var NEG_JSON = `{"universal_negative": {"content": "low quality, blurry, distorted, deformed, disfigured, bad anatomy, extra limbs, missing limbs, mutated hands, poorly drawn face, watermark, text, logo, signature, jpeg artifacts, noise, grain, overexposed, underexposed, oversaturated, flickering, static, morphing, warping, inconsistent motion, temporal artifacts, ghosting, duplicate frames, unnatural movement, robotic motion, stiff animation, sudden jumps, frame drops, camera shake, poor lighting, flat colors, low contrast, washed out, muddy colors, bad composition, cropped, out of frame, cut off, bad proportions, ugly, amateur, poorly edited, AI artifacts, plastic skin, uncanny valley, bad hands, extra fingers, fewer fingers, fused fingers, malformed limbs, bad feet, cross-eyed, asymmetric eyes, bad teeth, skin blemishes, acne, scars", "style": "photorealistic, cinematic, natural motion, smooth transitions, consistent lighting, high detail, sharp focus, professional cinematography, film grain, depth of field, realistic physics, natural body mechanics, fluid movement, balanced exposure, rich colors, dynamic range"}}`;
-
-// signature /generate_t2v — 11 params, ordre + défauts EXACTS de la carte
-var SPEC_T2V=[
-  {l:'Prompt', c:'Textbox', d:null},
-  {l:'Resolution', c:'Dropdown', d:'832 \u00d7 480 (16:9)'},
-  {l:'Video duration (s)', c:'Slider', d:2.0},
-  {l:'Inference steps', c:'Slider', d:24},
-  {l:'Guidance scale', c:'Slider', d:3.0},  {l:'Flow shift', c:'Slider', d:3.0},
-  {l:'Faster generation', c:'Checkbox', d:false},
-  {l:'Negative prompt', c:'Textbox', d:NEG_JSON},
-  {l:'Seed', c:'Slider', d:42},
-  {l:'Randomize seed', c:'Checkbox', d:true},
-  {l:'Enhance prompt', c:'Checkbox', d:true}
+// signature /generate — 3 params, ordre + défauts lus sur la carte
+var SPEC=[
+  {l:'Prompt', c:'Textbox', d:''},
+  {l:'Inference Steps', c:'Number', d:50},
+  {l:'Guidance Scale', c:'Number', d:6.0}
 ];
 
 function log(s){ var e=document.getElementById('log'); e.textContent+=(e.textContent==='—'?'':'\n')+s; e.scrollTop=e.scrollHeight; }
-function setStatus(t,c){ var e=document.getElementById('status'); e.className=c||''; e.textContent=t; }
-function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…':s; }
+function setStatus(t,c){ var e=document.getElementById('status'); e.className=c||''; e.textContent=t; }function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…':s; }
+function normUrl(u){ u=(u||'').trim(); if(!u) return ''; if(u.indexOf('http')!==0) u='https://'+u; return u.replace(/\/+$/,''); }
 function hfKey(){ return (document.getElementById('hfkey').value||'').trim(); }
 function authHeaders(){ var k=hfKey(); if(!k) return {}; return {'Authorization':'Bearer '+k}; }
 function authMask(){ var k=hfKey(); if(!k) return 'non'; return 'oui ('+k.slice(0,3)+'…'+k.slice(-4)+')'; }
@@ -90,13 +81,14 @@ function valByLabel(spec,data,label){ for(var i=0;i<spec.length;i++){ if(spec[i]
 
 function extractVideo(base,node){
   if(!node) return null;
-  if(typeof node==='string'){ if(/\.mp4(\?|$)/i.test(node)){ return /^https?:/i.test(node)?node:(base+(node.charAt(0)==='/'?node:'/'+node)); } return null; }
+  if(typeof node==='string'){ if(/\.(mp4|webm)(\?|$)/i.test(node)){ return /^https?:/i.test(node)?node:(base+(node.charAt(0)==='/'?node:'/'+node)); } return null; }
   if(Array.isArray(node)){ for(var i=0;i<node.length;i++){ var v=extractVideo(base,node[i]); if(v) return v; } return null; }
   if(typeof node==='object'){
     if(node.url){ var u=String(node.url); if(/^https?:/i.test(u)) return u; if(u.indexOf('file=')>=0) return base+(u.charAt(0)==='/'?u:'/'+u); }
     if(node.path){ var ps=String(node.path); if(/^https?:/i.test(ps)) return ps; if(ps.indexOf('file=')>=0) return base+(ps.charAt(0)==='/'?ps:'/'+ps); return base+'/gradio_api/file='+(ps.charAt(0)==='/'?ps:'/'+ps); }
     if(node.video){ var r3=extractVideo(base,node.video); if(r3) return r3; }
-    for(var k in node){ if(k==='url'||k==='path'||k==='video') continue; var v2=extractVideo(base,node[k]); if(v2) return v2; }  }
+    for(var k in node){ if(k==='url'||k==='path'||k==='video') continue; var v2=extractVideo(base,node[k]); if(v2) return v2; }
+  }
   return null;
 }
 function parseSSE2(text){
@@ -104,8 +96,7 @@ function parseSSE2(text){
   for(var i=0;i<lines.length;i++){
     var ln=lines[i];
     if(ln.indexOf('event:')===0){ curEvent=ln.substring(6).trim(); }
-    else if(ln.indexOf('data:')===0){
-      var pl=ln.substring(5).trim(),parsed=null; try{ parsed=JSON.parse(pl); }catch(e){ parsed=pl; }
+    else if(ln.indexOf('data:')===0){      var pl=ln.substring(5).trim(),parsed=null; try{ parsed=JSON.parse(pl); }catch(e){ parsed=pl; }
       lastVal=parsed; lastEvent=curEvent;
       if(curEvent==='complete'||curEvent==='error') done=true;
       curEvent='';
@@ -124,20 +115,24 @@ function verify(url){
 
 async function generate(){
   var btn=document.getElementById('btn'),media=document.getElementById('media');
+  var BASE=normUrl(document.getElementById('spaceUrl').value);
   var prompt=(document.getElementById('prompt').value||'').trim()||'a cat running in a field';
+  if(!BASE){ setStatus('❌ URL du Space vide','ko'); return; }
   btn.disabled=true; media.innerHTML=''; document.getElementById('log').textContent='—';
   var t0=Date.now();
   try{
-    var data=buildFromSpec(SPEC_T2V,{'Prompt':prompt,'Inference steps':4,'Faster generation':true});
-    log('length='+data.length+' | Resolution='+valByLabel(SPEC_T2V,data,'Resolution')+' | steps='+valByLabel(SPEC_T2V,data,'Inference steps')+' | fast='+valByLabel(SPEC_T2V,data,'Faster generation')+' | enhance='+valByLabel(SPEC_T2V,data,'Enhance prompt')+' | auth='+authMask());
+    var data=buildFromSpec(SPEC,{'Prompt':prompt,'Inference Steps':8});
+    log('base='+BASE);
+    log('length='+data.length+' | steps='+valByLabel(SPEC,data,'Inference Steps')+' | guidance='+valByLabel(SPEC,data,'Guidance Scale')+' | auth='+authMask());
     log('data='+trunc(JSON.stringify(data),400));
 
     setStatus('Envoi de la commande…','ld');
-    var postUrl=BASE+'/gradio_api/call/generate_t2v';
+    var postUrl=BASE+'/gradio_api/call/generate';
     var post=await nf(postUrl,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},authHeaders()),body:JSON.stringify({data:data})},60000);
     if(post.kind==='cors') throw new Error('CORS sur /call (le navigateur bloque l\'appel direct vers ce Space)');
     if(post.kind==='timeout') throw new Error('timeout POST 60s');
     if(post.status===401||post.status===403) throw new Error('HTTP '+post.status+' → clé refusée/expirée');
+    if(post.status===404) throw new Error('404 → l\'URL du Space ou /generate est faux (corrige le champ URL)');
     if(post.status===429) throw new Error('429 file d\'attente');
     if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,300)); }
     var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('non-json '+trunc(t2,160)); }
@@ -145,12 +140,12 @@ async function generate(){
     if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),220));
     log('event_id='+eid+' → polling');
 
-    setStatus('Le four cuit… (peut prendre du temps)','ld');    var getUrl=BASE+'/gradio_api/call/generate_t2v/'+eid;
+    setStatus('Le four cuit…','ld');
+    var getUrl=BASE+'/gradio_api/call/generate/'+eid;
     var videoUrl=null,lastErr='',startPoll=Date.now(),polls=0;
     var tick=setInterval(function(){ setStatus('Le four cuit… '+Math.round((Date.now()-t0)/1000)+'s','ld'); },500);
     while(Date.now()-startPoll<GEN_TIMEOUT){
-      await new Promise(function(r){ setTimeout(r,2500); });
-      polls++;
+      await new Promise(function(r){ setTimeout(r,2500); });      polls++;
       var g=await nf(getUrl,{headers:authHeaders()},60000);
       if(g.kind==='cors'){ lastErr='CORS sur polling'; break; }
       if(g.kind==='timeout'){ log('poll#'+polls+' timeout 60s, retry'); continue; }
