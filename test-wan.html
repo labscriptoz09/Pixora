@@ -3,285 +3,302 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Vidéo Cinématique - Pixora</title>
+<title>Radar Vidéo Pro - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
-  .sub{color:#A1A1AA;font-size:.78rem;margin:.3rem 0 1rem}
-  textarea{width:100%;min-height:64px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.9rem;font-family:inherit;resize:vertical}
-  button{padding:12px 24px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
-  button:disabled{opacity:.5;cursor:not-allowed}
-  .panel{margin:10px 0;border-radius:10px;border:1px solid #3b3b4a;background:#16161e;overflow:hidden}
-  .phead{padding:9px 12px;font-weight:700;font-size:.85rem;display:flex;justify-content:space-between;gap:8px}
-  .pbody{padding:0 12px 10px;font-size:.7rem}
-  pre{margin:6px 0 0;background:#0c0c12;padding:8px;border-radius:6px;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto;font-size:.66rem;color:#cbd5e1}
-  .pending .phead{color:#71717A}.loading .phead{color:#8B5CF6}.success .phead{color:#10B981}.error .phead{color:#EF4444}
-  .pending{border-color:#3b3b4a}.loading{border-color:#8B5CF6}.success{border-color:#10B981}.error{border-color:#EF4444}
-  .badge{font-size:.62rem;padding:2px 7px;border-radius:6px;background:#0c0c12}
-  img,video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
-  #stage{margin-top:10px}
-  #liveCanvas{width:100%;max-width:512px;display:block;background:#000;border-radius:12px;border:1px solid #3b3b4a}
-  #final{margin-top:14px;padding:12px;border-radius:10px;font-weight:700;text-align:center;display:none}
+  .sub{color:#A1A1AA;font-size:.78rem;margin:.3rem 0 .8rem}
+  .help{background:rgba(139,92,246,.1);border:1px solid #8B5CF6;border-radius:10px;padding:10px;font-size:.74rem;color:#ddd6fe;margin-bottom:12px}
+  .help b{color:#fff}
+  input,textarea{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.85rem;font-family:inherit;box-sizing:border-box}
+  textarea{min-height:54px;resize:vertical;margin-top:8px}
+  button{padding:11px 18px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer;margin-top:8px}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .ghost{background:#1e1e2e;border:1px solid #3b3b4a}
+  #scan{margin-top:12px}
+  .item{border:1px solid #3b3b4a;border-radius:10px;background:#16161e;padding:9px 11px;margin:8px 0;font-size:.76rem}
+  .item.ok{border-color:#10B981}.item.ko{border-color:#EF4444}.item.ld{border-color:#8B5CF6}
+  .itop{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:700}
+  .ok .itop{color:#10B981}.ko .itop{color:#EF4444}.ld .itop{color:#8B5CF6}
+  .meta{color:#A1A1AA;font-weight:400;font-size:.7rem;margin-top:3px;white-space:pre-wrap;word-break:break-word}
+  .mini{padding:7px 12px;font-size:.78rem;margin-top:7px}
+  #gen{margin-top:14px;border:1px solid #3b3b4a;border-radius:12px;background:#16161e;padding:12px;display:none}
+  #timer{font-weight:700;color:#8B5CF6}
+  video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
+  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow:auto;margin-top:8px;color:#cbd5e1}
+  .dl{display:inline-block;margin-top:10px;padding:10px 16px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
+  #final{margin-top:12px;padding:12px;border-radius:10px;font-weight:700;text-align:center;display:none}
   .f-ok{background:rgba(16,185,129,.15);border:1px solid #10B981;color:#10B981}
   .f-ko{background:rgba(239,68,68,.15);border:1px solid #EF4444;color:#EF4444}
-  .dl{display:inline-block;margin-top:10px;padding:10px 16px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
-<h1>🎬 Test Vidéo Cinématique v4 (rendu ++)</h1>
-<div class="sub">v3 + rendu : fondu narratif (prompt B décalé, même seed), push-in + rotation + parallaxe, vignette + grain film. Moteur d'enregistrement = identique à v3.</div>
+<h1>📡 Radar Vidéo Pro (sans livreur)</h1>
+<div class="sub">On vire Vercel : ton téléphone appelle les fours DIRECTEMENT. Plus de règle des 5 min. Le radar te dit en 2 s lesquels décrochent.</div>
 
-<textarea id="prompt">a cat running in a field, cinematic lighting, 4k</textarea>
-<button id="btn" onclick="run()">▶️ Générer la vidéo cinématique</button>
+<div class="help">
+  <b>Comment trouver un four à tester :</b> va sur <b>huggingface.co/spaces</b>, cherche un de ces termes → ouvre un Space qui a une démo → copie son URL (ex <code>https://xxx-yyy.hf.space</code>) → colle-la ci-dessous.<br>
+  Termes qui marchent bien : <b>wan 2.1 1.3b t2v</b> · <b>ltx video</b> · <b>cogvideox 2b</b> · <b>animatediff lcm</b> · <b>stable video diffusion fast</b> · <b>text to video</b>
+</div>
 
-<div id="stage"></div>
+<input id="spaceUrl" placeholder="Colle l'URL d'un Space, ex: https://kulkas2pintu-wan555.hf.space">
+<div class="row">
+  <button onclick="scanOne()">🔍 Sonder celui-ci</button>
+  <button class="ghost" onclick="scanPreset()">📡 Sonder le pré-réglage (wan555)</button>
+</div>
+<div id="scan"></div>
 
-<div class="panel pending" id="p-img"><div class="phead"><span>① Images IA (A = scène, B = travelling)</span><span class="badge" id="b-img">—</span></div><div class="pbody"><pre id="d-img">en attente</pre></div></div>
-<div class="panel pending" id="p-taint"><div class="phead"><span>② Canvas non-souillé ? (piège n°1)</span><span class="badge" id="b-taint">—</span></div><div class="pbody"><pre id="d-taint">en attente</pre></div></div>
-<div class="panel pending" id="p-mime"><div class="phead"><span>③ Codec d'enregistrement dispo ?</span><span class="badge" id="b-mime">—</span></div><div class="pbody"><pre id="d-mime">en attente</pre></div></div>
-<div class="panel pending" id="p-rec"><div class="phead"><span>④ Enregistrement (canvas visible, 4 s)</span><span class="badge" id="b-rec">—</span></div><div class="pbody"><pre id="d-rec">en attente</pre></div></div>
-<div class="panel pending" id="p-out"><div class="phead"><span>⑤ Vidéo finale (vérif taille + lisible)</span><span class="badge" id="b-out">—</span></div><div class="pbody"><pre id="d-out">en attente</pre></div></div>
+<div id="gen">
+  <div style="font-weight:700">🎬 Générer avec le Space vert sélectionné</div>
+  <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
+  <button id="gbtn" onclick="generate()">▶️ Lancer la vraie vidéo (direct, sans livreur)</button>
+  <div id="timer" style="margin-top:8px"></div>
+  <div id="gmedia"></div>
+  <pre id="glog" style="display:none"></pre>
+</div>
 
 <div id="final"></div>
-<div id="media"></div>
 
 <script>
-function setP(id, cls, badge, detail){
-  var p=document.getElementById('p-'+id); p.className='panel '+cls;  document.getElementById('b-'+id).textContent=badge;
-  document.getElementById('d-'+id).textContent=detail;
-}
-function finish(ok,msg){ var f=document.getElementById('final'); f.style.display='block'; f.className=ok?'f-ok':'f-ko'; f.textContent=(ok?'✅ ':'⚠️ ')+msg; }
-function sleep(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
-function lerp(a,b,t){ return a+(b-a)*t; }
+var PRESET = 'https://kulkas2pintu-wan555.hf.space';
+var SCAN_TIMEOUT = 20000;   // 20s max par sondage (le navigateur, pas Vercel)
+var GEN_TIMEOUT  = 240000;  // 4 min de filet pour la gen (le navigateur peut attendre)
+var chosen = null;          // Space vert sélectionné pour génération
 
-function pollUrl(prompt, seed){ return 'https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=512&height=512&nologo=true&seed='+seed; }
-function proxyUrl(poll){ return '/api/img-proxy?url='+encodeURIComponent(poll); }
+function normUrl(u){ u=(u||'').trim(); if(!u) return ''; if(u.indexOf('http')!==0) u='https://'+u; return u.replace(/\/+$/,''); }
+function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…' : s; }
 
-function loadImg(src){
-  return new Promise(function(res,rej){
-    var im=new Image(); im.crossOrigin='anonymous';
-    im.onload=function(){ res(im); };
-    im.onerror=function(){ rej(new Error('échec chargement: '+src.substring(0,70))); };
-    im.src=src;
+// fetch avec timeout + distinction abort / CORS / http
+function nf(url, opts, timeoutMs){
+  return new Promise(function(res){
+    var ctrl=null, to=null;
+    try{ ctrl=new AbortController(); }catch(e){ ctrl=null; }
+    if(ctrl && timeoutMs){ to=setTimeout(function(){ try{ctrl.abort();}catch(e){} }, timeoutMs); }
+    var o=opts||{}; if(ctrl) o.signal=ctrl.signal;
+    fetch(url,o).then(function(r){
+      if(to) clearTimeout(to);
+      res({kind:'http', ok:r.ok, status:r.status, r:r});
+    }).catch(function(err){
+      if(to) clearTimeout(to);
+      var name=(err&&err.name)||'';
+      if(name==='AbortError') res({kind:'timeout'});
+      else res({kind:'cors', msg:(err&&err.message)||String(err)});
+    });
   });
 }
-async function loadRobust(prompt, seed){
-  var poll = pollUrl(prompt, seed);
-  var lastErr='';
-  for(var i=1;i<=3;i++){
-    try { var im=await loadImg(poll); return { img:im, via:'direct essai '+i }; }
-    catch(e){ lastErr='direct#'+i+': '+e.message; await sleep(1500); }
-  }
-  try { var imp=await loadImg(proxyUrl(poll)); return { img:imp, via:'proxy filet' }; }
-  catch(ep){ lastErr+=' | proxy: '+ep.message; }
-  throw new Error(lastErr);
-}
-function canvasTainted(canvas, ctx){ try { ctx.getImageData(0,0,1,1); return false; } catch(e){ return true; } }
 
-function pickMime(forced){
-  if(!window.MediaRecorder) return null;
-  var base=['video/webm;codecs=vp8','video/webm','video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9'];
-  var list = forced ? [forced].concat(base) : base;
-  for(var i=0;i<list.length;i++){ try{ if(MediaRecorder.isTypeSupported(list[i])) return list[i]; }catch(e){} }
+// ---- découverte d'un Space ----
+async function discover(base){
+  var eps=['/gradio_api/info','/info','/config'];
+  for(var i=0;i<eps.length;i++){
+    var f=await nf(base+eps[i], null, SCAN_TIMEOUT);
+    if(f.kind==='timeout') return {ok:false, reason:'endormi/lent (>20s sans réponse)'};
+    if(f.kind==='cors')    return {ok:false, reason:'CORS fermé depuis ton téléphone (ou injoignable)'};
+    if(!f.ok)              return {ok:false, reason:'HTTP '+f.status};
+    var txt=await f.r.text();    var p=null; try{ p=JSON.parse(txt); }catch(e){ p=null; }
+    if(!p) continue;
+    var apiNames=[], params=[];
+    var ne=p.named_endpoints;
+    if(ne && typeof ne==='object' && !Array.isArray(ne)){
+      for(var k in ne){ apiNames.push(k.replace(/^\//,'')); if(!params.length && ne[k] && ne[k].parameters) params=ne[k].parameters; }
+    } else if(Array.isArray(p.endpoints)){
+      for(var e2=0;e2<p.endpoints.length;e2++){ if(p.endpoints[e2].api_name) apiNames.push(p.endpoints[e2].api_name); if(!params.length && p.endpoints[e2].parameters) params=p.endpoints[e2].parameters; }
+    }
+    // type : a-t-il un champ image ?
+    var hasImg=false;
+    for(var q=0;q<params.length;q++){ var c=String((params[q]&&params[q].component)||'').toLowerCase(); if(c==='image'||c==='file'||c==='uploadbutton'||c==='imageupload'){ hasImg=true; break; } }
+    return {ok:true, ep:eps[i], apiName:apiNames[0]||'predict', params:params, type:hasImg?'i2v':'t2v'};
+  }
+  return {ok:false, reason:'réponse non lisible'};
+}
+
+function addItem(base, cls, title, meta, disc){
+  var wrap=document.getElementById('scan');
+  var div=document.createElement('div'); div.className='item '+cls;
+  var top='<div class="itop"><span>'+title+'</span></div>';
+  var m='<div class="meta">'+(meta||'')+'</div>';
+  var btn='';
+  if(cls==='ok' && disc){
+    var id='b_'+Math.random().toString(36).slice(2,8);
+    btn='<button class="mini" id="'+id+'">🎬 Générer avec ce Space ('+disc.type.toUpperCase()+')</button>';
+    setTimeout(function(){ var b=document.getElementById(id); if(b) b.onclick=function(){ selectSpace(base, disc); }; }, 0);
+  }
+  div.innerHTML=top+m+btn;
+  wrap.appendChild(div);
+  return div;
+}
+
+async function scan(base){
+  base=normUrl(base);
+  if(!base){ alert('Colle une URL de Space.'); return null; }
+  var node=addItem(base,'ld','🔄 Sondage…', base+' (depuis ton téléphone, sans livreur)');
+  var d=await discover(base);
+  if(!d.ok){
+    node.className='item ko';
+    node.querySelector('.itop').innerHTML='<span>❌ Ne décroche pas</span>';
+    node.querySelector('.meta').textContent=base+'\n→ '+d.reason+'\n(le navigateur ne distingue pas CORS fermé / endormi / inexistant : essaie un autre Space via la case libre)';
+    return null;
+  }
+  node.className='item ok';
+  node.querySelector('.itop').innerHTML='<span>✅ DÉCROCHE depuis ton téléphone</span>';
+  node.querySelector('.meta').textContent=base+'\nendpoint='+d.ep+' | api='+d.apiName+' | type='+d.type.toUpperCase()+' | params='+d.params.length;
+  // bouton gen
+  var id='b_'+Math.random().toString(36).slice(2,8);
+  var btn=document.createElement('button'); btn.className='mini'; btn.id=id;  btn.textContent='🎬 Générer avec ce Space ('+d.type.toUpperCase()+')';
+  btn.onclick=function(){ selectSpace(base, d); };
+  node.appendChild(btn);
+  return d;
+}
+
+function scanOne(){ var u=document.getElementById('spaceUrl').value; scan(u); }
+function scanPreset(){ document.getElementById('spaceUrl').value=PRESET; scan(PRESET); }
+
+function selectSpace(base, disc){
+  chosen={base:base, disc:disc};
+  var g=document.getElementById('gen'); g.style.display='block';
+  g.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ---- construction data[] ----
+function buildData(params, prompt, imageArg){
+  if(!params||!params.length) return imageArg!=null ? [imageArg, prompt] : [prompt];
+  var data=[], imgDone=false, promptDone=false;
+  for(var i=0;i<params.length;i++){
+    var p=params[i]; var comp=String((p&&p.component)||'').toLowerCase(); var props=(p&&p.props)||{}; var label=String(props.label||'').toLowerCase();
+    if(!imgDone && (comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload')){ imgDone=true; data.push(imageArg!=null?imageArg:''); continue; }
+    if(!promptDone && (comp==='textbox'||comp==='text') && label.indexOf('neg')<0){ promptDone=true; data.push(prompt); continue; }
+    if(props && 'value' in props && props.value!==null && props.value!==undefined){ data.push(props.value); continue; }
+    if(comp==='slider'||comp==='number') data.push(0);
+    else if(comp==='checkbox') data.push(false);
+    else data.push('');
+  }
+  if(!promptDone){ for(var j=0;j<params.length;j++){ var c=String((params[j]&&params[j].component)||'').toLowerCase(); if(c==='textbox'||c==='text'){ data[j]=prompt; break; } } }
+  return data;
+}
+
+// ---- upload image cross-origin (pour i2v) ----
+async function uploadImg(base, blob){
+  for(var i=0;i<2;i++){
+    var ep=(i===0)?'/gradio_api/upload':'/upload';
+    var fd=new FormData(); fd.append('files', blob, 'init.png');
+    var f=await nf(base+ep, {method:'POST', body:fd}, 30000);
+    if(f.kind!=='http'||!f.ok) continue;
+    try{ var arr=await f.r.json(); var path=Array.isArray(arr)?arr[0]:(arr&&arr.path?arr.path:null); if(path) return path; }catch(e){}
+  }
   return null;
 }
-function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+function fileObj(base, path){ return {path:path, url:base+'/gradio_api/file='+path, orig_name:'init.png', mime_type:'image/png', is_file:true, meta:{_type:'gradio.FileData'}}; }
 
-// ---- grain film : pattern de bruit pré-rendu UNE fois (pas de putImageData par frame) ----
-var noiseCanvas=null;
-function makeNoise(){
-  var c=document.createElement('canvas'); c.width=128; c.height=128;
-  var x=c.getContext('2d');
-  var id=x.createImageData(128,128); var d=id.data;
-  for(var i=0;i<d.length;i+=4){ var v=Math.floor(Math.random()*255); d[i]=v; d[i+1]=v; d[i+2]=v; d[i+3]=255; }
-  x.putImageData(id,0,0);
-  return c;
+// ---- extracteur vidéo ----
+function resolveUrl(base,u){ if(!u) return null; var s=String(u); if(/^https?:/i.test(s)) return s; if(s.charAt(0)==='/'||s.indexOf('/gradio_api/')>=0||s.indexOf('file=')>=0) return base+(s.charAt(0)==='/'?s:'/'+s); return null; }
+function extractVideo(base,node){
+  if(!node) return null;
+  if(typeof node==='string'){ if(/\.mp4(\?|$)/i.test(node)) return resolveUrl(base,node); return null; }  if(Array.isArray(node)){ for(var i=0;i<node.length;i++){ var v=extractVideo(base,node[i]); if(v) return v; } return null; }
+  if(typeof node==='object'){
+    if(node.url){ var r=resolveUrl(base,node.url); if(r) return r; }
+    if(node.path){ var r2=resolveUrl(base,node.path); if(r2) return r2; }
+    if(node.video){ var r3=extractVideo(base,node.video); if(r3) return r3; }
+    for(var k in node){ var v2=extractVideo(base,node[k]); if(v2) return v2; }
+  }
+  return null;
 }
-// ---- UNE frame : push-in + rotation + parallaxe + vignette + grain ----
-function drawFrame(ctx, imgA, imgB, W, H, t){
-  var e=ease(t);
-  var scale=1.08+0.16*e;                 // push-in cinématique (marge suffisante pour masquer rotation+pan)
-  var rot=lerp(-0.8, 0.8, e)*Math.PI/180; // légère rotation
-  // parallaxe : les 2 vues glissent à des vitesses différentes
-  var panAx=lerp(-8, 8, e),  panAy=lerp(-6, 10, e);
-  var panBx=lerp(-8, 8, e)*0.5+4, panBy=lerp(-6, 10, e)*0.5+3;
-  var alphaA=1-0.6*e;                    // fondu narratif A -> B
-  var alphaB=0.6*e;
-
-  ctx.clearRect(0,0,W,H);
-  ctx.save();
-  ctx.translate(W/2,H/2);
-  ctx.scale(scale,scale);
-  ctx.rotate(rot);
-  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
-  ctx.save(); ctx.translate(panAx,panAy); ctx.globalAlpha=alphaA; ctx.drawImage(imgA,-W/2,-H/2,W,H); ctx.restore();
-  ctx.save(); ctx.translate(panBx,panBy); ctx.globalAlpha=alphaB; ctx.drawImage(imgB,-W/2,-H/2,W,H); ctx.restore();
-  ctx.globalAlpha=1;
-  ctx.restore();
-
-  // grain film (overlay léger, décalé aléatoirement = scintillement pellicule)
-  if(!noiseCanvas) noiseCanvas=makeNoise();
-  var ox=Math.floor(Math.random()*128), oy=Math.floor(Math.random()*128);
-  ctx.save();
-  ctx.globalCompositeOperation='overlay';
-  ctx.globalAlpha=0.08;
-  for(var yy=-128+oy; yy<H; yy+=128){ for(var xx=-128+ox; xx<W; xx+=128){ ctx.drawImage(noiseCanvas, xx, yy); } }
-  ctx.restore();
-
-  // vignette cinématique
-  var g=ctx.createRadialGradient(W/2,H/2, W*0.28, W/2,H/2, W*0.72);
-  g.addColorStop(0,'rgba(0,0,0,0)');
-  g.addColorStop(1,'rgba(0,0,0,0.55)');
-  ctx.globalAlpha=1;
-  ctx.fillStyle=g;
-  ctx.fillRect(0,0,W,H);
+function parseSSE(text){
+  var lines=text.split(/\r?\n/); var last=null;
+  for(var i=0;i<lines.length;i++){ if(lines[i].indexOf('data:')===0){ var pl=lines[i].substring(5).trim(); try{ last=JSON.parse(pl); }catch(e){} } }
+  if(last==null){ try{ last=JSON.parse(text); }catch(e){ last=null; } }
+  return last;
 }
 
-function recordOnce(imgA, imgB, mime, durMs, fps, onTick){
-  return new Promise(function(resolve, reject){
-    var W=512, H=512;
-    var stage=document.getElementById('stage');
-    var canvas=document.createElement('canvas'); canvas.id='liveCanvas'; canvas.width=W; canvas.height=H;
-    stage.innerHTML=''; stage.appendChild(canvas);
-    var ctx=canvas.getContext('2d');
-    drawFrame(ctx, imgA, imgB, W, H, 0);
-    if(!canvas.captureStream){ stage.innerHTML=''; reject(new Error('captureStream indisponible')); return; }
-    var stream, manual=false, track=null;
-    try {
-      stream=canvas.captureStream(0);
-      var trs=stream.getVideoTracks();
-      if(trs && trs[0] && typeof trs[0].requestFrame==='function'){ track=trs[0]; manual=true; }
-    } catch(e){ stream=null; }
-    if(!stream){
-      try { stream=canvas.captureStream(fps); manual=false; }
-      catch(e2){ stage.innerHTML=''; reject(new Error('captureStream échec: '+e2.message)); return; }
-    }
-
-    var rec;
-    try { rec=new MediaRecorder(stream, { mimeType:mime }); }
-    catch(e){ stage.innerHTML=''; reject(new Error('MediaRecorder init échec: '+e.message)); return; }
-
-    var chunks=[];
-    rec.ondataavailable=function(e){ if(e.data && e.data.size>0) chunks.push(e.data); };
-    rec.onstop=function(){
-      var blob=new Blob(chunks,{type:mime});
-      setTimeout(function(){ stage.innerHTML=''; }, 50);
-      resolve({ blob:blob, mime:mime, manual:manual, frames:framesDrawn });
-    };
-    rec.onerror=function(){ stage.innerHTML=''; reject(new Error('MediaRecorder onerror')); };
-
-    var framesDrawn=0;
-    var start=performance.now();
-    function frame(){
-      var t=(performance.now()-start)/durMs; if(t>1) t=1;
-      if(onTick) onTick(t, manual);
-      drawFrame(ctx, imgA, imgB, W, H, t);
-      framesDrawn++;
-      if(manual && track){ try{ track.requestFrame(); }catch(e){} }
-      if(t<1){ requestAnimationFrame(frame); }
-      else { try{ rec.stop(); }catch(err){ reject(err); } }
-    }
-    rec.start();
-    requestAnimationFrame(frame);
-    setTimeout(function(){ if(rec.state==='recording'){ try{ rec.stop(); }catch(e){} } }, durMs+6000);
-  });
-}
-
-function verifyPlayable(url){
-  return new Promise(function(res){
-    var v=document.createElement('video'); v.muted=true; v.playsInline=true; v.preload='auto'; v.src=url;
-    var done=false;
-    function ok(){ if(done) return; done=true; res(true); }
-    function ko(){ if(done) return; done=true; res(false); }
-    v.addEventListener('loadeddata', ok);
-    v.addEventListener('error', ko);    setTimeout(ko, 6000);
-  });
-}
-
-async function attempt(imgA, imgB, forcedMime, label){
-  var mime=pickMime(forcedMime);
-  if(!mime) throw new Error('['+label+'] aucun codec supporté');
-  setP('mime','success','OK','['+label+'] codec: '+mime+(forcedMime?' (forcé)':''));
+// ---- génération ----
+async function generate(){
+  if(!chosen){ alert('Sonde d\'abord un Space vert.'); return; }
+  var base=chosen.base, disc=chosen.disc;
+  var prompt=(document.getElementById('prompt').value||'').trim()||'a cat running in a field';
+  var gbtn=document.getElementById('gbtn'); var timer=document.getElementById('timer');
+  var gmedia=document.getElementById('gmedia'); var glog=document.getElementById('glog'); var fin=document.getElementById('final');
+  gbtn.disabled=true; gmedia.innerHTML=''; glog.style.display='block'; glog.textContent=''; fin.style.display='none';
+  function log(s){ glog.textContent+=s+'\n'; glog.scrollTop=glog.scrollHeight; }
   var t0=Date.now();
-  var res=await recordOnce(imgA, imgB, mime, 4000, 30, function(t, manual){
-    setP('rec','loading','…','['+label+'] '+(manual?'requestFrame':'auto')+' … '+Math.round(t*4)+'s / 4s');
-  });
-  var kb=Math.round(res.blob.size/1024);
-  var sec=((Date.now()-t0)/1000).toFixed(1);
-  return { res:res, kb:kb, sec:sec, mime:mime, label:label };
-}
-
-async function run(){
-  var btn=document.getElementById('btn'); var media=document.getElementById('media'); var stage=document.getElementById('stage');
-  var prompt=(document.getElementById('prompt').value||'').trim() || 'a cat running in a field';
-  btn.disabled=true; btn.textContent='⏳ Génération…'; media.innerHTML=''; stage.innerHTML='';
-  document.getElementById('final').style.display='none';
-  ['img','taint','mime','rec','out'].forEach(function(id){ setP(id,'pending','—','en attente'); });
+  var tick=setInterval(function(){ timer.textContent='⏳ GPU en chauffe / génération… '+Math.round((Date.now()-t0)/1000)+'s (sans livreur, on peut attendre)'; }, 500);
 
   try {
-    // ① A = scène ; B = MÊME seed + prompt décalé (travelling narratif)
-    var promptB = prompt + ', cinematic camera push-in, slight angle shift, subject in motion, same subject same scene';
-    var seedA=Math.floor(Math.random()*100000), seedB=seedA;
-    setP('img','loading','…','vue A (scène)…');
-    var rA=await loadRobust(prompt, seedA);
-    setP('img','loading','…','A OK ('+rA.via+') → vue B (travelling)…');
-    await sleep(800);
-    var rB=await loadRobust(promptB, seedB);
-    setP('img','success','OK','A via '+rA.via+' | B via '+rB.via+' (seed partagé, prompt décalé)');
-
-    // ② taint
-    var tc=document.createElement('canvas'); tc.width=64; tc.height=64; var tctx=tc.getContext('2d');
-    tctx.drawImage(rA.img,0,0,64,64);
-    if(canvasTainted(tc,tctx)){ setP('taint','error','KO','canvas SOUILLÉ → vidéo sortirait vide.'); finish(false,'Piège n°1 actif (rare en direct).'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
-    setP('taint','success','OK','canvas propre ✅');
-
-    // ③+④ essai 1
-    setP('rec','loading','…','essai 1 (canvas visible, rendu v4)…');
-    var a1=await attempt(rA.img, rB.img, null, 'essai1');
-    setP('rec','success','OK',a1.label+' → '+a1.kb+' KB en '+a1.sec+'s | '+(a1.res.manual?'requestFrame':'auto')+' | frames='+a1.res.frames);
-
-    var chosen=a1;
-    if(a1.kb < 2){
-      setP('rec','loading','…','blob vide → retry forcé vp8…');
-      try {        var a2=await attempt(rA.img, rB.img, 'video/webm;codecs=vp8', 'essai2');
-        setP('rec','success','OK',a2.label+' → '+a2.kb+' KB en '+a2.sec+'s | frames='+a2.res.frames);
-        chosen=a2;
-      } catch(eRetry){ setP('rec','error','KO','retry échec: '+eRetry.message); }
+    // image si i2v
+    var imageArg=null;
+    if(disc.type==='i2v'){
+      log('› i2v : génération image Pollinations…');
+      var poll='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=512&height=512&nologo=true&seed='+Math.floor(Math.random()*100000);
+      var im=await nf(poll, null, 30000);
+      if(im.kind!=='http'||!im.ok) throw new Error('image Pollinations injoignable');
+      var blob=await im.r.blob();
+      log('› upload image vers le Space (cross-origin)…');
+      var path=await uploadImg(base, blob);
+      if(path){ imageArg=fileObj(base, path); log('› upload OK'); }
+      else { imageArg=poll; log('› upload bloqué → fallback URL directe'); }
     }
 
-    // ⑤ vérif taille + lisibilité
-    var blob=chosen.res.blob;
-    if(blob.size < 2000){
-      setP('out','error','KO','blob VIDE ('+blob.size+' octets). L\'encodeur mobile n\'a produit aucune frame.');
-      finish(false,'Échec honnête: 0 donnée vidéo. Plus de faux vert.');
-      btn.disabled=false; btn.textContent='🔁 Relancer'; return;
-    }
-    var url=URL.createObjectURL(blob);
-    var playable=await verifyPlayable(url);
-    if(!playable){
-      setP('out','error','KO','blob '+chosen.kb+' KB produit mais ILLISIBLE par ce lecteur.');
-      finish(false,'Échec: fichier produit mais non lisible ici.');
-      btn.disabled=false; btn.textContent='🔁 Relancer'; return;
-    }
-    var ext=(chosen.mime.indexOf('mp4')>=0)?'.mp4':'.webm';
-    setP('out','success','OK','vidéo '+chosen.kb+' KB, lisible ✅ | '+chosen.mime+' | rendu v4');
-    media.innerHTML='<video src="'+url+'" controls autoplay loop muted playsinline></video>'
-      +'<br><a class="dl" href="'+url+'" download="pixora-cine-'+Date.now()+ext+'">⬇️ Télécharger la vidéo</a>';
-    finish(true,'VIDÉO CINÉMATIQUE v4 ('+chosen.kb+' KB, vérifiée lisible) : push-in + rotation + parallaxe + vignette + grain + fondu narratif. Née dans ton téléphone.');
-    btn.textContent='🔁 Refaire une vidéo';
+    var data=buildData(disc.params, prompt, imageArg);
+    log('› data = '+trunc(JSON.stringify(data),200));
 
-  } catch(e){
+    // POST async
+    var names=[disc.apiName,'predict','generate','process'];
+    var done=false, videoUrl=null, lastErr='';
+    for(var n=0;n<names.length && !done;n++){      var name=names[n]; if(!name) continue;
+      var postUrl=base+'/gradio_api/call/'+name;
+      log('› POST '+postUrl);
+      var post=await nf(postUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data})}, 60000);
+      if(post.kind==='cors'){ lastErr='CORS sur /call (le Space refuse l\'appel direct)'; log('› '+lastErr); break; }
+      if(post.kind==='timeout'){ lastErr='timeout POST 60s'; log('› '+lastErr); continue; }
+      if(post.status===429){ lastErr='file d\'attente (429) → ce Space met les anonymes en attente'; log('› '+lastErr); break; }
+      if(!post.ok){ var t=await post.r.text(); lastErr='HTTP '+post.status+' '+trunc(t,140); log('› '+lastErr); continue; }
+      var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); lastErr='réponse non-json '+trunc(t2,120); log('› '+lastErr); continue; }
+      var eid=ej&&(ej.event_id||ej.id);
+      if(!eid){ lastErr='pas d\'event_id '+trunc(JSON.stringify(ej),140); log('› '+lastErr); continue; }
+      log('› event_id='+eid+' → polling…');
+      // polling
+      var getUrl=base+'/gradio_api/call/'+name+'/'+eid;
+      var startPoll=Date.now();
+      while(Date.now()-startPoll < GEN_TIMEOUT){
+        await new Promise(function(r){ setTimeout(r,2500); });
+        var g=await nf(getUrl, null, 60000);
+        if(g.kind==='cors'){ lastErr='CORS sur polling'; log('› '+lastErr); break; }
+        if(g.kind==='timeout'){ log('› poll timeout 60s, retry…'); continue; }
+        if(g.status===202){ continue; }
+        if(!g.ok){ var t3=await g.r.text(); lastErr='poll HTTP '+g.status+' '+trunc(t3,140); log('› '+lastErr); break; }
+        var txt=await g.r.text();
+        var parsed=parseSSE(txt);
+        log('› réponse: '+trunc(JSON.stringify(parsed),260));
+        videoUrl=extractVideo(base, parsed);
+        if(videoUrl){ done=true; } else { lastErr='réponse sans URL vidéo'; }
+        break;
+      }
+      if(done) break;
+    }
+
+    clearInterval(tick);
+    var sec=((Date.now()-t0)/1000).toFixed(1);
+    if(!videoUrl){
+      timer.textContent='❌ Échec en '+sec+'s';
+      fin.style.display='block'; fin.className='f-ko';
+      fin.textContent='⚠️ Le Space a été sondé vert, mais la génération a bloqué : '+lastErr+'. (Souvent = file d\'attente 429 ou modèle trop lent même sans livreur.) Essaie un Space plus petit/rapide via la case libre.';
+      gbtn.disabled=false; return;
+    }
+    timer.textContent='✅ Vidéo en '+sec+'s';
+    var ext=/\.mp4(\?|$)/i.test(videoUrl)?'.mp4':'.webm';
+    gmedia.innerHTML='<video src="'+videoUrl+'" controls autoplay loop muted playsinline></video>'
+      +'<br><a class="dl" href="'+videoUrl+'" target="_blank" rel="noopener">🔗 Ouvrir la vidéo (clic long → enregistrer)</a>';
+    fin.style.display='block'; fin.className='f-ok';
+    fin.textContent='🎉 VRAIE VIDÉO IA, gratuite, SANS livreur, en '+sec+'s. Route 2 = GAGNÉE sur ce Space.';
+    log('› VIDEO = '+videoUrl);
+    gbtn.disabled=false;
+
+  } catch(e){    clearInterval(tick);
     console.error(e);
-    var pend=document.querySelector('.panel.loading'); if(pend){ pend.className='panel error'; }
-    var msg=String(e.message||e);
-    setP('out','error','KO', msg);
-    stage.innerHTML='';
-    if(/échec chargement/i.test(msg)){
-      finish(false,'Pollinations ne répond pas maintenant (service gratuit intermittent). Réessaie dans ~30 s. Ce n\'est PAS le moteur vidéo.');
-    } else {
-      finish(false,'Échec: '+msg+' → regarde la case rouge.');
-    }
-    btn.disabled=false; btn.textContent='🔁 Relancer';
+    timer.textContent='❌ Exception';
+    log('› EXCEPTION '+e.message);
+    fin.style.display='block'; fin.className='f-ko';
+    fin.textContent='⚠️ '+e.message;
+    gbtn.disabled=false;
   }
 }
 </script>
