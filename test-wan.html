@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LTX Distilled v5 - Pixora</title>
+<title>LTX Distilled v6 - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
@@ -38,13 +38,13 @@
 </style>
 </head>
 <body>
-<h1>🎞️ LTX Distilled v5 — le badge (clé HF)</h1>
-<div class="sub">Spec v4 inchangée (prouvée). On ajoute le badge HF dans le header du POST + upload → le four alloue enfin le GPU. La clé reste sur ton téléphone, masquée dans le log.</div>
+<h1>🎞️ LTX Distilled v6 — badge aussi sur le rappel</h1>
+<div class="sub">v5 + le badge part maintenant sur le polling GET (Authorization seul, sans Content-Type). Le log affiche <b>auth sur polling: oui</b> pour le prouver. Spec inchangée. Sans clé = comme v5.</div>
 
 <div id="cab">
   <div class="ctitle">✅ LTX câblé — choisis la recette</div>
   <div class="cmeta">four: https://lightricks-ltx-video-distilled.hf.space
-badge: header Authorization sur POST+upload (PAS sur le polling) · sans clé = comme v4</div>
+badge: header Authorization sur POST + upload + POLLING (v6) · sans clé = pas de badge</div>
   <div class="modes">
     <button class="mbtn t2v" onclick="selectMode('t2v')">🟢 Text-to-Video <small>/text_to_video · mode forcé text-to-video · RECOMMANDÉ</small></button>
     <button class="mbtn i2v" onclick="selectMode('i2v')">🟣 Image-to-Video <small>/image_to_video · mode forcé image-to-video · on livre une image Pollinations</small></button>    <button class="mbtn off" disabled>⚪ Video-to-Video <small>existe mais exige une vidéo SOURCE → non câblé ici.</small></button>
@@ -54,7 +54,7 @@ badge: header Authorization sur POST+upload (PAS sur le polling) · sans clé = 
 <div id="gen">
   <div style="font-weight:700" id="gentitle">🎬 Générer</div>
   <input class="k" id="hfkey" type="password" placeholder="Colle ton hf_… ici (badge gratuit, reste sur ton téléphone)" autocomplete="off" spellcheck="false">
-  <div class="knote">🔒 Jamais stocké, jamais envoyé ailleurs qu'au four, masqué dans le log. Laisse vide = pas de badge.</div>
+  <div class="knote">🔒 Jamais stocké, jamais envoyé ailleurs qu'au four, masqué dans le log. Laisse vide = pas de badge. (Colle le NOUVEAU hf_, pas celui qui a fuité dans le chat.)</div>
   <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
   <button class="go" id="gbtn" onclick="generate()">▶️ Lancer la vraie vidéo (direct, sans livreur)</button>
   <div id="timer"></div>
@@ -81,7 +81,6 @@ var NEG = 'worst quality, inconsistent motion, blurry, jittery, distorted';
 function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…' : s; }
 function normUrl(u){ u=(u||'').trim(); if(!u) return ''; if(u.indexOf('http')!==0) u='https://'+u; return u.replace(/\/+$/,''); }
 
-// ---- badge HF (jamais en clair dans le log) ----
 function hfKey(){ return (document.getElementById('hfkey')? document.getElementById('hfkey').value : '').trim(); }
 function authHeaders(){ var k=hfKey(); if(!k) return {}; return {'Authorization':'Bearer '+k}; }
 function authMask(){ var k=hfKey(); if(!k) return 'non'; return 'oui ('+k.slice(0,3)+'…'+k.slice(-4)+')'; }
@@ -96,8 +95,8 @@ function nf(url, opts, timeoutMs){
     .catch(function(err){ if(to) clearTimeout(to); var name=(err&&err.name)||''; if(name==='AbortError') res({kind:'timeout'}); else res({kind:'cors', msg:(err&&err.message)||String(err)}); });
   });
 }
-// ---- SPÉC ÉTIQUETÉE v4 (inchangée, prouvée) ----
-var SPEC_T2V = [
+
+// ---- SPÉC ÉTIQUETÉE v4 (inchangée, prouvée) ----var SPEC_T2V = [
   {l:'Prompt', c:'Textbox', d:'A majestic dragon flying over a medieval castle'},
   {l:'Negative Prompt', c:'Textbox', d:NEG},
   {l:'image_n', c:'Textbox', d:''},
@@ -145,13 +144,12 @@ function valByLabel(spec, data, label){ for(var i=0;i<spec.length;i++){ if(spec[
 
 function selectMode(mode){
   chosen={source:'ltx', mode:mode};
-  var g=document.getElementById('gen'); g.style.display='block';  document.getElementById('gentitle').textContent = mode==='t2v'
-    ? '🎬 Text-to-Video → /text_to_video (mode forcé text-to-video)'
+  var g=document.getElementById('gen'); g.style.display='block';
+  document.getElementById('gentitle').textContent = mode==='t2v'    ? '🎬 Text-to-Video → /text_to_video (mode forcé text-to-video)'
     : '🎬 Image-to-Video → /image_to_video (mode forcé image-to-video)';
   g.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
-// upload AVEC badge (le four peut exiger l'auth pour accepter le fichier)
 async function uploadImg(base, blob){
   for(var i=0;i<2;i++){
     var ep=(i===0)?'/gradio_api/upload':'/upload';
@@ -183,27 +181,28 @@ function parseSSE(text){
   return last;
 }
 
-// UN essai : auth sur POST (et upload en amont), PAS sur le polling GET
+// UN essai : badge sur POST + sur POLLING (v6). Pas de Content-Type sur le GET.
 async function oneShot(base, epName, data, spec, log){
-  log('› data.length='+data.length+' | Height='+valByLabel(spec,data,'Height')+' | Width='+valByLabel(spec,data,'Width')+' | mode='+valByLabel(spec,data,'task')+' | auth sur POST: '+authMask());
+  log('› data.length='+data.length+' | Height='+valByLabel(spec,data,'Height')+' | Width='+valByLabel(spec,data,'Width')+' | mode='+valByLabel(spec,data,'task')+' | auth POST: '+authMask());
   log('› data = '+trunc(JSON.stringify(data),300));
   var postUrl=base+'/gradio_api/call/'+epName;
   log('› POST '+postUrl);
   var post=await nf(postUrl, {method:'POST', headers:Object.assign({'Content-Type':'application/json'}, authHeaders()), body:JSON.stringify({data:data})}, 60000);
-  if(post.kind==='cors') throw new Error('CORS sur /call (si tu as mis une clé : le preflight a peut-être refusé le header Authorization → dis-le, plan C = mini-livreur)');
+  if(post.kind==='cors') throw new Error('CORS sur /call (preflight Authorization refusé → plan C = mini-livreur)');
   if(post.kind==='timeout') throw new Error('timeout POST 60s');
-  if(post.status===401 || post.status===403) throw new Error('HTTP '+post.status+' → clé HF refusée/expirée. Révoque-la et recrée-en une (type Read), puis recolle la NOUVELLE dans le champ.');
+  if(post.status===401 || post.status===403) throw new Error('HTTP '+post.status+' → clé HF refusée/expirée. Révoque + recrée (Read) + recolle la NOUVELLE.');
   if(post.status===429) throw new Error('file d\'attente (429) → retente dans ~1 min');
-  if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,320)); }  var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('réponse non-json '+trunc(t2,160)); }
-  var eid=ej&&(ej.event_id||ej.id);
-  if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),220));
-  log('› event_id='+eid+' → polling (sans auth, comme avant)…');
+  if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,320)); }
+  var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('réponse non-json '+trunc(t2,160)); }
+  var eid=ej&&(ej.event_id||ej.id);  if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),220));
+  log('› event_id='+eid+' → polling AVEC auth: '+authMask()+' …');
   var getUrl=base+'/gradio_api/call/'+epName+'/'+eid;
   var videoUrl=null, lastErr='', startPoll=Date.now();
   while(Date.now()-startPoll < GEN_TIMEOUT){
     await new Promise(function(r){ setTimeout(r,2500); });
-    var g=await nf(getUrl, null, 60000);
-    if(g.kind==='cors'){ lastErr='CORS sur polling'; break; }
+    // v6 : Authorization seul sur le GET (pas de Content-Type, pas de body)
+    var g=await nf(getUrl, {headers:authHeaders()}, 60000);
+    if(g.kind==='cors'){ lastErr='CORS sur polling (le four refuse le header auth au rappel → plan C mini-livreur)'; break; }
     if(g.kind==='timeout'){ log('› poll timeout 60s, retry…'); continue; }
     if(g.status===202){ continue; }
     if(!g.ok){ var t3=await g.r.text(); lastErr='poll HTTP '+g.status+' '+trunc(t3,240); break; }
@@ -243,8 +242,8 @@ async function generate(){
         log('› upload image cross-origin (avec badge si présent)…');
         var path=await uploadImg(base, blob);
         var imageArg = path ? fileObj(base, path) : poll;
-        log(path?'› upload OK':'› upload bloqué → fallback URL');        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg});
-      }
+        log(path?'› upload OK':'› upload bloqué → fallback URL');
+        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg});      }
     } else {
       base=chosen.base; epName=chosen.ep.name; spec=null;
       data=buildGeneric(chosen.ep.params, prompt, null);
@@ -292,8 +291,8 @@ function buildGeneric(params, prompt, imageArg){
   if(!params||!params.length) return imageArg!=null?[imageArg,prompt]:[prompt];
   var data=new Array(params.length); var imgIdx=-1, promptIdx=-1, fbText=-1;
   for(var i=0;i<params.length;i++){
-    var p=params[i]||{}; var comp=String(p.component||'').toLowerCase(); var label=String(p.label||'').toLowerCase();    var isImg=(comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload');
-    var isText=(comp==='textbox'||comp==='text');
+    var p=params[i]||{}; var comp=String(p.component||'').toLowerCase(); var label=String(p.label||'').toLowerCase();
+    var isImg=(comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload');    var isText=(comp==='textbox'||comp==='text');
     if(isImg && imgIdx<0) imgIdx=i;
     if(isText){ var hp=label.indexOf('prompt')>=0; var neg=label.indexOf('neg')>=0; if(hp&&!neg&&promptIdx<0) promptIdx=i; else if(!neg&&fbText<0) fbText=i; }
   }
@@ -341,7 +340,8 @@ async function scanOther(){
         pick.appendChild(b);
       })(disc.endpoints[j]);
     }
-  } catch(err){ setSbox('ko','❌ Exception : '+(err&&err.message?err.message:String(err))); slog('› EXCEPTION '+(err&&err.stack?err.stack:err)); }}
-</script>
+  } catch(err){ setSbox('ko','❌ Exception : '+(err&&err.message?err.message:String(err))); slog('› EXCEPTION '+(err&&err.stack?err.stack:err)); }
+}</script>
 </body>
+</html>
 </html>
