@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LTX Distilled v4 - Pixora</title>
+<title>LTX Distilled v5 - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
@@ -18,6 +18,8 @@
   .mbtn.off{border-color:#52525b;color:#71717A;cursor:not-allowed}
   .mbtn small{display:block;font-weight:400;color:#A1A1AA;font-size:.66rem;margin-top:3px;white-space:pre-wrap}
   textarea{width:100%;min-height:56px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.88rem;font-family:inherit;box-sizing:border-box;margin-top:8px}
+  input.k{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.85rem;box-sizing:border-box;margin-top:8px;font-family:monospace}
+  .knote{color:#A1A1AA;font-size:.68rem;margin-top:4px}
   #gen{border:1px solid #3b3b4a;border-radius:12px;background:#16161e;padding:12px;margin-top:12px;display:none}
   button.go{padding:12px 18px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
   button.go:disabled{opacity:.45;cursor:not-allowed}
@@ -29,28 +31,30 @@
   #final{margin-top:12px;padding:12px;border-radius:10px;font-weight:700;text-align:center;display:none}
   .f-ok{background:rgba(16,185,129,.15);border:1px solid #10B981;color:#10B981}
   .f-ko{background:rgba(239,68,68,.15);border:1px solid #EF4444;color:#EF4444}
-  input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:9px;font-size:.82rem;box-sizing:border-box;margin-top:8px}
+  input.u{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:9px;font-size:.82rem;box-sizing:border-box;margin-top:8px}
   #other{margin-top:14px;border-top:1px solid #2a2a35;padding-top:10px}
   #sbox{border:1px solid #3b3b4a;border-radius:10px;background:#16161e;padding:10px;margin-top:8px;display:none}
   #sbox.ld{border-color:#8B5CF6}#sbox.ok{border-color:#10B981}#sbox.ko{border-color:#EF4444}
 </style>
 </head>
 <body>
-<h1>🎞️ LTX Distilled v4 — spec étiquetée (plus de case qui saute)</h1>
-<div class="sub">Les 13 paramètres sont listés AVEC leur étiquette + défaut du JSON. Le tableau se construit tout seul : 512/704 ne peuvent plus disparaître. Le log te le prouve (length / Height / Width / mode) avant de cuire.</div>
+<h1>🎞️ LTX Distilled v5 — le badge (clé HF)</h1>
+<div class="sub">Spec v4 inchangée (prouvée). On ajoute le badge HF dans le header du POST + upload → le four alloue enfin le GPU. La clé reste sur ton téléphone, masquée dans le log.</div>
 
 <div id="cab">
   <div class="ctitle">✅ LTX câblé — choisis la recette</div>
   <div class="cmeta">four: https://lightricks-ltx-video-distilled.hf.space
-construction: buildFromSpec (13 params étiquetés) + interrupteur "mode" forcé + 1 retry auto si null</div>
+badge: header Authorization sur POST+upload (PAS sur le polling) · sans clé = comme v4</div>
   <div class="modes">
-    <button class="mbtn t2v" onclick="selectMode('t2v')">🟢 Text-to-Video <small>/text_to_video · mode forcé text-to-video · rien à livrer → RECOMMANDÉ</small></button>
-    <button class="mbtn i2v" onclick="selectMode('i2v')">🟣 Image-to-Video <small>/image_to_video · mode forcé image-to-video · on livre une image Pollinations</small></button>
-    <button class="mbtn off" disabled>⚪ Video-to-Video <small>existe sur ce four mais exige une vidéo SOURCE → non câblé ici (limite du test, pas du four).</small></button>
-  </div></div>
+    <button class="mbtn t2v" onclick="selectMode('t2v')">🟢 Text-to-Video <small>/text_to_video · mode forcé text-to-video · RECOMMANDÉ</small></button>
+    <button class="mbtn i2v" onclick="selectMode('i2v')">🟣 Image-to-Video <small>/image_to_video · mode forcé image-to-video · on livre une image Pollinations</small></button>    <button class="mbtn off" disabled>⚪ Video-to-Video <small>existe mais exige une vidéo SOURCE → non câblé ici.</small></button>
+  </div>
+</div>
 
 <div id="gen">
   <div style="font-weight:700" id="gentitle">🎬 Générer</div>
+  <input class="k" id="hfkey" type="password" placeholder="Colle ton hf_… ici (badge gratuit, reste sur ton téléphone)" autocomplete="off" spellcheck="false">
+  <div class="knote">🔒 Jamais stocké, jamais envoyé ailleurs qu'au four, masqué dans le log. Laisse vide = pas de badge.</div>
   <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
   <button class="go" id="gbtn" onclick="generate()">▶️ Lancer la vraie vidéo (direct, sans livreur)</button>
   <div id="timer"></div>
@@ -60,7 +64,7 @@ construction: buildFromSpec (13 params étiquetés) + interrupteur "mode" forcé
 
 <div id="other">
   <div style="color:#71717A;font-size:.72rem">Autre Space (radar blindé) :</div>
-  <input id="otherUrl" placeholder="Colle une URL …hf.space puis Sonder">
+  <input class="u" id="otherUrl" placeholder="Colle une URL …hf.space puis Sonder">
   <button class="ghost" onclick="scanOther()">🔍 Sonder celui-là</button>
   <div id="sbox"><div id="stitle" style="font-weight:700;font-size:.82rem"></div><pre id="slog" style="margin-top:6px"></pre><div id="spick"></div></div>
 </div>
@@ -77,6 +81,11 @@ var NEG = 'worst quality, inconsistent motion, blurry, jittery, distorted';
 function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…' : s; }
 function normUrl(u){ u=(u||'').trim(); if(!u) return ''; if(u.indexOf('http')!==0) u='https://'+u; return u.replace(/\/+$/,''); }
 
+// ---- badge HF (jamais en clair dans le log) ----
+function hfKey(){ return (document.getElementById('hfkey')? document.getElementById('hfkey').value : '').trim(); }
+function authHeaders(){ var k=hfKey(); if(!k) return {}; return {'Authorization':'Bearer '+k}; }
+function authMask(){ var k=hfKey(); if(!k) return 'non'; return 'oui ('+k.slice(0,3)+'…'+k.slice(-4)+')'; }
+
 function nf(url, opts, timeoutMs){
   return new Promise(function(res){
     var ctrl=null, to=null;
@@ -87,16 +96,15 @@ function nf(url, opts, timeoutMs){
     .catch(function(err){ if(to) clearTimeout(to); var name=(err&&err.name)||''; if(name==='AbortError') res({kind:'timeout'}); else res({kind:'cors', msg:(err&&err.message)||String(err)}); });
   });
 }
-
-// ---- SPÉC ÉTIQUETÉE (ordre + défauts EXACTS du JSON du 20/07) ----
-// p = {l:label, c:component, d:default}
+// ---- SPÉC ÉTIQUETÉE v4 (inchangée, prouvée) ----
 var SPEC_T2V = [
   {l:'Prompt', c:'Textbox', d:'A majestic dragon flying over a medieval castle'},
   {l:'Negative Prompt', c:'Textbox', d:NEG},
   {l:'image_n', c:'Textbox', d:''},
   {l:'video_n', c:'Textbox', d:''},
   {l:'Height', c:'Slider', d:512},
-  {l:'Width', c:'Slider', d:704},  {l:'task', c:'Dropdown', d:'image-to-video'},
+  {l:'Width', c:'Slider', d:704},
+  {l:'task', c:'Dropdown', d:'image-to-video'},
   {l:'Video Duration (seconds)', c:'Slider', d:2},
   {l:'Frames to use from input video', c:'Slider', d:9},
   {l:'Seed', c:'Number', d:42},
@@ -119,15 +127,12 @@ var SPEC_I2V = [
   {l:'Guidance Scale (CFG)', c:'Slider', d:1},
   {l:'Improve Texture (multi-scale)', c:'Checkbox', d:true}
 ];
-
-// construit data[] depuis la spec + overrides par LABEL. length === spec.length TOUJOURS.
 function buildFromSpec(spec, overrides){
   var data=[];
   for(var i=0;i<spec.length;i++){
     var p=spec[i]; var c=p.c; var lab=p.l;
     if(overrides && Object.prototype.hasOwnProperty.call(overrides, lab)){ data.push(overrides[lab]); continue; }
-    // défaut selon composant (jamais de case vide par oubli)
-    if(c==='Image' || c==='File' || c==='UploadButton'){ data.push(p.d); continue; } // null si pas d'override
+    if(c==='Image' || c==='File' || c==='UploadButton'){ data.push(p.d); continue; }
     if(c==='Textbox' || c==='Text'){ data.push(p.d==null ? '' : p.d); continue; }
     if(c==='Slider' || c==='Number'){ data.push(p.d==null ? 0 : p.d); continue; }
     if(c==='Checkbox'){ data.push(p.d==null ? false : p.d); continue; }
@@ -136,22 +141,22 @@ function buildFromSpec(spec, overrides){
   }
   return data;
 }
-// lit une valeur par label dans data (pour le log de vérif)
 function valByLabel(spec, data, label){ for(var i=0;i<spec.length;i++){ if(spec[i].l===label) return data[i]; } return '(absent)'; }
 
 function selectMode(mode){
   chosen={source:'ltx', mode:mode};
-  var g=document.getElementById('gen'); g.style.display='block';
-  document.getElementById('gentitle').textContent = mode==='t2v'
+  var g=document.getElementById('gen'); g.style.display='block';  document.getElementById('gentitle').textContent = mode==='t2v'
     ? '🎬 Text-to-Video → /text_to_video (mode forcé text-to-video)'
     : '🎬 Image-to-Video → /image_to_video (mode forcé image-to-video)';
-  g.scrollIntoView({behavior:'smooth', block:'center'});}
+  g.scrollIntoView({behavior:'smooth', block:'center'});
+}
 
+// upload AVEC badge (le four peut exiger l'auth pour accepter le fichier)
 async function uploadImg(base, blob){
   for(var i=0;i<2;i++){
     var ep=(i===0)?'/gradio_api/upload':'/upload';
     var fd=new FormData(); fd.append('files', blob, 'init.png');
-    var f=await nf(base+ep, {method:'POST', body:fd}, 30000);
+    var f=await nf(base+ep, {method:'POST', headers:authHeaders(), body:fd}, 30000);
     if(f.kind!=='http'||!f.ok) continue;
     try{ var arr=await f.r.json(); var path=Array.isArray(arr)?arr[0]:(arr&&arr.path?arr.path:null); if(path) return path; }catch(e){}
   }
@@ -178,23 +183,24 @@ function parseSSE(text){
   return last;
 }
 
-// ---- UN essai de génération (renvoie videoUrl ou null + lastErr) ----
-async function oneShot(base, epName, data, log){
-  log('› data.length='+data.length+' | Height='+valByLabel((epName==='text_to_video'?SPEC_T2V:SPEC_I2V), data, 'Height')+' | Width='+valByLabel((epName==='text_to_video'?SPEC_T2V:SPEC_I2V), data, 'Width')+' | mode='+valByLabel((epName==='text_to_video'?SPEC_T2V:SPEC_I2V), data, 'task'));
+// UN essai : auth sur POST (et upload en amont), PAS sur le polling GET
+async function oneShot(base, epName, data, spec, log){
+  log('› data.length='+data.length+' | Height='+valByLabel(spec,data,'Height')+' | Width='+valByLabel(spec,data,'Width')+' | mode='+valByLabel(spec,data,'task')+' | auth sur POST: '+authMask());
   log('› data = '+trunc(JSON.stringify(data),300));
   var postUrl=base+'/gradio_api/call/'+epName;
   log('› POST '+postUrl);
-  var post=await nf(postUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data})}, 60000);
-  if(post.kind==='cors') throw new Error('CORS sur /call (le four refuse l\'appel direct depuis ton téléphone)');
+  var post=await nf(postUrl, {method:'POST', headers:Object.assign({'Content-Type':'application/json'}, authHeaders()), body:JSON.stringify({data:data})}, 60000);
+  if(post.kind==='cors') throw new Error('CORS sur /call (si tu as mis une clé : le preflight a peut-être refusé le header Authorization → dis-le, plan C = mini-livreur)');
   if(post.kind==='timeout') throw new Error('timeout POST 60s');
+  if(post.status===401 || post.status===403) throw new Error('HTTP '+post.status+' → clé HF refusée/expirée. Révoque-la et recrée-en une (type Read), puis recolle la NOUVELLE dans le champ.');
   if(post.status===429) throw new Error('file d\'attente (429) → retente dans ~1 min');
-  if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,320)); }
-  var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('réponse non-json '+trunc(t2,160)); }
+  if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,320)); }  var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('réponse non-json '+trunc(t2,160)); }
   var eid=ej&&(ej.event_id||ej.id);
   if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),220));
-  log('› event_id='+eid+' → polling…');
+  log('› event_id='+eid+' → polling (sans auth, comme avant)…');
   var getUrl=base+'/gradio_api/call/'+epName+'/'+eid;
-  var videoUrl=null, lastErr='', startPoll=Date.now();  while(Date.now()-startPoll < GEN_TIMEOUT){
+  var videoUrl=null, lastErr='', startPoll=Date.now();
+  while(Date.now()-startPoll < GEN_TIMEOUT){
     await new Promise(function(r){ setTimeout(r,2500); });
     var g=await nf(getUrl, null, 60000);
     if(g.kind==='cors'){ lastErr='CORS sur polling'; break; }
@@ -234,23 +240,21 @@ async function generate(){
         var im=await nf(poll, null, 30000);
         if(im.kind!=='http'||!im.ok) throw new Error('image Pollinations injoignable');
         var blob=await im.r.blob();
-        log('› upload image cross-origin…');
+        log('› upload image cross-origin (avec badge si présent)…');
         var path=await uploadImg(base, blob);
         var imageArg = path ? fileObj(base, path) : poll;
-        log(path?'› upload OK':'› upload bloqué → fallback URL');
-        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg});
+        log(path?'› upload OK':'› upload bloqué → fallback URL');        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg});
       }
     } else {
       base=chosen.base; epName=chosen.ep.name; spec=null;
       data=buildGeneric(chosen.ep.params, prompt, null);
     }
-    // essai 1
-    var r=await oneShot(base, epName, data, log);
-    // 1 retry auto si null (sans re-upload)
+
+    var r=await oneShot(base, epName, data, spec||SPEC_T2V, log);
     if(!r.videoUrl && /null|sans URL/i.test(r.lastErr||'')){
       log('› null → 1 retry auto…');
       await new Promise(function(res){ setTimeout(res,1500); });
-      r=await oneShot(base, epName, data, log);
+      r=await oneShot(base, epName, data, spec||SPEC_T2V, log);
     }
 
     clearInterval(tick);
@@ -258,7 +262,7 @@ async function generate(){
     if(!r.videoUrl){
       timer.textContent='❌ Échec en '+sec+'s';
       fin.style.display='block'; fin.className='f-ko';
-      fin.textContent='⚠️ '+r.lastErr+'. Si length≠13 ou Height≠512 dans le log → bug de spec (envoie la capture). Si length=13 ET Height=512 ET encore null → ce Space ne cuit pas les anonymes sans compte : la parade est une clé HF GRATUITE (2 min, sans carte) ou un autre Space.';
+      fin.textContent='⚠️ '+r.lastErr;
       gbtn.disabled=false; return;
     }
     timer.textContent='✅ Vidéo en '+sec+'s';
@@ -280,7 +284,7 @@ async function generate(){
   }
 }
 
-// ---- radar blindé pour AUTRE space ----
+// ---- radar blindé pour AUTRE space (inchangé) ----
 function slog(s){ var el=document.getElementById('slog'); el.textContent+=s+'\n'; el.scrollTop=el.scrollHeight; }
 function setSbox(cls, title){ var b=document.getElementById('sbox'); b.style.display='block'; b.className=cls; document.getElementById('stitle').textContent=title; }
 function hasImg(params){ for(var q=0;q<params.length;q++){ var c=String((params[q]&&params[q].component)||'').toLowerCase(); if(c==='image'||c==='file'||c==='uploadbutton'||c==='imageupload') return true; } return false; }
@@ -288,11 +292,11 @@ function buildGeneric(params, prompt, imageArg){
   if(!params||!params.length) return imageArg!=null?[imageArg,prompt]:[prompt];
   var data=new Array(params.length); var imgIdx=-1, promptIdx=-1, fbText=-1;
   for(var i=0;i<params.length;i++){
-    var p=params[i]||{}; var comp=String(p.component||'').toLowerCase(); var label=String(p.label||'').toLowerCase();
-    var isImg=(comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload');
+    var p=params[i]||{}; var comp=String(p.component||'').toLowerCase(); var label=String(p.label||'').toLowerCase();    var isImg=(comp==='image'||comp==='file'||comp==='uploadbutton'||comp==='imageupload');
     var isText=(comp==='textbox'||comp==='text');
     if(isImg && imgIdx<0) imgIdx=i;
-    if(isText){ var hp=label.indexOf('prompt')>=0; var neg=label.indexOf('neg')>=0; if(hp&&!neg&&promptIdx<0) promptIdx=i; else if(!neg&&fbText<0) fbText=i; }  }
+    if(isText){ var hp=label.indexOf('prompt')>=0; var neg=label.indexOf('neg')>=0; if(hp&&!neg&&promptIdx<0) promptIdx=i; else if(!neg&&fbText<0) fbText=i; }
+  }
   if(promptIdx<0) promptIdx=fbText;
   for(var j=0;j<params.length;j++){
     if(j===imgIdx){ data[j]=(imageArg!=null?imageArg:''); continue; }
@@ -337,8 +341,7 @@ async function scanOther(){
         pick.appendChild(b);
       })(disc.endpoints[j]);
     }
-  } catch(err){ setSbox('ko','❌ Exception : '+(err&&err.message?err.message:String(err))); slog('› EXCEPTION '+(err&&err.stack?err.stack:err)); }
-}
+  } catch(err){ setSbox('ko','❌ Exception : '+(err&&err.message?err.message:String(err))); slog('› EXCEPTION '+(err&&err.stack?err.stack:err)); }}
 </script>
 </body>
 </html>
