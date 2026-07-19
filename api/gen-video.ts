@@ -1,6 +1,5 @@
-// Plan C - LTX /text_to_video (signature v4 éprouvée)
-// GET  /api/gen-video        -> { ok, hasToken, runtime }
-// POST /api/gen-video {prompt} -> { url } ou { error, raw }
+// Plan C - LTX /text_to_video
+declare const process: any; // <- fix TS2580 sans @types/node
 
 const SPACE_BASE = 'https://lightricks-ltx-video-distilled.hf.space';
 const ENDPOINT = '/text_to_video';
@@ -26,28 +25,16 @@ export default async function handler(req: any, res: any) {
   const body = req.body || {};
   const prompt = String(body.prompt || '').trim() || 'a cat running in a field, cinematic lighting';
 
-  // Signature LTX /text_to_video — 13 params, ordre + défauts v4
   const data = [
-    prompt,           // 0 Prompt
-    NEG,              // 1 Negative Prompt
-    '',               // 2 image_n
-    '',               // 3 video_n
-    512,              // 4 Height
-    704,              // 5 Width
-    'text-to-video',  // 6 task/mode FORCÉ
-    2,                // 7 Video Duration (s)
-    9,                // 8 Frames
-    42,               // 9 Seed
-    true,             // 10 Randomize Seed
-    1,                // 11 Guidance Scale
-    false             // 12 Improve Texture (OFF = mode sûr anti-OOM)
+    prompt, NEG, '', '', 512, 704, 'text-to-video', 2, 9, 42, true, 1, false
   ];
 
   const ctrl = new AbortController();
   const CAP = 55000;
   const timer = setTimeout(() => ctrl.abort(), CAP);
 
-  try {    const postRes = await fetch(SPACE_BASE + '/gradio_api/call' + ENDPOINT, {
+  try {
+    const postRes = await fetch(SPACE_BASE + '/gradio_api/call' + ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ data }),
@@ -96,7 +83,8 @@ function extractVideo(base: string, node: any): string | null {
   if (typeof node === 'string') {
     if (/\.(mp4|webm)(\?|$)/i.test(node)) return /^https?:/i.test(node) ? node : base + (node.charAt(0) === '/' ? node : '/' + node);
     return null;
-  }  if (Array.isArray(node)) { for (const it of node) { const v = extractVideo(base, it); if (v) return v; } return null; }
+  }
+  if (Array.isArray(node)) { for (const it of node) { const v = extractVideo(base, it); if (v) return v; } return null; }
   if (typeof node === 'object') {
     if (node.url) { const u = String(node.url); if (/^https?:/i.test(u)) return u; if (u.includes('file=')) return base + (u.charAt(0) === '/' ? u : '/' + u); }
     if (node.path) { const ps = String(node.path); if (/^https?:/i.test(ps)) return ps; if (ps.includes('file=')) return base + (ps.charAt(0) === '/' ? ps : '/' + ps); return base + '/gradio_api/file=' + (ps.charAt(0) === '/' ? ps : '/' + ps); }
