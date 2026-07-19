@@ -3,119 +3,180 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Debug Wan - Pixora</title>
+<title>Test Vidéo Cinématique - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
   .sub{color:#A1A1AA;font-size:.78rem;margin:.3rem 0 1rem}
-  button{padding:12px 24px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%}
+  textarea{width:100%;min-height:64px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.9rem;font-family:inherit;resize:vertical}
+  button{padding:12px 24px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
   button:disabled{opacity:.5;cursor:not-allowed}
   .panel{margin:10px 0;border-radius:10px;border:1px solid #3b3b4a;background:#16161e;overflow:hidden}
   .phead{padding:9px 12px;font-weight:700;font-size:.85rem;display:flex;justify-content:space-between;gap:8px}
   .pbody{padding:0 12px 10px;font-size:.7rem}
-  pre{margin:6px 0 0;background:#0c0c12;padding:8px;border-radius:6px;white-space:pre-wrap;word-break:break-all;max-height:220px;overflow:auto;font-size:.66rem;color:#cbd5e1}
-  .pending .phead{color:#71717A}
-  .loading .phead{color:#8B5CF6}
-  .success .phead{color:#10B981}
-  .error .phead{color:#EF4444}
+  pre{margin:6px 0 0;background:#0c0c12;padding:8px;border-radius:6px;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto;font-size:.66rem;color:#cbd5e1}
+  .pending .phead{color:#71717A}.loading .phead{color:#8B5CF6}.success .phead{color:#10B981}.error .phead{color:#EF4444}
   .pending{border-color:#3b3b4a}.loading{border-color:#8B5CF6}.success{border-color:#10B981}.error{border-color:#EF4444}
   .badge{font-size:.62rem;padding:2px 7px;border-radius:6px;background:#0c0c12}
-  video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
-  #final{margin-top:14px;padding:12px;border-radius:10px;font-weight:700;text-align:center}
+  img,video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
+  #final{margin-top:14px;padding:12px;border-radius:10px;font-weight:700;text-align:center;display:none}
   .f-ok{background:rgba(16,185,129,.15);border:1px solid #10B981;color:#10B981}
   .f-ko{background:rgba(239,68,68,.15);border:1px solid #EF4444;color:#EF4444}
+  .dl{display:inline-block;margin-top:10px;padding:10px 16px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
-<h1>🔬 Debug Wan 2.2 — tout en une page</h1>
-<div class="sub">4 étapes indépendantes. Chacune répond vite (sauf la 4e). Même si la 4e timeout, les 3 premières te disent où ça bloque. Aucune clé requise.</div>
+<h1>🎬 Test Vidéo Cinématique (dans ton téléphone)</h1>
+<div class="sub">Image IA Pollinations → animée en canvas (zoom + drift + morph) → enregistrée en vraie vidéo. Zéro serveur vidéo, zéro clé, zéro timeout. Tout se passe dans ton GSM.</div>
 
-<button id="btn" onclick="runDebug()">▶️ Lancer le debug pas à pas</button>
+<textarea id="prompt">a cat running in a field, cinematic lighting, 4k</textarea>
+<button id="btn" onclick="run()">▶️ Générer la vidéo cinématique</button>
 
-<div class="panel pending" id="p-info"><div class="phead"><span>① Space /info (le Space est-il vivant ?)</span><span class="badge" id="b-info">—</span></div><div class="pbody"><pre id="d-info">en attente</pre></div></div>
-<div class="panel pending" id="p-img"><div class="phead"><span>② Image Pollinations (côté serveur)</span><span class="badge" id="b-img">—</span></div><div class="pbody"><pre id="d-img">en attente</pre></div></div>
-<div class="panel pending" id="p-upload"><div class="phead"><span>③ Upload vers le Space</span><span class="badge" id="b-upload">—</span></div><div class="pbody"><pre id="d-upload">en attente</pre></div></div>
-<div class="panel pending" id="p-call"><div class="phead"><span>④ Appel GPU complet (lent, jusqu'à 5 min)</span><span class="badge" id="b-call">—</span></div><div class="pbody"><pre id="d-call">en attente</pre></div></div>
+<div class="panel pending" id="p-img"><div class="phead"><span>① Images IA (Pollinations via proxy)</span><span class="badge" id="b-img">—</span></div><div class="pbody"><pre id="d-img">en attente</pre></div></div>
+<div class="panel pending" id="p-taint"><div class="phead"><span>② Canvas non-souillé ? (piège n°1)</span><span class="badge" id="b-taint">—</span></div><div class="pbody"><pre id="d-taint">en attente</pre></div></div>
+<div class="panel pending" id="p-mime"><div class="phead"><span>③ Codec d'enregistrement dispo ?</span><span class="badge" id="b-mime">—</span></div><div class="pbody"><pre id="d-mime">en attente</pre></div></div>
+<div class="panel pending" id="p-rec"><div class="phead"><span>④ Enregistrement (3-4 s dans le téléphone)</span><span class="badge" id="b-rec">—</span></div><div class="pbody"><pre id="d-rec">en attente</pre></div></div>
+<div class="panel pending" id="p-out"><div class="phead"><span>⑤ Vidéo finale</span><span class="badge" id="b-out">—</span></div><div class="pbody"><pre id="d-out">en attente</pre></div></div>
 
-<div id="final" style="display:none"></div>
-<div id="video"></div>
+<div id="final"></div>
+<div id="media"></div>
 
 <script>
-function setPanel(id, cls, badge, detail){
+function setP(id, cls, badge, detail){
   var p=document.getElementById('p-'+id); p.className='panel '+cls;
   document.getElementById('b-'+id).textContent=badge;
   document.getElementById('d-'+id).textContent=detail;
 }
-function pretty(o){ try{ return JSON.stringify(o,null,2); }catch(e){ return String(o); } }
-async function callStep(step){
-  // renvoie {ok, json} ; ok=false si le serveur n'a pas répondu du tout (timeout réseau/vercel)
-  try{
-    var r = await fetch('/api/wan-proxy?step='+step, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({prompt:'a cat running in a field, cinematic lighting, smooth motion'}) });
-    var json = await r.json();
-    return { http:r.status, json:json };
-  }catch(e){
-    return { http:0, json:{ error:'pas de réponse serveur (timeout Vercel 5min ou réseau)', msg:String(e.message||e) } };
+function finish(ok,msg){ var f=document.getElementById('final'); f.style.display='block'; f.className=ok?'f-ok':'f-ko'; f.textContent=(ok?'✅ ':'⚠️ ')+msg; }
+function pollUrl(prompt, seed){ return 'https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=512&height=512&nologo=true&seed='+seed; }
+function proxyUrl(poll){ return '/api/img-proxy?url='+encodeURIComponent(poll); }
+
+function loadImg(src){
+  return new Promise(function(res,rej){
+    var im=new Image(); im.crossOrigin='anonymous';
+    im.onload=function(){ res(im); };
+    im.onerror=function(){ rej(new Error('échec chargement: '+src.substring(0,70))); };
+    im.src=src;
+  });
+}
+
+// charge une image : proxy d'abord (same-origin = jamais tainted), fallback direct
+async function loadRobust(prompt, seed){
+  var poll = pollUrl(prompt, seed);
+  try { var im = await loadImg(proxyUrl(poll)); return { img:im, via:'proxy' }; }
+  catch(eProxy){
+    try { var im2 = await loadImg(poll); return { img:im2, via:'direct (proxy KO)' }; }
+    catch(eDirect){ throw new Error('proxy: '+eProxy.message+' | direct: '+eDirect.message); }
   }
 }
 
-async function runDebug(){
-  var btn=document.getElementById('btn'); var fin=document.getElementById('final'); var vid=document.getElementById('video');
-  btn.disabled=true; btn.textContent='⏳ Debug en cours…'; fin.style.display='none'; vid.innerHTML='';
-  ['info','img','upload','call'].forEach(function(id){ setPanel(id,'pending','—','en attente'); });
+function canvasTainted(canvas, ctx){ try { ctx.getImageData(0,0,1,1); return false; } catch(e){ return true; } }
 
-  // ① info
-  setPanel('info','loading','…','appel /api/wan-proxy?step=info');
-  var t0=Date.now();
-  var r1=await callStep('info');
-  var ok1 = r1.json && r1.json.ok===true;
-  setPanel('info', ok1?'success':'error', ok1?'OK':'KO',
-    (ok1 ? 'api_names=['+(r1.json.apiNames||[]).join(', ')+'] params='+r1.json.paramsCount+'\n' : 'ECHEC → le Space ne répond pas (down/sleep/CORS serveur)\n') + pretty(r1.json));
-  if(!ok1){ finish(false,'① échoue : le Space HF est injoignable côté serveur. On ne peut pas aller plus loin tant que /info ne répond pas.'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
+function pickMime(){
+  if(!window.MediaRecorder) return null;
+  var c=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm','video/mp4;codecs=avc1.42E01E','video/mp4'];
+  for(var i=0;i<c.length;i++){ try{ if(MediaRecorder.isTypeSupported(c[i])) return c[i]; }catch(e){} }
+  return null;
+}
 
-  // ② img
-  setPanel('img','loading','…','appel ?step=img');
-  var r2=await callStep('img');
-  var ok2 = r2.json && r2.json.ok===true;
-  setPanel('img', ok2?'success':'error', ok2?'OK':'KO', (ok2? r2.json.kb+' KB\n':'ECHEC\n')+pretty(r2.json));
-  if(!ok2){ finish(false,'② échoue : Pollinations injoignable côté serveur.'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
+function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
 
-  // ③ upload
-  setPanel('upload','loading','…','appel ?step=upload');
-  var r3=await callStep('upload');
-  var ok3 = r3.json && r3.json.ok===true;
-  setPanel('upload', ok3?'success':'error', ok3?'OK':'KO', (ok3? 'path='+r3.json.path+'\n':'ECHEC upload (le Space refuse nos fichiers)\n')+pretty(r3.json));
-  // on ne stoppe pas si upload KO : le call retentera avec l'URL directe
+// enregistre l'animation canvas en blob vidéo
+function recordVideo(imgA, imgB, durMs, fps, onTick){
+  return new Promise(function(resolve, reject){
+    var W=512, H=512;
+    var canvas=document.createElement('canvas'); canvas.width=W; canvas.height=H;
+    var ctx=canvas.getContext('2d');
+    if(!canvas.captureStream){ reject(new Error('captureStream indisponible sur ce navigateur')); return; }
+    var mime=pickMime();
+    if(!mime){ reject(new Error('aucun codec MediaRecorder supporté')); return; }
+    var stream;
+    try { stream=canvas.captureStream(fps); } catch(e){ reject(new Error('captureStream échec: '+e.message)); return; }
+    var rec;
+    try { rec=new MediaRecorder(stream, { mimeType:mime }); } catch(e){ reject(new Error('MediaRecorder init échec: '+e.message)); return; }
+    var chunks=[];
+    rec.ondataavailable=function(e){ if(e.data && e.data.size>0) chunks.push(e.data); };
+    rec.onstop=function(){ resolve({ blob:new Blob(chunks,{type:mime}), mime:mime }); };    rec.onerror=function(){ reject(new Error('MediaRecorder onerror')); };
 
-  // ④ call (lent)
-  setPanel('call','loading','…','appel ?step=call — LE GPU TOURNE, patience (1er appel réveille ZeroGPU)…');
-  var t4=Date.now();
-  var r4=await callStep('call');
-  var sec4=((Date.now()-t4)/1000).toFixed(1);
-  var url = r4.json && r4.json.url;
-  if(url){
-    setPanel('call','success','OK '+sec4+'s','VIDÉO → '+url+'\n\nsteps:\n'+pretty(r4.json.steps));
-    vid.innerHTML='<video src="'+url+'" controls autoplay loop muted playsinline></video>';
-    finish(true,'✅ VIDÉO GÉNÉRÉE en '+sec4+'s. La piste Wan Fast MARCHE via le proxy. On pourra l\'intégrer dans index.html.');
-  } else {    var isTimeout = r4.http===0;
-    setPanel('call','error', isTimeout?'TIMEOUT':'KO '+sec4+'s',
-      (isTimeout? 'Le serveur a mis >5min (timeout Vercel) = le GPU est trop lent sur ce Space.\nMAIS ①②③ sont verts → tout le reste marche, seul le GPU bloque.\n\n' : (r4.json&&r4.json.error? r4.json.error+'\n\n':'ECHEC\n')) + pretty(r4.json));
-    if(isTimeout){
-      finish(false,'①②③ OK mais ④ timeout : le proxy et le réseau marchent, c\'est le GPU du Space qui ne finit pas à temps. Piste Wan = trop lente ici.');
-    } else if(r4.json && /AUTH|clé gratuite/i.test(JSON.stringify(r4.json))){
-      finish(false,'Le Space exige une connexion HF → il faudra une clé HF GRATUITE (sans carte). Dis-le, je te guide.');
-    } else {
-      finish(false,'④ a répondu mais sans vidéo. Le détail (steps) ci-dessus dit pourquoi (mauvais format image / mauvais params / réponse vide).');
+    var start=performance.now();
+    function frame(){
+      var t=(performance.now()-start)/durMs; if(t>1) t=1;
+      if(onTick) onTick(t);
+      var e=ease(t);
+      var scale=1+0.18*e;          // zoom cinématique
+      var panX=(-12+24*e);         // drift horizontal
+      var panY=(-8+16*e);          // drift vertical
+      var alphaA=1-0.6*e;          // morph A->B
+      var alphaB=0.6*e;
+      ctx.clearRect(0,0,W,H);
+      ctx.save();
+      ctx.translate(W/2,H/2);
+      ctx.scale(scale,scale);
+      ctx.translate(panX,panY);
+      ctx.globalAlpha=alphaA; ctx.drawImage(imgA,-W/2,-H/2,W,H);
+      ctx.globalAlpha=alphaB; ctx.drawImage(imgB,-W/2,-H/2,W,H);
+      ctx.globalAlpha=1;
+      ctx.restore();
+      if(t<1){ requestAnimationFrame(frame); }
+      else { try{ rec.stop(); }catch(err){ reject(err); } }
     }
-  }
-  btn.disabled=false; btn.textContent='🔁 Relancer le debug';
+    rec.start();
+    requestAnimationFrame(frame);
+    setTimeout(function(){ if(rec.state==='recording'){ try{ rec.stop(); }catch(e){} } }, durMs+5000); // filet de sécurité
+  });
 }
 
-function finish(ok, msg){
-  var fin=document.getElementById('final');
-  fin.style.display='block';
-  fin.className=ok?'f-ok':'f-ko';
-  fin.textContent=(ok?'✅ ':'⚠️ ')+msg;
+async function run(){
+  var btn=document.getElementById('btn'); var media=document.getElementById('media');
+  var prompt=(document.getElementById('prompt').value||'').trim() || 'a cat running in a field';
+  btn.disabled=true; btn.textContent='⏳ Génération…'; media.innerHTML='';
+  document.getElementById('final').style.display='none';
+  ['img','taint','mime','rec','out'].forEach(function(id){ setP(id,'pending','—','en attente'); });
+
+  try {
+    // ① images
+    setP('img','loading','…','génération de 2 vues IA via Pollinations…');
+    var seedA=Math.floor(Math.random()*100000), seedB=seedA+7;
+    var rA=await loadRobust(prompt, seedA);
+    var rB=await loadRobust(prompt, seedB);
+    setP('img','success','OK','vue A via '+rA.via+' | vue B via '+rB.via);
+
+    // ② taint check
+    var tc=document.createElement('canvas'); tc.width=64; tc.height=64; var tctx=tc.getContext('2d');
+    tctx.drawImage(rA.img,0,0,64,64);
+    var tainted=canvasTainted(tc,tctx);
+    if(tainted){ setP('taint','error','KO','canvas SOUILLÉ → l\'enregistrement sortirait VIDE. Cause: image chargée sans CORS et proxy absent. Vérifie que api/img-proxy.ts est déployé (Ready).'); finish(false,'Piège n°1 actif: canvas tainted. Le proxy image doit être en ligne.'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }    setP('taint','success','OK','canvas propre → enregistrement vidéo possible ✅');
+
+    // ③ mime
+    var mime=pickMime();
+    if(!mime){ setP('mime','error','KO','aucun codec MediaRecorder supporté sur ce navigateur'); finish(false,'Ce navigateur ne peut pas enregistrer de vidéo (très rare sur Chrome Android).'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
+    setP('mime','success','OK','codec choisi: '+mime);
+
+    // ④ enregistrement
+    setP('rec','loading','…','enregistrement en cours…');
+    var t0=Date.now();
+    var res=await recordVideo(rA.img, rB.img, 4000, 30, function(t){ setP('rec','loading','…','enregistrement… '+Math.round(t*4)+'s / 4s'); });
+    var kb=Math.round(res.blob.size/1024);
+    setP('rec','success','OK','blob '+kb+' KB en '+((Date.now()-t0)/1000).toFixed(1)+'s | type='+res.mime);
+
+    // ⑤ sortie
+    var url=URL.createObjectURL(res.blob);
+    var ext=(res.mime.indexOf('mp4')>=0)?'.mp4':'.webm';
+    setP('out','success','OK','vidéo prête ('+kb+' KB)');
+    media.innerHTML='<video src="'+url+'" controls autoplay loop muted playsinline></video>'
+      +'<br><a class="dl" href="'+url+'" download="pixora-cine-'+Date.now()+ext+'">⬇️ Télécharger la vidéo</a>';
+    finish(true,'VIDÉO CINÉMATIQUE GÉNÉRÉE dans ton téléphone. Aucune infra externe n\'a été sollicitée. C\'est fiable et gratuit.');
+    btn.textContent='🔁 Refaire une vidéo';
+
+  } catch(e){
+    console.error(e);
+    var pend=document.querySelector('.panel.loading');
+    if(pend){ pend.className='panel error'; }
+    setP('out','error','KO', e.message);
+    finish(false,'Échec: '+e.message+'  →  regarde quelle case est rouge, elle dit exactement quoi.');
+    btn.disabled=false; btn.textContent='🔁 Relancer';
+  }
 }
 </script>
 </body>
-</html>
+</html>l>
