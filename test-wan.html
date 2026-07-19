@@ -3,92 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Radar Vidéo Pro - Pixora</title>
+<title>LTX Distilled - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
-  .sub{color:#A1A1AA;font-size:.78rem;margin:.3rem 0 .8rem}
-  .help{background:rgba(139,92,246,.1);border:1px solid #8B5CF6;border-radius:10px;padding:10px;font-size:.74rem;color:#ddd6fe;margin-bottom:12px}
-  .help b{color:#fff}
-  input,textarea{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.85rem;font-family:inherit;box-sizing:border-box}
-  textarea{min-height:54px;resize:vertical;margin-top:8px}
-  button{padding:11px 18px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer;margin-top:8px}
-  button:disabled{opacity:.45;cursor:not-allowed}
-  .row{display:flex;gap:8px;flex-wrap:wrap}
-  .ghost{background:#1e1e2e;border:1px solid #3b3b4a}
-  #scan{margin-top:12px}
-  .item{border:1px solid #3b3b4a;border-radius:10px;background:#16161e;padding:9px 11px;margin:8px 0;font-size:.76rem}
-  .item.ok{border-color:#10B981}.item.ko{border-color:#EF4444}.item.ld{border-color:#8B5CF6}
-  .itop{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:700}
-  .ok .itop{color:#10B981}.ko .itop{color:#EF4444}.ld .itop{color:#8B5CF6}
-  .meta{color:#A1A1AA;font-weight:400;font-size:.7rem;margin-top:3px;white-space:pre-wrap;word-break:break-word}
-  .mini{padding:7px 12px;font-size:.78rem;margin-top:7px}
-  #gen{margin-top:14px;border:1px solid #3b3b4a;border-radius:12px;background:#16161e;padding:12px;display:none}
-  #timer{font-weight:700;color:#8B5CF6}
+  .sub{color:#A1A1AA;font-size:.78rem;margin:.3rem 0 1rem}
+  #sonde{border:1px solid #3b3b4a;border-radius:12px;background:#16161e;padding:12px;margin-bottom:12px}
+  #sonde.ld{border-color:#8B5CF6}#sonde.ok{border-color:#10B981}#sonde.ko{border-color:#EF4444}
+  .stitle{font-weight:700;font-size:.92rem}
+  .ld .stitle{color:#8B5CF6}.ok .stitle{color:#10B981}.ko .stitle{color:#EF4444}
+  .smeta{color:#A1A1AA;font-size:.72rem;margin-top:5px;white-space:pre-wrap;word-break:break-word}
+  #pick{margin-top:10px}
+  .pbtn{display:block;width:100%;text-align:left;padding:11px 13px;margin:7px 0;border-radius:10px;border:1px solid #3b3b4a;background:#1e1e2e;color:#fafafa;font-weight:700;font-size:.85rem;cursor:pointer}
+  .pbtn.t2v{border-color:#10B981}.pbtn.i2v{border-color:#8B5CF6}
+  .pbtn small{display:block;font-weight:400;color:#A1A1AA;font-size:.68rem;margin-top:2px}
+  textarea{width:100%;min-height:56px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.88rem;font-family:inherit;box-sizing:border-box;margin-top:8px}
+  #gen{border:1px solid #3b3b4a;border-radius:12px;background:#16161e;padding:12px;margin-top:12px;display:none}
+  button.go{padding:12px 18px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
+  button.go:disabled{opacity:.45;cursor:not-allowed}
+  button.ghost{padding:9px 14px;background:#1e1e2e;border:1px solid #3b3b4a;color:#fafafa;border-radius:10px;font-size:.8rem;cursor:pointer;margin-top:8px}
+  #timer{font-weight:700;color:#8B5CF6;margin-top:8px}
   video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
-  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow:auto;margin-top:8px;color:#cbd5e1}
+  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto;margin-top:8px;color:#cbd5e1}
   .dl{display:inline-block;margin-top:10px;padding:10px 16px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
   #final{margin-top:12px;padding:12px;border-radius:10px;font-weight:700;text-align:center;display:none}
   .f-ok{background:rgba(16,185,129,.15);border:1px solid #10B981;color:#10B981}
   .f-ko{background:rgba(239,68,68,.15);border:1px solid #EF4444;color:#EF4444}
+  input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:9px;font-size:.82rem;box-sizing:border-box;margin-top:8px}
 </style>
 </head>
 <body>
-<h1>📡 Radar Vidéo Pro (sans livreur)</h1>
-<div class="sub">On vire Vercel : ton téléphone appelle les fours DIRECTEMENT. Plus de règle des 5 min. Le radar te dit en 2 s lesquels décrochent.</div>
+<h1>🎞️ LTX Distilled — page dédiée</h1>
+<div class="sub">Sondage AUTO à l'ouverture, depuis ton téléphone (sans livreur). Choisis T2V (recommandé) ou I2V. Un seul endpoint exact appelé = pas de 500 "mauvaise commande".</div>
 
-<div class="help">
-  <b>Comment trouver un four à tester :</b> va sur <b>huggingface.co/spaces</b>, cherche un de ces termes → ouvre un Space qui a une démo → copie son URL (ex <code>https://xxx-yyy.hf.space</code>) → colle-la ci-dessous.<br>
-  Termes qui marchent bien : <b>wan 2.1 1.3b t2v</b> · <b>ltx video</b> · <b>cogvideox 2b</b> · <b>animatediff lcm</b> · <b>stable video diffusion fast</b> · <b>text to video</b>
+<div id="sonde" class="ld">
+  <div class="stitle" id="stitle">🔄 Sondage automatique de LTX distilled…</div>
+  <div class="smeta" id="smeta">https://lightricks-ltx-video-distilled.hf.space</div>
+  <div id="pick"></div>
+  <button class="ghost" onclick="autoScan()">🔁 Resonder</button>
 </div>
-
-<input id="spaceUrl" placeholder="Colle l'URL d'un Space, ex: https://kulkas2pintu-wan555.hf.space">
-<div class="row">
-  <button onclick="scanOne()">🔍 Sonder celui-ci</button>
-  <button class="ghost" onclick="scanPreset()">📡 Sonder le pré-réglage (wan555)</button>
-</div>
-<div id="scan"></div>
 
 <div id="gen">
-  <div style="font-weight:700">🎬 Générer avec le Space vert sélectionné</div>
+  <div style="font-weight:700" id="gentitle">🎬 Générer</div>
   <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
-  <button id="gbtn" onclick="generate()">▶️ Lancer la vraie vidéo (direct, sans livreur)</button>
-  <div id="timer" style="margin-top:8px"></div>
-  <div id="gmedia"></div>
+  <button class="go" id="gbtn" onclick="generate()">▶️ Lancer la vraie vidéo (direct, sans livreur)</button>
+  <div id="timer"></div>  <div id="gmedia"></div>
   <pre id="glog" style="display:none"></pre>
+</div>
+
+<div style="margin-top:14px;border-top:1px solid #2a2a35;padding-top:10px">
+  <div style="color:#71717A;font-size:.72rem">Autre Space (si LTX est rouge) :</div>
+  <input id="otherUrl" placeholder="Colle une URL …hf.space puis Resonder">
+  <button class="ghost" onclick="scanOther()">🔍 Sonder celui-là</button>
 </div>
 
 <div id="final"></div>
 
 <script>
-var PRESET = 'https://kulkas2pintu-wan555.hf.space';
-var SCAN_TIMEOUT = 20000;   // 20s max par sondage (le navigateur, pas Vercel)
-var GEN_TIMEOUT  = 240000;  // 4 min de filet pour la gen (le navigateur peut attendre)
-var chosen = null;          // Space vert sélectionné pour génération
+var DEFAULT_BASE = 'https://lightricks-ltx-video-distilled.hf.space';
+var SCAN_TIMEOUT = 20000;
+var GEN_TIMEOUT  = 240000;
+var chosen = null;
 
 function normUrl(u){ u=(u||'').trim(); if(!u) return ''; if(u.indexOf('http')!==0) u='https://'+u; return u.replace(/\/+$/,''); }
 function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…' : s; }
 
-// fetch avec timeout + distinction abort / CORS / http
 function nf(url, opts, timeoutMs){
   return new Promise(function(res){
     var ctrl=null, to=null;
     try{ ctrl=new AbortController(); }catch(e){ ctrl=null; }
     if(ctrl && timeoutMs){ to=setTimeout(function(){ try{ctrl.abort();}catch(e){} }, timeoutMs); }
     var o=opts||{}; if(ctrl) o.signal=ctrl.signal;
-    fetch(url,o).then(function(r){
-      if(to) clearTimeout(to);
-      res({kind:'http', ok:r.ok, status:r.status, r:r});
-    }).catch(function(err){
-      if(to) clearTimeout(to);
-      var name=(err&&err.name)||'';
-      if(name==='AbortError') res({kind:'timeout'});
-      else res({kind:'cors', msg:(err&&err.message)||String(err)});
-    });
+    fetch(url,o).then(function(r){ if(to) clearTimeout(to); res({kind:'http', ok:r.ok, status:r.status, r:r}); })
+    .catch(function(err){ if(to) clearTimeout(to); var name=(err&&err.name)||''; if(name==='AbortError') res({kind:'timeout'}); else res({kind:'cors', msg:(err&&err.message)||String(err)}); });
   });
 }
 
-// ---- découverte d'un Space ----
+// découverte : retourne TOUS les endpoints avec leur type (t2v/i2v)
 async function discover(base){
   var eps=['/gradio_api/info','/info','/config'];
   for(var i=0;i<eps.length;i++){
@@ -96,71 +87,76 @@ async function discover(base){
     if(f.kind==='timeout') return {ok:false, reason:'endormi/lent (>20s sans réponse)'};
     if(f.kind==='cors')    return {ok:false, reason:'CORS fermé depuis ton téléphone (ou injoignable)'};
     if(!f.ok)              return {ok:false, reason:'HTTP '+f.status};
-    var txt=await f.r.text();    var p=null; try{ p=JSON.parse(txt); }catch(e){ p=null; }
+    var txt=await f.r.text();
+    var p=null; try{ p=JSON.parse(txt); }catch(e){ p=null; }
     if(!p) continue;
-    var apiNames=[], params=[];
+    var list=[];
     var ne=p.named_endpoints;
     if(ne && typeof ne==='object' && !Array.isArray(ne)){
-      for(var k in ne){ apiNames.push(k.replace(/^\//,'')); if(!params.length && ne[k] && ne[k].parameters) params=ne[k].parameters; }
-    } else if(Array.isArray(p.endpoints)){
-      for(var e2=0;e2<p.endpoints.length;e2++){ if(p.endpoints[e2].api_name) apiNames.push(p.endpoints[e2].api_name); if(!params.length && p.endpoints[e2].parameters) params=p.endpoints[e2].parameters; }
+      for(var k in ne){
+        var params=(ne[k]&&ne[k].parameters)||[];
+        list.push({name:k.replace(/^\//,''), params:params, type:hasImg(params)?'i2v':'t2v'});
+      }    } else if(Array.isArray(p.endpoints)){
+      for(var e2=0;e2<p.endpoints.length;e2++){
+        var en=p.endpoints[e2]; var nm=en.api_name||en.fn_index;
+        if(nm==null) continue;
+        var pr=en.parameters||[];
+        list.push({name:String(nm), params:pr, type:hasImg(pr)?'i2v':'t2v'});
+      }
     }
-    // type : a-t-il un champ image ?
-    var hasImg=false;
-    for(var q=0;q<params.length;q++){ var c=String((params[q]&&params[q].component)||'').toLowerCase(); if(c==='image'||c==='file'||c==='uploadbutton'||c==='imageupload'){ hasImg=true; break; } }
-    return {ok:true, ep:eps[i], apiName:apiNames[0]||'predict', params:params, type:hasImg?'i2v':'t2v'};
+    if(!list.length) return {ok:false, reason:'aucun endpoint trouvé dans /info'};
+    return {ok:true, ep:eps[i], endpoints:list};
   }
   return {ok:false, reason:'réponse non lisible'};
 }
-
-function addItem(base, cls, title, meta, disc){
-  var wrap=document.getElementById('scan');
-  var div=document.createElement('div'); div.className='item '+cls;
-  var top='<div class="itop"><span>'+title+'</span></div>';
-  var m='<div class="meta">'+(meta||'')+'</div>';
-  var btn='';
-  if(cls==='ok' && disc){
-    var id='b_'+Math.random().toString(36).slice(2,8);
-    btn='<button class="mini" id="'+id+'">🎬 Générer avec ce Space ('+disc.type.toUpperCase()+')</button>';
-    setTimeout(function(){ var b=document.getElementById(id); if(b) b.onclick=function(){ selectSpace(base, disc); }; }, 0);
-  }
-  div.innerHTML=top+m+btn;
-  wrap.appendChild(div);
-  return div;
+function hasImg(params){
+  for(var q=0;q<params.length;q++){ var c=String((params[q]&&params[q].component)||'').toLowerCase(); if(c==='image'||c==='file'||c==='uploadbutton'||c==='imageupload') return true; }
+  return false;
 }
 
-async function scan(base){
+function setSonde(cls, title, meta){
+  var s=document.getElementById('sonde'); s.className=cls;
+  document.getElementById('stitle').textContent=title;
+  document.getElementById('smeta').textContent=meta;
+}
+
+async function doScan(base){
   base=normUrl(base);
-  if(!base){ alert('Colle une URL de Space.'); return null; }
-  var node=addItem(base,'ld','🔄 Sondage…', base+' (depuis ton téléphone, sans livreur)');
+  document.getElementById('pick').innerHTML='';
+  document.getElementById('gen').style.display='none';
+  document.getElementById('final').style.display='none';
+  chosen=null;
+  setSonde('ld','🔄 Sondage… (depuis ton téléphone, sans livreur)', base);
   var d=await discover(base);
   if(!d.ok){
-    node.className='item ko';
-    node.querySelector('.itop').innerHTML='<span>❌ Ne décroche pas</span>';
-    node.querySelector('.meta').textContent=base+'\n→ '+d.reason+'\n(le navigateur ne distingue pas CORS fermé / endormi / inexistant : essaie un autre Space via la case libre)';
-    return null;
+    setSonde('ko','❌ Ne décroche pas depuis ton téléphone', base+'\n→ '+d.reason+'\n\nSi c\'est "CORS fermé" : ce four est rapide, donc le livreur REDEVIENT jouable pour lui (dis-le au dev). Sinon colle un autre Space ci-dessous.');
+    return;
   }
-  node.className='item ok';
-  node.querySelector('.itop').innerHTML='<span>✅ DÉCROCHE depuis ton téléphone</span>';
-  node.querySelector('.meta').textContent=base+'\nendpoint='+d.ep+' | api='+d.apiName+' | type='+d.type.toUpperCase()+' | params='+d.params.length;
-  // bouton gen
-  var id='b_'+Math.random().toString(36).slice(2,8);
-  var btn=document.createElement('button'); btn.className='mini'; btn.id=id;  btn.textContent='🎬 Générer avec ce Space ('+d.type.toUpperCase()+')';
-  btn.onclick=function(){ selectSpace(base, d); };
-  node.appendChild(btn);
-  return d;
+  // tri : T2V d'abord
+  var eps=d.endpoints.slice().sort(function(a,b){ return (a.type==='t2v'?0:1)-(b.type==='t2v'?0:1); });
+  var names=eps.map(function(e){ return e.name+'('+e.type+')'; }).join(', ');
+  setSonde('ok','✅ LTX DÉCROCHE depuis ton téléphone', base+'\nendpoint='+d.ep+' | trouvé : '+names+'\n→ choisis une recette ci-dessous (T2V recommandé : rien à livrer au four).');
+  var pick=document.getElementById('pick');
+  for(var i=0;i<eps.length;i++){
+    (function(ep){
+      var b=document.createElement('button');
+      b.className='pbtn '+ep.type;
+      var label = ep.type==='t2v' ? '📝 Text-to-Video (recommandé)' : '🖼️ Image-to-Video';
+      b.innerHTML=label+' <small>endpoint: /'+ep.name+' · '+ep.params.length+' params</small>';
+      b.onclick=function(){ selectEp(base, ep); };
+      pick.appendChild(b);
+    })(eps[i]);  }
 }
+function autoScan(){ doScan(DEFAULT_BASE); }
+function scanOther(){ var u=document.getElementById('otherUrl').value; if(u) doScan(u); }
 
-function scanOne(){ var u=document.getElementById('spaceUrl').value; scan(u); }
-function scanPreset(){ document.getElementById('spaceUrl').value=PRESET; scan(PRESET); }
-
-function selectSpace(base, disc){
-  chosen={base:base, disc:disc};
+function selectEp(base, ep){
+  chosen={base:base, ep:ep};
   var g=document.getElementById('gen'); g.style.display='block';
+  document.getElementById('gentitle').textContent='🎬 Générer en '+ep.type.toUpperCase()+' (endpoint /'+ep.name+')';
   g.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
-// ---- construction data[] ----
 function buildData(params, prompt, imageArg){
   if(!params||!params.length) return imageArg!=null ? [imageArg, prompt] : [prompt];
   var data=[], imgDone=false, promptDone=false;
@@ -177,7 +173,6 @@ function buildData(params, prompt, imageArg){
   return data;
 }
 
-// ---- upload image cross-origin (pour i2v) ----
 async function uploadImg(base, blob){
   for(var i=0;i<2;i++){
     var ep=(i===0)?'/gradio_api/upload':'/upload';
@@ -190,17 +185,16 @@ async function uploadImg(base, blob){
 }
 function fileObj(base, path){ return {path:path, url:base+'/gradio_api/file='+path, orig_name:'init.png', mime_type:'image/png', is_file:true, meta:{_type:'gradio.FileData'}}; }
 
-// ---- extracteur vidéo ----
 function resolveUrl(base,u){ if(!u) return null; var s=String(u); if(/^https?:/i.test(s)) return s; if(s.charAt(0)==='/'||s.indexOf('/gradio_api/')>=0||s.indexOf('file=')>=0) return base+(s.charAt(0)==='/'?s:'/'+s); return null; }
 function extractVideo(base,node){
   if(!node) return null;
-  if(typeof node==='string'){ if(/\.mp4(\?|$)/i.test(node)) return resolveUrl(base,node); return null; }  if(Array.isArray(node)){ for(var i=0;i<node.length;i++){ var v=extractVideo(base,node[i]); if(v) return v; } return null; }
+  if(typeof node==='string'){ if(/\.mp4(\?|$)/i.test(node)) return resolveUrl(base,node); return null; }
+  if(Array.isArray(node)){ for(var i=0;i<node.length;i++){ var v=extractVideo(base,node[i]); if(v) return v; } return null; }
   if(typeof node==='object'){
     if(node.url){ var r=resolveUrl(base,node.url); if(r) return r; }
     if(node.path){ var r2=resolveUrl(base,node.path); if(r2) return r2; }
     if(node.video){ var r3=extractVideo(base,node.video); if(r3) return r3; }
-    for(var k in node){ var v2=extractVideo(base,node[k]); if(v2) return v2; }
-  }
+    for(var k in node){ var v2=extractVideo(base,node[k]); if(v2) return v2; }  }
   return null;
 }
 function parseSSE(text){
@@ -210,10 +204,9 @@ function parseSSE(text){
   return last;
 }
 
-// ---- génération ----
 async function generate(){
-  if(!chosen){ alert('Sonde d\'abord un Space vert.'); return; }
-  var base=chosen.base, disc=chosen.disc;
+  if(!chosen){ alert('Choisis d\'abord T2V ou I2V.'); return; }
+  var base=chosen.base, ep=chosen.ep;
   var prompt=(document.getElementById('prompt').value||'').trim()||'a cat running in a field';
   var gbtn=document.getElementById('gbtn'); var timer=document.getElementById('timer');
   var gmedia=document.getElementById('gmedia'); var glog=document.getElementById('glog'); var fin=document.getElementById('final');
@@ -223,56 +216,49 @@ async function generate(){
   var tick=setInterval(function(){ timer.textContent='⏳ GPU en chauffe / génération… '+Math.round((Date.now()-t0)/1000)+'s (sans livreur, on peut attendre)'; }, 500);
 
   try {
-    // image si i2v
     var imageArg=null;
-    if(disc.type==='i2v'){
-      log('› i2v : génération image Pollinations…');
+    if(ep.type==='i2v'){
+      log('› I2V : image Pollinations…');
       var poll='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=512&height=512&nologo=true&seed='+Math.floor(Math.random()*100000);
       var im=await nf(poll, null, 30000);
       if(im.kind!=='http'||!im.ok) throw new Error('image Pollinations injoignable');
       var blob=await im.r.blob();
-      log('› upload image vers le Space (cross-origin)…');
+      log('› upload image cross-origin…');
       var path=await uploadImg(base, blob);
       if(path){ imageArg=fileObj(base, path); log('› upload OK'); }
-      else { imageArg=poll; log('› upload bloqué → fallback URL directe'); }
+      else { imageArg=poll; log('› upload bloqué → fallback URL (peut causer 500 sur certains fours)'); }
     }
 
-    var data=buildData(disc.params, prompt, imageArg);
-    log('› data = '+trunc(JSON.stringify(data),200));
+    var data=buildData(ep.params, prompt, imageArg);
+    log('› endpoint /'+ep.name+' | data = '+trunc(JSON.stringify(data),220));
 
-    // POST async
-    var names=[disc.apiName,'predict','generate','process'];
-    var done=false, videoUrl=null, lastErr='';
-    for(var n=0;n<names.length && !done;n++){      var name=names[n]; if(!name) continue;
-      var postUrl=base+'/gradio_api/call/'+name;
-      log('› POST '+postUrl);
-      var post=await nf(postUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data})}, 60000);
-      if(post.kind==='cors'){ lastErr='CORS sur /call (le Space refuse l\'appel direct)'; log('› '+lastErr); break; }
-      if(post.kind==='timeout'){ lastErr='timeout POST 60s'; log('› '+lastErr); continue; }
-      if(post.status===429){ lastErr='file d\'attente (429) → ce Space met les anonymes en attente'; log('› '+lastErr); break; }
-      if(!post.ok){ var t=await post.r.text(); lastErr='HTTP '+post.status+' '+trunc(t,140); log('› '+lastErr); continue; }
-      var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); lastErr='réponse non-json '+trunc(t2,120); log('› '+lastErr); continue; }
-      var eid=ej&&(ej.event_id||ej.id);
-      if(!eid){ lastErr='pas d\'event_id '+trunc(JSON.stringify(ej),140); log('› '+lastErr); continue; }
-      log('› event_id='+eid+' → polling…');
-      // polling
-      var getUrl=base+'/gradio_api/call/'+name+'/'+eid;
-      var startPoll=Date.now();
-      while(Date.now()-startPoll < GEN_TIMEOUT){
-        await new Promise(function(r){ setTimeout(r,2500); });
-        var g=await nf(getUrl, null, 60000);
-        if(g.kind==='cors'){ lastErr='CORS sur polling'; log('› '+lastErr); break; }
-        if(g.kind==='timeout'){ log('› poll timeout 60s, retry…'); continue; }
-        if(g.status===202){ continue; }
-        if(!g.ok){ var t3=await g.r.text(); lastErr='poll HTTP '+g.status+' '+trunc(t3,140); log('› '+lastErr); break; }
-        var txt=await g.r.text();
-        var parsed=parseSSE(txt);
-        log('› réponse: '+trunc(JSON.stringify(parsed),260));
-        videoUrl=extractVideo(base, parsed);
-        if(videoUrl){ done=true; } else { lastErr='réponse sans URL vidéo'; }
-        break;
-      }
-      if(done) break;
+    // UN SEUL endpoint exact — pas de tir à l'aveugle (ça causait les 500)
+    var postUrl=base+'/gradio_api/call/'+ep.name;
+    log('› POST '+postUrl);
+    var post=await nf(postUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:data})}, 60000);
+    if(post.kind==='cors') throw new Error('CORS sur /call (le four refuse l\'appel direct)');
+    if(post.kind==='timeout') throw new Error('timeout POST 60s');
+    if(post.status===429) throw new Error('file d\'attente (429) : ce four met les anonymes en queue');
+    if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,260)); }
+    var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('réponse non-json '+trunc(t2,160)); }
+    var eid=ej&&(ej.event_id||ej.id);
+    if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),200));
+    log('› event_id='+eid+' → polling…');
+    var getUrl=base+'/gradio_api/call/'+ep.name+'/'+eid;
+    var videoUrl=null, lastErr='', startPoll=Date.now();
+    while(Date.now()-startPoll < GEN_TIMEOUT){
+      await new Promise(function(r){ setTimeout(r,2500); });
+      var g=await nf(getUrl, null, 60000);
+      if(g.kind==='cors'){ lastErr='CORS sur polling'; break; }
+      if(g.kind==='timeout'){ log('› poll timeout 60s, retry…'); continue; }
+      if(g.status===202){ continue; }
+      if(!g.ok){ var t3=await g.r.text(); lastErr='poll HTTP '+g.status+' '+trunc(t3,200); break; }
+      var txt=await g.r.text();
+      var parsed=parseSSE(txt);
+      log('› réponse: '+trunc(JSON.stringify(parsed),300));
+      videoUrl=extractVideo(base, parsed);
+      if(!videoUrl) lastErr='réponse sans URL vidéo';
+      break;
     }
 
     clearInterval(tick);
@@ -280,19 +266,19 @@ async function generate(){
     if(!videoUrl){
       timer.textContent='❌ Échec en '+sec+'s';
       fin.style.display='block'; fin.className='f-ko';
-      fin.textContent='⚠️ Le Space a été sondé vert, mais la génération a bloqué : '+lastErr+'. (Souvent = file d\'attente 429 ou modèle trop lent même sans livreur.) Essaie un Space plus petit/rapide via la case libre.';
+      fin.textContent='⚠️ '+ (lastErr||'pas de vidéo') +'. Si I2V a fait 500, retente en T2V (rien à livrer). Si 429, le four met en file → retente dans 1 min.';
       gbtn.disabled=false; return;
     }
     timer.textContent='✅ Vidéo en '+sec+'s';
-    var ext=/\.mp4(\?|$)/i.test(videoUrl)?'.mp4':'.webm';
     gmedia.innerHTML='<video src="'+videoUrl+'" controls autoplay loop muted playsinline></video>'
-      +'<br><a class="dl" href="'+videoUrl+'" target="_blank" rel="noopener">🔗 Ouvrir la vidéo (clic long → enregistrer)</a>';
+      +'<br><a class="dl" href="'+videoUrl+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer la vidéo</a>';
     fin.style.display='block'; fin.className='f-ok';
-    fin.textContent='🎉 VRAIE VIDÉO IA, gratuite, SANS livreur, en '+sec+'s. Route 2 = GAGNÉE sur ce Space.';
+    fin.textContent='🎉 VRAIE VIDÉO IA via LTX, gratuite, SANS livreur, en '+sec+'s. Route 2 = GAGNÉE sur ce four.';
     log('› VIDEO = '+videoUrl);
     gbtn.disabled=false;
 
-  } catch(e){    clearInterval(tick);
+  } catch(e){
+    clearInterval(tick);
     console.error(e);
     timer.textContent='❌ Exception';
     log('› EXCEPTION '+e.message);
@@ -301,6 +287,9 @@ async function generate(){
     gbtn.disabled=false;
   }
 }
+
+// sondage auto à l'ouverture
+window.addEventListener('load', function(){ setTimeout(autoScan, 200); });
 </script>
 </body>
 </html>
