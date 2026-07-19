@@ -28,15 +28,15 @@
 </style>
 </head>
 <body>
-<h1>🎬 Test Vidéo Cinématique v2 (fix 0 KB)</h1>
-<div class="sub">Canvas AFFICHÉ + requestFrame + vp8 prioritaire + vérif lisible. Si la pellicule est vide, la case ⑤ sera ROUGE (plus de faux vert).</div>
+<h1>🎬 Test Vidéo Cinématique v3 (retry Pollinations)</h1>
+<div class="sub">Images en DIRECT + 3 essais (encaisse les toux de Pollinations). Proxy = filet muet en dernier. Moteur vidéo = identique à v2 (canvas visible + vp8 + vérif lisible).</div>
 
 <textarea id="prompt">a cat running in a field, cinematic lighting, 4k</textarea>
 <button id="btn" onclick="run()">▶️ Générer la vidéo cinématique</button>
 
 <div id="stage"></div>
 
-<div class="panel pending" id="p-img"><div class="phead"><span>① Images IA (Pollinations)</span><span class="badge" id="b-img">—</span></div><div class="pbody"><pre id="d-img">en attente</pre></div></div>
+<div class="panel pending" id="p-img"><div class="phead"><span>① Images IA (direct + retries)</span><span class="badge" id="b-img">—</span></div><div class="pbody"><pre id="d-img">en attente</pre></div></div>
 <div class="panel pending" id="p-taint"><div class="phead"><span>② Canvas non-souillé ? (piège n°1)</span><span class="badge" id="b-taint">—</span></div><div class="pbody"><pre id="d-taint">en attente</pre></div></div>
 <div class="panel pending" id="p-mime"><div class="phead"><span>③ Codec d'enregistrement dispo ?</span><span class="badge" id="b-mime">—</span></div><div class="pbody"><pre id="d-mime">en attente</pre></div></div>
 <div class="panel pending" id="p-rec"><div class="phead"><span>④ Enregistrement (canvas visible, 4 s)</span><span class="badge" id="b-rec">—</span></div><div class="pbody"><pre id="d-rec">en attente</pre></div></div>
@@ -51,6 +51,7 @@ function setP(id, cls, badge, detail){
   document.getElementById('d-'+id).textContent=detail;
 }
 function finish(ok,msg){ var f=document.getElementById('final'); f.style.display='block'; f.className=ok?'f-ok':'f-ko'; f.textContent=(ok?'✅ ':'⚠️ ')+msg; }
+function sleep(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
 
 function pollUrl(prompt, seed){ return 'https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=512&height=512&nologo=true&seed='+seed; }
 function proxyUrl(poll){ return '/api/img-proxy?url='+encodeURIComponent(poll); }
@@ -63,14 +64,20 @@ function loadImg(src){
     im.src=src;
   });
 }
+
+// DIRECT d'abord (3 essais + pause), proxy en filet muet en dernier
 async function loadRobust(prompt, seed){
   var poll = pollUrl(prompt, seed);
-  try { var im = await loadImg(proxyUrl(poll)); return { img:im, via:'proxy' }; }
-  catch(eProxy){
-    try { var im2 = await loadImg(poll); return { img:im2, via:'direct' }; }
-    catch(eDirect){ throw new Error('proxy: '+eProxy.message+' | direct: '+eDirect.message); }
+  var lastErr='';
+  for(var i=1;i<=3;i++){
+    try { var im=await loadImg(poll); return { img:im, via:'direct essai '+i }; }
+    catch(e){ lastErr='direct#'+i+': '+e.message; await sleep(1500); }
   }
+  try { var imp=await loadImg(proxyUrl(poll)); return { img:imp, via:'proxy filet' }; }
+  catch(ep){ lastErr+=' | proxy: '+ep.message; }
+  throw new Error(lastErr);
 }
+
 function canvasTainted(canvas, ctx){ try { ctx.getImageData(0,0,1,1); return false; } catch(e){ return true; } }
 
 // codecs : vp8 D'ABORD (encodé partout sur Android), vp9 en dernier
@@ -83,20 +90,19 @@ function pickMime(forced){
 }
 function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
 
-// dessine UNE frame (zoom + drift + morph A->B)
 function drawFrame(ctx, imgA, imgB, W, H, t){
   var e=ease(t);
   var scale=1+0.18*e;
   var panX=(-12+24*e);
   var panY=(-8+16*e);
   var alphaA=1-0.6*e;
-  var alphaB=0.6*e;
-  ctx.clearRect(0,0,W,H);
+  var alphaB=0.6*e;  ctx.clearRect(0,0,W,H);
   ctx.save();
   ctx.translate(W/2,H/2);
   ctx.scale(scale,scale);
   ctx.translate(panX,panY);
-  ctx.globalAlpha=alphaA; ctx.drawImage(imgA,-W/2,-H/2,W,H);  ctx.globalAlpha=alphaB; ctx.drawImage(imgB,-W/2,-H/2,W,H);
+  ctx.globalAlpha=alphaA; ctx.drawImage(imgA,-W/2,-H/2,W,H);
+  ctx.globalAlpha=alphaB; ctx.drawImage(imgB,-W/2,-H/2,W,H);
   ctx.globalAlpha=1;
   ctx.restore();
 }
@@ -107,19 +113,19 @@ function recordOnce(imgA, imgB, mime, durMs, fps, onTick){
     var W=512, H=512;
     var stage=document.getElementById('stage');
     var canvas=document.createElement('canvas'); canvas.id='liveCanvas'; canvas.width=W; canvas.height=H;
-    stage.innerHTML=''; stage.appendChild(canvas);           // <-- VISIBLE = compositing garanti
+    stage.innerHTML=''; stage.appendChild(canvas);
     var ctx=canvas.getContext('2d');
-    drawFrame(ctx, imgA, imgB, W, H, 0);                     // 1er dessin immédiat (pas de frame noire)
+    drawFrame(ctx, imgA, imgB, W, H, 0);
     if(!canvas.captureStream){ stage.innerHTML=''; reject(new Error('captureStream indisponible')); return; }
 
     var stream, manual=false, track=null;
     try {
-      stream=canvas.captureStream(0);                        // mode manuel (0 fps)
+      stream=canvas.captureStream(0);
       var trs=stream.getVideoTracks();
       if(trs && trs[0] && typeof trs[0].requestFrame==='function'){ track=trs[0]; manual=true; }
     } catch(e){ stream=null; }
     if(!stream){
-      try { stream=canvas.captureStream(fps); manual=false; }   // fallback auto (compositing)
+      try { stream=canvas.captureStream(fps); manual=false; }
       catch(e2){ stage.innerHTML=''; reject(new Error('captureStream échec: '+e2.message)); return; }
     }
 
@@ -131,7 +137,6 @@ function recordOnce(imgA, imgB, mime, durMs, fps, onTick){
     rec.ondataavailable=function(e){ if(e.data && e.data.size>0) chunks.push(e.data); };
     rec.onstop=function(){
       var blob=new Blob(chunks,{type:mime});
-      // on retire le canvas APRES avoir figé le blob
       setTimeout(function(){ stage.innerHTML=''; }, 50);
       resolve({ blob:blob, mime:mime, manual:manual, frames:framesDrawn });
     };
@@ -140,12 +145,12 @@ function recordOnce(imgA, imgB, mime, durMs, fps, onTick){
     var framesDrawn=0;
     var start=performance.now();
     function frame(){
-      var t=(performance.now()-start)/durMs; if(t>1) t=1;
-      if(onTick) onTick(t, manual);
+      var t=(performance.now()-start)/durMs; if(t>1) t=1;      if(onTick) onTick(t, manual);
       drawFrame(ctx, imgA, imgB, W, H, t);
       framesDrawn++;
-      if(manual && track){ try{ track.requestFrame(); }catch(e){} }   // <-- force la frame dans le stream
-      if(t<1){ requestAnimationFrame(frame); }      else { try{ rec.stop(); }catch(err){ reject(err); } }
+      if(manual && track){ try{ track.requestFrame(); }catch(e){} }
+      if(t<1){ requestAnimationFrame(frame); }
+      else { try{ rec.stop(); }catch(err){ reject(err); } }
     }
     rec.start();
     requestAnimationFrame(frame);
@@ -153,7 +158,6 @@ function recordOnce(imgA, imgB, mime, durMs, fps, onTick){
   });
 }
 
-// vérifie que le blob est VRAIMENT lisible par le lecteur (tue le faux positif)
 function verifyPlayable(url){
   return new Promise(function(res){
     var v=document.createElement('video'); v.muted=true; v.playsInline=true; v.preload='auto'; v.src=url;
@@ -166,7 +170,7 @@ function verifyPlayable(url){
   });
 }
 
-async function attempt(imgA, imgB, forcedMime, label, onTick){
+async function attempt(imgA, imgB, forcedMime, label){
   var mime=pickMime(forcedMime);
   if(!mime) throw new Error('['+label+'] aucun codec supporté');
   setP('mime','success','OK','['+label+'] codec: '+mime+(forcedMime?' (forcé)':''));
@@ -187,48 +191,47 @@ async function run(){
   ['img','taint','mime','rec','out'].forEach(function(id){ setP(id,'pending','—','en attente'); });
 
   try {
-    // ① images
-    setP('img','loading','…','génération de 2 vues IA…');
+    // ① images : A puis B, séquentiel, retries internes
+    setP('img','loading','…','vue A (direct + retries)…');
     var seedA=Math.floor(Math.random()*100000), seedB=seedA+7;
-    var rA=await loadRobust(prompt, seedA);
+    var rA=await loadRobust(prompt, seedA);    setP('img','loading','…','vue A OK ('+rA.via+') → vue B…');
+    await sleep(800);
     var rB=await loadRobust(prompt, seedB);
-    setP('img','success','OK','vue A via '+rA.via+' | vue B via '+rB.via);
+    setP('img','success','OK','A via '+rA.via+' | B via '+rB.via);
 
-    // ② taint    var tc=document.createElement('canvas'); tc.width=64; tc.height=64; var tctx=tc.getContext('2d');
+    // ② taint
+    var tc=document.createElement('canvas'); tc.width=64; tc.height=64; var tctx=tc.getContext('2d');
     tctx.drawImage(rA.img,0,0,64,64);
-    if(canvasTainted(tc,tctx)){ setP('taint','error','KO','canvas SOUILLÉ → vidéo sortirait vide. Vérifie api/img-proxy.ts Ready.'); finish(false,'Piège n°1 actif.'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
+    if(canvasTainted(tc,tctx)){ setP('taint','error','KO','canvas SOUILLÉ → vidéo sortirait vide.'); finish(false,'Piège n°1 actif (rare en direct).'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
     setP('taint','success','OK','canvas propre ✅');
 
     // ③+④ essai 1
-    setP('rec','loading','…','essai 1…');
-    var a1=await attempt(rA.img, rB.img, null, 'essai1', null);
-    setP('rec','success','OK',a1.label+' → '+a1.kb+' KB en '+a1.sec+'s | mode '+(a1.res.manual?'requestFrame':'auto')+' | frames='+a1.res.frames);
+    setP('rec','loading','…','essai 1 (canvas visible)…');
+    var a1=await attempt(rA.img, rB.img, null, 'essai1');
+    setP('rec','success','OK',a1.label+' → '+a1.kb+' KB en '+a1.sec+'s | '+(a1.res.manual?'requestFrame':'auto')+' | frames='+a1.res.frames);
 
     var chosen=a1;
-    // si vide → retry forcé vp8
     if(a1.kb < 2){
       setP('rec','loading','…','blob vide → retry forcé vp8…');
       try {
-        var a2=await attempt(rA.img, rB.img, 'video/webm;codecs=vp8', 'essai2', null);
+        var a2=await attempt(rA.img, rB.img, 'video/webm;codecs=vp8', 'essai2');
         setP('rec','success','OK',a2.label+' → '+a2.kb+' KB en '+a2.sec+'s | frames='+a2.res.frames);
         chosen=a2;
-      } catch(eRetry){
-        setP('rec','error','KO','retry échec: '+eRetry.message);
-      }
+      } catch(eRetry){ setP('rec','error','KO','retry échec: '+eRetry.message); }
     }
 
     // ⑤ vérif taille + lisibilité
     var blob=chosen.res.blob;
     if(blob.size < 2000){
-      setP('out','error','KO','blob VIDE ('+blob.size+' octets). Le codec a produit un conteneur sans frames sur ce téléphone.');
-      finish(false,'Échec: le navigateur a enregistré 0 donnée vidéo. (Cause mobile connue: encodeur absent.) On a la preuve, plus de faux vert.');
+      setP('out','error','KO','blob VIDE ('+blob.size+' octets). L\'encodeur mobile n\'a produit aucune frame.');
+      finish(false,'Échec honnête: 0 donnée vidéo. (Cause mobile connue.) Plus de faux vert.');
       btn.disabled=false; btn.textContent='🔁 Relancer'; return;
     }
     var url=URL.createObjectURL(blob);
     var playable=await verifyPlayable(url);
     if(!playable){
-      setP('out','error','KO','blob '+chosen.kb+' KB produit mais ILLISIBLE par le lecteur de ce téléphone.');
-      finish(false,'Échec: fichier produit mais le lecteur ne le lit pas. (Codec/conteneur non supporté en lecture.)');
+      setP('out','error','KO','blob '+chosen.kb+' KB produit mais ILLISIBLE par ce lecteur.');
+      finish(false,'Échec: fichier produit mais non lisible ici.');
       btn.disabled=false; btn.textContent='🔁 Relancer'; return;
     }
     var ext=(chosen.mime.indexOf('mp4')>=0)?'.mp4':'.webm';
@@ -240,10 +243,15 @@ async function run(){
 
   } catch(e){
     console.error(e);
-    var pend=document.querySelector('.panel.loading'); if(pend){ pend.className='panel error'; }
-    setP('out','error','KO', e.message);
+    var pend=document.querySelector('.panel.loading'); if(pend){ pend.className='panel error'; }    var msg=String(e.message||e);
+    setP('out','error','KO', msg);
     stage.innerHTML='';
-    finish(false,'Échec: '+e.message+' → regarde la case rouge, elle dit quoi.');    btn.disabled=false; btn.textContent='🔁 Relancer';
+    if(/échec chargement/i.test(msg)){
+      finish(false,'Pollinations ne répond pas maintenant (service gratuit intermittent). Réessaie dans ~30 s avec le bouton Relancer. Ce n\'est PAS le moteur vidéo, c\'est juste l\'image qui n\'arrive pas cette fois.');
+    } else {
+      finish(false,'Échec: '+msg+' → regarde la case rouge.');
+    }
+    btn.disabled=false; btn.textContent='🔁 Relancer';
   }
 }
 </script>
