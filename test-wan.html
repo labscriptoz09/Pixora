@@ -3,60 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Wan via Proxy - Pixora</title>
+<title>Debug Wan - Pixora</title>
 <style>
-  body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:640px;margin:0 auto}
+  body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
   .sub{color:#A1A1AA;font-size:.78rem;margin:.3rem 0 1rem}
   button{padding:12px 24px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;width:100%}
   button:disabled{opacity:.5;cursor:not-allowed}
-  #status{padding:10px;margin:10px 0;border-radius:8px;background:#1e1e2e;border:1px solid #3b3b4a;font-size:.85rem;white-space:pre-wrap;word-break:break-word}
-  .ok{border-color:#10B981;color:#10B981}.ko{border-color:#EF4444;color:#EF4444}.ld{border-color:#8B5CF6;color:#8B5CF6}
-  video,img{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
-  details{margin-top:12px}
-  summary{cursor:pointer;color:#8B5CF6;font-size:.8rem;font-weight:700}
-  pre{background:#16161e;padding:10px;border-radius:8px;font-size:.66rem;overflow:auto;max-height:340px;white-space:pre-wrap;word-break:break-all}
+  .panel{margin:10px 0;border-radius:10px;border:1px solid #3b3b4a;background:#16161e;overflow:hidden}
+  .phead{padding:9px 12px;font-weight:700;font-size:.85rem;display:flex;justify-content:space-between;gap:8px}
+  .pbody{padding:0 12px 10px;font-size:.7rem}
+  pre{margin:6px 0 0;background:#0c0c12;padding:8px;border-radius:6px;white-space:pre-wrap;word-break:break-all;max-height:220px;overflow:auto;font-size:.66rem;color:#cbd5e1}
+  .pending .phead{color:#71717A}
+  .loading .phead{color:#8B5CF6}
+  .success .phead{color:#10B981}
+  .error .phead{color:#EF4444}
+  .pending{border-color:#3b3b4a}.loading{border-color:#8B5CF6}.success{border-color:#10B981}.error{border-color:#EF4444}
+  .badge{font-size:.62rem;padding:2px 7px;border-radius:6px;background:#0c0c12}
+  video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
+  #final{margin-top:14px;padding:12px;border-radius:10px;font-weight:700;text-align:center}
+  .f-ok{background:rgba(16,185,129,.15);border:1px solid #10B981;color:#10B981}
+  .f-ko{background:rgba(239,68,68,.15);border:1px solid #EF4444;color:#EF4444}
 </style>
 </head>
 <body>
-<h1>🧪 Test Wan 2.2 via Proxy serveur</h1>
-<div class="sub">Appelle /api/wan-proxy (même origine = zéro CORS). Aucune clé requise. 1er appel peut réveiller le GPU (~30-60s).</div>
+<h1>🔬 Debug Wan 2.2 — tout en une page</h1>
+<div class="sub">4 étapes indépendantes. Chacune répond vite (sauf la 4e). Même si la 4e timeout, les 3 premières te disent où ça bloque. Aucune clé requise.</div>
 
-<button id="btn" onclick="run()">▶️ Lancer le test Wan (proxy)</button>
-<div id="status" class="ld">En attente…</div>
-<div id="media"></div>
-<details><summary>📋 Voir le journal technique (steps serveur)</summary><pre id="log">—</pre></details>
+<button id="btn" onclick="runDebug()">▶️ Lancer le debug pas à pas</button>
+
+<div class="panel pending" id="p-info"><div class="phead"><span>① Space /info (le Space est-il vivant ?)</span><span class="badge" id="b-info">—</span></div><div class="pbody"><pre id="d-info">en attente</pre></div></div>
+<div class="panel pending" id="p-img"><div class="phead"><span>② Image Pollinations (côté serveur)</span><span class="badge" id="b-img">—</span></div><div class="pbody"><pre id="d-img">en attente</pre></div></div>
+<div class="panel pending" id="p-upload"><div class="phead"><span>③ Upload vers le Space</span><span class="badge" id="b-upload">—</span></div><div class="pbody"><pre id="d-upload">en attente</pre></div></div>
+<div class="panel pending" id="p-call"><div class="phead"><span>④ Appel GPU complet (lent, jusqu'à 5 min)</span><span class="badge" id="b-call">—</span></div><div class="pbody"><pre id="d-call">en attente</pre></div></div>
+
+<div id="final" style="display:none"></div>
+<div id="video"></div>
 
 <script>
-function setStatus(msg, cls){ var el=document.getElementById('status'); el.className=cls||''; el.textContent=msg; }
-async function run(){
-  var btn=document.getElementById('btn'); var media=document.getElementById('media'); var logEl=document.getElementById('log');
-  btn.disabled=true; btn.textContent='⏳ Génération en cours…'; media.innerHTML=''; logEl.textContent='—';
-  setStatus('🔄 Appel du proxy /api/wan-proxy … (patience, le GPU peut démarrer)', 'ld');
-  var t0=Date.now();
-  try {
-    var r = await fetch('/api/wan-proxy', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ prompt: 'a cat running in a field, cinematic lighting, smooth motion' })
-    });
+function setPanel(id, cls, badge, detail){
+  var p=document.getElementById('p-'+id); p.className='panel '+cls;
+  document.getElementById('b-'+id).textContent=badge;
+  document.getElementById('d-'+id).textContent=detail;
+}
+function pretty(o){ try{ return JSON.stringify(o,null,2); }catch(e){ return String(o); } }
+async function callStep(step){
+  // renvoie {ok, json} ; ok=false si le serveur n'a pas répondu du tout (timeout réseau/vercel)
+  try{
+    var r = await fetch('/api/wan-proxy?step='+step, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({prompt:'a cat running in a field, cinematic lighting, smooth motion'}) });
     var json = await r.json();
-    logEl.textContent = JSON.stringify(json.steps || json, null, 2);
-    var sec = ((Date.now()-t0)/1000).toFixed(1);
-    if (json.url) {
-      setStatus('✅ VIDÉO GÉNÉRÉE en '+sec+'s !', 'ok');
-      media.innerHTML = '<video src="'+json.url+'" controls autoplay loop muted playsinline></video><pre>url = '+json.url+'</pre>';
-      btn.textContent='✅ RÉUSSI'; btn.style.background='#10B981';
-    } else {
-      setStatus('❌ '+ (json.error||'erreur inconnue') +' ('+sec+'s)', 'ko');
-      btn.textContent='❌ ÉCHOUÉ'; btn.style.background='#EF4444';
-    }
-  } catch(e){
-    setStatus('❌ Exception réseau : '+e.message, 'ko');
-    logEl.textContent = String(e && e.stack || e);
-    btn.textContent='❌ ÉCHOUÉ'; btn.style.background='#EF4444';
+    return { http:r.status, json:json };
+  }catch(e){
+    return { http:0, json:{ error:'pas de réponse serveur (timeout Vercel 5min ou réseau)', msg:String(e.message||e) } };
   }
-  btn.disabled=false;
+}
+
+async function runDebug(){
+  var btn=document.getElementById('btn'); var fin=document.getElementById('final'); var vid=document.getElementById('video');
+  btn.disabled=true; btn.textContent='⏳ Debug en cours…'; fin.style.display='none'; vid.innerHTML='';
+  ['info','img','upload','call'].forEach(function(id){ setPanel(id,'pending','—','en attente'); });
+
+  // ① info
+  setPanel('info','loading','…','appel /api/wan-proxy?step=info');
+  var t0=Date.now();
+  var r1=await callStep('info');
+  var ok1 = r1.json && r1.json.ok===true;
+  setPanel('info', ok1?'success':'error', ok1?'OK':'KO',
+    (ok1 ? 'api_names=['+(r1.json.apiNames||[]).join(', ')+'] params='+r1.json.paramsCount+'\n' : 'ECHEC → le Space ne répond pas (down/sleep/CORS serveur)\n') + pretty(r1.json));
+  if(!ok1){ finish(false,'① échoue : le Space HF est injoignable côté serveur. On ne peut pas aller plus loin tant que /info ne répond pas.'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
+
+  // ② img
+  setPanel('img','loading','…','appel ?step=img');
+  var r2=await callStep('img');
+  var ok2 = r2.json && r2.json.ok===true;
+  setPanel('img', ok2?'success':'error', ok2?'OK':'KO', (ok2? r2.json.kb+' KB\n':'ECHEC\n')+pretty(r2.json));
+  if(!ok2){ finish(false,'② échoue : Pollinations injoignable côté serveur.'); btn.disabled=false; btn.textContent='🔁 Relancer'; return; }
+
+  // ③ upload
+  setPanel('upload','loading','…','appel ?step=upload');
+  var r3=await callStep('upload');
+  var ok3 = r3.json && r3.json.ok===true;
+  setPanel('upload', ok3?'success':'error', ok3?'OK':'KO', (ok3? 'path='+r3.json.path+'\n':'ECHEC upload (le Space refuse nos fichiers)\n')+pretty(r3.json));
+  // on ne stoppe pas si upload KO : le call retentera avec l'URL directe
+
+  // ④ call (lent)
+  setPanel('call','loading','…','appel ?step=call — LE GPU TOURNE, patience (1er appel réveille ZeroGPU)…');
+  var t4=Date.now();
+  var r4=await callStep('call');
+  var sec4=((Date.now()-t4)/1000).toFixed(1);
+  var url = r4.json && r4.json.url;
+  if(url){
+    setPanel('call','success','OK '+sec4+'s','VIDÉO → '+url+'\n\nsteps:\n'+pretty(r4.json.steps));
+    vid.innerHTML='<video src="'+url+'" controls autoplay loop muted playsinline></video>';
+    finish(true,'✅ VIDÉO GÉNÉRÉE en '+sec4+'s. La piste Wan Fast MARCHE via le proxy. On pourra l\'intégrer dans index.html.');
+  } else {    var isTimeout = r4.http===0;
+    setPanel('call','error', isTimeout?'TIMEOUT':'KO '+sec4+'s',
+      (isTimeout? 'Le serveur a mis >5min (timeout Vercel) = le GPU est trop lent sur ce Space.\nMAIS ①②③ sont verts → tout le reste marche, seul le GPU bloque.\n\n' : (r4.json&&r4.json.error? r4.json.error+'\n\n':'ECHEC\n')) + pretty(r4.json));
+    if(isTimeout){
+      finish(false,'①②③ OK mais ④ timeout : le proxy et le réseau marchent, c\'est le GPU du Space qui ne finit pas à temps. Piste Wan = trop lente ici.');
+    } else if(r4.json && /AUTH|clé gratuite/i.test(JSON.stringify(r4.json))){
+      finish(false,'Le Space exige une connexion HF → il faudra une clé HF GRATUITE (sans carte). Dis-le, je te guide.');
+    } else {
+      finish(false,'④ a répondu mais sans vidéo. Le détail (steps) ci-dessus dit pourquoi (mauvais format image / mauvais params / réponse vide).');
+    }
+  }
+  btn.disabled=false; btn.textContent='🔁 Relancer le debug';
+}
+
+function finish(ok, msg){
+  var fin=document.getElementById('final');
+  fin.style.display='block';
+  fin.className=ok?'f-ok':'f-ko';
+  fin.textContent=(ok?'✅ ':'⚠️ ')+msg;
 }
 </script>
 </body>
