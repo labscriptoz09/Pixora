@@ -1,6 +1,10 @@
-// Proxy serveur pour le Space Gradio Wan 2.2 I2V Fast (kulkas2pintu/wan555)
-// Aucun CORS (appel serveur), aucune clé requise (Space public).
-// Renvoie toujours du JSON + un tableau steps[] pour debug complet.
+// Proxy serveur Wan 2.2 I2V Fast (kulkas2pintu/wan555) — MODE DEBUG PAR ÉTAPES
+// ?step=info  -> découverte du Space (rapide)
+// ?step=img   -> image Pollinations côté serveur (rapide)
+// ?step=upload-> upload image vers le Space (rapide)
+// ?step=call  -> appel GPU complet (LENT, peut timeout)
+// Sans step   -> = call (compat)
+// Aucune clé requise (Space public). Renvoie toujours JSON.
 
 const SPACE = 'https://kulkas2pintu-wan555.hf.space';
 
@@ -15,7 +19,7 @@ function j(body: any, status = 200) {
     return new Response(JSON.stringify(body), { status, headers: H });
 }
 
-// fetch qui ne jette jamais (distingue CORS réseau vs HTTP)
+// fetch qui ne jette jamais
 async function sf(url: string, opts?: any): Promise<any> {
     try {
         const r = await fetch(url, opts);
@@ -26,42 +30,73 @@ async function sf(url: string, opts?: any): Promise<any> {
     }
 }
 
-function trunc(s: any, n = 220) {
+function trunc(s: any, n = 240) {
     const t = String(s == null ? '' : s);
     return t.length > n ? t.substring(0, n) + '…' : t;
 }
 
-// découvre api_name + signature
-async function discover(steps: any[]) {
+function pollUrl(prompt: string) {
+    const seed = Math.floor(Math.random() * 100000);
+    return 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed;
+}
+
+// ---- découverte ----
+async function discover() {
     const eps = ['/gradio_api/info', '/info', '/config'];
-    for (let i = 0; i < eps.length; i++) {
-        const f = await sf(SPACE + eps[i]);
-        if (f.kind !== 'http') { steps.push({ s: 'info ' + eps[i], ok: false, d: 'net:' + f.msg }); continue; }
-        if (!f.ok) { steps.push({ s: 'info ' + eps[i], ok: false, d: 'HTTP ' + f.status }); continue; }
-        const txt = await f.r.text();
-        let p: any = null; try { p = JSON.parse(txt); } catch (e) { p = null; }
-        if (!p) { steps.push({ s: 'info ' + eps[i], ok: false, d: 'non-json' }); continue; }
+    for (const ep of eps) {
+        const f = await sf(SPACE + ep);
+        if (f.kind !== 'http') { console.log('[WAN][info] ' + ep + ' NET ' + f.msg); continue; }
+        if (!f.ok) { console.log('[WAN][info] ' + ep + ' HTTP ' + f.status); continue; }
+        const txt = await f.r.text();        let p: any = null; try { p = JSON.parse(txt); } catch (e) { p = null; }
+        if (!p) { console.log('[WAN][info] ' + ep + ' non-json'); continue; }
         let apiNames: string[] = [];
         let params: any[] = [];
         const ne = p.named_endpoints;
         if (ne && typeof ne === 'object' && !Array.isArray(ne)) {
-            const ks = Object.keys(ne);
-            for (const k of ks) { apiNames.push(k.replace(/^\//, '')); if (!params.length && ne[k] && ne[k].parameters) params = ne[k].parameters; }
-        } else if (Array.isArray(p.endpoints)) {            for (const e2 of p.endpoints) { if (e2.api_name) apiNames.push(e2.api_name); if (!params.length && e2.parameters) params = e2.parameters; }
+            for (const k of Object.keys(ne)) { apiNames.push(k.replace(/^\//, '')); if (!params.length && ne[k] && ne[k].parameters) params = ne[k].parameters; }
+        } else if (Array.isArray(p.endpoints)) {
+            for (const e2 of p.endpoints) { if (e2.api_name) apiNames.push(e2.api_name); if (!params.length && e2.parameters) params = e2.parameters; }
         }
-        steps.push({ s: 'info ' + eps[i], ok: true, d: 'api=[' + apiNames.join(',') + '] params=' + params.length });
-        return { apiName: apiNames[0] || 'predict', params };
+        console.log('[WAN][info] OK ' + ep + ' api=[' + apiNames.join(',') + '] params=' + params.length);
+        return { ok: true, ep, apiNames, params, raw: trunc(txt, 800) };
     }
-    return { apiName: 'predict', params: [] };
+    return { ok: false, apiNames: [], params: [], raw: null };
 }
 
-// construit data[] d'après la signature, en plaçant l'image et le prompt aux bons endroits
+// ---- image Pollinations côté serveur ----
+async function fetchImage(prompt: string) {
+    const url = pollUrl(prompt);
+    const f = await sf(url);
+    if (f.kind !== 'http' || !f.ok) { console.log('[WAN][img] FAIL ' + (f.kind === 'net' ? f.msg : 'HTTP ' + f.status)); return { ok: false, url, kb: 0, msg: f.kind === 'net' ? f.msg : 'HTTP ' + f.status, buf: null }; }
+    const buf = await f.r.arrayBuffer();
+    console.log('[WAN][img] OK ' + Math.round(buf.byteLength / 1024) + ' KB');
+    return { ok: true, url, kb: Math.round(buf.byteLength / 1024), buf };
+}
+
+// ---- upload vers Space ----
+async function uploadImage(buf: ArrayBuffer) {
+    for (const ep of ['/gradio_api/upload', '/upload']) {
+        try {
+            const fd = new FormData();
+            fd.append('files', new Blob([buf], { type: 'image/png' }), 'init.png');
+            const f = await sf(SPACE + ep, { method: 'POST', body: fd });
+            if (f.kind !== 'http') { console.log('[WAN][upload] ' + ep + ' NET ' + f.msg); continue; }
+            if (!f.ok) { const t = await f.r.text(); console.log('[WAN][upload] ' + ep + ' HTTP ' + f.status + ' ' + trunc(t, 120)); continue; }
+            const arr = await f.r.json();
+            const path = Array.isArray(arr) ? arr[0] : (arr && arr.path ? arr.path : null);
+            console.log('[WAN][upload] ' + ep + ' -> ' + trunc(JSON.stringify(arr), 140));
+            return { ok: !!path, ep, path, raw: trunc(JSON.stringify(arr), 200) };
+        } catch (err) { const e = err as any; console.log('[WAN][upload] ' + ep + ' EX ' + (e.message || e)); }
+    }
+    return { ok: false, ep: null, path: null, raw: null };
+}
+
+// ---- construction data[] ----
 function buildData(params: any[], imageArg: any, prompt: string) {
     if (!params || !params.length) return [imageArg, prompt];
     const data: any[] = [];
     let imgDone = false, promptDone = false;
-    for (const p of params) {
-        const comp = String((p && p.component) || '').toLowerCase();
+    for (const p of params) {        const comp = String((p && p.component) || '').toLowerCase();
         const props = (p && p.props) || {};
         const label = String(props.label || '').toLowerCase();
         if (!imgDone && (comp === 'image' || comp === 'file' || comp === 'uploadbutton' || comp === 'imageupload')) { imgDone = true; data.push(imageArg); continue; }
@@ -75,28 +110,11 @@ function buildData(params: any[], imageArg: any, prompt: string) {
     return data;
 }
 
-// upload image vers le Space (essaie 2 endpoints Gradio)
-async function uploadImage(buf: ArrayBuffer, steps: any[]) {
-    for (const ep of ['/gradio_api/upload', '/upload']) {
-        try {
-            const fd = new FormData();
-            fd.append('files', new Blob([buf], { type: 'image/png' }), 'init.png');
-            const f = await sf(SPACE + ep, { method: 'POST', body: fd });
-            if (f.kind !== 'http') { steps.push({ s: 'upload ' + ep, ok: false, d: 'net:' + f.msg }); continue; }
-            if (!f.ok) { steps.push({ s: 'upload ' + ep, ok: false, d: 'HTTP ' + f.status }); continue; }
-            const arr = await f.r.json();
-            const path = Array.isArray(arr) ? arr[0] : (arr && arr.path ? arr.path : null);
-            steps.push({ s: 'upload ' + ep, ok: !!path, d: trunc(JSON.stringify(arr), 160) });
-            if (path) return path;
-        } catch (err) { const e = err as any; steps.push({ s: 'upload ' + ep, ok: false, d: 'ex:' + (e.message || e) }); }
-    }
-    return null;
-}
-
 function fileObj(path: string) {
     return { path: path, url: SPACE + '/gradio_api/file=' + path, orig_name: 'init.png', mime_type: 'image/png', is_file: true, meta: { _type: 'gradio.FileData' } };
 }
-// résout une url vidéo relative/absolue
+
+// ---- extracteur vidéo ----
 function resolveUrl(u: any): string | null {
     if (!u) return null;
     const s = String(u);
@@ -117,7 +135,6 @@ function extractVideo(node: any): string | null {
     return null;
 }
 
-// parse le SSE Gradio (event: complete / data: [...])
 function parseSSE(text: string): any {
     const lines = text.split(/\r?\n/);
     let lastData: any = null;
@@ -127,91 +144,107 @@ function parseSSE(text: string): any {
             try { lastData = JSON.parse(payload); } catch (e) { /* ignore */ }
         }
     }
-    if (lastData == null) {
-        // peut-être du JSON direct
-        try { lastData = JSON.parse(text); } catch (e) { lastData = null; }
-    }
-    return lastData;
+    if (lastData == null) { try { lastData = JSON.parse(text); } catch (e) { lastData = null; } }
+    return lastData;}
+
+// ---- appel Space (un api_name) ----
+async function callOne(name: string, data: any) {
+    const postUrl = SPACE + '/gradio_api/call/' + name;
+    console.log('[WAN][call] POST ' + postUrl + ' data=' + trunc(JSON.stringify(data), 140));
+    const post = await sf(postUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+    if (post.kind !== 'http') return { ok: false, name, d: 'NET ' + post.msg };
+    if (post.status === 401 || post.status === 403) return { ok: false, name, auth: true, d: 'AUTH ' + post.status };
+    if (!post.ok) { const t = await post.r.text(); return { ok: false, name, d: 'HTTP ' + post.status + ' ' + trunc(t, 180) }; }
+    let ej: any = null; try { ej = await post.r.json(); } catch (e) { const t = await post.r.text(); return { ok: false, name, d: 'non-json ' + trunc(t, 160) }; }
+    const eid = ej && (ej.event_id || ej.id);
+    if (!eid) return { ok: false, name, d: 'pas event_id ' + trunc(JSON.stringify(ej), 180) };
+    console.log('[WAN][call] event_id=' + eid + ' -> polling');
+    const get = await sf(SPACE + '/gradio_api/call/' + name + '/' + eid);
+    if (get.kind !== 'http') return { ok: false, name, d: 'poll NET ' + get.msg };
+    if (!get.ok) { const t = await get.r.text(); return { ok: false, name, d: 'poll HTTP ' + get.status + ' ' + trunc(t, 180) }; }
+    const txt = await get.r.text();
+    const parsed = parseSSE(txt);
+    console.log('[WAN][call] poll OK ' + trunc(JSON.stringify(parsed), 200));
+    return { ok: true, name, result: parsed };
 }
 
-// appelle le Space (POST async + polling GET), essaie plusieurs api_name
-async function callSpace(apiName: string, data: any, steps: any[]) {
+async function callSpace(apiName: string, data: any) {
     const names = Array.from(new Set([apiName, 'predict', 'generate', 'process'].filter(Boolean)));
+    const tries: any[] = [];
     for (const name of names) {
-        const postUrl = SPACE + '/gradio_api/call/' + name;
-        steps.push({ s: 'POST ' + postUrl, ok: null, d: 'data=' + trunc(JSON.stringify(data), 160) });
-        const post = await sf(postUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
-        if (post.kind !== 'http') { steps.push({ s: 'POST ' + name, ok: false, d: 'net:' + post.msg }); if (/fetch|network/i.test(post.msg || '')) return null; continue; }
-        if (post.status === 401 || post.status === 403) { steps.push({ s: 'POST ' + name, ok: false, d: 'AUTH REQUISE (' + post.status + ') → il faudra une clé HF gratuite' }); return { auth: true }; }
-        if (!post.ok) { const t = await post.r.text(); steps.push({ s: 'POST ' + name, ok: false, d: 'HTTP ' + post.status + ' ' + trunc(t, 200) }); continue; }
-        let ej: any = null; try { ej = await post.r.json(); } catch (e) { const t = await post.r.text(); steps.push({ s: 'POST ' + name, ok: false, d: 'resp non-json ' + trunc(t, 160) }); continue; }
-        const eid = ej && (ej.event_id || ej.id);        if (!eid) { steps.push({ s: 'POST ' + name, ok: false, d: 'pas event_id: ' + trunc(JSON.stringify(ej), 200) }); continue; }
-        steps.push({ s: 'POST ' + name, ok: true, d: 'event_id=' + eid });
-        // polling
-        const getUrl = SPACE + '/gradio_api/call/' + name + '/' + eid;
-        const get = await sf(getUrl);
-        if (get.kind !== 'http') { steps.push({ s: 'GET poll', ok: false, d: 'net:' + get.msg }); continue; }
-        if (!get.ok) { const t = await get.r.text(); steps.push({ s: 'GET poll', ok: false, d: 'HTTP ' + get.status + ' ' + trunc(t, 200) }); continue; }
-        const txt = await get.r.text();
-        const parsed = parseSSE(txt);
-        steps.push({ s: 'GET poll', ok: true, d: trunc(JSON.stringify(parsed), 300) });
-        return { result: parsed };
+        const r = await callOne(name, data);
+        tries.push({ name, ok: r.ok, auth: !!r.auth, d: r.d });
+        if (r.auth) return { auth: true, tries };
+        if (r.ok && r.result) return { result: r.result, tries };
+        if (r.d && /^NET/.test(r.d)) return { netfail: true, tries }; // réseau mort, inutile de retenter
     }
-    return null;
+    return { tries };
+}
+
+// ---- étape CALL complète ----
+async function doCall(prompt: string) {
+    const steps: any[] = [];
+    const disc = await discover();
+    steps.push({ s: 'discover', ok: disc.ok, d: 'api=[' + disc.apiNames.join(',') + '] params=' + disc.params.length });
+    if (!disc.ok) return { error: 'Space /info injoignable (down, sleep ou CORS serveur)', steps };
+    const apiName = disc.apiNames[0] || 'predict';
+
+    const img = await fetchImage(prompt);
+    steps.push({ s: 'pollinations', ok: img.ok, d: img.ok ? img.kb + ' KB' : img.msg });
+    if (!img.ok) return { error: 'Pollinations injoignable côté serveur', steps };
+
+    const up = await uploadImage(img.buf as ArrayBuffer);
+    steps.push({ s: 'upload', ok: up.ok, d: up.ok ? ('path=' + trunc(up.path, 100)) : 'échec upload' });
+    const imageForms: any[] = [];
+    if (up.ok && up.path) imageForms.push(fileObj(up.path));
+    if (up.ok && up.path) imageForms.push(up.path);
+    imageForms.push(img.url);
+
+    for (let fi = 0; fi < imageForms.length; fi++) {
+        const data = buildData(disc.params, imageForms[fi], prompt);
+        steps.push({ s: 'imageForm#' + fi, ok: true, d: trunc(JSON.stringify(imageForms[fi]), 120) });
+        const call = await callSpace(apiName, data);
+        steps.push({ s: 'call#' + fi, ok: !!(call as any).result, auth: !!(call as any).auth, d: JSON.stringify((call as any).tries) });
+        if ((call as any).auth) return { error: 'Le Space exige une connexion HF (clé gratuite nécessaire)', steps };
+        if ((call as any).result) {
+            const videoUrl = extractVideo((call as any).result);
+            if (videoUrl) { steps.push({ s: 'DONE', ok: true, d: videoUrl }); return { url: videoUrl, steps }; }
+            steps.push({ s: 'extract#' + fi, ok: false, d: 'réponse sans URL vidéo : ' + trunc(JSON.stringify((call as any).result), 200) });
+        }
+    }
+    return { error: 'Aucune réponse exploitable du Space (voir steps)', steps };
 }
 
 export default async function handler(req: Request) {
     if (req.method === 'OPTIONS') return new Response(null, { headers: H });
 
-    const steps: any[] = [];
+    let prompt = 'a cat running in a field, cinematic lighting, smooth motion';
+    if (req.method === 'POST') { try { const b = JSON.parse(await req.text()); if (b && b.prompt) prompt = String(b.prompt); } catch (e) { /* défaut */ } }
+
+    let step = 'call';
+    try { step = (new URL(req.url).searchParams.get('step') || 'call').toLowerCase(); } catch (e) { /* défaut */ }
+    console.log('[WAN] handler step=' + step + ' prompt=' + trunc(prompt, 60));
+
     try {
-        let prompt = 'a cat running in a field, cinematic lighting, smooth motion';
-        if (req.method === 'POST') {
-            try { const b = JSON.parse(await req.text()); if (b && b.prompt) prompt = String(b.prompt); } catch (e) { /* garde défaut */ }
+        if (step === 'info') {
+            const d = await discover();
+            return j({ step: 'info', ok: d.ok, apiNames: d.apiNames, paramsCount: d.params.length, params: d.params, raw: d.raw });
         }
-        steps.push({ s: 'start', ok: true, d: 'prompt=' + trunc(prompt, 80) });
-
-        // 1) découverte
-        const disc = await discover(steps);
-        steps.push({ s: 'chosen api', ok: true, d: disc.apiName });
-
-        // 2) image Pollinations (côté serveur)
-        const seed = Math.floor(Math.random() * 100000);
-        const pollUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed;
-        const imgFetch = await sf(pollUrl);
-        if (imgFetch.kind !== 'http' || !imgFetch.ok) return j({ error: 'Pollinations injoignable', steps }, 502);
-        const buf = await imgFetch.r.arrayBuffer();
-        steps.push({ s: 'pollinations', ok: true, d: Math.round(buf.byteLength / 1024) + ' KB' });
-
-        // 3) upload
-        const path = await uploadImage(buf, steps);
-
-        // 4) construit data avec plusieurs formes d'image, tente l'appel
-        const imageForms: any[] = [];
-        if (path) imageForms.push(fileObj(path));
-        if (path) imageForms.push(path);
-        imageForms.push(pollUrl); // fallback URL directe
-
-        let finalResult: any = null;
-        for (let fi = 0; fi < imageForms.length; fi++) {
-            const data = buildData(disc.params, imageForms[fi], prompt);            steps.push({ s: 'imageForm #' + fi, ok: true, d: trunc(JSON.stringify(imageForms[fi]), 120) });
-            const call = await callSpace(disc.apiName, data, steps);
-            if (!call) continue;
-            if (call.auth) return j({ error: 'Le Space exige une connexion HF (clé gratuite nécessaire). Dis-le au dev.', steps }, 401);
-            if (call.result) { finalResult = call.result; break; }
+        if (step === 'img') {
+            const im = await fetchImage(prompt);
+            return j({ step: 'img', ok: im.ok, kb: im.kb, url: im.url, msg: im.msg || null });
         }
-
-        if (!finalResult) return j({ error: 'Aucune réponse exploitable du Space (voir steps)', steps }, 502);
-
-        const videoUrl = extractVideo(finalResult);
-        if (!videoUrl) return j({ error: 'Réponse reçue mais aucune URL vidéo dedans', raw: finalResult, steps }, 502);
-
-        steps.push({ s: 'DONE', ok: true, d: videoUrl });
-        return j({ url: videoUrl, steps });
-
-    } catch (err) {
-        const e = err as any;
-        steps.push({ s: 'EXCEPTION', ok: false, d: (e && e.message ? e.message : String(err)) + (e && e.stack ? '\n' + e.stack : '') });
-        return j({ error: 'Exception proxy', steps }, 500);
+        if (step === 'upload') {
+            const im = await fetchImage(prompt);
+            if (!im.ok) return j({ step: 'upload', ok: false, error: 'pollinations fail', msg: im.msg });
+            const up = await uploadImage(im.buf as ArrayBuffer);
+            return j({ step: 'upload', ok: up.ok, path: up.path, ep: up.ep, raw: up.raw });
+        }
+        // call (ou défaut)
+        const res = await doCall(prompt);
+        return j(Object.assign({ step: 'call' }, res), (res as any).url ? 200 : 502);
+    } catch (err) {        const e = err as any;
+        console.log('[WAN] EXCEPTION ' + (e && e.message ? e.message : String(err)));
+        return j({ step, error: 'Exception proxy', msg: e && e.message ? e.message : String(err) }, 500);
     }
 }
