@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CogVideoX-2B T2V - Pixora</title>
+<title>Test Plan C - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:640px;margin:0 auto}
   h1{font-size:1.2rem;margin:.2rem 0}
   .sub{color:#A1A1AA;font-size:.76rem;margin-bottom:1rem}
-  input.f{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.82rem;box-sizing:border-box;font-family:monospace;margin-bottom:8px}
-  input.k{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.85rem;box-sizing:border-box;font-family:monospace}
-  .knote{color:#A1A1AA;font-size:.68rem;margin:4px 0 8px}
   textarea{width:100%;min-height:60px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.92rem;font-family:inherit;resize:vertical;box-sizing:border-box}
   button{padding:13px 20px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
   button:disabled{opacity:.5;cursor:not-allowed}
@@ -18,163 +15,56 @@
   #status.ok{color:#10B981}#status.ko{color:#EF4444}#status.ld{color:#8B5CF6}
   video{max-width:100%;border-radius:12px;margin-top:12px;display:block;background:#000}
   .dl{display:inline-block;margin-top:10px;padding:11px 18px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
-  details{margin-top:14px}
-  summary{cursor:pointer;color:#71717A;font-size:.74rem}
-  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:280px;overflow:auto;margin-top:6px;color:#cbd5e1}
+  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:280px;overflow:auto;margin-top:8px;color:#cbd5e1}
 </style>
 </head>
 <body>
-<h1>🎬 CogVideoX-2B — Text→Video</h1>
-<div class="sub">2B · /generate 3 params · steps forcé bas (8) · enhance NON appelé. URL du Space modifiable si le host est faux.</div>
+<h1>🧪 Test Plan C</h1>
+<div class="sub">Appelle /api/gen-video (badge côté serveur). Zéro badge client, zéro URL Space.</div>
 
-<input class="f" id="spaceUrl" value="https://zai-org-cogvideox-2b-space.hf.space">
-<input class="k" id="hfkey" type="password" placeholder="Colle ton NOUVEAU hf_… ici" autocomplete="off" spellcheck="false">
-<div class="knote">🔒 Jamais stocké, masqué. Colle le NOUVEAU hf_ (pas celui du chat).</div>
 <textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
-<button id="btn" onclick="generate()">▶️ Générer la vidéo</button>
+<button id="btn" onclick="run()">▶️ Tester le plan C</button>
 <div id="status">Prêt.</div>
 <div id="media"></div>
-<details><summary>Détails techniques (replié)</summary><pre id="log">—</pre></details>
+<pre id="raw" style="display:none"></pre>
 
 <script>
-var GEN_TIMEOUT=240000;
+function setStatus(t,c){ var e=document.getElementById('status'); e.className=c||''; e.textContent=t; }
 
-// signature /generate — 3 params, ordre + défauts lus sur la carte
-var SPEC=[
-  {l:'Prompt', c:'Textbox', d:''},
-  {l:'Inference Steps', c:'Number', d:50},
-  {l:'Guidance Scale', c:'Number', d:6.0}
-];
-
-function log(s){ var e=document.getElementById('log'); e.textContent+=(e.textContent==='—'?'':'\n')+s; e.scrollTop=e.scrollHeight; }
-function setStatus(t,c){ var e=document.getElementById('status'); e.className=c||''; e.textContent=t; }function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.substring(0,n)+'…':s; }
-function normUrl(u){ u=(u||'').trim(); if(!u) return ''; if(u.indexOf('http')!==0) u='https://'+u; return u.replace(/\/+$/,''); }
-function hfKey(){ return (document.getElementById('hfkey').value||'').trim(); }
-function authHeaders(){ var k=hfKey(); if(!k) return {}; return {'Authorization':'Bearer '+k}; }
-function authMask(){ var k=hfKey(); if(!k) return 'non'; return 'oui ('+k.slice(0,3)+'…'+k.slice(-4)+')'; }
-
-function nf(url,opts,timeoutMs){
-  return new Promise(function(res){
-    var ctrl=null,to=null;
-    try{ ctrl=new AbortController(); }catch(e){ ctrl=null; }
-    if(ctrl&&timeoutMs){ to=setTimeout(function(){ try{ctrl.abort();}catch(e){} },timeoutMs); }
-    var o=opts||{}; if(ctrl) o.signal=ctrl.signal;
-    fetch(url,o).then(function(r){ if(to)clearTimeout(to); res({kind:'http',ok:r.ok,status:r.status,r:r}); })
-    .catch(function(err){ if(to)clearTimeout(to); var n=(err&&err.name)||''; if(n==='AbortError') res({kind:'timeout'}); else res({kind:'cors',msg:(err&&err.message)||String(err)}); });
-  });
-}
-
-function buildFromSpec(spec,overrides){
-  var data=[];
-  for(var i=0;i<spec.length;i++){
-    var p=spec[i],c=p.c,lab=p.l;
-    if(overrides&&Object.prototype.hasOwnProperty.call(overrides,lab)){ data.push(overrides[lab]); continue; }
-    if(c==='Textbox'||c==='Text'){ data.push(p.d==null?'':p.d); continue; }
-    if(c==='Slider'||c==='Number'){ data.push(p.d==null?0:p.d); continue; }
-    if(c==='Checkbox'){ data.push(p.d==null?false:p.d); continue; }
-    if(c==='Dropdown'){ data.push(p.d==null?'':p.d); continue; }
-    data.push(p.d==null?'':p.d);
-  }
-  return data;
-}
-function valByLabel(spec,data,label){ for(var i=0;i<spec.length;i++){ if(spec[i].l===label) return data[i]; } return '(absent)'; }
-
-function extractVideo(base,node){
-  if(!node) return null;
-  if(typeof node==='string'){ if(/\.(mp4|webm)(\?|$)/i.test(node)){ return /^https?:/i.test(node)?node:(base+(node.charAt(0)==='/'?node:'/'+node)); } return null; }
-  if(Array.isArray(node)){ for(var i=0;i<node.length;i++){ var v=extractVideo(base,node[i]); if(v) return v; } return null; }
-  if(typeof node==='object'){
-    if(node.url){ var u=String(node.url); if(/^https?:/i.test(u)) return u; if(u.indexOf('file=')>=0) return base+(u.charAt(0)==='/'?u:'/'+u); }
-    if(node.path){ var ps=String(node.path); if(/^https?:/i.test(ps)) return ps; if(ps.indexOf('file=')>=0) return base+(ps.charAt(0)==='/'?ps:'/'+ps); return base+'/gradio_api/file='+(ps.charAt(0)==='/'?ps:'/'+ps); }
-    if(node.video){ var r3=extractVideo(base,node.video); if(r3) return r3; }
-    for(var k in node){ if(k==='url'||k==='path'||k==='video') continue; var v2=extractVideo(base,node[k]); if(v2) return v2; }
-  }
-  return null;
-}
-function parseSSE2(text){
-  var lines=text.split(/\r?\n/),curEvent='',lastVal=null,lastEvent='',done=false;
-  for(var i=0;i<lines.length;i++){
-    var ln=lines[i];
-    if(ln.indexOf('event:')===0){ curEvent=ln.substring(6).trim(); }
-    else if(ln.indexOf('data:')===0){      var pl=ln.substring(5).trim(),parsed=null; try{ parsed=JSON.parse(pl); }catch(e){ parsed=pl; }
-      lastVal=parsed; lastEvent=curEvent;
-      if(curEvent==='complete'||curEvent==='error') done=true;
-      curEvent='';
-    }
-  }
-  if(lastVal===null){ try{ lastVal=JSON.parse(text); lastEvent='complete'; done=true; }catch(e){} }
-  return {value:lastVal,done:done,event:lastEvent};
-}
-function verify(url){
-  return new Promise(function(res){
-    var v=document.createElement('video'); v.muted=true; v.playsInline=true; v.preload='auto'; v.src=url;
-    var done=false; function ok(){ if(done)return; done=true; res(true); } function ko(){ if(done)return; done=true; res(false); }
-    v.addEventListener('loadeddata',ok); v.addEventListener('error',ko); setTimeout(ko,8000);
-  });
-}
-
-async function generate(){
-  var btn=document.getElementById('btn'),media=document.getElementById('media');
-  var BASE=normUrl(document.getElementById('spaceUrl').value);
+async function run(){
+  var btn=document.getElementById('btn'), media=document.getElementById('media'), raw=document.getElementById('raw');
   var prompt=(document.getElementById('prompt').value||'').trim()||'a cat running in a field';
-  if(!BASE){ setStatus('❌ URL du Space vide','ko'); return; }
-  btn.disabled=true; media.innerHTML=''; document.getElementById('log').textContent='—';
+  btn.disabled=true; media.innerHTML=''; raw.style.display='none'; raw.textContent='';
+  setStatus('Appel /api/gen-video…','ld');
   var t0=Date.now();
+
   try{
-    var data=buildFromSpec(SPEC,{'Prompt':prompt,'Inference Steps':8});
-    log('base='+BASE);
-    log('length='+data.length+' | steps='+valByLabel(SPEC,data,'Inference Steps')+' | guidance='+valByLabel(SPEC,data,'Guidance Scale')+' | auth='+authMask());
-    log('data='+trunc(JSON.stringify(data),400));
-
-    setStatus('Envoi de la commande…','ld');
-    var postUrl=BASE+'/gradio_api/call/generate';
-    var post=await nf(postUrl,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},authHeaders()),body:JSON.stringify({data:data})},60000);
-    if(post.kind==='cors') throw new Error('CORS sur /call (le navigateur bloque l\'appel direct vers ce Space)');
-    if(post.kind==='timeout') throw new Error('timeout POST 60s');
-    if(post.status===401||post.status===403) throw new Error('HTTP '+post.status+' → clé refusée/expirée');
-    if(post.status===404) throw new Error('404 → l\'URL du Space ou /generate est faux (corrige le champ URL)');
-    if(post.status===429) throw new Error('429 file d\'attente');
-    if(!post.ok){ var t=await post.r.text(); throw new Error('HTTP '+post.status+' → '+trunc(t,300)); }
-    var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('non-json '+trunc(t2,160)); }
-    var eid=ej&&(ej.event_id||ej.id);
-    if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),220));
-    log('event_id='+eid+' → polling');
-
-    setStatus('Le four cuit…','ld');
-    var getUrl=BASE+'/gradio_api/call/generate/'+eid;
-    var videoUrl=null,lastErr='',startPoll=Date.now(),polls=0;
-    var tick=setInterval(function(){ setStatus('Le four cuit… '+Math.round((Date.now()-t0)/1000)+'s','ld'); },500);
-    while(Date.now()-startPoll<GEN_TIMEOUT){
-      await new Promise(function(r){ setTimeout(r,2500); });      polls++;
-      var g=await nf(getUrl,{headers:authHeaders()},60000);
-      if(g.kind==='cors'){ lastErr='CORS sur polling'; break; }
-      if(g.kind==='timeout'){ log('poll#'+polls+' timeout 60s, retry'); continue; }
-      if(g.status===202){ log('poll#'+polls+' 202 (en cours)'); continue; }
-      if(!g.ok){ var t3=await g.r.text(); lastErr='poll HTTP '+g.status+' '+trunc(t3,200); break; }
-      var txt=await g.r.text();
-      var p=parseSSE2(txt);
-      log('poll#'+polls+' event='+(p.event||'-')+' done='+p.done+' val='+trunc(JSON.stringify(p.value),200));
-      if(p.event==='error'||(p.done&&!extractVideo(BASE,p.value))){ log('RAW SSE:\n'+trunc(txt,900)); }
-      videoUrl=extractVideo(BASE,p.value);
-      if(videoUrl) break;
-      if(p.done){ lastErr='worker a levé event='+p.event+' (voir RAW replié)'; break; }
-    }
-    clearInterval(tick);
-    if(!videoUrl&&!lastErr) lastErr='timeout polling (complete jamais arrivé)';
-
+    var res=await fetch('/api/gen-video',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt:prompt})
+    });
+    var json=null; try{ json=await res.json(); }catch(e){}
     var sec=((Date.now()-t0)/1000).toFixed(1);
-    if(!videoUrl){ setStatus('❌ '+lastErr+' ('+sec+'s, '+polls+' rappels)','ko'); log('ECHEC '+lastErr); btn.disabled=false; return; }
 
-    var ok=await verify(videoUrl);
-    if(!ok){ setStatus('❌ URL vidéo obtenue mais non lisible ici ('+sec+'s)','ko'); log('VIDEO non lisible: '+videoUrl); btn.disabled=false; return; }
-    media.innerHTML='<video src="'+videoUrl+'" controls autoplay loop muted playsinline></video>'
-      +'<br><a class="dl" href="'+videoUrl+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer</a>';
-    setStatus('✅ Vidéo en '+sec+'s ('+polls+' rappels).','ok');
-    log('VIDEO='+videoUrl);
+    if(!res.ok || !json){
+      var txt=''; try{ txt=await res.text(); }catch(e){}
+      raw.style.display='block'; raw.textContent=txt||'(réponse vide)';
+      setStatus('❌ HTTP '+res.status+' ('+sec+'s)','ko');
+      btn.disabled=false; return;
+    }
+
+    if(json.url){
+      media.innerHTML='<video src="'+json.url+'" controls autoplay loop muted playsinline></video>'
+        +'<br><a class="dl" href="'+json.url+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer</a>';
+      setStatus('✅ Vidéo en '+sec+'s','ok');
+    } else {
+      raw.style.display='block'; raw.textContent=json.raw||json.error||JSON.stringify(json);
+      setStatus('❌ '+(json.error||'erreur inconnue')+' ('+sec+'s)','ko');
+    }
   }catch(e){
-    console.error(e);
     setStatus('❌ '+e.message,'ko');
-    log('EXCEPTION '+e.message);
+    raw.style.display='block'; raw.textContent=e.message;
   }
   btn.disabled=false;
 }
