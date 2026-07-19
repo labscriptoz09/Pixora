@@ -21,66 +21,83 @@
 <body>
 <h1>🧪 Test I2V : fal.ai Image → HF Vidéo</h1>
 
-<div id="step1" class="step pending">⏳ Étape 1 : Charger les clés API...</div>
-<div id="step2" class="step pending">⏳ Étape 2 : Générer image via fal.ai...</div>
-<div id="step3" class="step pending">⏳ Étape 3 : Envoyer image à HF I2V...</div>
-<div id="step4" class="step pending">⏳ Étape 4 : Afficher la vidéo...</div>
+<div id="step1" class="step pending">⏳ Étape 1 : Générer image via fal.ai...</div>
+<div id="step2" class="step pending">⏳ Étape 2 : Envoyer image à HF I2V...</div>
+<div id="step3" class="step pending">⏳ Étape 3 : Afficher la vidéo...</div>
 
-<button id="btn" onclick="runTest()">▶️ Lancer le test complet</button>
+<button id="btn" onclick="runTest()">▶️ Lancer le test</button>
 
 <div id="result"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// 🔑 Clé fal.ai temporaire (à supprimer après test)
+const FAL_KEY = '6f2705ac-16ca-4e2b-bbd1-de234ad6d3cc:14e248f2381b5a4e2ff292486eeb263f';
 
-function setStep(id, status, msg) {
-    var el = document.getElementById(id);
-    el.className = 'step ' + status;
+async function setStep(id, status, msg) {
+    const el = document.getElementById(id);
+    el.className = `step ${status}`;
     el.textContent = msg;
 }
 
 async function runTest() {
-    var btn = document.getElementById('btn');
-    var result = document.getElementById('result');
+    const btn = document.getElementById('btn');
+    const result = document.getElementById('result');
     btn.disabled = true;
     btn.textContent = '⏳ Test en cours...';
     result.innerHTML = '';
-    try {
-        // ÉTAPE 1 : Charger les clés
-        setStep('step1', 'loading', '🔄 Chargement des clés API...');
-        var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
-        if (!r.data || !r.data.value) throw new Error('Aucune clé API trouvée dans admin_config');
-        var keys = r.data.value;
-        var falKey = keys['fal.ai'];
-        var hfKey = keys['huggingface'];
-        if (!falKey) throw new Error('Clé fal.ai manquante');
-        if (!hfKey) throw new Error('Clé huggingface manquante');
-        setStep('step1', 'success', '✅ Clés chargées : fal.ai + huggingface');
 
-        // ÉTAPE 2 : Générer image via fal.ai
-        setStep('step2', 'loading', '🔄 Génération image via fal.ai Flux Schnell...');
-        var prompt = 'a cat running in a field, cinematic lighting, 4k';
-        var imgRes = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
+    try {        // ÉTAPE 1: Générer image avec fal.ai
+        await setStep('step1', 'loading', '🔄 Génération image via fal.ai...');
+        const prompt = 'a cat running in a field, cinematic lighting, 4k';
+        const imgRes = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
             method: 'POST',
             headers: {
-                'Authorization': 'Key ' + falKey,
+                'Authorization': 'Key ' + FAL_KEY,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ prompt: prompt, width: 512, height: 512, num_images: 1 })
+            body: JSON.stringify({
+                prompt: prompt,
+                width: 512,
+                height: 512,
+                num_images: 1
+            })
         });
-        if (!imgRes.ok) throw new Error('fal.ai erreur ' + imgRes.status + ': ' + await imgRes.text());
-        var imgData = await imgRes.json();
-        var imageUrl = (imgData.images && imgData.images[0] && imgData.images[0].url) ? imgData.images[0].url : null;
-        if (!imageUrl) throw new Error('Aucune URL image reçue de fal.ai');
-        setStep('step2', 'success', '✅ Image générée : ' + imageUrl.substring(0, 80) + '...');
-        result.innerHTML += '<img src="' + imageUrl + '" alt="Image initiale">';
 
-        // ÉTAPE 3 : Envoyer image à HF stable-video-diffusion-img2vid-xt
-        setStep('step3', 'loading', '🔄 Envoi à HF I2V (patientez 15-30s)...');
-        var vidRes = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-video-diffusion-img2vid-xt', {
+        if (!imgRes.ok) {
+            throw new Error(`fal.ai erreur ${imgRes.status}: ${await imgRes.text()}`);
+        }
+
+        const imgData = await imgRes.json();
+        const imageUrl = imgData.images?.[0]?.url || imgData.output?.images?.[0]?.url;
+        if (!imageUrl) {
+            throw new Error('Aucune URL image reçue de fal.ai');
+        }
+        await setStep('step1', 'success', '✅ Image générée');
+        result.innerHTML += `<img src="${imageUrl}" alt="Image initiale" style="max-width:100%;border-radius:12px;">`;
+
+        // ÉTAPE 2: Envoyer image à HF stable-video-diffusion-img2vid-xt
+        await setStep('step2', 'loading', '🔄 Envoi à HF I2V (patientez 15-30s)...');
+
+        // Récupérer la clé Hugging Face depuis Supabase (si disponible)
+        let hfKey = null;
+        try {
+            const supabase = window.supabase.createClient(
+                'https://cfwzilhetkclpytjsopu.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU'
+            );
+            const { data } = await supabase.from('admin_config').select('value').eq('key', 'api_keys').single();
+            hfKey = data?.value?.huggingface || null;
+        } catch(e) {
+            console.warn('Supabase non accessible — utiliser clé par défaut');
+        }
+
+        // Si pas de clé HF dans DB, utilise une clé temporaire (à remplacer)
+        if (!hfKey) {
+            // ⚠️ À remplacer par ta vraie clé HF après test
+            hfKey = 'hf_xxxxx'; // ← Ne fonctionnera pas — mais on teste l'erreur
+        }
+        const vidRes = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-video-diffusion-img2vid-xt', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + hfKey,
@@ -96,41 +113,39 @@ async function runTest() {
                 }
             })
         });
-        var contentType = vidRes.headers.get('content-type') || '';
-        var videoUrl = null;
+
+        const contentType = vidRes.headers.get('content-type') || '';
+        let videoUrl = null;
 
         if (contentType.includes('video/') || contentType.includes('octet-stream')) {
-            // HF retourne un blob binaire
-            var blob = await vidRes.blob();
+            const blob = await vidRes.blob();
             videoUrl = URL.createObjectURL(blob);
-            setStep('step3', 'success', '✅ Vidéo reçue (blob, ' + Math.round(blob.size / 1024) + ' KB)');
+            await setStep('step2', 'success', `✅ Vidéo reçue (blob, ${Math.round(blob.size / 1024)} KB)`);
         } else if (contentType.includes('application/json')) {
-            // HF retourne du JSON avec URL
-            var vidData = await vidRes.json();
-            videoUrl = vidData.video?.url || vidData.output?.video?.url || null;
-            if (!videoUrl) throw new Error('JSON reçu mais aucune URL vidéo : ' + JSON.stringify(vidData).substring(0, 200));
-            setStep('step3', 'success', '✅ Vidéo reçue (URL JSON)');
+            const vidData = await vidRes.json();
+            videoUrl = vidData.video?.url || vidData.output?.video?.url;
+            if (!videoUrl) {
+                throw new Error('JSON reçu mais aucune URL vidéo');
+            }
+            await setStep('step2', 'success', '✅ Vidéo reçue (URL)');
         } else {
-            throw new Error('Type de réponse inattendu : ' + contentType);
+            throw new Error(`Type de réponse inattendu : ${contentType}`);
         }
 
-        // ÉTAPE 4 : Afficher la vidéo
-        setStep('step4', 'success', '✅ VIDÉO PRÊTE !');
-        result.innerHTML += '<video src="' + videoUrl + '" controls autoplay loop muted style="margin-top:15px"></video>';
-        result.innerHTML += '<pre>SUCCESS\nImage: ' + imageUrl + '\nVideo: ' + (videoUrl.startsWith('blob:') ? 'blob (' + Math.round(blob.size / 1024) + ' KB)' : videoUrl) + '</pre>';
+        // ÉTAPE 3: Afficher
+        await setStep('step3', 'success', '✅ VIDÉO GÉNÉRÉE !');
+        result.innerHTML += `<video src="${videoUrl}" controls autoplay loop muted style="margin-top:15px;width:100%;border-radius:12px;"></video>`;
+        result.innerHTML += `<pre>SUCCESS\nImage: ${imageUrl}\nVideo: ${videoUrl}</pre>`;
 
         btn.textContent = '✅ TEST RÉUSSI !';
         btn.style.background = '#10B981';
 
     } catch(e) {
         console.error('Test error:', e);
-        var failedStep = document.querySelector('.step.loading');
-        if (failedStep) {
-            failedStep.className = 'step error';
-            failedStep.textContent = '❌ ' + e.message;
-        }
-        result.innerHTML += '<pre class="error">ERREUR:\n' + e.message + '\n\nStack:\n' + (e.stack || '') + '</pre>';
-        btn.textContent = '❌ TEST ÉCHOUÉ';
+        await setStep('step1', 'error', '❌ Étape 1 échouée');
+        await setStep('step2', 'error', '❌ Étape 2 échouée');
+        await setStep('step3', 'error', '❌ Étape 3 échouée');
+        result.innerHTML += `<pre class="error">ERREUR:\n${e.message}\n\nStack:\n${e.stack || ''}</pre>`;        btn.textContent = '❌ TEST ÉCHOUÉ';
         btn.style.background = '#EF4444';
     }
 
