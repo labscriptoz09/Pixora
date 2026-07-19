@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LTX Distilled v8 - Pixora</title>
+<title>LTX Distilled v9 - Pixora</title>
 <style>
   body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:680px;margin:0 auto}
   h1{font-size:1.15rem}
@@ -27,7 +27,7 @@
   button.ghost{padding:9px 14px;background:#1e1e2e;border:1px solid #3b3b4a;color:#fafafa;border-radius:10px;font-size:.8rem;cursor:pointer;margin-top:8px}
   #timer{font-weight:700;color:#8B5CF6;margin-top:8px}
   video{max-width:100%;border-radius:12px;margin-top:10px;display:block;background:#000}
-  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow:auto;margin-top:8px;color:#cbd5e1}
+  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:340px;overflow:auto;margin-top:8px;color:#cbd5e1}
   .dl{display:inline-block;margin-top:10px;padding:10px 16px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
   #final{margin-top:12px;padding:12px;border-radius:10px;font-weight:700;text-align:center;display:none}
   .f-ok{background:rgba(16,185,129,.15);border:1px solid #10B981;color:#10B981}
@@ -39,12 +39,12 @@
 </style>
 </head>
 <body>
-<h1>🎞️ LTX Distilled v8 — polling corrigé</h1>
-<div class="sub">Le bug était la boucle de rappel qui raccrochait au 1er "pas prêt". Maintenant on re-rappelle jusqu'à l'événement complete (ou la vidéo). Le timer monte pendant que le four cuit.</div>
+<h1>🎞️ LTX Distilled v9 — lit l'erreur + mode sûr</h1>
+<div class="sub">v8 a révélé event=error (le worker plante, pas "pas prêt"). v9 : (1) affiche le SSE brut pour lire le message Python, (2) Improve Texture=false (mode sûr anti-OOM).</div>
 
 <div id="cab">
   <div class="ctitle">✅ LTX câblé</div>
-  <div class="cmeta">four: https://lightricks-ltx-video-distilled.hf.space · badge sur POST+upload+rappel · polling re-boucle jusqu'à complete</div>
+  <div class="cmeta">four: https://lightricks-ltx-video-distilled.hf.space · badge POST+upload+rappel · polling re-boucle · mode sûr (texture off)</div>
   <div class="modes">
     <button class="mbtn t2v active" id="btnT2V" onclick="selectMode('t2v')">🟢 Text-to-Video <small>/text_to_video · RECOMMANDÉ</small></button>
     <button class="mbtn i2v" id="btnI2V" onclick="selectMode('i2v')">🟣 Image-to-Video <small>/image_to_video · image Pollinations</small></button>    <button class="mbtn off" disabled>⚪ Video-to-Video <small>non câblé.</small></button>
@@ -173,12 +173,11 @@ function extractVideo(base, node){
   return null;
 }
 
-// v8 : lit les events SSE. done = on a vu complete/error (= résultat définitif).
 function parseSSE2(text){
-  var lines=text.split(/\r?\n/); var curEvent=''; var lastVal=null; var lastEvent=''; var done=false; var sawEvent=false;
+  var lines=text.split(/\r?\n/); var curEvent=''; var lastVal=null; var lastEvent=''; var done=false;
   for(var i=0;i<lines.length;i++){
     var ln=lines[i];
-    if(ln.indexOf('event:')===0){ curEvent=ln.substring(6).trim(); sawEvent=true; }
+    if(ln.indexOf('event:')===0){ curEvent=ln.substring(6).trim(); }
     else if(ln.indexOf('data:')===0){
       var pl=ln.substring(5).trim(); var parsed=null; try{ parsed=JSON.parse(pl); }catch(e){ parsed=pl; }
       lastVal=parsed; lastEvent=curEvent;
@@ -187,15 +186,15 @@ function parseSSE2(text){
     }
   }
   if(lastVal===null){ try{ lastVal=JSON.parse(text); lastEvent='complete'; done=true; }catch(e){} }
-  return {value:lastVal, done:done, event:lastEvent, sawEvent:sawEvent};
+  return {value:lastVal, done:done, event:lastEvent};
 }
 
 async function oneShot(base, epName, data, spec, log){
-  log('› length='+data.length+' | H='+valByLabel(spec,data,'Height')+' | W='+valByLabel(spec,data,'Width')+' | mode='+valByLabel(spec,data,'task')+' | auth POST='+authMask());
+  log('› length='+data.length+' | H='+valByLabel(spec,data,'Height')+' | W='+valByLabel(spec,data,'Width')+' | mode='+valByLabel(spec,data,'task')+' | texture='+valByLabel(spec,data,'Improve Texture (multi-scale)')+' | auth POST='+authMask());
   log('› data = '+trunc(JSON.stringify(data),300));
   var postUrl=base+'/gradio_api/call/'+epName;
-  log('› POST '+postUrl);  var post=await nf(postUrl, {method:'POST', headers:Object.assign({'Content-Type':'application/json'}, authHeaders()), body:JSON.stringify({data:data})}, 60000);
-  if(post.kind==='cors') throw new Error('CORS sur /call → plan C mini-livreur');
+  log('› POST '+postUrl);
+  var post=await nf(postUrl, {method:'POST', headers:Object.assign({'Content-Type':'application/json'}, authHeaders()), body:JSON.stringify({data:data})}, 60000);  if(post.kind==='cors') throw new Error('CORS sur /call → plan C mini-livreur');
   if(post.kind==='timeout') throw new Error('timeout POST 60s');
   if(post.status===401 || post.status===403) throw new Error('HTTP '+post.status+' → clé refusée/expirée');
   if(post.status===429) throw new Error('429 file d\'attente');
@@ -203,7 +202,7 @@ async function oneShot(base, epName, data, spec, log){
   var ej=null; try{ ej=await post.r.json(); }catch(e){ var t2=await post.r.text(); throw new Error('non-json '+trunc(t2,160)); }
   var eid=ej&&(ej.event_id||ej.id);
   if(!eid) throw new Error('pas d\'event_id : '+trunc(JSON.stringify(ej),220));
-  log('› event_id='+eid+' → polling (re-boucle jusqu\'à complete) auth='+authMask());
+  log('› event_id='+eid+' → polling auth='+authMask());
 
   var getUrl=base+'/gradio_api/call/'+epName+'/'+eid;
   var videoUrl=null, lastErr='', startPoll=Date.now(), polls=0;
@@ -217,13 +216,14 @@ async function oneShot(base, epName, data, spec, log){
     if(!g.ok){ var t3=await g.r.text(); lastErr='poll HTTP '+g.status+' '+trunc(t3,200); break; }
     var txt=await g.r.text();
     var p=parseSSE2(txt);
-    log('› poll#'+polls+' event='+ (p.event||'(aucun)') +' done='+p.done+' val='+trunc(JSON.stringify(p.value),200));
+    log('› poll#'+polls+' event='+(p.event||'-')+' done='+p.done+' val='+trunc(JSON.stringify(p.value),200));
+    // v9 : si erreur (ou fini sans vidéo), on AFFICHE le SSE brut = le message Python du plantage
+    if(p.event==='error' || (p.done && !extractVideo(base,p.value))){ log('› RAW SSE:\n'+trunc(txt,800)); }
     videoUrl=extractVideo(base, p.value);
-    if(videoUrl){ break; }                 // succès
-    if(p.done){ lastErr='résultat final sans vidéo (event '+p.event+')'; break; }  // fini mais null = vrai échec
-    // sinon : pas prêt → on RE-RAPPELLE (c'était le bug : avant on breakait ici)
+    if(videoUrl){ break; }
+    if(p.done){ lastErr='worker a levé event='+p.event+' (voir RAW SSE ci-dessus)'; break; }
   }
-  if(!videoUrl && !lastErr) lastErr='timeout polling '+Math.round(GEN_TIMEOUT/1000)+'s (l\'événement complete n\'est jamais arrivé)';
+  if(!videoUrl && !lastErr) lastErr='timeout polling (complete jamais arrivé)';
   return {videoUrl:videoUrl, lastErr:lastErr, polls:polls};
 }
 
@@ -235,15 +235,16 @@ async function generate(){
   gbtn.disabled=true; gmedia.innerHTML=''; glog.style.display='block'; glog.textContent=''; fin.style.display='none';
   function log(s){ glog.textContent+=s+'\n'; glog.scrollTop=glog.scrollHeight; }
   var t0=Date.now();
-  var tick=setInterval(function(){ timer.textContent='⏳ '+Math.round((Date.now()-t0)/1000)+'s (le four cuit, on attend)'; }, 500);
+  var tick=setInterval(function(){ timer.textContent='⏳ '+Math.round((Date.now()-t0)/1000)+'s'; }, 500);
 
   try {
     var base=BASE, epName, spec, data;
     if(chosen.source==='ltx'){
       if(chosen.mode==='t2v'){
         epName='text_to_video'; spec=SPEC_T2V;
-        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'text-to-video'});
-      } else {        epName='image_to_video'; spec=SPEC_I2V;
+        // MODE SÛR : texture off (anti-OOM), le reste aux défauts du four
+        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'text-to-video', 'Improve Texture (multi-scale)':false});      } else {
+        epName='image_to_video'; spec=SPEC_I2V;
         log('› image Pollinations…');
         var poll='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=704&height=512&nologo=true&seed='+Math.floor(Math.random()*100000);
         var im=await nf(poll, null, 30000);
@@ -253,7 +254,7 @@ async function generate(){
         var path=await uploadImg(base, blob);
         var imageArg = path ? fileObj(base, path) : poll;
         log(path?'› upload OK':'› upload bloqué → fallback URL');
-        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg});
+        data=buildFromSpec(spec, {'Prompt':prompt, 'Negative Prompt':NEG, 'task':'image-to-video', 'Input Image':imageArg, 'Improve Texture (multi-scale)':false});
       }
     } else {
       base=chosen.base; epName=chosen.ep.name; spec=SPEC_T2V;
@@ -291,8 +292,8 @@ async function generate(){
 
 function slog(s){ var el=document.getElementById('slog'); el.textContent+=s+'\n'; el.scrollTop=el.scrollHeight; }
 function setSbox(cls, title){ var b=document.getElementById('sbox'); b.style.display='block'; b.className=cls; document.getElementById('stitle').textContent=title; }
-function hasImg(params){ for(var q=0;q<params.length;q++){ var c=String((params[q]&&params[q].component)||'').toLowerCase(); if(c==='image'||c==='file'||c==='uploadbutton'||c==='imageupload') return true; } return false; }
-function buildGeneric(params, prompt, imageArg){  if(!params||!params.length) return imageArg!=null?[imageArg,prompt]:[prompt];
+function hasImg(params){ for(var q=0;q<params.length;q++){ var c=String((params[q]&&params[q].component)||'').toLowerCase(); if(c==='image'||c==='file'||c==='uploadbutton'||c==='imageupload') return true; } return false; }function buildGeneric(params, prompt, imageArg){
+  if(!params||!params.length) return imageArg!=null?[imageArg,prompt]:[prompt];
   var data=new Array(params.length); var imgIdx=-1, promptIdx=-1, fbText=-1;
   for(var i=0;i<params.length;i++){
     var p=params[i]||{}; var comp=String(p.component||'').toLowerCase(); var label=String(p.label||'').toLowerCase();
@@ -340,8 +341,8 @@ async function scanOther(){
     for(var j=0;j<disc.endpoints.length;j++){
       (function(ep){
         var b=document.createElement('button'); b.className='ghost'; b.style.display='block'; b.style.width='100%'; b.style.textAlign='left'; b.style.marginTop='6px';
-        b.textContent='/'+ep.name+' ('+ep.type.toUpperCase()+', '+ep.params.length+' params)';
-        b.onclick=function(){ chosen={source:'other', base:base, ep:ep}; document.getElementById('gentitle').textContent='🎬 Autre Space → /'+ep.name; document.getElementById('gen').scrollIntoView({behavior:'smooth'}); };        pick.appendChild(b);
+        b.textContent='/'+ep.name+' ('+ep.type.toUpperCase()+', '+ep.params.length+' params)';        b.onclick=function(){ chosen={source:'other', base:base, ep:ep}; document.getElementById('gentitle').textContent='🎬 Autre Space → /'+ep.name; document.getElementById('gen').scrollIntoView({behavior:'smooth'}); };
+        pick.appendChild(b);
       })(disc.endpoints[j]);
     }
   } catch(err){ setSbox('ko','❌ '+(err&&err.message?err.message:String(err))); }
