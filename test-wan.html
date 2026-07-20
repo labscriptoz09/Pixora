@@ -1,73 +1,185 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Plan C — LTX</title>
-<style>
-  body{font-family:sans-serif;padding:16px;background:#0f0f14;color:#fafafa;max-width:640px;margin:0 auto}
-  h1{font-size:1.2rem;margin:.2rem 0}
-  .sub{color:#A1A1AA;font-size:.76rem;margin-bottom:1rem}
-  textarea{width:100%;min-height:60px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fafafa;padding:10px;font-size:.92rem;font-family:inherit;resize:vertical;box-sizing:border-box}
-  button{padding:13px 20px;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
-  button:disabled{opacity:.5;cursor:not-allowed}
-  #status{margin-top:12px;font-size:.85rem;color:#A1A1AA;min-height:1.2em}
-  #status.ok{color:#10B981}#status.ko{color:#EF4444}#status.ld{color:#8B5CF6}
-  video{max-width:100%;border-radius:12px;margin-top:12px;display:block;background:#000}
-  .dl{display:inline-block;margin-top:10px;padding:11px 18px;background:#10B981;color:#fff;border-radius:10px;font-weight:700;text-decoration:none}
-  pre{background:#0c0c12;padding:8px;border-radius:6px;font-size:.64rem;white-space:pre-wrap;word-break:break-all;max-height:340px;overflow:auto;margin-top:8px;color:#cbd5e1}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixora - Test SiliconFlow</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a; color: #fff; padding: 20px; min-height: 100vh;
+        }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; text-align: center; }
+        .status { 
+            padding: 12px; border-radius: 8px; margin-bottom: 20px; 
+            font-size: 0.9rem; text-align: center;
+        }
+        .status.ok { background: #064e3b; border: 1px solid #10b981; }
+        .status.err { background: #7f1d1d; border: 1px solid #ef4444; }
+        .status.loading { background: #1e3a5f; border: 1px solid #3b82f6; }
+        
+        textarea {
+            width: 100%; height: 80px; padding: 12px; border-radius: 8px;
+            background: #1a1a1a; border: 1px solid #333; color: #fff;
+            font-size: 1rem; resize: none; margin-bottom: 15px;
+        }
+        textarea:focus { outline: none; border-color: #8b5cf6; }
+        
+        button {
+            width: 100%; padding: 16px; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #fff; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+        }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .loader {
+            display: none; margin: 20px auto; width: 40px; height: 40px;
+            border: 4px solid #333; border-top-color: #8b5cf6;
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .timer { text-align: center; font-size: 0.8rem; color: #888; margin-top: 8px; display: none; }
+        
+        video {
+            width: 100%; max-width: 500px; margin: 20px auto; display: block;
+            border-radius: 12px; border: 2px solid #333; background: #000;
+        }
+        
+        .meta {            margin-top: 15px; padding: 12px; background: #111; border-radius: 8px;
+            font-size: 0.8rem; color: #aaa; word-break: break-all;
+        }
+        .meta strong { color: #8b5cf6; }
+    </style>
 </head>
 <body>
-<h1>🧪 Test Plan C — LTX</h1>
-<div class="sub">Appelle /api/gen-video (badge côté serveur). Version nettoyée : une seule requête, erreur lisible.</div>
-
-<textarea id="prompt">a cat running in a field, cinematic lighting, smooth motion</textarea>
-<button id="btn" onclick="run()">▶️ Tester le plan C</button>
-<div id="status">Prêt.</div>
-<div id="media"></div>
-<pre id="raw" style="display:none"></pre>
+    <h1>🎬 Pixora SiliconFlow Test</h1>
+    
+    <div id="ping-status" class="status loading">⏳ Vérification API...</div>
+    
+    <textarea id="prompt" placeholder="Ex: a cyberpunk cat running in neon rain, cinematic">a majestic dragon flying over mountains at sunset, cinematic lighting, 4k</textarea>
+    
+    <button id="generate-btn" disabled>🚀 Générer Vidéo</button>
+    <div id="loader" class="loader"></div>
+    <div id="timer" class="timer">Temps écoulé : 0s</div>
+    
+    <video id="video-player" controls playsinline style="display:none"></video>
+    <div id="meta-info" class="meta" style="display:none"></div>
+    
+    <div id="error-detail" class="status err" style="display:none"></div>
 
 <script>
-function setStatus(t,c){ var e=document.getElementById('status'); e.className=c||''; e.textContent=t; }
+const API_URL = '/api/gen-video';
+let startTime = 0;
+let timerInterval = null;
 
-async function run(){
-  var btn=document.getElementById('btn'), media=document.getElementById('media'), raw=document.getElementById('raw');
-  var prompt=(document.getElementById('prompt').value||'').trim()||'a cat running in a field';
-  btn.disabled=true; media.innerHTML=''; raw.style.display='none'; raw.textContent='';
-  setStatus('Envoi à /api/gen-video…','ld');
-  var t0=Date.now();
-
-  try{
-    var res=await fetch('/api/gen-video',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({prompt:prompt})
-    });
-
-    var sec=((Date.now()-t0)/1000).toFixed(1);
-    var json=null, txt='';
-    if(res.headers.get('content-type')?.includes('json')){
-      try{ json=await res.json(); }catch(e){ txt=await res.text().catch(()=> ''); }
-    } else {
-      txt=await res.text().catch(()=> '');
+// 1. PING TEST AU CHARGEMENT
+async function pingAPI() {
+    const statusEl = document.getElementById('ping-status');
+    const btn = document.getElementById('generate-btn');
+    
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        
+        if (data.ok && data.hasActiveKey) {
+            statusEl.className = 'status ok';
+            statusEl.textContent = `✅ API SiliconFlow ACTIVE | Provider: ${data.provider} | Clé active: OUI`;
+            btn.disabled = false;
+        } else {
+            throw new Error(data.error || 'Clé API manquante');
+        }
+    } catch (err) {
+        statusEl.className = 'status err';
+        statusEl.textContent = `❌ ERREUR: ${err.message}`;
+        btn.disabled = true;
     }
-
-    if(res.ok && json && json.url){
-      media.innerHTML='<video src="'+json.url+'" controls autoplay loop muted playsinline></video>'
-        +'<br><a class="dl" href="'+json.url+'" target="_blank" rel="noopener">🔗 Ouvrir / enregistrer</a>';
-      setStatus('✅ Vidéo en '+sec+'s','ok');
-    } else {
-      raw.style.display='block';
-      raw.textContent = json ? (json.error||'erreur sans message')+(json.raw?('\n\nRAW:\n'+json.raw):'') : ('HTTP '+res.status+' — '+txt || 'réponse vide');
-      setStatus('❌ HTTP '+res.status+' ('+sec+'s)','ko');
-    }
-  }catch(e){
-    setStatus('❌ '+e.message,'ko');
-    raw.style.display='block'; raw.textContent='EXCEPTION: '+e.message;
-  }
-  btn.disabled=false;
 }
+// 2. GÉNÉRATION VIDÉO
+document.getElementById('generate-btn').addEventListener('click', async () => {
+    const prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) return alert('Entre un prompt !');
+    
+    const btn = document.getElementById('generate-btn');
+    const loader = document.getElementById('loader');
+    const timer = document.getElementById('timer');
+    const video = document.getElementById('video-player');
+    const meta = document.getElementById('meta-info');
+    const errorDetail = document.getElementById('error-detail');
+    
+    // Reset UI
+    btn.disabled = true;
+    loader.style.display = 'block';
+    timer.style.display = 'block';
+    video.style.display = 'none';
+    meta.style.display = 'none';
+    errorDetail.style.display = 'none';
+    
+    // Timer
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        timer.textContent = `⏱️ Temps écoulé : ${elapsed}s (max 60s)`;
+        if (elapsed > 60) {
+            clearInterval(timerInterval);
+            showError('Timeout 60s dépassé. Réessaie.');
+        }
+    }, 1000);
+    
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, quality: 'fast' })
+        });
+        
+        const data = await res.json();
+        clearInterval(timerInterval);
+        
+        if (!res.ok || !data.url) {
+            throw new Error(data.error || 'Pas d\'URL vidéo retournée');
+        }
+        
+        // Succès !
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        loader.style.display = 'none';
+        timer.textContent = `✅ Généré en ${elapsed}s`;
+                video.src = data.url;
+        video.style.display = 'block';
+        video.play().catch(() => {}); // Auto-play si possible
+        
+        meta.innerHTML = `
+            <strong>Modèle :</strong> ${data.model}<br>
+            <strong>Prompt original :</strong> ${prompt}<br>
+            <strong>Prompt enhancé :</strong> ${data.prompt_used}<br>
+            <strong>Mode :</strong> ${data.mode}<br>
+            <strong>URL :</strong> <a href="${data.url}" target="_blank" style="color:#8b5cf6">${data.url.substring(0, 60)}...</a>
+        `;
+        meta.style.display = 'block';
+        
+    } catch (err) {
+        clearInterval(timerInterval);
+        showError(err.message);
+    } finally {
+        btn.disabled = false;
+        loader.style.display = 'none';
+    }
+});
+
+function showError(msg) {
+    const loader = document.getElementById('loader');
+    const timer = document.getElementById('timer');
+    const errorDetail = document.getElementById('error-detail');
+    
+    loader.style.display = 'none';
+    timer.style.display = 'none';
+    errorDetail.style.display = 'block';
+    errorDetail.textContent = `❌ ${msg}`;
+}
+
+// Lancer le ping au chargement
+pingAPI();
 </script>
 </body>
 </html>
