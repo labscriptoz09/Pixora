@@ -1,6 +1,6 @@
 // api/gen-video.ts
-// ✅ Agnes AI en priorité, fallback Hugging Face si Agnes > 10s
-// ✅ RETIRE Pollinations (renvoie une image, pas une vidéo)
+// ✅ Agnes en priorité, fallback Hugging Face
+// ✅ Pas de Pollinations (renvoie une image, pas une vidéo)
 
 declare const process: any;
 
@@ -20,11 +20,10 @@ async function handleGet(req: any, res: any) {
   const { taskId } = req.query;
 
   if (!taskId) {
-    const hasAgnes = !!process.env.AGNES_API_KEY;
-    const hasHF = !!process.env.HUGGINGFACE_API_KEY;
     return res.status(200).json({
       ok: true,
-      providers: { agnes: hasAgnes, huggingface: hasHF }
+      hasAgnes: !!process.env.AGNES_API_KEY,
+      hasHF: !!process.env.HUGGINGFACE_API_KEY
     });
   }
 
@@ -91,10 +90,10 @@ async function handlePost(req: any, res: any) {
   const agnesKey = process.env.AGNES_API_KEY;
   const hfKey = process.env.HUGGINGFACE_API_KEY;
 
-  // 1️⃣ TENTATIVE AGNES (10s max)
+  // ✅ 1. PRIORITÉ AGNES (10s max)
   if (agnesKey) {
     try {
-      console.log('[Agnes] 🚀 Soumission...');
+      console.log('[Agnes] 🚀 Tentative...');
 
       const submitRes = await fetch(AGNES_API_URL, {
         method: 'POST',
@@ -144,7 +143,7 @@ async function handlePost(req: any, res: any) {
         }
 
         if (status === 'failed') {
-          throw new Error('Échec Agnes');
+          throw new Error('Échec génération Agnes');
         }
       }
 
@@ -155,7 +154,7 @@ async function handlePost(req: any, res: any) {
     }
   }
 
-  // 2️⃣ FALLBACK HUGGING FACE (obligatoire)
+  // ✅ 2. FALLBACK HUGGING FACE
   if (hfKey) {
     try {
       console.log('[HF] 🚀 Fallback...');
@@ -163,7 +162,6 @@ async function handlePost(req: any, res: any) {
       return res.status(200).json({ url, provider: 'huggingface' });
     } catch (err: any) {
       console.error('[HF] ❌', err.message);
-      // Dernier recours : on renvoie une erreur claire
       return res.status(500).json({
         error: 'Hugging Face échoué. Vérifie ta clé ou réessaie plus tard.',
         details: err.message
@@ -171,9 +169,10 @@ async function handlePost(req: any, res: any) {
     }
   }
 
-  // 3️⃣ AUCUNE CLÉ DISPONIBLE
+  // ✅ 3. AUCUNE CLÉ
   return res.status(500).json({
-    error: 'Aucun provider disponible. Configure AGNES_API_KEY ou HUGGINGFACE_API_KEY.'
+    error: 'Aucun provider disponible. Configure AGNES_API_KEY ou HUGGINGFACE_API_KEY.',
+    details: 'Agnes: ' + (agnesKey ? 'OK' : 'manquante') + ' | HF: ' + (hfKey ? 'OK' : 'manquante')
   });
 }
 
