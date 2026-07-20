@@ -1,6 +1,6 @@
 // api/gen-video.ts
-// ✅ Agnes AI — durée 4s pour génération rapide
-// ✅ GET = ping + statut, POST = soumission + polling
+// ✅ Agnes AI — durée 2 secondes (ultra rapide)
+// ✅ GET = ping + statut, POST = soumission + polling (30s max)
 
 declare const process: any;
 
@@ -18,17 +18,11 @@ function setCors(res: any) {
 async function handleGet(req: any, res: any) {
   const { taskId } = req.query;
 
-  // Ping
   if (!taskId) {
     const hasKey = !!process.env.AGNES_API_KEY;
-    return res.status(200).json({
-      ok: true,
-      hasKey,
-      provider: 'agnes-ai'
-    });
+    return res.status(200).json({ ok: true, hasKey, provider: 'agnes-ai' });
   }
 
-  // Statut
   const apiKey = process.env.AGNES_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
@@ -82,7 +76,7 @@ async function handlePost(req: any, res: any) {
       body: JSON.stringify({
         model: 'agnes-video-v2.0',
         prompt: prompt.trim(),
-        duration: 4,   // ⬅️ 4 secondes (génération plus rapide)
+        duration: 2,   // ⬅️ 2 secondes (ultra rapide)
         width: 576,
         height: 320
       })
@@ -103,10 +97,10 @@ async function handlePost(req: any, res: any) {
       return res.status(502).json({ error: 'Aucun taskId reçu' });
     }
 
-    // 2. Polling rapide (max 30s)
+    // 2. Polling rapide (max 25s)
     const start = Date.now();
-    while (Date.now() - start < 30000) {
-      await new Promise(r => setTimeout(r, 2000));
+    while (Date.now() - start < 25000) {
+      await new Promise(r => setTimeout(r, 1500));
 
       const statusRes = await fetch(AGNES_STATUS_URL(taskId), {
         headers: { 'Authorization': `Bearer ${apiKey}` }
@@ -122,7 +116,7 @@ async function handlePost(req: any, res: any) {
         return res.status(200).json({
           url: videoUrl,
           provider: 'agnes-ai',
-          duration: 4,
+          duration: 2,
           taskId
         });
       }
@@ -135,7 +129,7 @@ async function handlePost(req: any, res: any) {
       }
     }
 
-    // Timeout : on renvoie quand même le taskId pour que le client continue
+    // Timeout : on renvoie le taskId pour que le client continue
     return res.status(202).json({
       taskId,
       partial: true,
