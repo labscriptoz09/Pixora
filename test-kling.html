@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agnes + Fallback</title>
+  <title>Agnes + HF</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -93,6 +93,7 @@
       align-items: center;
       justify-content: center;
       border: 1px dashed #333;
+      position: relative;
     }
     #video-container video {
       width: 100%;
@@ -104,11 +105,17 @@
       padding: 2rem;
       text-align: center;
     }
+    .error-msg {
+      color: #ef4444;
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🎬 Agnes + Fallback HF</h1>
+  <h1>🎬 Agnes + HF (vidéo réelle)</h1>
 
   <div class="card">
     <div class="flex">
@@ -171,16 +178,26 @@
       video.autoplay = true;
       video.style.width = '100%';
       video.style.maxHeight = '450px';
+
+      // Gestion d'erreur : si la vidéo ne se charge pas
+      video.onerror = () => {
+        videoContainer.innerHTML = `
+          <div class="error-msg">
+            ❌ Erreur : le fichier n'est pas une vidéo valide.<br>
+            <span style="font-size:0.7rem;color:#666;">${provider} a renvoyé un format incorrect.</span>
+          </div>
+        `;
+        videoInfo.textContent = '❌ Erreur chargement';
+        log('⚠️ Fichier non valide (probablement une image)', 'error');
+      };
+
       video.onloadedmetadata = () => {
         videoInfo.textContent = `✅ ${provider || '?'} • ${Math.round(video.duration || 0)}s`;
       };
-      video.onerror = () => {
-        videoInfo.textContent = '❌ Erreur chargement';
-        log('⚠️ La vidéo n\'a pas pu se charger', 'error');
-      };
+
       videoContainer.appendChild(video);
       videoInfo.textContent = '⏳ Chargement...';
-      log(`🎥 Vidéo affichée (${provider || 'inconnu'})`, 'success');
+      log(`🎥 Affichage (${provider})`, 'success');
     }
 
     function resetVideo() {
@@ -266,7 +283,7 @@
     });
 
     pingAPI();
-    log('👋 Ctrl+Enter pour générer.', 'info');
+    log('👋 Ctrl+Enter pour générer. Vidéo réelle (Agnes ou HF).', 'info');
   </script>
 
 </body>
