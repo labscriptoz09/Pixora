@@ -1,22 +1,20 @@
-// api/gen-video.ts - SiliconFlow Multi-Key Router + Lunara Enhancer
 declare const process: any;
 
 const MODELS = [
-  { name: 'Wan-AI/Wan2.1-T2V-1.3B', cost: 1, quality: 'fast' },
-  { name: 'THUDM/CogVideoX-5b', cost: 2, quality: 'premium' },
-  { name: 'Lightricks/LTX-Video', cost: 1, quality: 'balanced' }
+  { name: 'Wan-AI/Wan2.1-T2V-1.3B', cost: 1 },
+  { name: 'THUDM/CogVideoX-5b', cost: 2 },
+  { name: 'Lightricks/LTX-Video', cost: 1 }
 ];
 
 const LUNARA_SUFFIXES = [
-  ', cinematic lighting, volumetric fog, shallow depth of field, 4k resolution, film grain, color graded',
-  ', professional photography, dramatic shadows, golden hour, ultra detailed, photorealistic textures',
-  ', anime style, vibrant colors, dynamic composition, studio ghibli inspired, smooth motion blur'
+  ', cinematic lighting, volumetric fog, shallow depth of field, 4k',
+  ', professional photography, dramatic shadows, golden hour, ultra detailed'
 ];
 
 function cors(res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 function getNextKey(): string | null {
@@ -25,11 +23,8 @@ function getNextKey(): string | null {
     process.env.SILICONFLOW_KEY_2,
     process.env.SILICONFLOW_KEY_3
   ].filter(Boolean);
-  
   if (keys.length === 0) return null;
-  // Rotation simple basée sur l'heure UTC pour répartir la charge
-  const index = Math.floor(Date.now() / 3600000) % keys.length;
-  return keys[index];
+  return keys[Math.floor(Date.now() / 3600000) % keys.length];
 }
 
 function enhancePrompt(prompt: string): string {
@@ -42,72 +37,81 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   
   if (req.method === 'GET') {
-    const key = getNextKey();
     return res.status(200).json({ 
       ok: true, 
-      hasActiveKey: Boolean(key), 
-      runtime: 'node', 
-      provider: 'siliconflow',      ts: Date.now() 
+      hasActiveKey: Boolean(getNextKey()),
+      provider: 'siliconflow'
     });
   }
   
-  if (req.method !== 'POST') return res.status(405).json({ error: 'POST ou GET seulement' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
   const apiKey = getNextKey();
-  if (!apiKey) return res.status(500).json({ error: 'Aucune clé SiliconFlow configurée' });
-
+  if (!apiKey) return res.status(500).json({ error: 'No API key' });
   const body = req.body || {};
-  const rawPrompt = String(body.prompt || '').trim() || 'a cat running in a field';
-  const enhancedPrompt = enhancePrompt(rawPrompt);
-  const selectedModel = MODELS[body.quality === 'premium' ? 1 : (body.quality === 'fast' ? 0 : 2)];
+  const prompt = enhancePrompt(String(body.prompt || 'a cat running'));
+  const model = MODELS[body.quality === 'premium' ? 1 : 0];
 
   try {
-    const response = await fetch('https://api.siliconflow.com/v1/video/generations', {
+    // ÉTAPE 1: Soumettre la tâche
+    const submitRes = await fetch('https://api.siliconflow.cn/v1/videos', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: selectedModel.name,
-        prompt: enhancedPrompt,
+        model: model.name,
+        prompt: prompt,
         width: 832,
         height: 480,
-        num_frames: 81,
-        fps: 16,
-        guidance_scale: 5.0,
-        num_inference_steps: selectedModel.cost === 1 ? 20 : 30
+        video_length: 5
       })
     });
 
-    if (!response.ok) {
-      const errText = await response.text().catch(() => '');
-      return res.status(502).json({ 
-        error: `SiliconFlow HTTP ${response.status}`, 
-        raw: errText.slice(0, 300) 
+    if (!submitRes.ok) {
+      const err = await submitRes.text().catch(() => '');
+      return res.status(502).json({ error: `Submit failed ${submitRes.status}`, raw: err.slice(0, 200) });
+    }
+
+    const submitData = await submitRes.json();
+    const taskId = submitData?.data?.id || submitData?.id;
+    
+    if (!taskId) {
+      return res.status(502).json({ error: 'No task_id', raw: JSON.stringify(submitData).slice(0, 300) });
+    }
+
+    // ÉTAPE 2: Poller le résultat (max 60s)
+    const startTime = Date.now();
+    while (Date.now() - startTime < 60000) {
+      await new Promise(r => setTimeout(r, 3000));
+      
+      const statusRes = await fetch(`https://api.siliconflow.cn/v1/videos/${taskId}`, {
+        headers: { 'Authorization': `Bearer ${apiKey}` }
       });
+      
+      if (!statusRes.ok) continue;
+      
+      const statusData = await statusRes.json();
+      const status = statusData?.data?.status || statusData?.status;
+      
+      if (status === 'completed') {
+        const videoUrl = statusData?.data?.video?.url || statusData?.data?.url;        return res.status(200).json({ 
+          url: videoUrl, 
+          model: model.name,
+          prompt_used: prompt,
+          mode: 'cloud-api'
+        });
+      }
+      
+      if (status === 'failed') {
+        return res.status(502).json({ error: 'Generation failed', raw: JSON.stringify(statusData).slice(0, 300) });
+      }
     }
 
-    const data = await response.json();
-    
-    // SiliconFlow retourne une URL directe dans data.videos[0].url
-    const videoUrl = data?.videos?.[0]?.url || data?.data?.[0]?.url;
-    
-    if (!videoUrl) {
-      return res.status(502).json({ 
-        error: 'Pas d\'URL vidéo dans la réponse', 
-        raw: JSON.stringify(data).slice(0, 300)       });
-    }
-
-    return res.status(200).json({ 
-      url: videoUrl, 
-      model: selectedModel.name,
-      prompt_used: enhancedPrompt,
-      mode: 'cloud-api'
-    });
+    return res.status(504).json({ error: 'Timeout 60s' });
 
   } catch (err: any) {
-    const msg = err?.message || String(err);
-    return res.status(500).json({ error: msg });
+    return res.status(500).json({ error: err.message || String(err) });
   }
 }
