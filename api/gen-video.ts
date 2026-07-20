@@ -1,6 +1,6 @@
 // api/gen-video.ts
 // ✅ Agnes AI en priorité, fallback Hugging Face si Agnes > 10s
-// ✅ GET = ping + statut, POST = génération avec fallback
+// ✅ RETIRE Pollinations (renvoie une image, pas une vidéo)
 
 declare const process: any;
 
@@ -28,7 +28,6 @@ async function handleGet(req: any, res: any) {
     });
   }
 
-  // Statut Agnes
   const apiKey = process.env.AGNES_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
@@ -59,7 +58,7 @@ async function handleGet(req: any, res: any) {
   }
 }
 
-// ========== Fallback Hugging Face ==========
+// ========== Hugging Face ==========
 async function generateHF(prompt: string, hfKey: string): Promise<string> {
   const res = await fetch(HF_URL, {
     method: 'POST',
@@ -114,7 +113,7 @@ async function handlePost(req: any, res: any) {
 
       if (!submitRes.ok) {
         const text = await submitRes.text();
-        console.warn('[Agnes] ❌ Erreur soumission:', text);
+        console.warn('[Agnes] ❌ Erreur:', text);
         throw new Error(`Agnes ${submitRes.status}`);
       }
 
@@ -125,7 +124,6 @@ async function handlePost(req: any, res: any) {
         throw new Error('Aucun taskId');
       }
 
-      // Polling rapide (10s max)
       const start = Date.now();
       while (Date.now() - start < 10000) {
         await new Promise(r => setTimeout(r, 1500));
@@ -141,12 +139,12 @@ async function handlePost(req: any, res: any) {
         const videoUrl = statusData?.video_url || statusData?.video?.url || statusData?.url;
 
         if (status === 'completed' && videoUrl) {
-          console.log('[Agnes] ✅ Vidéo générée en', (Date.now() - start) / 1000, 's');
+          console.log('[Agnes] ✅ Vidéo en', (Date.now() - start) / 1000, 's');
           return res.status(200).json({ url: videoUrl, provider: 'agnes-ai' });
         }
 
         if (status === 'failed') {
-          throw new Error('Échec génération Agnes');
+          throw new Error('Échec Agnes');
         }
       }
 
@@ -157,7 +155,7 @@ async function handlePost(req: any, res: any) {
     }
   }
 
-  // 2️⃣ FALLBACK HUGGING FACE
+  // 2️⃣ FALLBACK HUGGING FACE (obligatoire)
   if (hfKey) {
     try {
       console.log('[HF] 🚀 Fallback...');
@@ -165,16 +163,18 @@ async function handlePost(req: any, res: any) {
       return res.status(200).json({ url, provider: 'huggingface' });
     } catch (err: any) {
       console.error('[HF] ❌', err.message);
+      // Dernier recours : on renvoie une erreur claire
+      return res.status(500).json({
+        error: 'Hugging Face échoué. Vérifie ta clé ou réessaie plus tard.',
+        details: err.message
+      });
     }
   }
 
-  // 3️⃣ DERNIER RECOURS : image statique Pollinations
-  try {
-    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=512&height=512&nologo=true`;
-    return res.status(200).json({ url, provider: 'pollinations' });
-  } catch {
-    return res.status(500).json({ error: 'Aucun provider disponible' });
-  }
+  // 3️⃣ AUCUNE CLÉ DISPONIBLE
+  return res.status(500).json({
+    error: 'Aucun provider disponible. Configure AGNES_API_KEY ou HUGGINGFACE_API_KEY.'
+  });
 }
 
 // ========== HANDLER ==========
