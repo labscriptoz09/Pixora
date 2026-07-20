@@ -1,95 +1,113 @@
-// Plan C - LTX /text_to_video
-declare const process: any; // <- fix TS2580 sans @types/node
+// api/gen-video.ts - SiliconFlow Multi-Key Router + Lunara Enhancer
+declare const process: any;
 
-const SPACE_BASE = 'https://lightricks-ltx-video-distilled.hf.space';
-const ENDPOINT = '/text_to_video';
-const NEG = 'worst quality, inconsistent motion, blurry, jittery, distorted';
+const MODELS = [
+  { name: 'Wan-AI/Wan2.1-T2V-1.3B', cost: 1, quality: 'fast' },
+  { name: 'THUDM/CogVideoX-5b', cost: 2, quality: 'premium' },
+  { name: 'Lightricks/LTX-Video', cost: 1, quality: 'balanced' }
+];
+
+const LUNARA_SUFFIXES = [
+  ', cinematic lighting, volumetric fog, shallow depth of field, 4k resolution, film grain, color graded',
+  ', professional photography, dramatic shadows, golden hour, ultra detailed, photorealistic textures',
+  ', anime style, vibrant colors, dynamic composition, studio ghibli inspired, smooth motion blur'
+];
 
 function cors(res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+}
+
+function getNextKey(): string | null {
+  const keys = [
+    process.env.SILICONFLOW_KEY_1,
+    process.env.SILICONFLOW_KEY_2,
+    process.env.SILICONFLOW_KEY_3
+  ].filter(Boolean);
+  
+  if (keys.length === 0) return null;
+  // Rotation simple basée sur l'heure UTC pour répartir la charge
+  const index = Math.floor(Date.now() / 3600000) % keys.length;
+  return keys[index];
+}
+
+function enhancePrompt(prompt: string): string {
+  const suffix = LUNARA_SUFFIXES[Math.floor(Math.random() * LUNARA_SUFFIXES.length)];
+  return prompt.trim() + suffix;
 }
 
 export default async function handler(req: any, res: any) {
   cors(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
+  
   if (req.method === 'GET') {
-    return res.status(200).json({ ok: true, hasToken: Boolean(process.env.HF_TOKEN), runtime: 'node', space: 'ltx', ts: Date.now() });
+    const key = getNextKey();
+    return res.status(200).json({ 
+      ok: true, 
+      hasActiveKey: Boolean(key), 
+      runtime: 'node', 
+      provider: 'siliconflow',      ts: Date.now() 
+    });
   }
+  
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST ou GET seulement' });
 
-  const token = process.env.HF_TOKEN;
-  if (!token) return res.status(500).json({ error: 'HF_TOKEN manquant en variables Vercel' });
+  const apiKey = getNextKey();
+  if (!apiKey) return res.status(500).json({ error: 'Aucune clé SiliconFlow configurée' });
 
   const body = req.body || {};
-  const prompt = String(body.prompt || '').trim() || 'a cat running in a field, cinematic lighting';
-
-  const data = [
-    prompt, NEG, '', '', 512, 704, 'text-to-video', 2, 9, 42, true, 1, false
-  ];
-
-  const ctrl = new AbortController();
-  const CAP = 55000;
-  const timer = setTimeout(() => ctrl.abort(), CAP);
+  const rawPrompt = String(body.prompt || '').trim() || 'a cat running in a field';
+  const enhancedPrompt = enhancePrompt(rawPrompt);
+  const selectedModel = MODELS[body.quality === 'premium' ? 1 : (body.quality === 'fast' ? 0 : 2)];
 
   try {
-    const postRes = await fetch(SPACE_BASE + '/gradio_api/call' + ENDPOINT, {
+    const response = await fetch('https://api.siliconflow.com/v1/video/generations', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ data }),
-      signal: ctrl.signal,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: selectedModel.name,
+        prompt: enhancedPrompt,
+        width: 832,
+        height: 480,
+        num_frames: 81,
+        fps: 16,
+        guidance_scale: 5.0,
+        num_inference_steps: selectedModel.cost === 1 ? 20 : 30
+      })
     });
-    if (!postRes.ok) {
-      const t = await postRes.text().catch(() => '');
-      return res.status(502).json({ error: 'POST HF HTTP ' + postRes.status, raw: t.slice(0, 500) });
-    }
-    const ej = await postRes.json().catch(() => null);
-    const eid = ej && (ej.event_id || ej.id);
-    if (!eid) return res.status(502).json({ error: "pas d'event_id", raw: JSON.stringify(ej).slice(0, 500) });
 
-    const pollUrl = SPACE_BASE + '/gradio_api/call' + ENDPOINT + '/' + eid;
-    const start = Date.now();
-    let lastRaw = '';
-    while (Date.now() - start < CAP) {
-      await new Promise((r) => setTimeout(r, 2500));
-      const g = await fetch(pollUrl, { headers: { 'Authorization': 'Bearer ' + token }, signal: ctrl.signal }).catch(() => null);
-      if (!g) continue;
-      if (g.status === 202) continue;
-      if (!g.ok) { lastRaw = await g.text().catch(() => ''); return res.status(502).json({ error: 'poll HF HTTP ' + g.status, raw: lastRaw.slice(0, 500) }); }
-      const txt = await g.text(); lastRaw = txt;
-      const lines = txt.split(/\r?\n/); let cur = ''; let val: any = null; let done = false; let ev = '';
-      for (const ln of lines) {
-        if (ln.startsWith('event:')) cur = ln.slice(6).trim();
-        else if (ln.startsWith('data:')) { try { val = JSON.parse(ln.slice(5).trim()); } catch { val = ln.slice(5).trim(); } ev = cur; if (cur === 'complete' || cur === 'error') done = true; cur = ''; }
-      }
-      if (val === null) { try { val = JSON.parse(txt); done = true; ev = 'complete'; } catch {} }
-      const url = extractVideo(SPACE_BASE, val);
-      if (url) return res.status(200).json({ url });
-      if (done) return res.status(502).json({ error: 'event=' + (ev || '?'), raw: txt.slice(0, 800) });
+    if (!response.ok) {
+      const errText = await response.text().catch(() => '');
+      return res.status(502).json({ 
+        error: `SiliconFlow HTTP ${response.status}`, 
+        raw: errText.slice(0, 300) 
+      });
     }
-    return res.status(504).json({ error: 'timeout polling serveur 55s', raw: lastRaw.slice(0, 500) });
+
+    const data = await response.json();
+    
+    // SiliconFlow retourne une URL directe dans data.videos[0].url
+    const videoUrl = data?.videos?.[0]?.url || data?.data?.[0]?.url;
+    
+    if (!videoUrl) {
+      return res.status(502).json({ 
+        error: 'Pas d\'URL vidéo dans la réponse', 
+        raw: JSON.stringify(data).slice(0, 300)       });
+    }
+
+    return res.status(200).json({ 
+      url: videoUrl, 
+      model: selectedModel.name,
+      prompt_used: enhancedPrompt,
+      mode: 'cloud-api'
+    });
+
   } catch (err: any) {
-    const msg = err && err.message ? err.message : String(err);
-    if (/abort/i.test(msg)) return res.status(504).json({ error: 'abort/timeout (cap 55s)' });
+    const msg = err?.message || String(err);
     return res.status(500).json({ error: msg });
-  } finally {
-    clearTimeout(timer);
   }
-}
-
-function extractVideo(base: string, node: any): string | null {
-  if (!node) return null;
-  if (typeof node === 'string') {
-    if (/\.(mp4|webm)(\?|$)/i.test(node)) return /^https?:/i.test(node) ? node : base + (node.charAt(0) === '/' ? node : '/' + node);
-    return null;
-  }
-  if (Array.isArray(node)) { for (const it of node) { const v = extractVideo(base, it); if (v) return v; } return null; }
-  if (typeof node === 'object') {
-    if (node.url) { const u = String(node.url); if (/^https?:/i.test(u)) return u; if (u.includes('file=')) return base + (u.charAt(0) === '/' ? u : '/' + u); }
-    if (node.path) { const ps = String(node.path); if (/^https?:/i.test(ps)) return ps; if (ps.includes('file=')) return base + (ps.charAt(0) === '/' ? ps : '/' + ps); return base + '/gradio_api/file=' + (ps.charAt(0) === '/' ? ps : '/' + ps); }
-    if (node.video) { const r = extractVideo(base, node.video); if (r) return r; }
-    for (const k of Object.keys(node)) { if (k === 'url' || k === 'path' || k === 'video') continue; const v = extractVideo(base, node[k]); if (v) return v; }
-  }
-  return null;
 }
