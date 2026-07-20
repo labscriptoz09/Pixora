@@ -2,106 +2,173 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>🔍 Debug SiliconFlow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Test Kling AI - Pixora</title>
     <style>
-        body { background: #0a0a0a; color: #fff; font-family: monospace; padding: 20px; }
-        .log { margin: 10px 0; padding: 12px; background: #1a1a1a; border-left: 4px solid #6d28d9; }
-        .success { border-color: #10b981; }
-        .error { border-color: #ef4444; }
-        .info { border-color: #3b82f6; }
-        button { background: #6d28d9; color: white; border: none; padding: 10px 20px; margin: 10px 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a; color: #fff; padding: 20px;
+            min-height: 100vh;
+        }
+        h1 { text-align: center; margin-bottom: 25px; font-size: 1.6rem; }
+        .status {
+            padding: 14px; border-radius: 8px; margin-bottom: 20px;
+            font-size: 0.9rem; text-align: center;
+        }
+        .ok { background: #064e3b; border: 1px solid #10b981; }
+        .err { background: #7f1d1d; border: 1px solid #ef4444; }
+        .loading { background: #1e3a5f; border: 1px solid #3b82f6; }
+        textarea {
+            width: 100%; height: 90px; padding: 12px;
+            border-radius: 8px; background: #1a1a1a;
+            border: 1px solid #333; color: #fff;
+            font-size: 1rem; resize: none; margin-bottom: 15px;
+        }
+        button {
+            width: 100%; padding: 16px;
+            border: none; border-radius: 8px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #fff; font-weight: bold; font-size: 1.1rem;
+            cursor: pointer;
+        }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .loader {
+            display: none; margin: 20px auto;
+            width: 40px; height: 40px;
+            border: 4px solid #333; border-top: 4px solid #8b5cf6;
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .timer { text-align: center; font-size: 0.8rem; color: #888; margin-top: 8px; display: none; }
+        video {
+            width: 100%; max-width: 500px; margin: 20px auto;
+            border-radius: 12px; border: 2px solid #333;
+            display: none;
+        }
+        .meta {
+            margin-top: 15px; padding: 12px; background: #111;            border-radius: 8px; font-size: 0.8rem; color: #aaa;
+            word-break: break-all; display: none;
+        }
     </style>
 </head>
 <body>
-    <h2>🔍 Debug SiliconFlow API</h2>
-    <button onclick="testPing()">1. Ping API</button>
-    <button onclick="testPost()">2. POST Génération</button>
-    <div id="logs"></div>
+    <h1>🎬 Test Kling AI API</h1>
+    
+    <div id="ping-status" class="status loading">⏳ Vérification API...</div>
+    
+    <textarea id="prompt" placeholder="Ex: a majestic dragon flying over mountains at sunset, cinematic lighting, 4k">
+a cyberpunk cat running in neon rain, cinematic lighting, 4k
+    </textarea>
+    
+    <button id="generate-btn" disabled>🚀 Générer Vidéo (Kling)</button>
+    <div id="loader" class="loader"></div>
+    <div id="timer" class="timer">Temps écoulé : 0s</div>
+    
+    <video id="video-player" controls playsinline></video>
+    <div id="meta-info" class="meta"></div>
+    <div id="error-detail" class="status err" style="display:none"></div>
 
 <script>
-const LOG = (msg, type = 'info') => {
-    const div = document.createElement('div');
-    div.className = `log ${type}`;
-    div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-    document.getElementById('logs').appendChild(div);
-    document.getElementById('logs').scrollTop = document.getElementById('logs').scrollHeight;
-};
+const API_URL = '/api/gen-video';
 
-async function callApi(url, options = {}) {
+async function pingAPI() {
+    const el = document.getElementById('ping-status');
     try {
-        LOG(`➡️ CALL: ${url}`, 'info');
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getApiKey()}`,
-                ...options.headers
-            },
-            body: options.body ? JSON.stringify(options.body) : undefined
-        });
-        
-        LOG(`⬅️ STATUS: ${res.status} ${res.statusText}`, res.ok ? 'success' : 'error');
-        
-        let text = '';
-        try { text = await res.text(); } catch(e) {}
-        LOG(`RESPONSE: ${text.length > 500 ? text.slice(0, 500)+'...' : text}`, 'info');
-        
-        return { res, text };
-    } catch (err) {        LOG(`❌ ERROR: ${err.message}`, 'error');
-        return { error: err };
-    }
-}
-
-function getApiKey() {
-    // ⚠️ Remplace par UNE de tes clés pour tester
-    return "sk-xxx"; // ← MODIFIE ICI avec SILICONFLOW_KEY_1
-}
-
-async function testPing() {
-    LOG("🔍 Test ping (GET)");
-    try {
-        const res = await fetch('/api/gen-video');
+        const res = await fetch(API_URL);
         const data = await res.json();
-        LOG(`✅ GET /api/gen-video: ${JSON.stringify(data)}`, 'success');
-    } catch (e) {
-        LOG(`❌ GET failed: ${e.message}`, 'error');
+        if (data.ok && data.hasActiveKey) {
+            el.className = 'status ok';
+            el.textContent = `✅ API Kling AI ACTIVE | Provider: ${data.provider}`;
+            document.getElementById('generate-btn').disabled = false;
+        } else {
+            throw new Error('Clé inactive ou erreur');
+        }
+    } catch (err) {
+        el.className = 'status err';
+        el.textContent = `❌ ERREUR: ${err.message}`;
+        document.getElementById('generate-btn').disabled = true;
     }
 }
 
-async function testPost() {
-    LOG("🚀 Test POST génération");
-    
-    // Test 1: endpoint .cn
-    LOG("→ Test 1: api.siliconflow.cn/v1/videos");
-    let { res: r1, text: t1 } = await callApi(
-        'https://api.siliconflow.cn/v1/videos',
-        {
-            body: { model: "Wan-AI/Wan2.1-T2V-1.3B", prompt: "test", width: 832, height: 480, video_length: 5 },
-            headers: { 'X-API-Key': getApiKey() } // Essaye aussi avec X-API-Key
-        }
-    );
-    
-    // Test 2: endpoint .com /v1/video
-    LOG("→ Test 2: api.siliconflow.com/v1/video");
-    let { res: r2, text: t2 } = await callApi(
-        'https://api.siliconflow.com/v1/video',
-        {
-            body: { model: "Wan-AI/Wan2.1-T2V-1.3B", prompt: "test", width: 832, height: 480, duration: 5 },
-            headers: { 'Authorization': `Bearer ${getApiKey()}` }
-        }
-    );
-    
-    // Test 3: endpoint .com /v1/videos (sans s)
-    LOG("→ Test 3: api.siliconflow.com/v1/videos");
-    let { res: r3, text: t3 } = await callApi(
-        'https://api.siliconflow.com/v1/videos',
-        {
-            body: { model: "Wan-AI/Wan2.1-T2V-1.3B", prompt: "test", width: 832, height: 480, video_length: 5 },            headers: { 'X-API-Key': getApiKey() }
-        }
-    );
+document.getElementById('generate-btn').addEventListener('click', async () => {
+    const prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) return alert('⚠️ Entrez un prompt !');
 
-    LOG("✅ Tests terminés. Regarde les logs ci-dessus.");
-}
+    const btn = document.getElementById('generate-btn');
+    const loader = document.getElementById('loader');    const timer = document.getElementById('timer');
+    const video = document.getElementById('video-player');
+    const meta = document.getElementById('meta-info');
+    const errorEl = document.getElementById('error-detail');
+
+    // Reset UI
+    btn.disabled = true;
+    loader.style.display = 'block';
+    timer.style.display = 'block';
+    video.style.display = 'none';
+    meta.style.display = 'none';
+    errorEl.style.display = 'none';
+
+    const startTime = Date.now();
+    timer.textContent = `⏱️ Temps écoulé : 0s`;
+
+    const interval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        timer.textContent = `⏱️ Temps écoulé : ${elapsed}s`;
+        if (elapsed > 60) {
+            clearInterval(interval);
+            showError('Timeout 60s dépassé. Réessaie.');
+        }
+    }, 1000);
+
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, quality: 'fast' })
+        });
+
+        const data = await res.json();
+
+        clearInterval(interval);
+        loader.style.display = 'none';
+
+        if (!res.ok || !data.url) {
+            throw new Error(data.error || 'Aucune URL vidéo');
+        }
+
+        // Succès
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        timer.textContent = `✅ Généré en ${elapsed}s`;
+
+        video.src = data.url;
+        video.style.display = 'block';
+        video.play().catch(() => {});
+
+        meta.innerHTML = `            <strong>Modèle :</strong> ${data.model}<br>
+            <strong>Prompt original :</strong> ${prompt}<br>
+            <strong>Prompt enhancé :</strong> ${data.prompt_used}<br>
+            <strong>Mode :</strong> ${data.mode}
+        `;
+        meta.style.display = 'block';
+
+    } catch (err) {
+        clearInterval(interval);
+        showError(err.message);
+    } finally {
+        btn.disabled = false;
+    }
+
+    function showError(msg) {
+        loader.style.display = 'none';
+        timer.style.display = 'none';
+        errorEl.style.display = 'block';
+        errorEl.textContent = `❌ ${msg}`;
+    }
+});
+
+// Lancer le ping au chargement
+pingAPI();
 </script>
 </body>
 </html>
