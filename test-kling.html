@@ -1,207 +1,381 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agnes AI – Test (corrigé)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agnes AI – Générateur vidéo</title>
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: system-ui, sans-serif; background: #0d0d12; color: #eee; padding: 2rem 1rem; max-width: 800px; margin: 0 auto; }
-    .card { background: #1a1a20; border: 1px solid #2a2a30; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-    .badge.ok { background: #22c55e20; border: 1px solid #22c55e; color: #22c55e; }
-    .badge.err { background: #ef444420; border: 1px solid #ef4444; color: #ef4444; }
-    .badge.pending { background: #f59e0b20; border: 1px solid #f59e0b; color: #f59e0b; }
-    textarea { width: 100%; padding: 0.8rem; background: #0d0d12; border: 1px solid #333; border-radius: 10px; color: #eee; font-size: 1rem; resize: vertical; min-height: 80px; font-family: inherit; }
-    .btn { background: #7c3aed; border: none; color: #fff; padding: 0.7rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .btn:hover { background: #6d28d9; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: #2a2a32; }
-    .btn-secondary:hover { background: #3a3a44; }
-    .log-area { background: #0d0d12; border: 1px solid #2a2a30; border-radius: 10px; padding: 1rem; font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; word-break: break-all; max-height: 250px; overflow-y: auto; margin-top: 1rem; color: #aaa; }
-    .log-area .success { color: #22c55e; }
-    .log-area .error { color: #ef4444; }
-    .log-area .info { color: #60a5fa; }
-    .log-area .warn { color: #f59e0b; }
-    video { width: 100%; max-height: 400px; border-radius: 12px; background: #000; margin-top: 1rem; }
-    .loader { display: inline-block; width: 18px; height: 18px; border: 3px solid #333; border-top-color: #7c3aed; border-radius: 50%; animation: spin 0.7s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .flex { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0d0d12;
+      color: #eee;
+      padding: 2rem 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #1a1a20;
+      border: 1px solid #2a2a30;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    textarea {
+      width: 100%;
+      padding: 0.8rem;
+      background: #0d0d12;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #eee;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+    .btn {
+      background: #7c3aed;
+      border: none;
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #6d28d9;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .badge.ok {
+      background: #22c55e20;
+      border: 1px solid #22c55e;
+      color: #22c55e;
+    }
+    .badge.err {
+      background: #ef444420;
+      border: 1px solid #ef4444;
+      color: #ef4444;
+    }
+    .badge.pending {
+      background: #f59e0b20;
+      border: 1px solid #f59e0b;
+      color: #f59e0b;
+    }
+    .loader {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid #333;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ═══ LECTEUR VIDÉO ═══ */
+    #video-container {
+      margin-top: 1rem;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #333;
+      position: relative;
+    }
+    #video-container video {
+      width: 100%;
+      max-height: 450px;
+      display: block;
+    }
+    #video-placeholder {
+      color: #555;
+      font-size: 0.9rem;
+      padding: 2rem;
+      text-align: center;
+    }
+    #video-placeholder i {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .flex {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .log-area {
+      background: #0d0d12;
+      border: 1px solid #2a2a30;
+      border-radius: 10px;
+      padding: 0.8rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      max-height: 150px;
+      overflow-y: auto;
+      color: #aaa;
+      margin-top: 1rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .log-area .success {
+      color: #22c55e;
+    }
+    .log-area .error {
+      color: #ef4444;
+    }
+    .log-area .info {
+      color: #60a5fa;
+    }
   </style>
 </head>
 <body>
 
-<h1>🧪 Agnes AI — Test (corrigé)</h1>
+  <h1>🎬 Agnes AI — Générateur vidéo</h1>
 
-<div class="card">
-  <div class="flex">
-    <span>🔌 Statut :</span>
-    <span id="api-status" class="badge pending">Vérification...</span>
-    <button class="btn btn-secondary" id="btn-ping">🔄 Ping</button>
+  <!-- Statut API -->
+  <div class="card">
+    <div class="flex">
+      <span>🔌 Statut :</span>
+      <span id="api-status" class="badge pending">Vérification...</span>
+      <button class="btn" id="btn-ping" style="background:#2a2a32;">🔄 Ping</button>
+    </div>
   </div>
-</div>
 
-<div class="card">
-  <label for="prompt">📝 Prompt</label>
-  <textarea id="prompt" placeholder="Décrivez votre vidéo...">un chat qui danse dans un jardin</textarea>
-  <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-    <button class="btn" id="btn-generate">🎬 Générer</button>
-    <span id="timer" style="color:#888;font-family:monospace;"></span>
-    <span id="status-text" style="color:#f59e0b;"></span>
+  <!-- Prompt + Génération -->
+  <div class="card">
+    <label for="prompt" style="display:block;margin-bottom:0.5rem;font-weight:600;">📝 Prompt</label>
+    <textarea id="prompt" placeholder="Décrivez votre vidéo...">un chat qui danse dans un jardin fleuri</textarea>
+
+    <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+      <button class="btn" id="btn-generate">🎬 Générer</button>
+      <span id="timer" style="color:#888;font-family:monospace;"></span>
+      <span id="status-text" style="color:#f59e0b;"></span>
+    </div>
   </div>
-</div>
 
-<div class="card">
-  <div class="log-area" id="log-area">⏳ Prêt.</div>
-  <div id="video-container"></div>
-</div>
+  <!-- VISUALISEUR VIDÉO -->
+  <div class="card" style="border-color:#7c3aed40;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+      <span style="font-weight:600;">📺 Aperçu vidéo</span>
+      <span id="video-info" style="font-size:0.8rem;color:#666;">En attente...</span>
+    </div>
+    <div id="video-container">
+      <div id="video-placeholder">
+        <div style="font-size:2.5rem;margin-bottom:0.3rem;">🎞️</div>
+        Générez une vidéo pour l’afficher ici
+      </div>
+    </div>
+  </div>
 
-<script>
-  const API_BASE = '/api/gen-video';
+  <!-- Logs -->
+  <div class="card">
+    <div class="log-area" id="log-area">⏳ Prêt.</div>
+  </div>
 
-  const promptEl = document.getElementById('prompt');
-  const btnGen = document.getElementById('btn-generate');
-  const btnPing = document.getElementById('btn-ping');
-  const apiStatus = document.getElementById('api-status');
-  const logArea = document.getElementById('log-area');
-  const videoContainer = document.getElementById('video-container');
-  const timerEl = document.getElementById('timer');
-  const statusText = document.getElementById('status-text');
+  <script>
+    const API_BASE = '/api/gen-video';
 
-  function log(msg, type = 'info') {
-    const cls = { success: 'success', error: 'error', info: 'info', warn: 'warn' }[type] || 'info';
-    const line = document.createElement('div');
-    line.innerHTML = `<span class="${cls}">${msg}</span>`;
-    logArea.appendChild(line);
-    logArea.scrollTop = logArea.scrollHeight;
-  }
-  function clearLog() { logArea.innerHTML = ''; }
+    const promptEl = document.getElementById('prompt');
+    const btnGen = document.getElementById('btn-generate');
+    const btnPing = document.getElementById('btn-ping');
+    const apiStatus = document.getElementById('api-status');
+    const logArea = document.getElementById('log-area');
+    const videoContainer = document.getElementById('video-container');
+    const videoInfo = document.getElementById('video-info');
+    const timerEl = document.getElementById('timer');
+    const statusText = document.getElementById('status-text');
 
-  async function pingAPI() {
-    apiStatus.textContent = '⏳ ...';
-    apiStatus.className = 'badge pending';
-    try {
-      const res = await fetch(API_BASE);
-      const data = await res.json();
-      if (data.ok && data.hasKey) {
-        apiStatus.textContent = '✅ OK';
-        apiStatus.className = 'badge ok';
-        log('🔑 Clé Agnes active', 'success');
-      } else {
-        apiStatus.textContent = '⚠️ Clé manquante';
-        apiStatus.className = 'badge err';
-        log('❌ Clé Agnes non configurée', 'error');
-      }
-    } catch (e) {
-      apiStatus.textContent = '❌ Erreur réseau';
-      apiStatus.className = 'badge err';
-      log('🚨 Erreur réseau : ' + e.message, 'error');
+    // ========== Log ==========
+    function log(msg, type = 'info') {
+      const cls = { success: 'success', error: 'error', info: 'info' } [type] || 'info';
+      const line = document.createElement('div');
+      line.innerHTML = `<span class="${cls}">${msg}</span>`;
+      logArea.appendChild(line);
+      logArea.scrollTop = logArea.scrollHeight;
     }
-  }
 
-  async function generate() {
-    const prompt = promptEl.value.trim();
-    if (!prompt) { log('❌ Prompt requis.', 'error'); return; }
+    function clearLog() {
+      logArea.innerHTML = '';
+    }
 
-    btnGen.disabled = true;
-    btnGen.innerHTML = '<span class="loader"></span> Soumission...';
-    clearLog();
-    videoContainer.innerHTML = '';
-    statusText.textContent = '⏳ Soumission...';
-    timerEl.textContent = '';
-
-    const start = Date.now();
-    let timerInterval = setInterval(() => {
-      timerEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
-    }, 200);
-
-    try {
-      log(`📤 Soumission du prompt : "${prompt}"`, 'info');
-      const submitRes = await fetch(API_BASE, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, wait: false })
-      });
-
-      const submitData = await submitRes.json();
-
-      if (!submitRes.ok) {
-        throw new Error(`Soumission ${submitRes.status}: ${JSON.stringify(submitData)}`);
-      }
-
-      const taskId = submitData.taskId;
-      if (!taskId) {
-        throw new Error('Aucun taskId reçu');
-      }
-
-      log(`✅ Tâche soumise (ID: ${taskId})`, 'success');
-      statusText.textContent = '⏳ Génération...';
-      btnGen.innerHTML = '<span class="loader"></span> Polling...';
-
-      let videoUrl = null;
-      let attempts = 0;
-      const maxAttempts = 60;
-
-      while (!videoUrl && attempts < maxAttempts) {
-        attempts++;
-        await new Promise(r => setTimeout(r, 3000));
-
-        const statusRes = await fetch(`${API_BASE}?taskId=${taskId}`);
-        const statusData = await statusRes.json();
-
-        // 🔍 On tente tous les formats possibles
-        videoUrl = statusData.url || statusData.video_url || statusData.video?.url || null;
-
-        if (statusData.status === 'completed' && videoUrl) {
-          break;
-        } else if (statusData.status === 'failed') {
-          throw new Error(`Échec : ${statusData.error || 'inconnu'}`);
-        } else {
-          log(`⏳ En cours... (${attempts * 3}s)`, 'info');
-        }
-      }
-
-      clearInterval(timerInterval);
-      const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-      timerEl.textContent = elapsed + 's';
-
-      if (!videoUrl) {
-        throw new Error(`Timeout après ${elapsed}s`);
-      }
-
-      log(`✅ Vidéo générée en ${elapsed}s`, 'success');
-      log(`📥 URL récupérée : ${videoUrl}`, 'info');
-
-      // 🔥 Affichage de la vidéo
+    // ========== Afficher la vidéo ==========
+    function showVideo(url) {
+      videoContainer.innerHTML = '';
       const video = document.createElement('video');
-      video.src = videoUrl;
+      video.src = url;
       video.controls = true;
       video.autoplay = true;
       video.style.width = '100%';
-      video.style.maxHeight = '400px';
-      video.onerror = () => log('⚠️ Erreur chargement vidéo (lien peut être expiré)', 'warn');
+      video.style.maxHeight = '450px';
+      video.onerror = () => {
+        videoInfo.textContent = '❌ Erreur chargement';
+        log('⚠️ La vidéo n\'a pas pu être chargée (lien expiré ?)', 'error');
+      };
+      video.onloadedmetadata = () => {
+        videoInfo.textContent = `✅ ${Math.round(video.duration || 0)}s • prête`;
+      };
       videoContainer.appendChild(video);
-
-      statusText.textContent = '✅ Terminé';
-
-    } catch (err) {
-      clearInterval(timerInterval);
-      log(`❌ Erreur : ${err.message}`, 'error');
-      statusText.textContent = '❌ Échec';
-    } finally {
-      btnGen.disabled = false;
-      btnGen.innerHTML = '🎬 Générer';
+      videoInfo.textContent = '⏳ Chargement...';
+      log('🎥 Vidéo affichée dans le lecteur', 'success');
     }
-  }
 
-  btnPing.addEventListener('click', pingAPI);
-  btnGen.addEventListener('click', generate);
-  promptEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
-  });
+    function resetVideo() {
+      videoContainer.innerHTML = `
+        <div id="video-placeholder">
+          <div style="font-size:2.5rem;margin-bottom:0.3rem;">🎞️</div>
+          Générez une vidéo pour l’afficher ici
+        </div>
+      `;
+      videoInfo.textContent = 'En attente...';
+    }
 
-  pingAPI();
-  log('👋 Prêt. Ctrl+Enter pour générer.', 'info');
-</script>
+    // ========== Ping ==========
+    async function pingAPI() {
+      apiStatus.textContent = '⏳ ...';
+      apiStatus.className = 'badge pending';
+      try {
+        const res = await fetch(API_BASE);
+        const data = await res.json();
+        if (data.ok && data.hasKey) {
+          apiStatus.textContent = '✅ OK';
+          apiStatus.className = 'badge ok';
+          log('🔑 Clé Agnes active', 'success');
+        } else {
+          apiStatus.textContent = '⚠️ Clé manquante';
+          apiStatus.className = 'badge err';
+          log('❌ Clé Agnes non configurée', 'error');
+        }
+      } catch (e) {
+        apiStatus.textContent = '❌ Erreur réseau';
+        apiStatus.className = 'badge err';
+        log('🚨 Erreur réseau : ' + e.message, 'error');
+      }
+    }
+
+    // ========== Génération ==========
+    async function generate() {
+      const prompt = promptEl.value.trim();
+      if (!prompt) {
+        log('❌ Prompt requis.', 'error');
+        return;
+      }
+
+      btnGen.disabled = true;
+      btnGen.innerHTML = '<span class="loader"></span> Soumission...';
+      clearLog();
+      resetVideo();
+      statusText.textContent = '⏳ Soumission...';
+      timerEl.textContent = '';
+
+      const start = Date.now();
+      let timerInterval = setInterval(() => {
+        timerEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
+      }, 200);
+
+      try {
+        log(`📤 Soumission : "${prompt}"`, 'info');
+
+        const submitRes = await fetch(API_BASE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, wait: false })
+        });
+
+        const submitData = await submitRes.json();
+
+        if (!submitRes.ok) {
+          throw new Error(`Soumission ${submitRes.status}: ${JSON.stringify(submitData)}`);
+        }
+
+        const taskId = submitData.taskId;
+        if (!taskId) throw new Error('Aucun taskId reçu');
+
+        log(`✅ Tâche soumise (ID: ${taskId})`, 'success');
+        statusText.textContent = '⏳ Génération...';
+        btnGen.innerHTML = '<span class="loader"></span> Polling...';
+
+        let videoUrl = null;
+        let attempts = 0;
+        const maxAttempts = 60;
+
+        while (!videoUrl && attempts < maxAttempts) {
+          attempts++;
+          await new Promise(r => setTimeout(r, 3000));
+
+          const statusRes = await fetch(`${API_BASE}?taskId=${taskId}`);
+          const statusData = await statusRes.json();
+
+          // On essaie tous les formats possibles
+          videoUrl = statusData.url || statusData.video_url || statusData.video?.url || null;
+
+          if (statusData.status === 'completed' && videoUrl) {
+            break;
+          } else if (statusData.status === 'failed') {
+            throw new Error(`Échec : ${statusData.error || 'inconnu'}`);
+          } else {
+            log(`⏳ En cours... (${attempts * 3}s)`, 'info');
+          }
+        }
+
+        clearInterval(timerInterval);
+        const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+        timerEl.textContent = elapsed + 's';
+
+        if (!videoUrl) {
+          throw new Error(`Timeout après ${elapsed}s`);
+        }
+
+        // ✅ Succès — on affiche la vidéo
+        log(`✅ Vidéo générée en ${elapsed}s`, 'success');
+        log(`📥 URL : ${videoUrl}`, 'info');
+        statusText.textContent = '✅ Terminé';
+        showVideo(videoUrl);
+
+      } catch (err) {
+        clearInterval(timerInterval);
+        log(`❌ Erreur : ${err.message}`, 'error');
+        statusText.textContent = '❌ Échec';
+      } finally {
+        btnGen.disabled = false;
+        btnGen.innerHTML = '🎬 Générer';
+      }
+    }
+
+    // ========== Événements ==========
+    btnPing.addEventListener('click', pingAPI);
+    btnGen.addEventListener('click', generate);
+    promptEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
+    });
+
+    // ========== Init ==========
+    pingAPI();
+    log('👋 Prêt. Ctrl+Enter pour générer.', 'info');
+  </script>
+
 </body>
 </html>
