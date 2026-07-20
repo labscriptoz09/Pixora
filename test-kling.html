@@ -3,18 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agnes AI – Générateur vidéo</title>
+  <title>Agnes — Générateur vidéo</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: system-ui, sans-serif;
       background: #0d0d12;
       color: #eee;
       padding: 2rem 1rem;
-      max-width: 800px;
+      max-width: 700px;
       margin: 0 auto;
     }
     .card {
@@ -46,34 +43,17 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    .btn:hover {
-      background: #6d28d9;
-    }
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    .btn:hover { background: #6d28d9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .badge {
       padding: 0.3rem 0.8rem;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 600;
     }
-    .badge.ok {
-      background: #22c55e20;
-      border: 1px solid #22c55e;
-      color: #22c55e;
-    }
-    .badge.err {
-      background: #ef444420;
-      border: 1px solid #ef4444;
-      color: #ef4444;
-    }
-    .badge.pending {
-      background: #f59e0b20;
-      border: 1px solid #f59e0b;
-      color: #f59e0b;
-    }
+    .badge.ok { background: #22c55e20; border: 1px solid #22c55e; color: #22c55e; }
+    .badge.err { background: #ef444420; border: 1px solid #ef4444; color: #ef4444; }
+    .badge.pending { background: #f59e0b20; border: 1px solid #f59e0b; color: #f59e0b; }
     .loader {
       display: inline-block;
       width: 18px;
@@ -85,48 +65,8 @@
       vertical-align: middle;
       margin-right: 6px;
     }
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* ═══ LECTEUR VIDÉO ═══ */
-    #video-container {
-      margin-top: 1rem;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #000;
-      min-height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px dashed #333;
-      position: relative;
-    }
-    #video-container video {
-      width: 100%;
-      max-height: 450px;
-      display: block;
-    }
-    #video-placeholder {
-      color: #555;
-      font-size: 0.9rem;
-      padding: 2rem;
-      text-align: center;
-    }
-    #video-placeholder i {
-      font-size: 2rem;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    .flex {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .flex { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
     .log-area {
       background: #0d0d12;
       border: 1px solid #2a2a30;
@@ -141,22 +81,38 @@
       white-space: pre-wrap;
       word-break: break-all;
     }
-    .log-area .success {
-      color: #22c55e;
+    .log-area .success { color: #22c55e; }
+    .log-area .error { color: #ef4444; }
+    .log-area .info { color: #60a5fa; }
+
+    /* Lecteur vidéo */
+    #video-container {
+      margin-top: 1rem;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #333;
     }
-    .log-area .error {
-      color: #ef4444;
+    #video-container video {
+      width: 100%;
+      max-height: 450px;
+      display: block;
     }
-    .log-area .info {
-      color: #60a5fa;
+    .placeholder {
+      color: #555;
+      padding: 2rem;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎬 Agnes AI — Générateur vidéo</h1>
+  <h1>🎬 Agnes — Générateur vidéo</h1>
 
-  <!-- Statut API -->
   <div class="card">
     <div class="flex">
       <span>🔌 Statut :</span>
@@ -165,11 +121,9 @@
     </div>
   </div>
 
-  <!-- Prompt + Génération -->
   <div class="card">
     <label for="prompt" style="display:block;margin-bottom:0.5rem;font-weight:600;">📝 Prompt</label>
-    <textarea id="prompt" placeholder="Décrivez votre vidéo...">un chat qui danse dans un jardin fleuri</textarea>
-
+    <textarea id="prompt">un chat qui danse dans un jardin fleuri</textarea>
     <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
       <button class="btn" id="btn-generate">🎬 Générer</button>
       <span id="timer" style="color:#888;font-family:monospace;"></span>
@@ -177,17 +131,14 @@
     </div>
   </div>
 
-  <!-- VISUALISEUR VIDÉO -->
+  <!-- LECTEUR VIDÉO -->
   <div class="card" style="border-color:#7c3aed40;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-      <span style="font-weight:600;">📺 Aperçu vidéo</span>
+      <span style="font-weight:600;">📺 Aperçu</span>
       <span id="video-info" style="font-size:0.8rem;color:#666;">En attente...</span>
     </div>
     <div id="video-container">
-      <div id="video-placeholder">
-        <div style="font-size:2.5rem;margin-bottom:0.3rem;">🎞️</div>
-        Générez une vidéo pour l’afficher ici
-      </div>
+      <div class="placeholder">🎞️ Générez une vidéo</div>
     </div>
   </div>
 
@@ -209,7 +160,6 @@
     const timerEl = document.getElementById('timer');
     const statusText = document.getElementById('status-text');
 
-    // ========== Log ==========
     function log(msg, type = 'info') {
       const cls = { success: 'success', error: 'error', info: 'info' } [type] || 'info';
       const line = document.createElement('div');
@@ -218,11 +168,6 @@
       logArea.scrollTop = logArea.scrollHeight;
     }
 
-    function clearLog() {
-      logArea.innerHTML = '';
-    }
-
-    // ========== Afficher la vidéo ==========
     function showVideo(url) {
       videoContainer.innerHTML = '';
       const video = document.createElement('video');
@@ -231,29 +176,23 @@
       video.autoplay = true;
       video.style.width = '100%';
       video.style.maxHeight = '450px';
+      video.onloadedmetadata = () => {
+        videoInfo.textContent = `✅ ${Math.round(video.duration || 0)}s`;
+      };
       video.onerror = () => {
         videoInfo.textContent = '❌ Erreur chargement';
-        log('⚠️ La vidéo n\'a pas pu être chargée (lien expiré ?)', 'error');
-      };
-      video.onloadedmetadata = () => {
-        videoInfo.textContent = `✅ ${Math.round(video.duration || 0)}s • prête`;
+        log('⚠️ La vidéo n\'a pas pu se charger', 'error');
       };
       videoContainer.appendChild(video);
       videoInfo.textContent = '⏳ Chargement...';
-      log('🎥 Vidéo affichée dans le lecteur', 'success');
+      log('🎥 Vidéo affichée', 'success');
     }
 
     function resetVideo() {
-      videoContainer.innerHTML = `
-        <div id="video-placeholder">
-          <div style="font-size:2.5rem;margin-bottom:0.3rem;">🎞️</div>
-          Générez une vidéo pour l’afficher ici
-        </div>
-      `;
+      videoContainer.innerHTML = `<div class="placeholder">🎞️ Générez une vidéo</div>`;
       videoInfo.textContent = 'En attente...';
     }
 
-    // ========== Ping ==========
     async function pingAPI() {
       apiStatus.textContent = '⏳ ...';
       apiStatus.className = 'badge pending';
@@ -272,33 +211,30 @@
       } catch (e) {
         apiStatus.textContent = '❌ Erreur réseau';
         apiStatus.className = 'badge err';
-        log('🚨 Erreur réseau : ' + e.message, 'error');
+        log('🚨 ' + e.message, 'error');
       }
     }
 
-    // ========== Génération ==========
     async function generate() {
       const prompt = promptEl.value.trim();
-      if (!prompt) {
-        log('❌ Prompt requis.', 'error');
-        return;
-      }
+      if (!prompt) { log('❌ Prompt requis.', 'error'); return; }
 
       btnGen.disabled = true;
       btnGen.innerHTML = '<span class="loader"></span> Soumission...';
-      clearLog();
       resetVideo();
-      statusText.textContent = '⏳ Soumission...';
+      logArea.innerHTML = '';
+      statusText.textContent = '⏳ En cours...';
       timerEl.textContent = '';
 
       const start = Date.now();
-      let timerInterval = setInterval(() => {
+      const timerInterval = setInterval(() => {
         timerEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
       }, 200);
 
       try {
-        log(`📤 Soumission : "${prompt}"`, 'info');
+        log(`📤 "${prompt}"`, 'info');
 
+        // 1. Soumission
         const submitRes = await fetch(API_BASE, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -306,18 +242,15 @@
         });
 
         const submitData = await submitRes.json();
-
-        if (!submitRes.ok) {
-          throw new Error(`Soumission ${submitRes.status}: ${JSON.stringify(submitData)}`);
-        }
+        if (!submitRes.ok) throw new Error(`Soumission ${submitRes.status}`);
 
         const taskId = submitData.taskId;
-        if (!taskId) throw new Error('Aucun taskId reçu');
+        if (!taskId) throw new Error('Aucun taskId');
 
-        log(`✅ Tâche soumise (ID: ${taskId})`, 'success');
-        statusText.textContent = '⏳ Génération...';
+        log(`✅ Tâche soumise (${taskId})`, 'success');
         btnGen.innerHTML = '<span class="loader"></span> Polling...';
 
+        // 2. Polling
         let videoUrl = null;
         let attempts = 0;
         const maxAttempts = 60;
@@ -329,13 +262,13 @@
           const statusRes = await fetch(`${API_BASE}?taskId=${taskId}`);
           const statusData = await statusRes.json();
 
-          // On essaie tous les formats possibles
+          // 🔥 On récupère l'URL quel que soit le format
           videoUrl = statusData.url || statusData.video_url || statusData.video?.url || null;
 
           if (statusData.status === 'completed' && videoUrl) {
             break;
           } else if (statusData.status === 'failed') {
-            throw new Error(`Échec : ${statusData.error || 'inconnu'}`);
+            throw new Error('Échec génération');
           } else {
             log(`⏳ En cours... (${attempts * 3}s)`, 'info');
           }
@@ -345,19 +278,16 @@
         const elapsed = ((Date.now() - start) / 1000).toFixed(1);
         timerEl.textContent = elapsed + 's';
 
-        if (!videoUrl) {
-          throw new Error(`Timeout après ${elapsed}s`);
-        }
+        if (!videoUrl) throw new Error(`Timeout (${elapsed}s)`);
 
         // ✅ Succès — on affiche la vidéo
-        log(`✅ Vidéo générée en ${elapsed}s`, 'success');
-        log(`📥 URL : ${videoUrl}`, 'info');
+        log(`✅ Générée en ${elapsed}s (Agnes)`, 'success');
         statusText.textContent = '✅ Terminé';
         showVideo(videoUrl);
 
       } catch (err) {
         clearInterval(timerInterval);
-        log(`❌ Erreur : ${err.message}`, 'error');
+        log(`❌ ${err.message}`, 'error');
         statusText.textContent = '❌ Échec';
       } finally {
         btnGen.disabled = false;
@@ -365,16 +295,14 @@
       }
     }
 
-    // ========== Événements ==========
     btnPing.addEventListener('click', pingAPI);
     btnGen.addEventListener('click', generate);
     promptEl.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
     });
 
-    // ========== Init ==========
     pingAPI();
-    log('👋 Prêt. Ctrl+Enter pour générer.', 'info');
+    log('👋 Ctrl+Enter pour générer.', 'info');
   </script>
 
 </body>
