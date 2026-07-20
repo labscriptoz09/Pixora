@@ -1,268 +1,189 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agnes AI — Asynchrone</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0d0d12;
-      color: #eee;
-      padding: 2rem 1rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .card {
-      background: #1a1a20;
-      border: 1px solid #2a2a30;
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .badge {
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    .badge.ok { background: #22c55e20; border: 1px solid #22c55e; color: #22c55e; }
-    .badge.err { background: #ef444420; border: 1px solid #ef4444; color: #ef4444; }
-    .badge.pending { background: #f59e0b20; border: 1px solid #f59e0b; color: #f59e0b; }
-    .badge.done { background: #3b82f620; border: 1px solid #3b82f6; color: #3b82f6; }
-    textarea {
-      width: 100%;
-      padding: 0.8rem;
-      background: #0d0d12;
-      border: 1px solid #333;
-      border-radius: 10px;
-      color: #eee;
-      font-size: 1rem;
-      resize: vertical;
-      min-height: 80px;
-      font-family: inherit;
-    }
-    .btn {
-      background: #7c3aed;
-      border: none;
-      color: #fff;
-      padding: 0.7rem 1.5rem;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn:hover { background: #6d28d9; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: #2a2a32; }
-    .btn-secondary:hover { background: #3a3a44; }
-    .log-area {
-      background: #0d0d12;
-      border: 1px solid #2a2a30;
-      border-radius: 10px;
-      padding: 1rem;
-      font-family: monospace;
-      font-size: 0.8rem;
-      white-space: pre-wrap;
-      word-break: break-all;
-      max-height: 250px;
-      overflow-y: auto;
-      margin-top: 1rem;
-      color: #aaa;
-    }
-    .log-area .success { color: #22c55e; }
-    .log-area .error { color: #ef4444; }
-    .log-area .info { color: #60a5fa; }
-    video { width: 100%; max-height: 400px; border-radius: 12px; background: #000; margin-top: 1rem; }
-    .loader { display: inline-block; width: 18px; height: 18px; border: 3px solid #333; border-top-color: #7c3aed; border-radius: 50%; animation: spin 0.7s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .hidden { display: none; }
-    .flex { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-  </style>
-</head>
-<body>
+// api/gen-video.ts
+// ✅ Version unifiée : gère GET (statut) et POST (soumission + polling)
+// ✅ Gère le CORS correctement
+// ✅ Retourne toujours du JSON valide
 
-<h1>🧪 Agnes AI — Asynchrone</h1>
-<p class="sub">Génération vidéo sans timeout (polling côté client).</p>
+declare const process: any;
 
-<div class="card">
-  <div class="flex">
-    <span>🔌 Statut :</span>
-    <span id="api-status" class="badge pending">Vérification...</span>
-    <button class="btn btn-secondary" id="btn-ping">🔄 Ping</button>
-  </div>
-</div>
+const AGNES_API_URL = 'https://apihub.agnes-ai.com/v1/videos';
+const AGNES_STATUS_URL = (id: string) => `https://apihub.agnes-ai.com/v1/videos/${id}`;
 
-<div class="card">
-  <label for="prompt">📝 Prompt</label>
-  <textarea id="prompt" placeholder="Décrivez votre vidéo...">un chat qui danse dans un jardin</textarea>
-  <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-    <button class="btn" id="btn-generate">🎬 Générer</button>
-    <span id="timer" style="color:#888;font-family:monospace;"></span>
-    <span id="status-text" style="color:#f59e0b;"></span>
-  </div>
-</div>
+// CORS
+function setCors(res: any) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Content-Type', 'application/json'); // Force le JSON
+}
 
-<div class="card" id="result-card">
-  <div class="log-area" id="log-area">⏳ Prêt.</div>
-  <div id="video-container"></div>
-</div>
+// ============================================================
+//  GET : Vérifier le statut d'une tâche
+// ============================================================
 
-<script>
-  // ========== Configuration ==========
-  const SUBMIT_URL = '/api/gen-video-submit';
-  const STATUS_URL = '/api/gen-video-status';
-
-  // ========== Références DOM ==========
-  const promptEl = document.getElementById('prompt');
-  const btnGen = document.getElementById('btn-generate');
-  const btnPing = document.getElementById('btn-ping');
-  const apiStatus = document.getElementById('api-status');
-  const logArea = document.getElementById('log-area');
-  const videoContainer = document.getElementById('video-container');
-  const timerEl = document.getElementById('timer');
-  const statusText = document.getElementById('status-text');
-
-  // ========== Logger ==========
-  function log(message, type = 'info') {
-    const cls = { success: 'success', error: 'error', info: 'info' }[type] || 'info';
-    const line = document.createElement('div');
-    line.innerHTML = `<span class="${cls}">${message}</span>`;
-    logArea.appendChild(line);
-    logArea.scrollTop = logArea.scrollHeight;
-  }
-
-  function clearLog() {
-    logArea.innerHTML = '';
-  }
-
-  // ========== Ping ==========
-  async function pingAPI() {
-    apiStatus.textContent = '⏳ ...';
-    apiStatus.className = 'badge pending';
-    try {
-      const res = await fetch(SUBMIT_URL, { method: 'POST', body: JSON.stringify({ prompt: 'ping' }), headers: { 'Content-Type': 'application/json' } });
-      if (res.status === 200) {
-        apiStatus.textContent = '✅ OK';
-        apiStatus.className = 'badge ok';
-      } else {
-        apiStatus.textContent = '⚠️ Erreur ' + res.status;
-        apiStatus.className = 'badge err';
-      }
-    } catch (e) {
-      apiStatus.textContent = '❌ Erreur réseau';
-      apiStatus.className = 'badge err';
-    }
-  }
-
-  // ========== Génération ==========
-  async function generate() {
-    const prompt = promptEl.value.trim();
-    if (!prompt) {
-      log('❌ Prompt requis.', 'error');
-      return;
-    }
-
-    btnGen.disabled = true;
-    btnGen.innerHTML = '<span class="loader"></span> Soumission...';
-    clearLog();
-    videoContainer.innerHTML = '';
-    statusText.textContent = '⏳ Soumission...';
-    timerEl.textContent = '';
-
-    const start = Date.now();
-    let timerInterval = setInterval(() => {
-      timerEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
-    }, 200);
-
-    try {
-      log(`📤 Envoi du prompt : "${prompt}"`, 'info');
-
-      // 1️⃣ Soumettre
-      const submitRes = await fetch(SUBMIT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
+async function handleGet(req: any, res: any) {
+  try {
+    const { taskId } = req.query;
+    
+    // Si pas de taskId, retourner le ping
+    if (!taskId) {
+      const hasKey = !!process.env.AGNES_API_KEY;
+      return res.status(200).json({
+        ok: true,
+        provider: 'agnes-ai',
+        hasKey: hasKey,
+        timestamp: Date.now()
       });
-
-      const submitData = await submitRes.json();
-
-      if (!submitRes.ok) {
-        throw new Error(`Soumission échouée (${submitRes.status}): ${JSON.stringify(submitData)}`);
-      }
-
-      const taskId = submitData.taskId;
-      if (!taskId) {
-        throw new Error('Aucun taskId reçu');
-      }
-
-      log(`✅ Tâche soumise, ID : ${taskId}`, 'success');
-      statusText.textContent = '⏳ Génération en cours...';
-      btnGen.innerHTML = '<span class="loader"></span> Polling...';
-
-      // 2️⃣ Polling côté client
-      let videoUrl = null;
-      let attempts = 0;
-      const maxAttempts = 60; // 60 * 3s = 180s max
-
-      while (!videoUrl && attempts < maxAttempts) {
-        attempts++;
-        await new Promise(r => setTimeout(r, 3000));
-
-        const statusRes = await fetch(`${STATUS_URL}?taskId=${taskId}`);
-        const statusData = await statusRes.json();
-
-        if (statusData.status === 'completed') {
-          videoUrl = statusData.url;
-          break;
-        } else if (statusData.status === 'failed') {
-          throw new Error(`Échec Agnes : ${statusData.error || 'inconnu'}`);
-        } else {
-          log(`⏳ En cours... (${attempts * 3}s)`, 'info');
-        }
-      }
-
-      clearInterval(timerInterval);
-      const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-      timerEl.textContent = elapsed + 's';
-
-      if (!videoUrl) {
-        throw new Error(`Timeout après ${elapsed}s`);
-      }
-
-      // ✅ Succès
-      log(`✅ Vidéo générée en ${elapsed}s`, 'success');
-      statusText.textContent = '✅ Terminé';
-
-      const video = document.createElement('video');
-      video.src = videoUrl;
-      video.controls = true;
-      video.autoplay = true;
-      video.style.width = '100%';
-      video.style.maxHeight = '400px';
-      videoContainer.appendChild(video);
-
-    } catch (err) {
-      clearInterval(timerInterval);
-      log(`❌ Erreur : ${err.message}`, 'error');
-      statusText.textContent = '❌ Échec';
-    } finally {
-      btnGen.disabled = false;
-      btnGen.innerHTML = '🎬 Générer';
     }
+
+    // Vérifier le statut de la tâche
+    const apiKey = process.env.AGNES_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
+    }
+
+    const statusRes = await fetch(AGNES_STATUS_URL(taskId), {
+      headers: { 'Authorization': `Bearer ${apiKey}` }
+    });
+
+    if (!statusRes.ok) {
+      const text = await statusRes.text();
+      return res.status(statusRes.status).json({
+        error: `Statut ${statusRes.status}`,
+        raw: text.slice(0, 200)
+      });
+    }
+
+    const data = await statusRes.json();
+    const status = data?.status || data?.state || 'unknown';
+    const videoUrl = data?.video_url || data?.video?.url || data?.url;
+
+    if (status === 'completed' && videoUrl) {
+      return res.status(200).json({ status: 'completed', url: videoUrl });
+    } else if (status === 'failed') {
+      return res.status(200).json({
+        status: 'failed',
+        error: data?.message || 'Échec de la génération'
+      });
+    } else {
+      return res.status(200).json({ status: 'processing' });
+    }
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+// ============================================================
+//  POST : Soumettre une tâche (et polling si demandé)
+// ============================================================
+
+async function handlePost(req: any, res: any) {
+  try {
+    const apiKey = process.env.AGNES_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
+    }
+
+    const { prompt, wait = false } = req.body;
+    if (!prompt || typeof prompt !== 'string') {
+      return res.status(400).json({ error: 'Prompt requis' });
+    }
+
+    // 1️⃣ Soumettre la tâche
+    const submitPayload = {
+      model: 'agnes-video-v2.0',
+      prompt: prompt.trim(),
+      duration: 5,
+      width: 576,
+      height: 320
+    };
+
+    const submitRes = await fetch(AGNES_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(submitPayload)
+    });
+
+    const submitText = await submitRes.text();
+
+    if (!submitRes.ok) {
+      return res.status(submitRes.status).json({
+        error: `Soumission ${submitRes.status}`,
+        raw: submitText.slice(0, 300)
+      });
+    }
+
+    let submitData;
+    try {
+      submitData = JSON.parse(submitText);
+    } catch (e) {
+      return res.status(502).json({
+        error: 'Réponse invalide (non-JSON)',
+        raw: submitText.slice(0, 300)
+      });
+    }
+
+    const taskId = submitData?.id || submitData?.task_id || submitData?.video_id;
+    if (!taskId) {
+      return res.status(502).json({
+        error: 'Aucun task_id reçu',
+        raw: submitText
+      });
+    }
+
+    // Si wait=false (par défaut), retourner immédiatement le taskId
+    if (!wait) {
+      return res.status(200).json({ taskId });
+    }
+
+    // 2️⃣ Mode synchrone (polling jusqu'à 45s) - pour compatibilité
+    const start = Date.now();
+    const maxWait = 45000;
+    while (Date.now() - start < maxWait) {
+      await new Promise(r => setTimeout(r, 3000));
+      const statusRes = await fetch(AGNES_STATUS_URL(taskId), {
+        headers: { 'Authorization': `Bearer ${apiKey}` }
+      });
+      if (!statusRes.ok) continue;
+      const data = await statusRes.json();
+      const status = data?.status || data?.state;
+      const videoUrl = data?.video_url || data?.video?.url || data?.url;
+      if (status === 'completed' && videoUrl) {
+        return res.status(200).json({ url: videoUrl, taskId, provider: 'agnes-ai' });
+      }
+      if (status === 'failed') {
+        return res.status(502).json({ error: 'Échec de la génération' });
+      }
+    }
+
+    // Timeout : on retourne le taskId pour que le client continue le polling
+    return res.status(202).json({ taskId, partial: true, message: 'Toujours en cours' });
+
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+// ============================================================
+//  HANDLER PRINCIPAL
+// ============================================================
+
+export default async function handler(req: any, res: any) {
+  setCors(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  // ========== Événements ==========
-  btnPing.addEventListener('click', pingAPI);
-  btnGen.addEventListener('click', generate);
-  promptEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
-  });
+  if (req.method === 'GET') {
+    return handleGet(req, res);
+  }
 
-  // ========== Init ==========
-  pingAPI();
-  log('👋 Prêt. Entrez un prompt et cliquez sur "Générer".', 'info');
-</script>
-</body>
-</html>
+  if (req.method === 'POST') {
+    return handlePost(req, res);
+  }
+
+  return res.status(405).json({ error: 'Méthode non autorisée' });
+}
