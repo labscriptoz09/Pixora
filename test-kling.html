@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Générateur vidéo</title>
+  <title>Agnes — Générateur vidéo</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -113,7 +113,7 @@
 </head>
 <body>
 
-  <h1>🎬 Générateur vidéo</h1>
+  <h1>🎬 Agnes — Générateur vidéo</h1>
 
   <div class="card">
     <div class="flex">
@@ -180,12 +180,12 @@
       video.onerror = () => {
         videoContainer.innerHTML = `
           <div class="error-msg">
-            ❌ Fichier non valide (probablement une image)<br>
+            ❌ Erreur de chargement<br>
             <span style="font-size:0.7rem;color:#666;">Provider: ${provider}</span>
           </div>
         `;
         videoInfo.textContent = '❌ Erreur';
-        log('⚠️ Fichier non valide', 'error');
+        log('⚠️ Erreur chargement', 'error');
       };
 
       video.onloadedmetadata = () => {
@@ -208,17 +208,14 @@
       try {
         const res = await fetch(API_BASE);
         const data = await res.json();
-        if (data.ok && (data.hasAgnes || data.hasHF)) {
+        if (data.ok && data.hasKey) {
           apiStatus.textContent = '✅ OK';
           apiStatus.className = 'badge ok';
-          const providers = [];
-          if (data.hasAgnes) providers.push('Agnes');
-          if (data.hasHF) providers.push('HF');
-          log(`🔑 Providers: ${providers.join(' + ')}`, 'success');
+          log('🔑 Clé Agnes active', 'success');
         } else {
-          apiStatus.textContent = '⚠️ Aucune clé';
+          apiStatus.textContent = '⚠️ Clé manquante';
           apiStatus.className = 'badge err';
-          log('❌ Aucun provider configuré', 'error');
+          log('❌ Clé Agnes non configurée', 'error');
         }
       } catch (e) {
         apiStatus.textContent = '❌ Erreur réseau';
@@ -258,10 +255,10 @@
         timerEl.textContent = elapsed + 's';
 
         if (!res.ok || !data.url) {
-          throw new Error(data.error || data.details || 'Aucune URL');
+          throw new Error(data.error || data.message || 'Aucune URL');
         }
 
-        const provider = data.provider || 'inconnu';
+        const provider = data.provider || 'agnes-ai';
         log(`✅ Générée en ${elapsed}s (${provider})`, 'success');
         statusText.textContent = `✅ ${provider}`;
         showVideo(data.url, provider);
