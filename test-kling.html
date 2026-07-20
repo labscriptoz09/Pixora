@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agnes + HF</title>
+  <title>Générateur vidéo</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -93,7 +93,6 @@
       align-items: center;
       justify-content: center;
       border: 1px dashed #333;
-      position: relative;
     }
     #video-container video {
       width: 100%;
@@ -109,13 +108,12 @@
       color: #ef4444;
       padding: 2rem;
       text-align: center;
-      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎬 Agnes + HF (vidéo réelle)</h1>
+  <h1>🎬 Générateur vidéo</h1>
 
   <div class="card">
     <div class="flex">
@@ -179,20 +177,19 @@
       video.style.width = '100%';
       video.style.maxHeight = '450px';
 
-      // Gestion d'erreur : si la vidéo ne se charge pas
       video.onerror = () => {
         videoContainer.innerHTML = `
           <div class="error-msg">
-            ❌ Erreur : le fichier n'est pas une vidéo valide.<br>
-            <span style="font-size:0.7rem;color:#666;">${provider} a renvoyé un format incorrect.</span>
+            ❌ Fichier non valide (probablement une image)<br>
+            <span style="font-size:0.7rem;color:#666;">Provider: ${provider}</span>
           </div>
         `;
-        videoInfo.textContent = '❌ Erreur chargement';
-        log('⚠️ Fichier non valide (probablement une image)', 'error');
+        videoInfo.textContent = '❌ Erreur';
+        log('⚠️ Fichier non valide', 'error');
       };
 
       video.onloadedmetadata = () => {
-        videoInfo.textContent = `✅ ${provider || '?'} • ${Math.round(video.duration || 0)}s`;
+        videoInfo.textContent = `✅ ${provider} • ${Math.round(video.duration)}s`;
       };
 
       videoContainer.appendChild(video);
@@ -211,10 +208,13 @@
       try {
         const res = await fetch(API_BASE);
         const data = await res.json();
-        if (data.ok && (data.providers?.agnes || data.providers?.huggingface)) {
+        if (data.ok && (data.hasAgnes || data.hasHF)) {
           apiStatus.textContent = '✅ OK';
           apiStatus.className = 'badge ok';
-          log('🔑 Providers actifs', 'success');
+          const providers = [];
+          if (data.hasAgnes) providers.push('Agnes');
+          if (data.hasHF) providers.push('HF');
+          log(`🔑 Providers: ${providers.join(' + ')}`, 'success');
         } else {
           apiStatus.textContent = '⚠️ Aucune clé';
           apiStatus.className = 'badge err';
@@ -258,7 +258,7 @@
         timerEl.textContent = elapsed + 's';
 
         if (!res.ok || !data.url) {
-          throw new Error(data.error || 'Aucune URL');
+          throw new Error(data.error || data.details || 'Aucune URL');
         }
 
         const provider = data.provider || 'inconnu';
@@ -283,7 +283,7 @@
     });
 
     pingAPI();
-    log('👋 Ctrl+Enter pour générer. Vidéo réelle (Agnes ou HF).', 'info');
+    log('👋 Ctrl+Enter pour générer.', 'info');
   </script>
 
 </body>
