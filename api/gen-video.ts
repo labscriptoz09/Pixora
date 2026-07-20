@@ -1,250 +1,268 @@
-// api/gen-video.ts
-// ✅ Version optimisée : durée 3s pour éviter le timeout Vercel (60s)
-// ✅ Fallback : si Agnes échoue, essaie Hugging Face (gratuit)
-// ✅ Logs détaillés pour diagnostic
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agnes AI — Asynchrone</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0d0d12;
+      color: #eee;
+      padding: 2rem 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #1a1a20;
+      border: 1px solid #2a2a30;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .badge.ok { background: #22c55e20; border: 1px solid #22c55e; color: #22c55e; }
+    .badge.err { background: #ef444420; border: 1px solid #ef4444; color: #ef4444; }
+    .badge.pending { background: #f59e0b20; border: 1px solid #f59e0b; color: #f59e0b; }
+    .badge.done { background: #3b82f620; border: 1px solid #3b82f6; color: #3b82f6; }
+    textarea {
+      width: 100%;
+      padding: 0.8rem;
+      background: #0d0d12;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #eee;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+    .btn {
+      background: #7c3aed;
+      border: none;
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #6d28d9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: #2a2a32; }
+    .btn-secondary:hover { background: #3a3a44; }
+    .log-area {
+      background: #0d0d12;
+      border: 1px solid #2a2a30;
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 250px;
+      overflow-y: auto;
+      margin-top: 1rem;
+      color: #aaa;
+    }
+    .log-area .success { color: #22c55e; }
+    .log-area .error { color: #ef4444; }
+    .log-area .info { color: #60a5fa; }
+    video { width: 100%; max-height: 400px; border-radius: 12px; background: #000; margin-top: 1rem; }
+    .loader { display: inline-block; width: 18px; height: 18px; border: 3px solid #333; border-top-color: #7c3aed; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none; }
+    .flex { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
 
-declare const process: any;
+<h1>🧪 Agnes AI — Asynchrone</h1>
+<p class="sub">Génération vidéo sans timeout (polling côté client).</p>
 
-// ============================================================
-//  CONFIGURATION
-// ============================================================
+<div class="card">
+  <div class="flex">
+    <span>🔌 Statut :</span>
+    <span id="api-status" class="badge pending">Vérification...</span>
+    <button class="btn btn-secondary" id="btn-ping">🔄 Ping</button>
+  </div>
+</div>
 
-const AGNES_API_URL = 'https://apihub.agnes-ai.com/v1/videos';
-const AGNES_STATUS_URL = (id: string) => `https://apihub.agnes-ai.com/v1/videos/${id}`;
+<div class="card">
+  <label for="prompt">📝 Prompt</label>
+  <textarea id="prompt" placeholder="Décrivez votre vidéo...">un chat qui danse dans un jardin</textarea>
+  <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+    <button class="btn" id="btn-generate">🎬 Générer</button>
+    <span id="timer" style="color:#888;font-family:monospace;"></span>
+    <span id="status-text" style="color:#f59e0b;"></span>
+  </div>
+</div>
 
-// ⏱️ Timeout réduit à 45s (pour être sûr de ne pas dépasser les 60s de Vercel)
-const MAX_POLLING_TIME = 45000;
-const POLL_INTERVAL = 2000; // On vérifie toutes les 2s au lieu de 3s
+<div class="card" id="result-card">
+  <div class="log-area" id="log-area">⏳ Prêt.</div>
+  <div id="video-container"></div>
+</div>
 
-// ============================================================
-//  CORS
-// ============================================================
+<script>
+  // ========== Configuration ==========
+  const SUBMIT_URL = '/api/gen-video-submit';
+  const STATUS_URL = '/api/gen-video-status';
 
-function setCors(res: any) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-}
+  // ========== Références DOM ==========
+  const promptEl = document.getElementById('prompt');
+  const btnGen = document.getElementById('btn-generate');
+  const btnPing = document.getElementById('btn-ping');
+  const apiStatus = document.getElementById('api-status');
+  const logArea = document.getElementById('log-area');
+  const videoContainer = document.getElementById('video-container');
+  const timerEl = document.getElementById('timer');
+  const statusText = document.getElementById('status-text');
 
-// ============================================================
-//  POLLING AGNES
-// ============================================================
+  // ========== Logger ==========
+  function log(message, type = 'info') {
+    const cls = { success: 'success', error: 'error', info: 'info' }[type] || 'info';
+    const line = document.createElement('div');
+    line.innerHTML = `<span class="${cls}">${message}</span>`;
+    logArea.appendChild(line);
+    logArea.scrollTop = logArea.scrollHeight;
+  }
 
-async function pollAgnes(taskId: string, apiKey: string): Promise<string> {
-  const start = Date.now();
-  let attempt = 0;
+  function clearLog() {
+    logArea.innerHTML = '';
+  }
 
-  while (Date.now() - start < MAX_POLLING_TIME) {
-    attempt++;
-    await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+  // ========== Ping ==========
+  async function pingAPI() {
+    apiStatus.textContent = '⏳ ...';
+    apiStatus.className = 'badge pending';
+    try {
+      const res = await fetch(SUBMIT_URL, { method: 'POST', body: JSON.stringify({ prompt: 'ping' }), headers: { 'Content-Type': 'application/json' } });
+      if (res.status === 200) {
+        apiStatus.textContent = '✅ OK';
+        apiStatus.className = 'badge ok';
+      } else {
+        apiStatus.textContent = '⚠️ Erreur ' + res.status;
+        apiStatus.className = 'badge err';
+      }
+    } catch (e) {
+      apiStatus.textContent = '❌ Erreur réseau';
+      apiStatus.className = 'badge err';
+    }
+  }
+
+  // ========== Génération ==========
+  async function generate() {
+    const prompt = promptEl.value.trim();
+    if (!prompt) {
+      log('❌ Prompt requis.', 'error');
+      return;
+    }
+
+    btnGen.disabled = true;
+    btnGen.innerHTML = '<span class="loader"></span> Soumission...';
+    clearLog();
+    videoContainer.innerHTML = '';
+    statusText.textContent = '⏳ Soumission...';
+    timerEl.textContent = '';
+
+    const start = Date.now();
+    let timerInterval = setInterval(() => {
+      timerEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
+    }, 200);
 
     try {
-      const res = await fetch(AGNES_STATUS_URL(taskId), {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
+      log(`📤 Envoi du prompt : "${prompt}"`, 'info');
+
+      // 1️⃣ Soumettre
+      const submitRes = await fetch(SUBMIT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
       });
 
-      if (!res.ok) {
-        console.warn(`[Agnes] ⚠️ Statut HTTP ${res.status}`);
-        continue;
+      const submitData = await submitRes.json();
+
+      if (!submitRes.ok) {
+        throw new Error(`Soumission échouée (${submitRes.status}): ${JSON.stringify(submitData)}`);
       }
 
-      const data = await res.json();
-      console.log(`[Agnes] 📦 Statut (tentative ${attempt}):`, JSON.stringify(data).slice(0, 200));
-
-      // Différents formats possibles
-      const status = data?.status || data?.state || data?.data?.status;
-      const videoUrl = data?.video_url || data?.video?.url || data?.url || data?.data?.video_url;
-
-      if (status === 'completed' && videoUrl) {
-        console.log('[Agnes] ✅ Vidéo générée');
-        return videoUrl;
+      const taskId = submitData.taskId;
+      if (!taskId) {
+        throw new Error('Aucun taskId reçu');
       }
 
-      if (status === 'failed') {
-        throw new Error(`Échec Agnes: ${data?.message || data?.error || 'inconnu'}`);
+      log(`✅ Tâche soumise, ID : ${taskId}`, 'success');
+      statusText.textContent = '⏳ Génération en cours...';
+      btnGen.innerHTML = '<span class="loader"></span> Polling...';
+
+      // 2️⃣ Polling côté client
+      let videoUrl = null;
+      let attempts = 0;
+      const maxAttempts = 60; // 60 * 3s = 180s max
+
+      while (!videoUrl && attempts < maxAttempts) {
+        attempts++;
+        await new Promise(r => setTimeout(r, 3000));
+
+        const statusRes = await fetch(`${STATUS_URL}?taskId=${taskId}`);
+        const statusData = await statusRes.json();
+
+        if (statusData.status === 'completed') {
+          videoUrl = statusData.url;
+          break;
+        } else if (statusData.status === 'failed') {
+          throw new Error(`Échec Agnes : ${statusData.error || 'inconnu'}`);
+        } else {
+          log(`⏳ En cours... (${attempts * 3}s)`, 'info');
+        }
       }
 
-      console.log(`[Agnes] ⏳ Statut: ${status || 'en attente...'}`);
+      clearInterval(timerInterval);
+      const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+      timerEl.textContent = elapsed + 's';
 
-    } catch (err: any) {
-      console.warn('[Agnes] ⚠️ Erreur polling:', err.message);
-      // On continue
+      if (!videoUrl) {
+        throw new Error(`Timeout après ${elapsed}s`);
+      }
+
+      // ✅ Succès
+      log(`✅ Vidéo générée en ${elapsed}s`, 'success');
+      statusText.textContent = '✅ Terminé';
+
+      const video = document.createElement('video');
+      video.src = videoUrl;
+      video.controls = true;
+      video.autoplay = true;
+      video.style.width = '100%';
+      video.style.maxHeight = '400px';
+      videoContainer.appendChild(video);
+
+    } catch (err) {
+      clearInterval(timerInterval);
+      log(`❌ Erreur : ${err.message}`, 'error');
+      statusText.textContent = '❌ Échec';
+    } finally {
+      btnGen.disabled = false;
+      btnGen.innerHTML = '🎬 Générer';
     }
   }
 
-  throw new Error('⏱️ Timeout Agnes (>45s)');
-}
-
-// ============================================================
-//  FALLBACK : HUGGING FACE (ZEROSCOPE)
-// ============================================================
-
-async function generateWithHF(prompt: string): Promise<string> {
-  console.log('[HF] 🔄 Tentative fallback vers Hugging Face...');
-  
-  const hfKey = process.env.HUGGINGFACE_API_KEY;
-  if (!hfKey) {
-    throw new Error('HUGGINGFACE_API_KEY manquante');
-  }
-
-  const res = await fetch('https://api-inference.huggingface.co/models/cerspense/zeroscope_v2_576w', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${hfKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      inputs: prompt,
-      parameters: {
-        num_frames: 24,
-        width: 576,
-        height: 320,
-        fps: 24
-      }
-    })
+  // ========== Événements ==========
+  btnPing.addEventListener('click', pingAPI);
+  btnGen.addEventListener('click', generate);
+  promptEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`HF ${res.status}: ${text.slice(0, 200)}`);
-  }
-
-  // HF retourne un blob vidéo
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
-  console.log('[HF] ✅ Vidéo générée (fallback)');
-  return url;
-}
-
-// ============================================================
-//  HANDLER PRINCIPAL
-// ============================================================
-
-export default async function handler(req: any, res: any) {
-  setCors(res);
-
-  // OPTIONS
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  // GET = ping
-  if (req.method === 'GET') {
-    const agnesKey = !!process.env.AGNES_API_KEY;
-    const hfKey = !!process.env.HUGGINGFACE_API_KEY;
-    return res.status(200).json({
-      ok: true,
-      providers: {
-        agnes: { configured: agnesKey },
-        huggingface: { configured: hfKey }
-      },
-      timestamp: Date.now()
-    });
-  }
-
-  // POST = génération
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'POST seulement' });
-  }
-
-  try {
-    const { prompt } = req.body;
-    if (!prompt || typeof prompt !== 'string') {
-      return res.status(400).json({ error: 'Prompt requis' });
-    }
-
-    // Amélioration du prompt (optionnel)
-    const enhancedPrompt = prompt.trim() + ', cinematic, 4k, detailed';
-    console.log('[API] 📝 Prompt:', enhancedPrompt);
-
-    // ------------------------------
-    // 1️⃣ ESSAYER AGNES AI (3 secondes)
-    // ------------------------------
-    const agnesKey = process.env.AGNES_API_KEY;
-    let videoUrl: string;
-    let provider = 'agnes-ai';
-
-    if (agnesKey) {
-      try {
-        console.log('[Agnes] 🚀 Soumission...');
-
-        const submitPayload = {
-          model: 'agnes-video-v2.0',
-          prompt: enhancedPrompt,
-          duration: 3,          // ⬅️ SOLUTION 1 : 3 secondes au lieu de 5
-          width: 576,
-          height: 320
-        };
-
-        const submitRes = await fetch(AGNES_API_URL, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${agnesKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(submitPayload)
-        });
-
-        const submitText = await submitRes.text();
-        console.log('[Agnes] 📨 Réponse:', submitText);
-
-        if (!submitRes.ok) {
-          if (submitRes.status === 429) {
-            throw new Error('Quota Agnes épuisé (66 req/jour)');
-          }
-          throw new Error(`Agnes ${submitRes.status}: ${submitText.slice(0, 200)}`);
-        }
-
-        const submitData = JSON.parse(submitText);
-        const taskId = submitData?.id || submitData?.task_id || submitData?.video_id;
-
-        if (!taskId) {
-          throw new Error('Aucun task_id reçu');
-        }
-
-        console.log('[Agnes] 🆔 Task ID:', taskId);
-
-        // Polling
-        videoUrl = await pollAgnes(taskId, agnesKey);
-        console.log('[Agnes] ✅ Succès');
-
-      } catch (agnesErr: any) {
-        console.warn('[Agnes] ❌ Échec:', agnesErr.message);
-
-        // ------------------------------
-        // 2️⃣ FALLBACK : HUGGING FACE
-        // ------------------------------
-        try {
-          videoUrl = await generateWithHF(enhancedPrompt);
-          provider = 'huggingface';
-        } catch (hfErr: any) {
-          // Les deux ont échoué
-          throw new Error(`Agnes: ${agnesErr.message} | HF: ${hfErr.message}`);
-        }
-      }
-    } else {
-      // Pas de clé Agnes → directement HF
-      try {
-        videoUrl = await generateWithHF(enhancedPrompt);
-        provider = 'huggingface';
-      } catch (hfErr: any) {
-        throw new Error(`Hugging Face: ${hfErr.message}`);
-      }
-    }
-
-    // ✅ Succès
-    return res.status(200).json({
-      url: videoUrl,
-      provider: provider,
-      prompt_used: enhancedPrompt,
-      duration: 3,
-      timestamp: Date.now()
-    });
-
-  } catch (err: any) {
-    console.error('[API] ❌ Erreur globale:', err.message);
-    return res.status(500).json({
-      error: err.message || 'Erreur interne du serveur'
-    });
-  }
-}
+  // ========== Init ==========
+  pingAPI();
+  log('👋 Prêt. Entrez un prompt et cliquez sur "Générer".', 'info');
+</script>
+</body>
+</html>
