@@ -1,56 +1,46 @@
 // api/gen-video.ts
-// ✅ Version unifiée : gère GET (statut) et POST (soumission + polling)
-// ✅ Gère le CORS correctement
-// ✅ Retourne toujours du JSON valide
+// ✅ Agnes AI — durée 4s pour génération rapide
+// ✅ GET = ping + statut, POST = soumission + polling
 
 declare const process: any;
 
 const AGNES_API_URL = 'https://apihub.agnes-ai.com/v1/videos';
 const AGNES_STATUS_URL = (id: string) => `https://apihub.agnes-ai.com/v1/videos/${id}`;
 
-// CORS
 function setCors(res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Content-Type', 'application/json'); // Force le JSON
+  res.setHeader('Content-Type', 'application/json');
 }
 
-// ============================================================
-//  GET : Vérifier le statut d'une tâche
-// ============================================================
-
+// ========== GET ==========
 async function handleGet(req: any, res: any) {
+  const { taskId } = req.query;
+
+  // Ping
+  if (!taskId) {
+    const hasKey = !!process.env.AGNES_API_KEY;
+    return res.status(200).json({
+      ok: true,
+      hasKey,
+      provider: 'agnes-ai'
+    });
+  }
+
+  // Statut
+  const apiKey = process.env.AGNES_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
+  }
+
   try {
-    const { taskId } = req.query;
-    
-    // Si pas de taskId, retourner le ping
-    if (!taskId) {
-      const hasKey = !!process.env.AGNES_API_KEY;
-      return res.status(200).json({
-        ok: true,
-        provider: 'agnes-ai',
-        hasKey: hasKey,
-        timestamp: Date.now()
-      });
-    }
-
-    // Vérifier le statut de la tâche
-    const apiKey = process.env.AGNES_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
-    }
-
     const statusRes = await fetch(AGNES_STATUS_URL(taskId), {
       headers: { 'Authorization': `Bearer ${apiKey}` }
     });
 
     if (!statusRes.ok) {
-      const text = await statusRes.text();
-      return res.status(statusRes.status).json({
-        error: `Statut ${statusRes.status}`,
-        raw: text.slice(0, 200)
-      });
+      return res.status(statusRes.status).json({ error: `Statut ${statusRes.status}` });
     }
 
     const data = await statusRes.json();
@@ -60,10 +50,7 @@ async function handleGet(req: any, res: any) {
     if (status === 'completed' && videoUrl) {
       return res.status(200).json({ status: 'completed', url: videoUrl });
     } else if (status === 'failed') {
-      return res.status(200).json({
-        status: 'failed',
-        error: data?.message || 'Échec de la génération'
-      });
+      return res.status(200).json({ status: 'failed', error: data?.message });
     } else {
       return res.status(200).json({ status: 'processing' });
     }
@@ -72,118 +59,100 @@ async function handleGet(req: any, res: any) {
   }
 }
 
-// ============================================================
-//  POST : Soumettre une tâche (et polling si demandé)
-// ============================================================
-
+// ========== POST ==========
 async function handlePost(req: any, res: any) {
+  const apiKey = process.env.AGNES_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
+  }
+
+  const { prompt } = req.body;
+  if (!prompt || typeof prompt !== 'string') {
+    return res.status(400).json({ error: 'Prompt requis' });
+  }
+
   try {
-    const apiKey = process.env.AGNES_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
-    }
-
-    const { prompt, wait = false } = req.body;
-    if (!prompt || typeof prompt !== 'string') {
-      return res.status(400).json({ error: 'Prompt requis' });
-    }
-
-    // 1️⃣ Soumettre la tâche
-    const submitPayload = {
-      model: 'agnes-video-v2.0',
-      prompt: prompt.trim(),
-      duration: 5,
-      width: 576,
-      height: 320
-    };
-
+    // 1. Soumission
     const submitRes = await fetch(AGNES_API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(submitPayload)
+      body: JSON.stringify({
+        model: 'agnes-video-v2.0',
+        prompt: prompt.trim(),
+        duration: 4,   // ⬅️ 4 secondes (génération plus rapide)
+        width: 576,
+        height: 320
+      })
     });
 
-    const submitText = await submitRes.text();
-
     if (!submitRes.ok) {
+      const text = await submitRes.text();
       return res.status(submitRes.status).json({
         error: `Soumission ${submitRes.status}`,
-        raw: submitText.slice(0, 300)
+        raw: text.slice(0, 300)
       });
     }
 
-    let submitData;
-    try {
-      submitData = JSON.parse(submitText);
-    } catch (e) {
-      return res.status(502).json({
-        error: 'Réponse invalide (non-JSON)',
-        raw: submitText.slice(0, 300)
-      });
-    }
+    const data = await submitRes.json();
+    const taskId = data?.id || data?.task_id || data?.video_id;
 
-    const taskId = submitData?.id || submitData?.task_id || submitData?.video_id;
     if (!taskId) {
-      return res.status(502).json({
-        error: 'Aucun task_id reçu',
-        raw: submitText
-      });
+      return res.status(502).json({ error: 'Aucun taskId reçu' });
     }
 
-    // Si wait=false (par défaut), retourner immédiatement le taskId
-    if (!wait) {
-      return res.status(200).json({ taskId });
-    }
-
-    // 2️⃣ Mode synchrone (polling jusqu'à 45s) - pour compatibilité
+    // 2. Polling rapide (max 30s)
     const start = Date.now();
-    const maxWait = 45000;
-    while (Date.now() - start < maxWait) {
-      await new Promise(r => setTimeout(r, 3000));
+    while (Date.now() - start < 30000) {
+      await new Promise(r => setTimeout(r, 2000));
+
       const statusRes = await fetch(AGNES_STATUS_URL(taskId), {
         headers: { 'Authorization': `Bearer ${apiKey}` }
       });
+
       if (!statusRes.ok) continue;
-      const data = await statusRes.json();
-      const status = data?.status || data?.state;
-      const videoUrl = data?.video_url || data?.video?.url || data?.url;
+
+      const statusData = await statusRes.json();
+      const status = statusData?.status || statusData?.state;
+      const videoUrl = statusData?.video_url || statusData?.video?.url || statusData?.url;
+
       if (status === 'completed' && videoUrl) {
-        return res.status(200).json({ url: videoUrl, taskId, provider: 'agnes-ai' });
+        return res.status(200).json({
+          url: videoUrl,
+          provider: 'agnes-ai',
+          duration: 4,
+          taskId
+        });
       }
+
       if (status === 'failed') {
-        return res.status(502).json({ error: 'Échec de la génération' });
+        return res.status(502).json({
+          error: 'Échec génération',
+          raw: JSON.stringify(statusData)
+        });
       }
     }
 
-    // Timeout : on retourne le taskId pour que le client continue le polling
-    return res.status(202).json({ taskId, partial: true, message: 'Toujours en cours' });
+    // Timeout : on renvoie quand même le taskId pour que le client continue
+    return res.status(202).json({
+      taskId,
+      partial: true,
+      message: 'En cours, interrogez /api/gen-video?taskId=' + taskId
+    });
 
   } catch (err: any) {
+    console.error('[Agnes] ❌', err.message);
     return res.status(500).json({ error: err.message });
   }
 }
 
-// ============================================================
-//  HANDLER PRINCIPAL
-// ============================================================
-
+// ========== HANDLER ==========
 export default async function handler(req: any, res: any) {
   setCors(res);
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method === 'GET') {
-    return handleGet(req, res);
-  }
-
-  if (req.method === 'POST') {
-    return handlePost(req, res);
-  }
-
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'GET') return handleGet(req, res);
+  if (req.method === 'POST') return handlePost(req, res);
   return res.status(405).json({ error: 'Méthode non autorisée' });
 }
