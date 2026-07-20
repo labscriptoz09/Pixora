@@ -1,11 +1,12 @@
 // api/gen-video.ts
-// ✅ Agnes AI — durée 2 secondes (ultra rapide)
-// ✅ GET = ping + statut, POST = soumission + polling (30s max)
+// ✅ Agnes AI en priorité, fallback Hugging Face si Agnes > 10s
+// ✅ GET = ping + statut, POST = génération avec fallback
 
 declare const process: any;
 
 const AGNES_API_URL = 'https://apihub.agnes-ai.com/v1/videos';
 const AGNES_STATUS_URL = (id: string) => `https://apihub.agnes-ai.com/v1/videos/${id}`;
+const HF_URL = 'https://api-inference.huggingface.co/models/cerspense/zeroscope_v2_576w';
 
 function setCors(res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,10 +20,15 @@ async function handleGet(req: any, res: any) {
   const { taskId } = req.query;
 
   if (!taskId) {
-    const hasKey = !!process.env.AGNES_API_KEY;
-    return res.status(200).json({ ok: true, hasKey, provider: 'agnes-ai' });
+    const hasAgnes = !!process.env.AGNES_API_KEY;
+    const hasHF = !!process.env.HUGGINGFACE_API_KEY;
+    return res.status(200).json({
+      ok: true,
+      providers: { agnes: hasAgnes, huggingface: hasHF }
+    });
   }
 
+  // Statut Agnes
   const apiKey = process.env.AGNES_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
@@ -53,92 +59,121 @@ async function handleGet(req: any, res: any) {
   }
 }
 
-// ========== POST ==========
-async function handlePost(req: any, res: any) {
-  const apiKey = process.env.AGNES_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'AGNES_API_KEY manquante' });
+// ========== Fallback Hugging Face ==========
+async function generateHF(prompt: string, hfKey: string): Promise<string> {
+  const res = await fetch(HF_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${hfKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      inputs: prompt,
+      parameters: { num_frames: 24, width: 576, height: 320, fps: 24 }
+    })
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HF ${res.status}: ${text.slice(0, 200)}`);
   }
 
+  const blob = await res.blob();
+  return URL.createObjectURL(blob);
+}
+
+// ========== POST ==========
+async function handlePost(req: any, res: any) {
   const { prompt } = req.body;
   if (!prompt || typeof prompt !== 'string') {
     return res.status(400).json({ error: 'Prompt requis' });
   }
 
-  try {
-    // 1. Soumission
-    const submitRes = await fetch(AGNES_API_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'agnes-video-v2.0',
-        prompt: prompt.trim(),
-        duration: 2,   // ⬅️ 2 secondes (ultra rapide)
-        width: 576,
-        height: 320
-      })
-    });
+  const agnesKey = process.env.AGNES_API_KEY;
+  const hfKey = process.env.HUGGINGFACE_API_KEY;
 
-    if (!submitRes.ok) {
-      const text = await submitRes.text();
-      return res.status(submitRes.status).json({
-        error: `Soumission ${submitRes.status}`,
-        raw: text.slice(0, 300)
-      });
-    }
+  // 1️⃣ TENTATIVE AGNES (10s max)
+  if (agnesKey) {
+    try {
+      console.log('[Agnes] 🚀 Soumission...');
 
-    const data = await submitRes.json();
-    const taskId = data?.id || data?.task_id || data?.video_id;
-
-    if (!taskId) {
-      return res.status(502).json({ error: 'Aucun taskId reçu' });
-    }
-
-    // 2. Polling rapide (max 25s)
-    const start = Date.now();
-    while (Date.now() - start < 25000) {
-      await new Promise(r => setTimeout(r, 1500));
-
-      const statusRes = await fetch(AGNES_STATUS_URL(taskId), {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-      });
-
-      if (!statusRes.ok) continue;
-
-      const statusData = await statusRes.json();
-      const status = statusData?.status || statusData?.state;
-      const videoUrl = statusData?.video_url || statusData?.video?.url || statusData?.url;
-
-      if (status === 'completed' && videoUrl) {
-        return res.status(200).json({
-          url: videoUrl,
-          provider: 'agnes-ai',
+      const submitRes = await fetch(AGNES_API_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${agnesKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'agnes-video-v2.0',
+          prompt: prompt.trim(),
           duration: 2,
-          taskId
-        });
+          width: 576,
+          height: 320
+        })
+      });
+
+      if (!submitRes.ok) {
+        const text = await submitRes.text();
+        console.warn('[Agnes] ❌ Erreur soumission:', text);
+        throw new Error(`Agnes ${submitRes.status}`);
       }
 
-      if (status === 'failed') {
-        return res.status(502).json({
-          error: 'Échec génération',
-          raw: JSON.stringify(statusData)
-        });
+      const data = await submitRes.json();
+      const taskId = data?.id || data?.task_id || data?.video_id;
+
+      if (!taskId) {
+        throw new Error('Aucun taskId');
       }
+
+      // Polling rapide (10s max)
+      const start = Date.now();
+      while (Date.now() - start < 10000) {
+        await new Promise(r => setTimeout(r, 1500));
+
+        const statusRes = await fetch(AGNES_STATUS_URL(taskId), {
+          headers: { 'Authorization': `Bearer ${agnesKey}` }
+        });
+
+        if (!statusRes.ok) continue;
+
+        const statusData = await statusRes.json();
+        const status = statusData?.status || statusData?.state;
+        const videoUrl = statusData?.video_url || statusData?.video?.url || statusData?.url;
+
+        if (status === 'completed' && videoUrl) {
+          console.log('[Agnes] ✅ Vidéo générée en', (Date.now() - start) / 1000, 's');
+          return res.status(200).json({ url: videoUrl, provider: 'agnes-ai' });
+        }
+
+        if (status === 'failed') {
+          throw new Error('Échec génération Agnes');
+        }
+      }
+
+      console.log('[Agnes] ⏱️ Trop lent (>10s) → fallback HF');
+
+    } catch (err: any) {
+      console.warn('[Agnes] ❌', err.message);
     }
+  }
 
-    // Timeout : on renvoie le taskId pour que le client continue
-    return res.status(202).json({
-      taskId,
-      partial: true,
-      message: 'En cours, interrogez /api/gen-video?taskId=' + taskId
-    });
+  // 2️⃣ FALLBACK HUGGING FACE
+  if (hfKey) {
+    try {
+      console.log('[HF] 🚀 Fallback...');
+      const url = await generateHF(prompt, hfKey);
+      return res.status(200).json({ url, provider: 'huggingface' });
+    } catch (err: any) {
+      console.error('[HF] ❌', err.message);
+    }
+  }
 
-  } catch (err: any) {
-    console.error('[Agnes] ❌', err.message);
-    return res.status(500).json({ error: err.message });
+  // 3️⃣ DERNIER RECOURS : image statique Pollinations
+  try {
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=512&height=512&nologo=true`;
+    return res.status(200).json({ url, provider: 'pollinations' });
+  } catch {
+    return res.status(500).json({ error: 'Aucun provider disponible' });
   }
 }
 
