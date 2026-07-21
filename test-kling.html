@@ -3,122 +3,427 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Agnes Direct (sans Vercel)</title>
+    <title>Puter.js — Test Veo 3.1</title>
     <style>
-        body { font-family: system-ui, sans-serif; background: #0d0d12; color: #eee; padding: 2rem; max-width: 700px; margin: 0 auto; }
-        input, button { padding: 0.7rem; border-radius: 10px; border: none; font-size: 1rem; }
-        input { background: #1a1a20; color: #eee; border: 1px solid #333; width: 70%; }
-        button { background: #7c3aed; color: white; font-weight: 600; cursor: pointer; }
-        button:hover { background: #6d28d9; }
-        #result { margin-top: 1.5rem; background: #1a1a20; padding: 1rem; border-radius: 10px; min-height: 200px; border: 1px dashed #333; }
-        video { max-width: 100%; max-height: 400px; border-radius: 10px; }
-        .error { color: #ef4444; }
-        .success { color: #22c55e; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0d0d12;
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: #1a1a20;
+            border: 1px solid #2a2a30;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
+        }
+        .sub {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        textarea {
+            width: 100%;
+            padding: 0.9rem;
+            background: #0d0d12;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: #eee;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 90px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .btn {
+            background: #7c3aed;
+            border: none;
+            color: #fff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .btn:hover { background: #6d28d9; }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-secondary {
+            background: #2a2a32;
+        }
+        .btn-secondary:hover { background: #3a3a44; }
+        .flex {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .status {
+            padding: 0.8rem 1rem;
+            background: #0d0d12;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 1rem;
+            min-height: 50px;
+            border: 1px solid #2a2a30;
+            word-break: break-all;
+        }
+        .status .success { color: #22c55e; }
+        .status .error { color: #ef4444; }
+        .status .info { color: #60a5fa; }
+        .status .warn { color: #f59e0b; }
+        #video-container {
+            margin-top: 1.5rem;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #000;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed #333;
+            position: relative;
+        }
+        #video-container video {
+            width: 100%;
+            max-height: 450px;
+            display: block;
+        }
+        .placeholder {
+            color: #555;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #2a2a32;
+            color: #aaa;
+        }
+        .badge.ok { background: #22c55e20; color: #22c55e; border: 1px solid #22c55e; }
+        .loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid #333;
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none; }
+        .models {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .model-btn {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid #333;
+            background: transparent;
+            color: #aaa;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .model-btn:hover { border-color: #7c3aed; color: #eee; }
+        .model-btn.active { border-color: #7c3aed; background: #7c3aed20; color: #7c3aed; }
     </style>
 </head>
 <body>
 
-    <h1>🎬 Agnes (sans Vercel)</h1>
-    <p style="color:#888;font-size:0.8rem;">Ta clé est visible ici → ⚠️ NE PUBLIE PAS CETTE PAGE EN LIGNE</p>
+<div class="container">
+    <h1>🎬 Puter.js — Veo 3.1</h1>
+    <p class="sub">Génération vidéo gratuite • User-Pays Model</p>
 
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <input id="prompt" value="un chat qui danse dans un jardin" style="flex:1;">
-        <button onclick="generate()">🎬 Générer</button>
+    <!-- Infos -->
+    <div style="margin-bottom:1rem;">
+        <span class="badge ok" id="status-badge">✅ Puter.js chargé</span>
+        <span id="user-status" style="color:#888;font-size:0.8rem;margin-left:0.5rem;">Non connecté</span>
     </div>
 
-    <div id="result">⏳ Prêt.</div>
+    <!-- Prompt -->
+    <textarea id="prompt" placeholder="Décrivez votre vidéo... Ex: Un drone survole une chaîne de montagnes enneigée à l'aube">un chat qui danse dans un jardin fleuri</textarea>
 
-    <script>
-        // ⚠️ TA CLÉ ICI (visible dans le code source)
-        const AGNES_KEY = 'sk-cvJzHkBlju7zfIdaJ5nNNKG2XofMim0S1F8wYJToYq1e9Dsr'; // ← Remplace par ta vraie clé
+    <!-- Modèles -->
+    <div class="models">
+        <button class="model-btn active" data-model="google/veo-3.1">Veo 3.1</button>
+        <button class="model-btn" data-model="google/veo-3.1-fast">Veo Fast</button>
+        <button class="model-btn" data-model="google/veo-3.1-lite">Veo Lite</button>
+        <button class="model-btn" data-model="sora-2">Sora 2</button>
+    </div>
 
-        const result = document.getElementById('result');
+    <!-- Actions -->
+    <div class="flex">
+        <button class="btn" id="btn-generate">🎬 Générer</button>
+        <button class="btn btn-secondary" id="btn-test">⚡ Mode Test</button>
+        <span id="timer" style="color:#888;font-family:monospace;font-size:0.9rem;"></span>
+        <span id="model-display" style="color:#666;font-size:0.8rem;margin-left:auto;">google/veo-3.1</span>
+    </div>
 
-        async function generate() {
-            const prompt = document.getElementById('prompt').value.trim();
-            if (!prompt) {
-                result.innerHTML = '<span class="error">❌ Prompt requis</span>';
-                return;
-            }
+    <!-- Status -->
+    <div class="status" id="status">⏳ Prêt. Entrez un prompt et cliquez sur Générer.</div>
 
-            result.innerHTML = '⏳ Soumission en cours...';
-            const start = Date.now(); // ← la variable manquante !
+    <!-- Vidéo -->
+    <div id="video-container">
+        <div class="placeholder">🎞️ La vidéo apparaîtra ici</div>
+    </div>
+</div>
 
+<!-- Puter.js -->
+<script src="https://js.puter.com/v2/"></script>
+
+<script>
+    // ============================================================
+    // CONFIGURATION
+    // ============================================================
+
+    let currentModel = 'google/veo-3.1';
+    let isGenerating = false;
+
+    // ============================================================
+    // DOM REFS
+    // ============================================================
+
+    const promptEl = document.getElementById('prompt');
+    const btnGen = document.getElementById('btn-generate');
+    const btnTest = document.getElementById('btn-test');
+    const statusEl = document.getElementById('status');
+    const videoContainer = document.getElementById('video-container');
+    const timerEl = document.getElementById('timer');
+    const modelDisplay = document.getElementById('model-display');
+    const userStatus = document.getElementById('user-status');
+
+    // ============================================================
+    // LOGGER
+    // ============================================================
+
+    function log(msg, type = 'info') {
+        const colors = { success: 'success', error: 'error', info: 'info', warn: 'warn' };
+        const cls = colors[type] || 'info';
+        statusEl.innerHTML = `<span class="${cls}">${msg}</span>`;
+    }
+
+    // ============================================================
+    // PUTER.JS — VÉRIFICATION
+    // ============================================================
+
+    function checkPuter() {
+        if (typeof puter !== 'undefined') {
+            document.getElementById('status-badge').textContent = '✅ Puter.js chargé';
+            // Vérifier si l'utilisateur est connecté
             try {
-                // 1. Soumission
-                const submitRes = await fetch('https://apihub.agnes-ai.com/v1/videos', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${AGNES_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: 'agnes-video-v2.0',
-                        prompt: prompt,
-                        duration: 2,
-                        width: 576,
-                        height: 320
-                    })
+                puter.auth.getUser().then(user => {
+                    if (user) {
+                        userStatus.textContent = `✅ Connecté : ${user.username || 'utilisateur'}`;
+                        userStatus.style.color = '#22c55e';
+                    } else {
+                        userStatus.textContent = '🔑 Non connecté (connexion automatique au 1er appel)';
+                        userStatus.style.color = '#f59e0b';
+                    }
+                }).catch(() => {
+                    userStatus.textContent = '🔑 Non connecté';
+                    userStatus.style.color = '#f59e0b';
                 });
-
-                const submitText = await submitRes.text();
-                console.log('Soumission:', submitText);
-
-                if (!submitRes.ok) {
-                    throw new Error(`Soumission ${submitRes.status} : ${submitText.slice(0, 200)}`);
-                }
-
-                let submitData;
-                try { submitData = JSON.parse(submitText); } catch (e) { throw new Error('Réponse non-JSON'); }
-
-                const taskId = submitData.id || submitData.task_id || submitData.video_id;
-                if (!taskId) throw new Error('Aucun taskId reçu');
-
-                result.innerHTML = `✅ Tâche soumise (${taskId})<br>⏳ Attente de la vidéo...`;
-
-                // 2. Polling
-                let videoUrl = null;
-                let attempts = 0;
-                const maxAttempts = 60; // 60 × 2s = 120s max
-
-                while (!videoUrl && attempts < maxAttempts) {
-                    attempts++;
-                    await new Promise(r => setTimeout(r, 2000));
-
-                    const statusRes = await fetch(`https://apihub.agnes-ai.com/v1/videos/${taskId}`, {
-                        headers: { 'Authorization': `Bearer ${AGNES_KEY}` }
-                    });
-
-                    if (!statusRes.ok) continue;
-
-                    const statusData = await statusRes.json();
-                    const status = statusData.status || statusData.state || 'unknown';
-                    videoUrl = statusData.video_url || statusData.video?.url || statusData.url;
-
-                    if (status === 'completed' && videoUrl) {
-                        const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-                        result.innerHTML = `
-                            <span class="success">✅ Générée en ${elapsed}s</span><br>
-                            <video src="${videoUrl}" controls autoplay muted></video>
-                        `;
-                        return;
-                    }
-
-                    if (status === 'failed') {
-                        throw new Error('Échec génération');
-                    }
-
-                    const elapsed = ((Date.now() - start) / 1000).toFixed(0);
-                    result.innerHTML = `⏳ En cours... ${elapsed}s (tentative ${attempts}/${maxAttempts})`;
-                }
-
-                throw new Error(`⏱️ Timeout après ${((Date.now() - start) / 1000).toFixed(0)}s`);
-
-            } catch (err) {
-                result.innerHTML = `<span class="error">❌ ${err.message}</span>`;
-                console.error(err);
+            } catch (e) {
+                userStatus.textContent = '🔑 Non connecté';
+                userStatus.style.color = '#f59e0b';
             }
+            log('✅ Puter.js prêt', 'success');
+            return true;
+        } else {
+            document.getElementById('status-badge').textContent = '❌ Puter.js non chargé';
+            log('❌ Puter.js non chargé. Vérifiez votre connexion.', 'error');
+            return false;
         }
-    </script>
+    }
+
+    // ============================================================
+    // GÉNÉRATION
+    // ============================================================
+
+    async function generateVideo(testMode = false) {
+        if (isGenerating) return;
+
+        const prompt = promptEl.value.trim();
+        if (!prompt) {
+            log('❌ Veuillez entrer un prompt.', 'error');
+            return;
+        }
+
+        if (typeof puter === 'undefined') {
+            log('❌ Puter.js non chargé.', 'error');
+            return;
+        }
+
+        isGenerating = true;
+        btnGen.disabled = true;
+        btnTest.disabled = true;
+        btnGen.innerHTML = '<span class="loader"></span> Génération...';
+
+        // Reset UI
+        videoContainer.innerHTML = '<div class="placeholder">⏳ Génération en cours...</div>';
+        timerEl.textContent = '';
+        const start = Date.now();
+        const timerInterval = setInterval(() => {
+            timerEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
+        }, 200);
+
+        try {
+            log(`📤 "${prompt}" (${currentModel})${testMode ? ' [MODE TEST]' : ''}`, 'info');
+
+            let video;
+
+            if (testMode) {
+                // Mode test : génération instantanée (sans consommer de crédits)
+                video = await puter.ai.txt2vid(prompt, true);
+                log('⚡ Mode test : vidéo de démonstration (sans crédits)', 'warn');
+            } else {
+                // Mode normal : avec modèle choisi
+                video = await puter.ai.txt2vid(prompt, { model: currentModel });
+            }
+
+            // Affichage
+            clearInterval(timerInterval);
+            const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+            timerEl.textContent = elapsed + 's';
+
+            // Nettoyer le container
+            videoContainer.innerHTML = '';
+
+            // Ajouter la vidéo
+            video.controls = true;
+            video.autoplay = true;
+            video.style.width = '100%';
+            video.style.maxHeight = '450px';
+            videoContainer.appendChild(video);
+
+            // Gérer la lecture automatique
+            video.addEventListener('loadeddata', () => {
+                video.play().catch(() => {});
+            });
+
+            // Gérer les erreurs de chargement
+            video.onerror = () => {
+                videoContainer.innerHTML = `
+                    <div style="color:#ef4444;padding:2rem;text-align:center;">
+                        ❌ Erreur de chargement de la vidéo
+                    </div>
+                `;
+                log('⚠️ Erreur de chargement vidéo', 'error');
+            };
+
+            log(`✅ Vidéo générée en ${elapsed}s${testMode ? ' (mode test)' : ''}`, 'success');
+
+        } catch (error) {
+            clearInterval(timerInterval);
+            const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+            timerEl.textContent = elapsed + 's';
+
+            // Gestion des erreurs Puter
+            let errorMsg = error.message || 'Erreur inconnue';
+            
+            if (errorMsg.includes('User not found') || errorMsg.includes('authentication')) {
+                errorMsg = '🔑 Connexion Puter requise. Cliquez sur "Générer" pour vous connecter.';
+                videoContainer.innerHTML = `
+                    <div style="color:#f59e0b;padding:2rem;text-align:center;">
+                        🔑 Connexion requise<br>
+                        <span style="font-size:0.8rem;color:#888;">Cliquez sur "Générer" pour vous connecter</span>
+                    </div>
+                `;
+            } else {
+                videoContainer.innerHTML = `
+                    <div style="color:#ef4444;padding:2rem;text-align:center;">
+                        ❌ ${errorMsg}
+                    </div>
+                `;
+            }
+
+            log(`❌ Erreur : ${errorMsg}`, 'error');
+            console.error('[Puter]', error);
+
+        } finally {
+            isGenerating = false;
+            btnGen.disabled = false;
+            btnTest.disabled = false;
+            btnGen.innerHTML = '🎬 Générer';
+        }
+    }
+
+    // ============================================================
+    // SELECTION DU MODÈLE
+    // ============================================================
+
+    document.querySelectorAll('.model-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentModel = this.dataset.model;
+            modelDisplay.textContent = currentModel;
+            log(`📦 Modèle : ${currentModel}`, 'info');
+        });
+    });
+
+    // ============================================================
+    // ÉVÉNEMENTS
+    // ============================================================
+
+    btnGen.addEventListener('click', () => generateVideo(false));
+    btnTest.addEventListener('click', () => generateVideo(true));
+
+    // Ctrl+Enter pour générer
+    promptEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            generateVideo(false);
+        }
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+
+    log('👋 Prêt. Ctrl+Enter pour générer.', 'info');
+    setTimeout(checkPuter, 500);
+
+    console.log('🔑 Puter.js — Test Veo 3.1');
+    console.log('📦 Modèles disponibles : google/veo-3.1, google/veo-3.1-fast, google/veo-3.1-lite, sora-2');
+    console.log('⚡ Mode test : génération instantanée (sans crédits)');
+</script>
 </body>
 </html>
