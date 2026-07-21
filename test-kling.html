@@ -1,287 +1,68 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agnes — Générateur vidéo</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0d0d12;
-      color: #eee;
-      padding: 2rem 1rem;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    .card {
-      background: #1a1a20;
-      border: 1px solid #2a2a30;
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    textarea {
-      width: 100%;
-      padding: 0.8rem;
-      background: #0d0d12;
-      border: 1px solid #333;
-      border-radius: 10px;
-      color: #eee;
-      font-size: 1rem;
-      resize: vertical;
-      min-height: 80px;
-      font-family: inherit;
-    }
-    .btn {
-      background: #7c3aed;
-      border: none;
-      color: #fff;
-      padding: 0.7rem 1.5rem;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn:hover { background: #6d28d9; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .badge {
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    .badge.ok { background: #22c55e20; border: 1px solid #22c55e; color: #22c55e; }
-    .badge.err { background: #ef444420; border: 1px solid #ef4444; color: #ef4444; }
-    .badge.pending { background: #f59e0b20; border: 1px solid #f59e0b; color: #f59e0b; }
-    .loader {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 3px solid #333;
-      border-top-color: #7c3aed;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .flex { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .log-area {
-      background: #0d0d12;
-      border: 1px solid #2a2a30;
-      border-radius: 10px;
-      padding: 0.8rem;
-      font-family: monospace;
-      font-size: 0.8rem;
-      max-height: 150px;
-      overflow-y: auto;
-      color: #aaa;
-      margin-top: 1rem;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-    .log-area .success { color: #22c55e; }
-    .log-area .error { color: #ef4444; }
-    .log-area .info { color: #60a5fa; }
-    #video-container {
-      margin-top: 1rem;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #000;
-      min-height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px dashed #333;
-    }
-    #video-container video {
-      width: 100%;
-      max-height: 450px;
-      display: block;
-    }
-    .placeholder {
-      color: #555;
-      padding: 2rem;
-      text-align: center;
-    }
-    .error-msg {
-      color: #ef4444;
-      padding: 2rem;
-      text-align: center;
-    }
-  </style>
-</head>
+<html>
+<head><title>Test Agnes direct</title></head>
 <body>
-
-  <h1>🎬 Agnes — Générateur vidéo</h1>
-
-  <div class="card">
-    <div class="flex">
-      <span>🔌 Statut :</span>
-      <span id="api-status" class="badge pending">Vérification...</span>
-      <button class="btn" id="btn-ping" style="background:#2a2a32;">🔄 Ping</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <label for="prompt" style="display:block;margin-bottom:0.5rem;font-weight:600;">📝 Prompt</label>
-    <textarea id="prompt">un chat qui danse dans un jardin fleuri</textarea>
-    <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-      <button class="btn" id="btn-generate">🎬 Générer</button>
-      <span id="timer" style="color:#888;font-family:monospace;"></span>
-      <span id="status-text" style="color:#f59e0b;"></span>
-    </div>
-  </div>
-
-  <div class="card" style="border-color:#7c3aed40;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-      <span style="font-weight:600;">📺 Aperçu</span>
-      <span id="video-info" style="font-size:0.8rem;color:#666;">En attente...</span>
-    </div>
-    <div id="video-container">
-      <div class="placeholder">🎞️ Générez une vidéo</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="log-area" id="log-area">⏳ Prêt.</div>
-  </div>
+  <h1>Test Agnes (sans Vercel)</h1>
+  <input id="prompt" value="un chat qui danse" style="width:80%;padding:8px;">
+  <button onclick="generate()">Générer</button>
+  <div id="result"></div>
 
   <script>
-    const API_BASE = '/api/gen-video';
-
-    const promptEl = document.getElementById('prompt');
-    const btnGen = document.getElementById('btn-generate');
-    const btnPing = document.getElementById('btn-ping');
-    const apiStatus = document.getElementById('api-status');
-    const logArea = document.getElementById('log-area');
-    const videoContainer = document.getElementById('video-container');
-    const videoInfo = document.getElementById('video-info');
-    const timerEl = document.getElementById('timer');
-    const statusText = document.getElementById('status-text');
-
-    function log(msg, type = 'info') {
-      const cls = { success: 'success', error: 'error', info: 'info' } [type] || 'info';
-      const line = document.createElement('div');
-      line.innerHTML = `<span class="${cls}">${msg}</span>`;
-      logArea.appendChild(line);
-      logArea.scrollTop = logArea.scrollHeight;
-    }
-
-    function showVideo(url, provider) {
-      videoContainer.innerHTML = '';
-      const video = document.createElement('video');
-      video.src = url;
-      video.controls = true;
-      video.autoplay = true;
-      video.style.width = '100%';
-      video.style.maxHeight = '450px';
-
-      video.onerror = () => {
-        videoContainer.innerHTML = `
-          <div class="error-msg">
-            ❌ Erreur de chargement<br>
-            <span style="font-size:0.7rem;color:#666;">Provider: ${provider}</span>
-          </div>
-        `;
-        videoInfo.textContent = '❌ Erreur';
-        log('⚠️ Erreur chargement', 'error');
-      };
-
-      video.onloadedmetadata = () => {
-        videoInfo.textContent = `✅ ${provider} • ${Math.round(video.duration)}s`;
-      };
-
-      videoContainer.appendChild(video);
-      videoInfo.textContent = '⏳ Chargement...';
-      log(`🎥 Affichage (${provider})`, 'success');
-    }
-
-    function resetVideo() {
-      videoContainer.innerHTML = `<div class="placeholder">🎞️ Générez une vidéo</div>`;
-      videoInfo.textContent = 'En attente...';
-    }
-
-    async function pingAPI() {
-      apiStatus.textContent = '⏳ ...';
-      apiStatus.className = 'badge pending';
-      try {
-        const res = await fetch(API_BASE);
-        const data = await res.json();
-        if (data.ok && data.hasKey) {
-          apiStatus.textContent = '✅ OK';
-          apiStatus.className = 'badge ok';
-          log('🔑 Clé Agnes active', 'success');
-        } else {
-          apiStatus.textContent = '⚠️ Clé manquante';
-          apiStatus.className = 'badge err';
-          log('❌ Clé Agnes non configurée', 'error');
-        }
-      } catch (e) {
-        apiStatus.textContent = '❌ Erreur réseau';
-        apiStatus.className = 'badge err';
-        log('🚨 ' + e.message, 'error');
-      }
-    }
+    // ⚠️ ATTENTION : ta clé est visible ici (ne fais pas ça en production)
+    const AGNES_KEY = 'sk-cvJzHkBlju7zfIdaJ5nNNKG2XofMim0S1F8wYJToYq1e9Dsr'; // ← À remplacer
 
     async function generate() {
-      const prompt = promptEl.value.trim();
-      if (!prompt) { log('❌ Prompt requis.', 'error'); return; }
-
-      btnGen.disabled = true;
-      btnGen.innerHTML = '<span class="loader"></span> Génération...';
-      resetVideo();
-      logArea.innerHTML = '';
-      statusText.textContent = '⏳ En cours...';
-      timerEl.textContent = '';
-
-      const start = Date.now();
-      const timerInterval = setInterval(() => {
-        timerEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
-      }, 200);
+      const prompt = document.getElementById('prompt').value;
+      const result = document.getElementById('result');
+      result.textContent = '⏳ Soumission...';
 
       try {
-        log(`📤 "${prompt}"`, 'info');
-
-        const res = await fetch(API_BASE, {
+        // 1. Soumission
+        const submitRes = await fetch('https://apihub.agnes-ai.com/v1/videos', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt })
+          headers: {
+            'Authorization': `Bearer ${AGNES_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'agnes-video-v2.0',
+            prompt: prompt,
+            duration: 2,
+            width: 576,
+            height: 320
+          })
         });
 
-        const data = await res.json();
-        clearInterval(timerInterval);
-        const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-        timerEl.textContent = elapsed + 's';
+        const submitData = await submitRes.json();
+        const taskId = submitData.id || submitData.task_id;
+        if (!taskId) throw new Error('Pas de taskId');
 
-        if (!res.ok || !data.url) {
-          throw new Error(data.error || data.message || 'Aucune URL');
+        result.textContent = `✅ Tâche soumise (${taskId}) - Attente...`;
+
+        // 2. Polling (direct depuis le navigateur, sans timeout)
+        let videoUrl = null;
+        while (!videoUrl) {
+          await new Promise(r => setTimeout(r, 2000));
+          const statusRes = await fetch(`https://apihub.agnes-ai.com/v1/videos/${taskId}`, {
+            headers: { 'Authorization': `Bearer ${AGNES_KEY}` }
+          });
+          const statusData = await statusRes.json();
+          const status = statusData.status || statusData.state;
+          videoUrl = statusData.video_url || statusData.video?.url || statusData.url;
+
+          if (status === 'completed' && videoUrl) {
+            result.innerHTML = `✅ Vidéo : <video src="${videoUrl}" controls autoplay style="max-width:100%;max-height:400px;"></video>`;
+            break;
+          } else if (status === 'failed') {
+            throw new Error('Échec génération');
+          } else {
+            result.textContent = `⏳ En cours... (${Math.round((Date.now() - start)/1000)}s)`;
+          }
         }
-
-        const provider = data.provider || 'agnes-ai';
-        log(`✅ Générée en ${elapsed}s (${provider})`, 'success');
-        statusText.textContent = `✅ ${provider}`;
-        showVideo(data.url, provider);
-
-      } catch (err) {
-        clearInterval(timerInterval);
-        log(`❌ ${err.message}`, 'error');
-        statusText.textContent = '❌ Échec';
-      } finally {
-        btnGen.disabled = false;
-        btnGen.innerHTML = '🎬 Générer';
+      } catch (e) {
+        result.textContent = '❌ ' + e.message;
       }
     }
-
-    btnPing.addEventListener('click', pingAPI);
-    btnGen.addEventListener('click', generate);
-    promptEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
-    });
-
-    pingAPI();
-    log('👋 Ctrl+Enter pour générer.', 'info');
   </script>
-
 </body>
 </html>
