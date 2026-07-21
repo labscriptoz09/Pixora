@@ -1,68 +1,124 @@
 <!DOCTYPE html>
-<html>
-<head><title>Test Agnes direct</title></head>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agnes Direct (sans Vercel)</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #0d0d12; color: #eee; padding: 2rem; max-width: 700px; margin: 0 auto; }
+        input, button { padding: 0.7rem; border-radius: 10px; border: none; font-size: 1rem; }
+        input { background: #1a1a20; color: #eee; border: 1px solid #333; width: 70%; }
+        button { background: #7c3aed; color: white; font-weight: 600; cursor: pointer; }
+        button:hover { background: #6d28d9; }
+        #result { margin-top: 1.5rem; background: #1a1a20; padding: 1rem; border-radius: 10px; min-height: 200px; border: 1px dashed #333; }
+        video { max-width: 100%; max-height: 400px; border-radius: 10px; }
+        .error { color: #ef4444; }
+        .success { color: #22c55e; }
+    </style>
+</head>
 <body>
-  <h1>Test Agnes (sans Vercel)</h1>
-  <input id="prompt" value="un chat qui danse" style="width:80%;padding:8px;">
-  <button onclick="generate()">Générer</button>
-  <div id="result"></div>
 
-  <script>
-    // ⚠️ ATTENTION : ta clé est visible ici (ne fais pas ça en production)
-    const AGNES_KEY = 'sk-cvJzHkBlju7zfIdaJ5nNNKG2XofMim0S1F8wYJToYq1e9Dsr'; // ← À remplacer
+    <h1>🎬 Agnes (sans Vercel)</h1>
+    <p style="color:#888;font-size:0.8rem;">sk-cvJzHkBlju7zfIdaJ5nNNKG2XofMim0S1F8wYJToYq1e9Dsr</p>
 
-    async function generate() {
-      const prompt = document.getElementById('prompt').value;
-      const result = document.getElementById('result');
-      result.textContent = '⏳ Soumission...';
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <input id="prompt" value="un chat qui danse dans un jardin" style="flex:1;">
+        <button onclick="generate()">🎬 Générer</button>
+    </div>
 
-      try {
-        // 1. Soumission
-        const submitRes = await fetch('https://apihub.agnes-ai.com/v1/videos', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${AGNES_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'agnes-video-v2.0',
-            prompt: prompt,
-            duration: 2,
-            width: 576,
-            height: 320
-          })
-        });
+    <div id="result">⏳ Prêt.</div>
 
-        const submitData = await submitRes.json();
-        const taskId = submitData.id || submitData.task_id;
-        if (!taskId) throw new Error('Pas de taskId');
+    <script>
+        // ⚠️ TA CLÉ ICI (visible dans le code source)
+        const AGNES_KEY = 'ta_clé_agnes_ici'; // ← Remplace par ta vraie clé
 
-        result.textContent = `✅ Tâche soumise (${taskId}) - Attente...`;
+        const result = document.getElementById('result');
 
-        // 2. Polling (direct depuis le navigateur, sans timeout)
-        let videoUrl = null;
-        while (!videoUrl) {
-          await new Promise(r => setTimeout(r, 2000));
-          const statusRes = await fetch(`https://apihub.agnes-ai.com/v1/videos/${taskId}`, {
-            headers: { 'Authorization': `Bearer ${AGNES_KEY}` }
-          });
-          const statusData = await statusRes.json();
-          const status = statusData.status || statusData.state;
-          videoUrl = statusData.video_url || statusData.video?.url || statusData.url;
+        async function generate() {
+            const prompt = document.getElementById('prompt').value.trim();
+            if (!prompt) {
+                result.innerHTML = '<span class="error">❌ Prompt requis</span>';
+                return;
+            }
 
-          if (status === 'completed' && videoUrl) {
-            result.innerHTML = `✅ Vidéo : <video src="${videoUrl}" controls autoplay style="max-width:100%;max-height:400px;"></video>`;
-            break;
-          } else if (status === 'failed') {
-            throw new Error('Échec génération');
-          } else {
-            result.textContent = `⏳ En cours... (${Math.round((Date.now() - start)/1000)}s)`;
-          }
+            result.innerHTML = '⏳ Soumission en cours...';
+            const start = Date.now(); // ← la variable manquante !
+
+            try {
+                // 1. Soumission
+                const submitRes = await fetch('https://apihub.agnes-ai.com/v1/videos', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AGNES_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'agnes-video-v2.0',
+                        prompt: prompt,
+                        duration: 2,
+                        width: 576,
+                        height: 320
+                    })
+                });
+
+                const submitText = await submitRes.text();
+                console.log('Soumission:', submitText);
+
+                if (!submitRes.ok) {
+                    throw new Error(`Soumission ${submitRes.status} : ${submitText.slice(0, 200)}`);
+                }
+
+                let submitData;
+                try { submitData = JSON.parse(submitText); } catch (e) { throw new Error('Réponse non-JSON'); }
+
+                const taskId = submitData.id || submitData.task_id || submitData.video_id;
+                if (!taskId) throw new Error('Aucun taskId reçu');
+
+                result.innerHTML = `✅ Tâche soumise (${taskId})<br>⏳ Attente de la vidéo...`;
+
+                // 2. Polling
+                let videoUrl = null;
+                let attempts = 0;
+                const maxAttempts = 60; // 60 × 2s = 120s max
+
+                while (!videoUrl && attempts < maxAttempts) {
+                    attempts++;
+                    await new Promise(r => setTimeout(r, 2000));
+
+                    const statusRes = await fetch(`https://apihub.agnes-ai.com/v1/videos/${taskId}`, {
+                        headers: { 'Authorization': `Bearer ${AGNES_KEY}` }
+                    });
+
+                    if (!statusRes.ok) continue;
+
+                    const statusData = await statusRes.json();
+                    const status = statusData.status || statusData.state || 'unknown';
+                    videoUrl = statusData.video_url || statusData.video?.url || statusData.url;
+
+                    if (status === 'completed' && videoUrl) {
+                        const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+                        result.innerHTML = `
+                            <span class="success">✅ Générée en ${elapsed}s</span><br>
+                            <video src="${videoUrl}" controls autoplay muted></video>
+                        `;
+                        return;
+                    }
+
+                    if (status === 'failed') {
+                        throw new Error('Échec génération');
+                    }
+
+                    const elapsed = ((Date.now() - start) / 1000).toFixed(0);
+                    result.innerHTML = `⏳ En cours... ${elapsed}s (tentative ${attempts}/${maxAttempts})`;
+                }
+
+                throw new Error(`⏱️ Timeout après ${((Date.now() - start) / 1000).toFixed(0)}s`);
+
+            } catch (err) {
+                result.innerHTML = `<span class="error">❌ ${err.message}</span>`;
+                console.error(err);
+            }
         }
-      } catch (e) {
-        result.textContent = '❌ ' + e.message;
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
