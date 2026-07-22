@@ -161,7 +161,7 @@
             <button class="nav-item" onclick="showSection('security')"><i class="fas fa-shield-alt"></i><span>Sécurité</span></button>
         </div>
     </nav>
-    <div class="sidebar-footer">Pixora Admin v6.2<br>Connecté: <span id="adminEmailDisplay">-</span></div>
+    <div class="sidebar-footer">Pixora Admin v6.3<br>Connecté: <span id="adminEmailDisplay">-</span></div>
 </aside>
 <div class="notif-panel" id="notifPanel">
     <div class="notif-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="btn btn-sm btn-outline" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button></div>
@@ -323,6 +323,36 @@ var notifications = [];
 var unreadCount = 0;
 var isAdminVerified = false;
 
+// =============================================
+// ✅ NOUVEAU : Proxy admin-save centralisé
+// Remplace tous les db.from('admin_config').upsert() bloqués par RLS
+// =============================================
+async function adminSave(key, value) {
+    try {
+        var session = await db.auth.getSession();
+        var token = session.data.session?.access_token;
+        if (!token) throw new Error('Session expirée. Reconnectez-vous.');
+
+        var res = await fetch('/api/admin-save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ key: key, value: value })
+        });
+        var data = await res.json();
+        if (!res.ok || !data.ok) {
+            throw new Error(data.error || 'Erreur serveur ' + res.status);
+        }
+        return true;
+    } catch(e) {
+        console.error('[ADMIN-SAVE] Error saving key "' + key + '":', e);
+        alert('❌ Erreur sauvegarde : ' + e.message);
+        return false;
+    }
+}
+
 function showLoginError(msg) { var el = document.getElementById('loginError'); el.textContent = msg; el.style.display = 'block'; }
 function hideLoginError() { document.getElementById('loginError').style.display = 'none'; }
 
@@ -341,7 +371,8 @@ async function handleAdminLogin(e) {
     var pass = document.getElementById('adminPass').value;
     var btn = document.getElementById('btnAdminLogin');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-    try {        var result = await db.auth.signInWithPassword({ email: email, password: pass });
+    try {
+        var result = await db.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw new Error(result.error.message);
         if (!result.data.session) throw new Error('Session non créée');
         var isAuthorized = await verifyAdminAccess(email);
@@ -359,8 +390,7 @@ async function loadAdminWhitelist() {
     try {
         var result = await db.from('admin_whitelist').select('*').order('added_at', { ascending: false });
         var tbody = document.getElementById('whitelistTable');
-        if (result.data && result.data.length > 0) {
-            tbody.innerHTML = result.data.map(function(row) {
+        if (result.data && result.data.length > 0) {            tbody.innerHTML = result.data.map(function(row) {
                 var date = row.added_at ? new Date(row.added_at).toLocaleString('fr-FR') : '-';
                 return '<tr><td style="font-family:var(--mono);font-size:0.8rem">' + row.email + '</td><td style="font-size:0.75rem;color:var(--dim)">' + date + '</td><td style="text-align:right"><button class="btn btn-sm btn-danger" onclick="removeAdminEmail(\'' + row.email + '\')"><i class="fas fa-trash"></i></button></td></tr>';
             }).join('');
@@ -409,8 +439,7 @@ async function loadDashboard() {
         var today = new Date().toISOString().split('T')[0]; var activeResult = await db.from('daily_usage').select('user_id', { count:'exact' }).eq('date', today); document.getElementById('dashActiveToday').textContent = activeResult.count || 0;
         var txResult = await db.from('transactions').select('amount').eq('type', 'earned'); var totalPoints = 0; if (txResult.data) txResult.data.forEach(function(t) { totalPoints += t.amount; }); document.getElementById('dashPointsDistributed').textContent = totalPoints.toLocaleString();
         var genResult = await db.from('user_data').select('total_generated'); var totalGen = 0; if (genResult.data) genResult.data.forEach(function(u) { totalGen += (u.total_generated || 0); }); document.getElementById('dashGenerations').textContent = totalGen.toLocaleString();
-        var adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single(); var ads = adsResult.data?.value || []; document.getElementById('dashActiveAds').textContent = ads.filter(function(a){return a.active}).length;
-        var todayTx = await db.from('transactions').select('user_id').eq('type','earned').gte('created_at', today+'T00:00:00'); var uniqueEarners = new Set((todayTx.data||[]).map(function(t){return t.user_id})).size; document.getElementById('dashTodayEarners').textContent = uniqueEarners;
+        var adsResult = await db.from('admin_config').select('value').eq('key', 'ad_networks').single(); var ads = adsResult.data?.value || []; document.getElementById('dashActiveAds').textContent = ads.filter(function(a){return a.active}).length;        var todayTx = await db.from('transactions').select('user_id').eq('type','earned').gte('created_at', today+'T00:00:00'); var uniqueEarners = new Set((todayTx.data||[]).map(function(t){return t.user_id})).size; document.getElementById('dashTodayEarners').textContent = uniqueEarners;
         var recentTx = await db.from('transactions').select('*, users(email)').order('created_at',{ascending:false}).limit(8);
         var activity = []; (recentTx.data||[]).forEach(function(t){activity.push({type:t.type,detail:t.title,user:t.users?t.users.email:'-',points:t.amount,date:t.created_at})});
         activity.sort(function(a,b){return new Date(b.date)-new Date(a.date)});
@@ -439,7 +468,8 @@ async function loadModels(type) {
 function openModelForm(type) {
     document.getElementById(type==='image'?'modelImageForm':'modelVideoForm').style.display='block';
     document.getElementById(type==='image'?'imgModelId':'vidModelId').value='';
-    document.getElementById(type==='image'?'imgModelName':'vidModelName').value='';    document.getElementById(type==='image'?'imgModelProvider':'vidModelProvider').value='';
+    document.getElementById(type==='image'?'imgModelName':'vidModelName').value='';
+    document.getElementById(type==='image'?'imgModelProvider':'vidModelProvider').value='';
     document.getElementById(type==='image'?'imgModelEndpoint':'vidModelEndpoint').value='';
     document.getElementById(type==='image'?'imgModelCost':'vidModelCost').value = type==='image' ? 4 : 18;
     document.getElementById(type==='image'?'imgModelOrder':'vidModelOrder').value=0;
@@ -458,8 +488,7 @@ function closeModelForm() { document.getElementById('modelImageForm').style.disp
 async function editModel(type, id) {
     var r = await db.from('generator_models').select('*').eq('id', id).single();
     if (!r.data) return;
-    var m = r.data; var p = type==='image' ? 'img' : 'vid';
-    document.getElementById(p+'ModelForm').style.display='block';
+    var m = r.data; var p = type==='image' ? 'img' : 'vid';    document.getElementById(p+'ModelForm').style.display='block';
     document.getElementById(p+'ModelId').value = m.id;
     document.getElementById(p+'ModelName').value = m.name;
     document.getElementById(p+'ModelProvider').value = m.provider;
@@ -488,7 +517,8 @@ async function saveModel(type) {
         sort_order: parseInt(document.getElementById(p+'ModelOrder').value) || 0,
         is_active: document.getElementById(p+'ModelActive').checked
     };
-    if (type === 'video') {        data.resolution = document.getElementById('vidModelResolution').value;
+    if (type === 'video') {
+        data.resolution = document.getElementById('vidModelResolution').value;
         data.num_frames = parseInt(document.getElementById('vidModelFrames').value) || 81;
         data.fps = parseInt(document.getElementById('vidModelFps').value) || 16;
         data.mode = document.getElementById('vidModelMode').value;
@@ -506,12 +536,8 @@ async function deleteModel(id, type) {
     loadModels(type); addNotification('config', 'Modèle supprimé');
 }
 
-// =============================================
-// API KEYS + TEST — v6.2 AVEC HUGGING FACE
-// =============================================
 async function loadSiteApiConfig() {
-    var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();
-    var keys = r.data ? r.data.value : {};
+    var r = await db.from('admin_config').select('value').eq('key', 'api_keys').single();    var keys = r.data ? r.data.value : {};
     if (keys['fal.ai']) { document.getElementById('siteApiKey').value = keys['fal.ai']; }
     else { document.getElementById('siteApiKey').placeholder = 'Aucune clé fal.ai configurée'; }
 }
@@ -537,7 +563,8 @@ async function testSiteApi() {
             if (imgUrl) html += '<br><img src="' + imgUrl + '" style="max-width:200px;border-radius:8px;margin-top:0.5rem">';
             else html += '<br><small>Réponse : ' + JSON.stringify(data).substring(0, 300) + '</small>';
             resultDiv.className='api-test-result success'; resultDiv.innerHTML = html;
-        } else {            var errText = await response.text();
+        } else {
+            var errText = await response.text();
             resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ Erreur ' + response.status + '<br><small>' + errText.substring(0, 300) + '</small>';
         }
     } catch(err) { btn.classList.remove('testing'); btn.innerHTML='<i class="fas fa-vial"></i> Tester Génération'; resultDiv.className='api-test-result error'; resultDiv.innerHTML='<i class="fas fa-times"></i> ❌ ' + err.message; }
@@ -559,8 +586,7 @@ async function loadApiKeys() {
     ];
     var html = '';
     providers.forEach(function(p) {
-        html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';
-    });
+        html += '<div class="card" style="margin-bottom:1rem"><div class="form-group"><label class="form-label">'+p.name+'</label><div style="display:flex;gap:0.5rem;align-items:flex-start"><input type="password" class="form-input api-key-input" data-provider="'+p.id+'" value="'+(keys[p.id]||'')+'" placeholder="Clé API '+p.name+'" style="flex:1"><button class="btn btn-test btn-sm" onclick="testApiKey(\''+p.id+'\',\''+p.testUrl+'\')" id="btn-test-'+p.id+'"><i class="fas fa-vial"></i> Tester</button></div><div class="api-test-result" id="test-result-'+p.id+'"></div></div></div>';    });
     document.getElementById('apiKeysContainer').innerHTML = html;
 }
 
@@ -582,15 +608,14 @@ async function testApiKey(provider, testUrl) {
     resultDiv.style.display='block';
 }
 
+// ✅ CORRIGÉ : saveApiKeys utilise adminSave()
 async function saveApiKeys() {
     var keys = {};
     document.querySelectorAll('.api-key-input').forEach(function(input){if(input.value.trim())keys[input.dataset.provider]=input.value.trim()});
-    await db.from('admin_config').upsert({key:'api_keys',value:keys,updated_at:new Date().toISOString()},{onConflict:'key'});
-    addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !');}
+    var ok = await adminSave('api_keys', keys);
+    if (ok) { addNotification('config','Clés API sauvegardées'); alert('✅ Clés API sauvegardées !'); }
+}
 
-// =============================================
-// RÉGIES PUB (IDENTIQUE V6.0)
-// =============================================
 async function loadAdNetworks() {
     var result = await db.from('admin_config').select('*').eq('key','ad_networks').single();
     var networks = result.data ? result.data.value : []; window._adNetworks = networks;
@@ -604,14 +629,18 @@ async function loadAdNetworks() {
 function openAdNetworkForm() { document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=''; document.getElementById('adNetName').value=''; document.getElementById('adNetLink').value=''; document.getElementById('adNetPoints').value=5; document.getElementById('adNetOrder').value=0; document.getElementById('adNetActive').checked=true; }
 function closeAdNetworkForm() { document.getElementById('adNetworkForm').style.display='none'; }
 function editAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; document.getElementById('adNetworkForm').style.display='block'; document.getElementById('adNetId').value=i; document.getElementById('adNetName').value=n.name; document.getElementById('adNetType').value=n.type||'smartlink'; document.getElementById('adNetPage').value=n.page||'earn'; document.getElementById('adNetPosition').value=n.position||'top'; document.getElementById('adNetLink').value=n.link||n.code||''; document.getElementById('adNetPoints').value=n.points; document.getElementById('adNetOrder').value=n.order||0; document.getElementById('adNetActive').checked=n.active!==false; }
-async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; var c=JSON.parse(JSON.stringify(n)); c.name+=' (copie)'; c.active=false; window._adNetworks.push(c); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie dupliquée'); }
-async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetworks[i].active; await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); }
-async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'ad_networks',value:nw,updated_at:new Date().toISOString()},{onConflict:'key'}); closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée'); }
-async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); await db.from('admin_config').upsert({key:'ad_networks',value:window._adNetworks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadAdNetworks(); addNotification('config','Régie supprimée'); }
 
-// =============================================
-// TÂCHES INTERNES (IDENTIQUE V6.0)
-// =============================================
+// ✅ CORRIGÉ : duplicateAdNetwork utilise adminSave()
+async function duplicateAdNetwork(i) { var n=window._adNetworks[i]; if(!n)return; var c=JSON.parse(JSON.stringify(n)); c.name+=' (copie)'; c.active=false; window._adNetworks.push(c); var ok = await adminSave('ad_networks', window._adNetworks); if(ok){loadAdNetworks(); addNotification('config','Régie dupliquée');} }
+
+// ✅ CORRIGÉ : toggleAdNetwork utilise adminSave()
+async function toggleAdNetwork(i) { window._adNetworks[i].active=!window._adNetworks[i].active; var ok = await adminSave('ad_networks', window._adNetworks); if(ok){loadAdNetworks();} }
+// ✅ CORRIGÉ : saveAdNetwork utilise adminSave()
+async function saveAdNetwork() { var idx=document.getElementById('adNetId').value; var data={name:document.getElementById('adNetName').value.trim(),type:document.getElementById('adNetType').value,page:document.getElementById('adNetPage').value,position:document.getElementById('adNetPosition').value,link:document.getElementById('adNetLink').value.trim(),code:document.getElementById('adNetLink').value.trim(),points:parseInt(document.getElementById('adNetPoints').value)||0,order:parseInt(document.getElementById('adNetOrder').value)||0,active:document.getElementById('adNetActive').checked}; if(!data.name){alert('Nom requis');return} var nw=window._adNetworks||[]; if(idx!==''){nw[parseInt(idx)]=data}else{nw.push(data)} nw.sort(function(a,b){return(a.order||0)-(b.order||0)}); var ok = await adminSave('ad_networks', nw); if(ok){closeAdNetworkForm();loadAdNetworks();addNotification('config','Régie "'+data.name+'" sauvegardée');} }
+
+// ✅ CORRIGÉ : deleteAdNetwork utilise adminSave()
+async function deleteAdNetwork(i) { if(!confirm('Supprimer cette régie ?'))return; window._adNetworks.splice(i,1); var ok = await adminSave('ad_networks', window._adNetworks); if(ok){loadAdNetworks(); addNotification('config','Régie supprimée');} }
+
 var DEFAULT_TASKS = [
     {name:'Voter pour une création',desc:'Donne ton avis sur une image de la galerie',points:2,type:'vote',limit:5,order:1,active:true},
     {name:'Commenter une création',desc:'Laisse un commentaire constructif',points:2,type:'comment',limit:3,order:2,active:true},
@@ -622,7 +651,7 @@ var DEFAULT_TASKS = [
 async function loadInternalTasks() {
     var result = await db.from('admin_config').select('*').eq('key','internal_tasks').single();
     var tasks = result.data ? result.data.value : null;
-    if (!tasks || tasks.length === 0) { tasks = DEFAULT_TASKS; await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); }
+    if (!tasks || tasks.length === 0) { tasks = DEFAULT_TASKS; await adminSave('internal_tasks', tasks); }
     window._internalTasks = tasks; renderTasksTable(tasks);
 }
 function renderTasksTable(tasks) {
@@ -635,11 +664,13 @@ function renderTasksTable(tasks) {
 function openTaskForm() { document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=''; document.getElementById('taskName').value=''; document.getElementById('taskDesc').value=''; document.getElementById('taskPoints').value=2; document.getElementById('taskType').value='vote'; document.getElementById('taskLimit').value=5; document.getElementById('taskOrder').value=0; document.getElementById('taskActive').checked=true; }
 function closeTaskForm() { document.getElementById('taskForm').style.display='none'; }
 function editTask(index) { var t=window._internalTasks[index]; if(!t)return; document.getElementById('taskForm').style.display='block'; document.getElementById('taskId').value=index; document.getElementById('taskName').value=t.name; document.getElementById('taskDesc').value=t.desc||''; document.getElementById('taskPoints').value=t.points; document.getElementById('taskType').value=t.type; document.getElementById('taskLimit').value=t.limit; document.getElementById('taskOrder').value=t.order||0; document.getElementById('taskActive').checked=t.active!==false; }
-async function saveInternalTask() { var index=document.getElementById('taskId').value; var data={name:document.getElementById('taskName').value.trim(),desc:document.getElementById('taskDesc').value.trim(),points:parseInt(document.getElementById('taskPoints').value)||0,type:document.getElementById('taskType').value,limit:parseInt(document.getElementById('taskLimit').value)||1,order:parseInt(document.getElementById('taskOrder').value)||0,active:document.getElementById('taskActive').checked}; if(!data.name){alert('Nom requis');return} var tasks=window._internalTasks||[]; if(index!==''){tasks[parseInt(index)]=data}else{tasks.push(data)} tasks.sort(function(a,b){return(a.order||0)-(b.order||0)}); await db.from('admin_config').upsert({key:'internal_tasks',value:tasks,updated_at:new Date().toISOString()},{onConflict:'key'}); closeTaskForm(); loadInternalTasks(); addNotification('config','Tâche "'+data.name+'" sauvegardée'); }async function deleteInternalTask(index) { if(!confirm('Supprimer cette tâche ?'))return; window._internalTasks.splice(index,1); await db.from('admin_config').upsert({key:'internal_tasks',value:window._internalTasks,updated_at:new Date().toISOString()},{onConflict:'key'}); loadInternalTasks(); addNotification('config','Tâche supprimée'); }
 
-// =============================================
-// PARRAINAGE (IDENTIQUE V6.0)
-// =============================================
+// ✅ CORRIGÉ : saveInternalTask utilise adminSave()
+async function saveInternalTask() { var index=document.getElementById('taskId').value; var data={name:document.getElementById('taskName').value.trim(),desc:document.getElementById('taskDesc').value.trim(),points:parseInt(document.getElementById('taskPoints').value)||0,type:document.getElementById('taskType').value,limit:parseInt(document.getElementById('taskLimit').value)||1,order:parseInt(document.getElementById('taskOrder').value)||0,active:document.getElementById('taskActive').checked}; if(!data.name){alert('Nom requis');return} var tasks=window._internalTasks||[]; if(index!==''){tasks[parseInt(index)]=data}else{tasks.push(data)} tasks.sort(function(a,b){return(a.order||0)-(b.order||0)}); var ok = await adminSave('internal_tasks', tasks); if(ok){closeTaskForm(); loadInternalTasks(); addNotification('config','Tâche "'+data.name+'" sauvegardée');} }
+
+// ✅ CORRIGÉ : deleteInternalTask utilise adminSave()
+async function deleteInternalTask(index) { if(!confirm('Supprimer cette tâche ?'))return; window._internalTasks.splice(index,1); var ok = await adminSave('internal_tasks', window._internalTasks); if(ok){loadInternalTasks(); addNotification('config','Tâche supprimée');} }
+
 async function loadReferrals() {
     var configResult = await db.from('admin_config').select('*').eq('key','referral_config').single();
     var config = configResult.data ? configResult.data.value : {enabled:true, points:10, condition:'signup_gen'};
@@ -653,19 +684,17 @@ async function loadReferrals() {
             tbody.innerHTML = refResult.data.map(function(r) {
                 var statusClass = r.validated ? 'status-valid' : 'status-pending'; var statusText = r.validated ? 'Validé' : 'En attente';
                 return '<tr><td style="font-size:0.8rem">'+(r.sponsor?.email||'-')+'</td><td style="font-size:0.8rem">'+(r.referred?.email||'-')+'</td><td><span class="status-badge '+statusClass+'">'+statusText+'</span></td><td style="font-family:var(--mono);color:var(--gold)">'+(r.validated?r.points||10:'-')+'</td><td style="font-size:0.75rem;color:var(--dim)">'+new Date(r.created_at).toLocaleString('fr-FR')+'</td></tr>';
-            }).join('');
-        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>'; }
+            }).join('');        } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--dim)">Aucun parrainage enregistré</td></tr>'; }
     } catch(err) { document.getElementById('referralsTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--warn)">Table referrals non créée. Exécutez le SQL dans Supabase.</td></tr>'; }
 }
+
+// ✅ CORRIGÉ : saveReferralConfig utilise adminSave()
 async function saveReferralConfig() {
     var config = { enabled: document.getElementById('refEnabled').checked, points: parseInt(document.getElementById('refPoints').value) || 10, condition: document.getElementById('refCondition').value };
-    await db.from('admin_config').upsert({key:'referral_config',value:config,updated_at:new Date().toISOString()},{onConflict:'key'});
-    addNotification('config','Parrainage configuré : '+config.points+' pts/filleul'); alert('✅ Configuration parrainage sauvegardée !');
+    var ok = await adminSave('referral_config', config);
+    if(ok){addNotification('config','Parrainage configuré : '+config.points+' pts/filleul'); alert('✅ Configuration parrainage sauvegardée !');}
 }
 
-// =============================================
-// PRICING + RÉTENTION (IDENTIQUE V6.0)
-// =============================================
 async function loadPricing() {
     var r = await db.from('admin_config').select('*').eq('key','tiers').single();
     if (r.data && r.data.value) { var tiers = r.data.value; [1,2,3].forEach(function(t) { var tier = tiers[t]; if (!tier) return; document.querySelectorAll('.pricing-t'+t).forEach(function(input) { var parts = input.dataset.key.split('.'); if (tier[parts[0]] && tier[parts[0]][parts[1]] !== undefined) input.value = tier[parts[0]][parts[1]]; }); }); }
@@ -674,25 +703,24 @@ async function loadPricing() {
     var ret = await db.from('admin_config').select('*').eq('key','retention_config').single();
     if (ret.data && ret.data.value) { var rc = ret.data.value; [1,2,3].forEach(function(t) { var tierData = rc[t]; if (!tierData) return; document.querySelectorAll('.retention-t'+t).forEach(function(input) { var rkey = input.dataset.rkey; if (tierData[rkey] !== undefined) input.value = tierData[rkey]; }); }); }
 }
+
+// ✅ CORRIGÉ : savePricing utilise adminSave()
 async function savePricing() {
     var tiers = {}; [1,2,3].forEach(function(t) { tiers[t] = { costs:{}, rewards:{}, limits:{} }; document.querySelectorAll('.pricing-t'+t).forEach(function(input) { var parts = input.dataset.key.split('.'); tiers[t][parts[0]][parts[1]] = parseInt(input.value) || 0; }); });
-    await db.from('admin_config').upsert({key:'tiers', value:tiers, updated_at:new Date().toISOString()}, {onConflict:'key'});
-    await db.from('admin_config').upsert({key:'signup_bonus', value:parseInt(document.getElementById('signupBonus').value)||15, updated_at:new Date().toISOString()}, {onConflict:'key'});
+    var ok1 = await adminSave('tiers', tiers);
+    var ok2 = await adminSave('signup_bonus', parseInt(document.getElementById('signupBonus').value)||15);
     var retention = {}; [1,2,3].forEach(function(t) { retention[t] = {}; document.querySelectorAll('.retention-t'+t).forEach(function(input) { retention[t][input.dataset.rkey] = parseInt(input.value) || 0; }); });
-    await db.from('admin_config').upsert({key:'retention_config', value:retention, updated_at:new Date().toISOString()}, {onConflict:'key'});
-    addNotification('config', 'Pricing + Rétention sauvegardés'); alert('✅ Pricing + Rétention Quotidienne sauvegardés !');
+    var ok3 = await adminSave('retention_config', retention);
+    if(ok1 && ok2 && ok3){addNotification('config', 'Pricing + Rétention sauvegardés'); alert('✅ Pricing + Rétention Quotidienne sauvegardés !');}
 }
 
-// =============================================
-// SHOP CONFIG (IDENTIQUE V6.0)// =============================================
 async function loadShopConfig() { var r=await db.from('admin_config').select('*').eq('key','shop_config').single(); var c=r.data?r.data.value:{packs:[],subs:[],currency:'EUR',stripe_key:'',paypal_client_id:''}; document.getElementById('shopCurrency').value=c.currency||'EUR'; document.getElementById('stripeKey').value=c.stripe_key||''; document.getElementById('paypalClientId').value=c.paypal_client_id||''; var ph='';(c.packs||[]).forEach(function(p){ph+='<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" value="'+p.name+'"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="'+p.points+'"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="'+p.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('packsContainer').innerHTML=ph||'<div style="color:var(--dim);font-size:0.85rem">Aucun pack</div>'; var sh='';(c.subs||[]).forEach(function(s){sh+='<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" value="'+s.name+'"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="'+s.points+'"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="'+s.price+'" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('subsContainer').innerHTML=sh||'<div style="color:var(--dim);font-size:0.85rem">Aucun abonnement</div>'; }
 function addPackField() { document.getElementById('packsContainer').insertAdjacentHTML('beforeend','<div class="form-row pack-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input pack-name" placeholder="Pack Name"></div><div class="form-group"><label class="form-label">Points</label><input type="number" class="form-input pack-points" value="100"></div><div class="form-group"><label class="form-label">Prix</label><input type="number" class="form-input pack-price" value="0.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
 function addSubField() { document.getElementById('subsContainer').insertAdjacentHTML('beforeend','<div class="form-row sub-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input sub-name" placeholder="Plan Name"></div><div class="form-group"><label class="form-label">Points/mois</label><input type="number" class="form-input sub-points" value="2000"></div><div class="form-group"><label class="form-label">Prix/mois</label><input type="number" class="form-input sub-price" value="9.99" step="0.01"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
-async function saveShopConfig() { var packs=[],subs=[]; document.querySelectorAll('.pack-row').forEach(function(r){var n=r.querySelector('.pack-name').value.trim();if(n)packs.push({name:n,points:parseInt(r.querySelector('.pack-points').value)||0,price:parseFloat(r.querySelector('.pack-price').value)||0})}); document.querySelectorAll('.sub-row').forEach(function(r){var n=r.querySelector('.sub-name').value.trim();if(n)subs.push({name:n,points:parseInt(r.querySelector('.sub-points').value)||0,price:parseFloat(r.querySelector('.sub-price').value)||0})}); await db.from('admin_config').upsert({key:'shop_config',value:{packs:packs,subs:subs,currency:document.getElementById('shopCurrency').value,stripe_key:document.getElementById('stripeKey').value.trim(),paypal_client_id:document.getElementById('paypalClientId').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Boutique sauvegardée'); alert('✅ Boutique sauvegardée !'); }
 
-// =============================================
-// SHOP POINTS (IDENTIQUE V6.0)
-// =============================================
+// ✅ CORRIGÉ : saveShopConfig utilise adminSave()
+async function saveShopConfig() { var packs=[],subs=[]; document.querySelectorAll('.pack-row').forEach(function(r){var n=r.querySelector('.pack-name').value.trim();if(n)packs.push({name:n,points:parseInt(r.querySelector('.pack-points').value)||0,price:parseFloat(r.querySelector('.pack-price').value)||0})}); document.querySelectorAll('.sub-row').forEach(function(r){var n=r.querySelector('.sub-name').value.trim();if(n)subs.push({name:n,points:parseInt(r.querySelector('.sub-points').value)||0,price:parseFloat(r.querySelector('.sub-price').value)||0})}); var ok = await adminSave('shop_config', {packs:packs,subs:subs,currency:document.getElementById('shopCurrency').value,stripe_key:document.getElementById('stripeKey').value.trim(),paypal_client_id:document.getElementById('paypalClientId').value.trim()}); if(ok){addNotification('config','Boutique sauvegardée'); alert('✅ Boutique sauvegardée !');} }
+
 var _shopItems = [];
 async function loadShopItems() {
     try {
@@ -705,8 +733,7 @@ async function loadShopItems() {
     }
 }
 async function loadShopStats() {
-    var statsMap = {};
-    try {
+    var statsMap = {};    try {
         var result = await db.from('purchases').select('name');
         if (result.data) { result.data.forEach(function(p) { statsMap[p.name] = (statsMap[p.name] || 0) + 1; }); }
     } catch(e) {}
@@ -725,6 +752,8 @@ function renderShopItemsTable(stats) {
 function openShopItemForm() { document.getElementById('shopItemForm').style.display = 'block'; document.getElementById('shopItemId').value = ''; document.getElementById('shopItemName').value = ''; document.getElementById('shopItemDesc').value = ''; document.getElementById('shopItemCost').value = 50; document.getElementById('shopItemType').value = 'badge'; document.getElementById('shopItemIcon').value = 'fa-gift'; document.getElementById('shopItemOrder').value = 0; document.getElementById('shopItemActive').checked = true; }
 function closeShopItemForm() { document.getElementById('shopItemForm').style.display = 'none'; }
 function editShopItem(index) { var item = _shopItems[index]; if (!item) return; document.getElementById('shopItemForm').style.display = 'block'; document.getElementById('shopItemId').value = index; document.getElementById('shopItemName').value = item.name || ''; document.getElementById('shopItemDesc').value = item.desc || ''; document.getElementById('shopItemCost').value = item.cost || 50; document.getElementById('shopItemType').value = item.type || 'badge'; document.getElementById('shopItemIcon').value = item.icon || 'fa-gift'; document.getElementById('shopItemOrder').value = item.order || 0; document.getElementById('shopItemActive').checked = item.active !== false; }
+
+// ✅ CORRIGÉ : saveShopItem utilise adminSave()
 async function saveShopItem() {
     var index = document.getElementById('shopItemId').value;
     var data = { name: document.getElementById('shopItemName').value.trim(), desc: document.getElementById('shopItemDesc').value.trim(), cost: parseInt(document.getElementById('shopItemCost').value) || 0, type: document.getElementById('shopItemType').value, icon: document.getElementById('shopItemIcon').value.trim() || 'fa-gift', order: parseInt(document.getElementById('shopItemOrder').value) || 0, active: document.getElementById('shopItemActive').checked };
@@ -732,39 +761,36 @@ async function saveShopItem() {
     if (data.cost <= 0) { alert('Le coût doit être supérieur à 0'); return; }
     if (index !== '') { _shopItems[parseInt(index)] = data; } else { _shopItems.push(data); }
     _shopItems.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
-    await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    closeShopItemForm(); loadShopItems(); addNotification('config', 'Item shop "' + data.name + '" sauvegardé'); alert('✅ Item shop sauvegardé !');}
-async function toggleShopItem(index) { _shopItems[index].active = !_shopItems[index].active; await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' }); loadShopItems(); }
-async function deleteShopItem(index) { var name = _shopItems[index].name; if (!confirm('Supprimer "' + name + '" du shop points ?')) return; _shopItems.splice(index, 1); await db.from('admin_config').upsert({ key: 'shop_items', value: _shopItems, updated_at: new Date().toISOString() }, { onConflict: 'key' }); loadShopItems(); addNotification('config', 'Item shop "' + name + '" supprimé'); }
+    var ok = await adminSave('shop_items', _shopItems);
+    if(ok){closeShopItemForm(); loadShopItems(); addNotification('config', 'Item shop "' + data.name + '" sauvegardé'); alert('✅ Item shop sauvegardé !');}
+}
 
-// =============================================
-// SOCIAL LINKS (IDENTIQUE V6.0)
-// =============================================
+// ✅ CORRIGÉ : toggleShopItem utilise adminSave()
+async function toggleShopItem(index) { _shopItems[index].active = !_shopItems[index].active; var ok = await adminSave('shop_items', _shopItems); if(ok){loadShopItems();} }
+
+// ✅ CORRIGÉ : deleteShopItem utilise adminSave()
+async function deleteShopItem(index) { var name = _shopItems[index].name; if (!confirm('Supprimer "' + name + '" du shop points ?')) return; _shopItems.splice(index, 1); var ok = await adminSave('shop_items', _shopItems); if(ok){loadShopItems(); addNotification('config', 'Item shop "' + name + '" supprimé');} }
+
 async function loadSocialLinks() { var r=await db.from('admin_config').select('*').eq('key','social_links').single(); var links=r.data?r.data.value:[]; var h=''; links.forEach(function(l){h+='<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" value="'+l.name+'"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" value="'+l.url+'"></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" value="'+(l.icon||'')+'" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'}); document.getElementById('socialLinksContainer').innerHTML=h||'<div style="color:var(--dim);font-size:0.85rem">Aucun lien social</div>'; }
 function addSocialField() { document.getElementById('socialLinksContainer').insertAdjacentHTML('beforeend','<div class="form-row social-row"><div class="form-group"><label class="form-label">Réseau</label><input type="text" class="form-input social-name" placeholder="Twitter"></div><div class="form-group"><label class="form-label">URL</label><input type="text" class="form-input social-url" placeholder="https://twitter.com/..."></div><div class="form-group"><label class="form-label">Icône FA</label><input type="text" class="form-input social-icon" placeholder="fa-twitter"></div><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button></div>'); }
-async function saveSocialLinks() { var links=[]; document.querySelectorAll('.social-row').forEach(function(r){var n=r.querySelector('.social-name').value.trim();if(n)links.push({name:n,url:r.querySelector('.social-url').value.trim(),icon:r.querySelector('.social-icon').value.trim()})}); await db.from('admin_config').upsert({key:'social_links',value:links,updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Réseaux sociaux sauvegardés'); alert('✅ Réseaux sociaux sauvegardés !'); }
 
-// =============================================
-// SITE SETTINGS (IDENTIQUE V6.0)
-// =============================================
+// ✅ CORRIGÉ : saveSocialLinks utilise adminSave()
+async function saveSocialLinks() { var links=[]; document.querySelectorAll('.social-row').forEach(function(r){var n=r.querySelector('.social-name').value.trim();if(n)links.push({name:n,url:r.querySelector('.social-url').value.trim(),icon:r.querySelector('.social-icon').value.trim()})}); var ok = await adminSave('social_links', links); if(ok){addNotification('config','Réseaux sociaux sauvegardés'); alert('✅ Réseaux sociaux sauvegardés !');} }
+
 async function loadSiteSettings() { var r=await db.from('admin_config').select('*').eq('key','site_settings').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('settingSiteName').value=s.name||'Pixora';document.getElementById('settingLogoUrl').value=s.logo_url||'';document.getElementById('settingFavicon').value=s.favicon||'';document.getElementById('settingColorPrimary').value=s.color_primary||'#8B5CF6';document.getElementById('settingColorSecondary').value=s.color_secondary||'#EC4899';document.getElementById('settingLang').value=s.lang||'fr';document.getElementById('settingHeroText').value=s.hero_text||'';document.getElementById('settingCopyright').value=s.copyright||'';document.getElementById('settingMaintenance').checked=!!s.maintenance} }
-async function saveSiteSettings() { await db.from('admin_config').upsert({key:'site_settings',value:{name:document.getElementById('settingSiteName').value.trim(),logo_url:document.getElementById('settingLogoUrl').value.trim(),favicon:document.getElementById('settingFavicon').value.trim(),color_primary:document.getElementById('settingColorPrimary').value,color_secondary:document.getElementById('settingColorSecondary').value,lang:document.getElementById('settingLang').value,hero_text:document.getElementById('settingHeroText').value.trim(),copyright:document.getElementById('settingCopyright').value.trim(),maintenance:document.getElementById('settingMaintenance').checked},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Paramètres site sauvegardés'); alert('✅ Paramètres sauvegardés !'); }
 
-// =============================================
-// SEO (IDENTIQUE V6.0)
-// =============================================
+// ✅ CORRIGÉ : saveSiteSettings utilise adminSave()
+async function saveSiteSettings() { var ok = await adminSave('site_settings', {name:document.getElementById('settingSiteName').value.trim(),logo_url:document.getElementById('settingLogoUrl').value.trim(),favicon:document.getElementById('settingFavicon').value.trim(),color_primary:document.getElementById('settingColorPrimary').value,color_secondary:document.getElementById('settingColorSecondary').value,lang:document.getElementById('settingLang').value,hero_text:document.getElementById('settingHeroText').value.trim(),copyright:document.getElementById('settingCopyright').value.trim(),maintenance:document.getElementById('settingMaintenance').checked}); if(ok){addNotification('config','Paramètres site sauvegardés'); alert('✅ Paramètres sauvegardés !');} }
+
 async function loadSeo() { var r=await db.from('admin_config').select('*').eq('key','seo').single(); if(r.data&&r.data.value){var s=r.data.value;document.getElementById('seoTitle').value=s.title||'';document.getElementById('seoDescription').value=s.description||'';document.getElementById('seoOgImage').value=s.og_image||'';document.getElementById('seoCanonical').value=s.canonical||'';document.getElementById('seoRobots').value=s.robots||''} }
-async function saveSeo() { await db.from('admin_config').upsert({key:'seo',value:{title:document.getElementById('seoTitle').value.trim(),description:document.getElementById('seoDescription').value.trim(),og_image:document.getElementById('seoOgImage').value.trim(),canonical:document.getElementById('seoCanonical').value.trim(),robots:document.getElementById('seoRobots').value.trim()},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','SEO sauvegardé'); alert('✅ SEO sauvegardé !'); }
+// ✅ CORRIGÉ : saveSeo utilise adminSave()
+async function saveSeo() { var ok = await adminSave('seo', {title:document.getElementById('seoTitle').value.trim(),description:document.getElementById('seoDescription').value.trim(),og_image:document.getElementById('seoOgImage').value.trim(),canonical:document.getElementById('seoCanonical').value.trim(),robots:document.getElementById('seoRobots').value.trim()}); if(ok){addNotification('config','SEO sauvegardé'); alert('✅ SEO sauvegardé !');} }
 
-// =============================================
-// LEGAL (IDENTIQUE V6.0)
-// =============================================
 async function loadLegal() { var r=await db.from('admin_config').select('*').eq('key','legal').single(); if(r.data&&r.data.value){document.getElementById('legalCgu').value=r.data.value.cgu||'';document.getElementById('legalPrivacy').value=r.data.value.privacy||'';document.getElementById('legalMentions').value=r.data.value.mentions||''} }
-async function saveLegal() { await db.from('admin_config').upsert({key:'legal',value:{cgu:document.getElementById('legalCgu').value,privacy:document.getElementById('legalPrivacy').value,mentions:document.getElementById('legalMentions').value},updated_at:new Date().toISOString()},{onConflict:'key'}); addNotification('config','Contenu légal sauvegardé'); alert('✅ Contenu légal sauvegardé !'); }
 
-// =============================================
-// USERS (IDENTIQUE V6.0)
-// =============================================
+// ✅ CORRIGÉ : saveLegal utilise adminSave()
+async function saveLegal() { var ok = await adminSave('legal', {cgu:document.getElementById('legalCgu').value,privacy:document.getElementById('legalPrivacy').value,mentions:document.getElementById('legalMentions').value}); if(ok){addNotification('config','Contenu légal sauvegardé'); alert('✅ Contenu légal sauvegardé !');} }
+
 async function loadUsers() { var r=await db.from('users').select('id,email,name,created_at'); var ud=await db.from('user_data').select('*'); var um={}; if(ud.data)ud.data.forEach(function(d){um[d.user_id]=d}); window._allUsers=r.data||[]; window._usersMap=um; renderUsersTable(window._allUsers,um); }
 function renderUsersTable(users,um) { var tb=document.getElementById('usersTable'); if(!users.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim)">Aucun utilisateur</td></tr>';return} tb.innerHTML=users.map(function(u){var d=um[u.id]||{};return '<tr><td>'+(u.name||'-')+'</td><td style="font-size:0.8rem">'+u.email+'</td><td><div class="inline-points-edit"><span style="font-family:var(--mono);color:var(--gold);min-width:40px">'+(d.points||0)+'</span><input type="number" id="pts-'+u.id+'" value="'+(d.points||0)+'"><button class="btn btn-sm btn-success" onclick="saveUserPoints(\''+u.id+'\')"><i class="fas fa-save"></i></button></div></td><td>J'+(d.streak||1)+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(d.last_login||'-')+'</td><td style="text-align:right"><div class="action-btns"><button class="btn btn-sm btn-outline" onclick="addPointsToUser(\''+u.id+'\')" title="Ajouter"><i class="fas fa-plus"></i></button><button class="btn btn-sm btn-danger" onclick="banUser(\''+u.id+'\')" title="Bannir"><i class="fas fa-ban"></i></button></div></td></tr>'}).join(''); }
 function searchUsers() { var q=document.getElementById('userSearch').value.toLowerCase(); var f=window._allUsers.filter(function(u){return(u.email&&u.email.toLowerCase().includes(q))||(u.name&&u.name.toLowerCase().includes(q))}); renderUsersTable(f,window._usersMap||{}); }
@@ -772,18 +798,10 @@ async function saveUserPoints(uid) { var np=parseInt(document.getElementById('pt
 async function addPointsToUser(uid) { var a=prompt('Combien de points ajouter ?'); if(!a||isNaN(a))return; a=parseInt(a); await db.from('transactions').insert({user_id:uid,type:'earned',title:'Ajout admin',amount:a}); var d=await db.from('user_data').select('*').eq('user_id',uid).single(); if(d.data){await db.from('user_data').update({points:d.data.points+a,total_earned:(d.data.total_earned||0)+a}).eq('user_id',uid)} loadUsers(); addNotification('user',a+' points ajoutés'); }
 async function banUser(uid) { if(!confirm('Bannir cet utilisateur ?'))return; await db.from('user_data').update({points:0,streak:0}).eq('user_id',uid); loadUsers(); addNotification('user','Utilisateur banni'); }
 
-// =============================================
-// LOGS (IDENTIQUE V6.0)
-// =============================================
 async function loadLogs() { var r=await db.from('admin_config').select('*').eq('key','system_logs').single(); var logs=r.data?r.data.value:[]; var tb=document.getElementById('logsTable'); if(logs.length){tb.innerHTML=logs.slice().reverse().slice(0,50).map(function(l){var colors={error:'var(--danger)',warn:'var(--warn)',info:'var(--accent)',success:'var(--success)'};return '<tr><td style="font-size:0.75rem;font-family:var(--mono);white-space:nowrap">'+new Date(l.time).toLocaleString('fr-FR')+'</td><td style="color:'+(colors[l.type]||'var(--text)')+';font-weight:600">'+l.type.toUpperCase()+'</td><td>'+l.message+'</td><td style="font-size:0.75rem;color:var(--dim)">'+(l.details||'-')+'</td></tr>'}).join('')}else{tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--dim)">Aucun log</td></tr>'} }
 
-// =============================================
-// SECURITY (IDENTIQUE V6.0)
-// =============================================
 async function changeAdminPassword() { var np=document.getElementById('newAdminPass').value,cp=document.getElementById('confirmAdminPass').value; if(np!==cp){alert('Mots de passe différents');return} if(np.length<8){alert('Minimum 8 caractères');return} await db.auth.updateUser({password:np}); alert('✅ Mot de passe modifié !'); document.getElementById('newAdminPass').value=''; document.getElementById('confirmAdminPass').value=''; }
 
-// =============================================// REALTIME (IDENTIQUE V6.0)
-// =============================================
 function subscribeRealtime() {
     db.channel('admin-realtime')
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'users'},function(p){addNotification('user','Nouveau compte : '+(p.new.email||'inconnu'))})
@@ -791,9 +809,6 @@ function subscribeRealtime() {
         .subscribe();
 }
 
-// =============================================
-// INIT (IDENTIQUE V6.0)
-// =============================================
 async function initAdmin() { subscribeRealtime(); loadDashboard(); updateNotifUI(); }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -816,6 +831,5 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.error('Session check error:', err);
     }
 });
-</script>
-</body>
+</script></body>
 </html>
