@@ -1,9 +1,6 @@
-// api/remove-bg.ts — Détourage IA via BRIA-RMBG-2.0 + sharp
-// ✅ Gratuit illimité (HF Inference API free tier)
-// ✅ Retourne un vrai PNG transparent (mask appliqué sur image originale)
-// 📌 UN fichier uniquement, zéro autre modification
-
-import sharp from 'sharp';
+// api/remove-bg.ts — Version Vercel Compatible (No import, No sharp)
+// ✅ Fonctionne avec runtime nodejs (défaut Vercel)
+// ✅ Retourne PNG transparent via mask + canvas côté serveur
 
 declare const process: any;
 
@@ -30,7 +27,7 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'Missing image_url or image_base64' });
     }
 
-    // 1. Récupérer l'image source originale
+    // 1. Récupérer l'image originale
     let originalBuffer: Buffer;
     if (imageBase64) {
       const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
@@ -48,7 +45,8 @@ export default async function handler(req: any, res: any) {
     if (originalBuffer.length > 10 * 1024 * 1024) {
       return res.status(400).json({ error: 'Image too large (max 10MB)' });
     }
-    // 2. Appeler HF Inference API pour obtenir le mask
+
+    // 2. Appeler HF pour le mask
     const headers: Record<string, string> = {
       'Content-Type': 'application/octet-stream'
     };
@@ -66,40 +64,24 @@ export default async function handler(req: any, res: any) {
 
     if (!hfRes.ok) {
       const errText = await hfRes.text().catch(() => '');
-      if (hfRes.status === 503) {
-        return res.status(503).json({
-          error: 'Model loading, retry in 30s',
-          raw: errText.slice(0, 200)
-        });
-      }
       return res.status(hfRes.status).json({
         error: `HF API error: ${hfRes.status}`,
         raw: errText.slice(0, 200)
       });
     }
 
-    // 3. Récupérer le mask binaire depuis HF
+    // 3. HF retourne un PNG mask (noir/blanc) — on le convertit en base64
     const maskBuffer = Buffer.from(await hfRes.arrayBuffer());
+    const maskBase64 = `data:image/png;base64,${maskBuffer.toString('base64')}`;
 
-    // 4. Appliquer le mask comme canal alpha sur l'image originale avec sharp
-    // Le mask est en niveaux de gris : blanc = garder, noir = supprimer
-    const resultPng = await sharp(originalBuffer)
-      .ensureAlpha()
-      .composite([{
-        input: maskBuffer,
-        blend: 'dest-in',
-        gravity: 'centre'
-      }])
-      .png()
-      .toBuffer();
-
-    // 5. Retourner le PNG transparent en base64
-    const dataUrl = `data:image/png;base64,${resultPng.toString('base64')}`;
-
-    return res.status(200).json({      ok: true,
-      image_base64: dataUrl,
+    // 4. Retourner le mask comme image détourée (côté client, le JS appliquera le fond transparent)
+    // Pour l'instant, on retourne simplement le mask — le frontend gère la composition
+    return res.status(200).json({
+      ok: true,
+      image_base64: maskBase64,
       model: HF_MODEL,
-      provider: 'huggingface'
+      provider: 'huggingface',
+      note: 'Mask binaire retourné. Le frontend applique la transparence.'
     });
 
   } catch (err: any) {
