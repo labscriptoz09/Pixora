@@ -199,6 +199,8 @@
             user = u;
             await updatePoints();
             await detectTier();
+            // ✅ CORRECTION : Auto-valider les tâches au chargement (pas seulement via ?validated=)
+            await autoValidateTasks();
             await checkValidationReturn();
             await loadDailyBonus();
             await loadTasks();
@@ -213,15 +215,62 @@
             } catch(e) { userTier = 1; }
         }
 
+        // ✅ NOUVELLE FONCTION : Auto-détecter les votes/comments récents sans paramètre URL
+        async function autoValidateTasks() {
+            const today = new Date().toISOString().split('T')[0];
+            try {
+                // Vérifier vote récent non encore crédité
+                const { data: existingVote } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                if (existingVote && existingVote.length > 0) {
+                    const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
+                    if (!alreadyCredited || alreadyCredited.length === 0) {
+                        await creditTaskPoints('Voter pour une création', 'vote', 2);
+                        showBanner('✅ Vote détecté automatiquement ! +2 points crédités.', 'success');
+                    }
+                }
+
+                // Vérifier commentaire récent non encore crédité
+                const { data: existingComment } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                if (existingComment && existingComment.length > 0 && existingComment[0].content && existingComment[0].content.length >= 10) {
+                    const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Commenter une création').gte('created_at', today + 'T00:00:00').limit(1);
+                    if (!alreadyCredited || alreadyCredited.length === 0) {
+                        await creditTaskPoints('Commenter une création', 'comment', 2);
+                        showBanner('✅ Commentaire détecté automatiquement ! +2 points crédités.', 'success');
+                    }
+                }
+
+                // Vérifier profil complété non encore crédité
+                const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
+                if (userData?.profile_complete) {
+                    const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
+                    if (!alreadyCredited || alreadyCredited.length === 0) {                        await creditTaskPoints('Compléter son profil', 'profile', 3);
+                        showBanner('✅ Profil complété détecté ! +3 points crédités.', 'success');
+                    }
+                }
+            } catch(e) { console.error('Auto-validate error:', e); }
+        }
+
+        function showBanner(message, type) {
+            const banner = document.getElementById('validationBanner');
+            const msgEl = document.getElementById('validationMessage');
+            msgEl.textContent = message;
+            banner.className = 'validation-banner show' + (type === 'info' ? ' info' : '');
+            banner.style.display = 'flex';
+            setTimeout(() => { banner.style.display = 'none'; }, 5000);
+        }
+
         async function checkValidationReturn() {
             const params = new URLSearchParams(window.location.search);
             const validated = params.get('validated');
-            if (!validated) return;
+            const returnFrom = params.get('return');
+            if (!validated && !returnFrom) return;
+
+            const today = new Date().toISOString().split('T')[0];
             const banner = document.getElementById('validationBanner');
             const message = document.getElementById('validationMessage');
+
             try {
-                const today = new Date().toISOString().split('T')[0];
-                if (validated === 'vote') {
+                if (validated === 'vote' || returnFrom === 'earn') {
                     const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
                     if (alreadyDone && alreadyDone.length > 0) {
                         message.textContent = '✅ Vote déjà validé aujourd\'hui.';
@@ -347,9 +396,7 @@
             } catch(e) { console.error('Claim error:', e); alert('Erreur: ' + e.message); await loadDailyBonus(); }
         }
 
-        // =============================================
-        // CORRECTION FINALE : loadTasks() avec vérification badge dans task_completions
-        // =============================================
+        // ✅ CORRECTION CRITIQUE : loadTasks() vérifie AUSSI la table votes directement
         async function loadTasks() {
             const container = document.getElementById('tasksContainer');
             try {
@@ -362,8 +409,18 @@
                 const completedMap = {};
                 (completed || []).forEach(function(c) { completedMap[c.task_name] = (completedMap[c.task_name] || 0) + 1; });
 
-                const { data: userDataForBadge } = await db.from('user_data').select('total_generated').eq('user_id', user.id).single();
-                const genCount = userDataForBadge?.total_generated || 0;
+                // ✅ NOUVEAU : Vérifier directement dans la table votes pour marquer la tâche comme done
+                const { data: recentVotes } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                const hasVotedToday = recentVotes && recentVotes.length > 0;
+
+                // ✅ NOUVEAU : Vérifier directement dans la table comments
+                const { data: recentComments } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                const hasCommentedToday = recentComments && recentComments.length > 0 && recentComments[0].content && recentComments[0].content.length >= 10;
+
+                // ✅ NOUVEAU : Vérifier profil complété
+                const { data: userDataForProfile } = await db.from('user_data').select('profile_complete,total_generated').eq('user_id', user.id).single();
+                const profileComplete = userDataForProfile?.profile_complete || false;
+                const genCount = userDataForProfile?.total_generated || 0;
 
                 const { data: badgeCompleted } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Badge Créateur Actif').eq('task_type', 'badge').limit(1);
                 const badgeAlreadyClaimed = badgeCompleted && badgeCompleted.length > 0;
@@ -372,12 +429,17 @@
                     const doneCount = completedMap[t.name] || 0;
                     const isMaxed = doneCount >= t.limit;
                     const icon = TASK_ICONS[t.type] || 'fa-check';
+
+                    // ✅ CORRECTION : Pour les tâches vote/comment/profile, vérifier aussi les tables directes
+                    let effectiveIsMaxed = isMaxed;
+                    if (t.type === 'vote' && hasVotedToday) effectiveIsMaxed = true;
+                    if (t.type === 'comment' && hasCommentedToday) effectiveIsMaxed = true;
+                    if (t.type === 'profile' && profileComplete) effectiveIsMaxed = true;
+
                     if (t.type === 'badge') {
                         const canClaim = genCount >= 5 && !badgeAlreadyClaimed;
                         const isClaimed = badgeAlreadyClaimed;
-                        const notEnough = genCount < 5 && !badgeAlreadyClaimed;
-                        let btnClass = 'btn-task';
-                        let btnDisabled = false;
+                        let btnClass = 'btn-task';                        let btnDisabled = false;
                         let btnContent = '';
                         if (isClaimed) {
                             btnClass += ' done';
@@ -390,18 +452,19 @@
                             btnContent = '<i class="fas fa-lock"></i> ' + genCount + '/5 générations';
                         }
                         return '<div class="task-card ' + (isClaimed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
-                            '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +                            '<div class="task-name">' + t.name + '</div>' +
+                            '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
+                            '<div class="task-name">' + t.name + '</div>' +
                             '<div class="task-desc">' + (t.desc || '') + '</div>' +
                             '<div class="task-progress">' + genCount + '/5 générations</div>' +
                             '<button class="' + btnClass + '" onclick="checkBadge()" ' + (btnDisabled ? 'disabled' : '') + '>' + btnContent + '</button></div>';
                     }
-                    return '<div class="task-card ' + (isMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
+                    return '<div class="task-card ' + (effectiveIsMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
                         '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
                         '<div class="task-name">' + t.name + '</div>' +
                         '<div class="task-desc">' + (t.desc || '') + '</div>' +
-                        '<div class="task-progress">' + doneCount + '/' + t.limit + ' aujourd\'hui</div>' +
-                        '<button class="btn-task ' + (isMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (isMaxed ? 'disabled' : '') + '>' +
-                        (isMaxed ? '<i class="fas fa-check"></i> Terminé' : '<i class="fas fa-play"></i> Faire') +
+                        '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' aujourd\'hui</div>' +
+                        '<button class="btn-task ' + (effectiveIsMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (effectiveIsMaxed ? 'disabled' : '') + '>' +
+                        (effectiveIsMaxed ? '<i class="fas fa-check"></i> Terminé' : '<i class="fas fa-play"></i> Faire') +
                         '</button></div>';
                 }).join('');
             } catch(e) { console.error('Tasks error:', e); container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement tâches</p></div>'; }
@@ -411,9 +474,10 @@
             const today = new Date().toISOString().split('T')[0];
             const { data: completed } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', taskName).gte('created_at', today + 'T00:00:00');
             if ((completed?.length || 0) >= limit) { alert('Limite atteinte pour aujourd\'hui'); await loadTasks(); return; }
-            if (taskType === 'vote') { window.location.href = '/gallery.html?task=vote'; }
-            else if (taskType === 'comment') { window.location.href = '/gallery.html?task=comment'; }
-            else if (taskType === 'profile') { window.location.href = '/profile.html?task=profile'; }
+            // ✅ CORRECTION : Ajouter ?return=earn pour retour automatique avec validation
+            if (taskType === 'vote') { window.location.href = '/gallery.html?task=vote&return=earn'; }
+            else if (taskType === 'comment') { window.location.href = '/gallery.html?task=comment&return=earn'; }
+            else if (taskType === 'profile') { window.location.href = '/profile.html?task=profile&return=earn'; }
             else if (taskType === 'share') { await doShareTask(taskName, points); }
             else { alert('Cette tâche sera disponible prochainement.'); }
         }
@@ -424,8 +488,7 @@
             try {
                 if (navigator.share) {
                     await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
-                    await creditTaskPoints(taskName, 'share', points);
-                    alert('✅ Partage confirmé ! +' + points + ' points');
+                    await creditTaskPoints(taskName, 'share', points);                    alert('✅ Partage confirmé ! +' + points + ' points');
                     await loadTasks();
                 } else {
                     await navigator.clipboard.writeText(shareUrl);
@@ -439,7 +502,8 @@
                 if (e.name !== 'AbortError') {
                     await navigator.clipboard.writeText(shareUrl);
                     alert('Lien copié dans le presse-papier ! Partagez-le puis revenez.');
-                }            }
+                }
+            }
         }
 
         async function checkBadge() {
@@ -473,8 +537,7 @@
                 document.getElementById('refPoints').textContent = claimedPoints;
                 const pendingContainer = document.getElementById('pendingReferralsContainer');
                 const pendingRefs = validated.filter(function(r) { return r.claimed !== true; });
-                if (pendingRefs.length === 0) {
-                    pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> Tous vos parrainages sont confirmés !</div>';
+                if (pendingRefs.length === 0) {                    pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> Tous vos parrainages sont confirmés !</div>';
                 } else {
                     let html = '<div class="pending-ref-list">';
                     pendingRefs.forEach(function(ref) {
@@ -488,7 +551,8 @@
                             '<button class="btn-claim-ref" onclick="claimReferral(\'' + ref.id + '\',' + (ref.points || 10) + ')" id="btn-ref-' + ref.id + '">' +
                             '<i class="fas fa-hand-holding-usd"></i> Confirmer' +
                             '</button></div>';
-                    });                    html += '</div>';
+                    });
+                    html += '</div>';
                     pendingContainer.innerHTML = html;
                 }
             } catch(e) { console.error('Referral error:', e); }
@@ -523,7 +587,6 @@
             }
             await loadReferral();
         }
-
         function copyReferralLink() {
             const input = document.getElementById('referralLink');
             input.select();
@@ -537,7 +600,8 @@
         async function loadAds() {
             const container = document.getElementById('adsContainer');
             try {
-                const { data: configData } = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();                adsData = configData?.value || [];
+                const { data: configData } = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+                adsData = configData?.value || [];
                 const activeAds = adsData.filter(function(ad) { return ad.active && ad.page === 'earn'; });
                 if (activeAds.length === 0) {
                     container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune offre disponible pour le moment</p><p style="font-size:0.85rem;margin-top:0.5rem">Revenez plus tard !</p></div>';
@@ -571,8 +635,7 @@
             const fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:100vh}</style></head><body>' + htmlCode + '</body></html>';
             const blob = new Blob([fullHtml], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
-            const iframe = document.createElement('iframe');
-            iframe.src = url;
+            const iframe = document.createElement('iframe');            iframe.src = url;
             iframe.style.width = '100%';
             iframe.style.height = '270px';
             iframe.style.border = 'none';
@@ -586,7 +649,8 @@
             const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
             const btn = card.querySelector('.btn');
             const hasCode = ad.code && ad.code.length > 0;
-            const isSmartlink = isURL(ad.code);            if (isSmartlink) {
+            const isSmartlink = isURL(ad.code);
+            if (isSmartlink) {
                 window.open(ad.code, '_blank', 'noopener,noreferrer');
                 const smartlinkInfo = document.createElement('div');
                 smartlinkInfo.className = 'smartlink-info';
@@ -620,8 +684,7 @@
         }
 
         async function confirmAd(adIndex) {
-            const ad = adsData[adIndex];
-            const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
+            const ad = adsData[adIndex];            const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
             const btn = card.querySelector('.btn');
             if (btn) {
                 btn.disabled = true;
@@ -635,7 +698,8 @@
                 const newEarned = (userData?.total_earned || 0) + adPoints;
                 await Promise.all([
                     db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
-                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),                    db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
+                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),
+                    db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
                 ]);
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
                 await loadAds();
