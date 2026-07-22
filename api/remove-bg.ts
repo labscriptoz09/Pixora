@@ -1,16 +1,13 @@
-// api/remove-bg.ts — Version Vercel Compatible (No import, No sharp)
-// ✅ Fonctionne avec runtime nodejs (défaut Vercel)
-// ✅ Retourne PNG transparent via mask + canvas côté serveur
+// api/remove-bg.ts — Détourage gratuit via Pollinations (remove-bg)
+// ✅ 100% gratuit, illimité, sans auth
+// 📌 UN fichier uniquement — zéro autre modification
 
 declare const process: any;
-
-const HF_MODEL = 'briaai/RMBG-2.0';
-const HF_API_URL = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
 
 function cors(res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 export default async function handler(req: any, res: any) {
@@ -27,61 +24,38 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'Missing image_url or image_base64' });
     }
 
-    // 1. Récupérer l'image originale
-    let originalBuffer: Buffer;
+    let sourceUrl: string;
     if (imageBase64) {
-      const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
-      originalBuffer = Buffer.from(cleanBase64, 'base64');
+      // Convertir base64 → URL temporaire via blob + upload sur un service gratuit
+      // Mais Pollinations ne supporte pas les blobs → on utilise une astuce : data URI directement
+      sourceUrl = imageBase64;
     } else {
-      const imgRes = await fetch(imageUrl);
-      if (!imgRes.ok) {
-        return res.status(400).json({ error: `Failed to fetch image: ${imgRes.status}` });
-      }
-      const arrayBuf = await imgRes.arrayBuffer();
-      originalBuffer = Buffer.from(arrayBuf);
+      sourceUrl = encodeURIComponent(imageUrl);
     }
 
-    // Vérifier taille max (10MB)
-    if (originalBuffer.length > 10 * 1024 * 1024) {
-      return res.status(400).json({ error: 'Image too large (max 10MB)' });
-    }
+    // ✅ Pollinations remove-bg endpoint gratuit
+    // Format : https://image.pollinations.ai/remove-bg?image_url=URL_ENCODED
+    const pollinationsUrl = `https://image.pollinations.ai/remove-bg?image_url=${sourceUrl}`;
 
-    // 2. Appeler HF pour le mask
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/octet-stream'
-    };
+    // Appeler Pollinations (pas d'auth, pas de clé)
+    const response = await fetch(pollinationsUrl);
 
-    const hfKey = process.env.HF_API_KEY || '';
-    if (hfKey) {
-      headers['Authorization'] = `Bearer ${hfKey}`;
-    }
-
-    const hfRes = await fetch(HF_API_URL, {
-      method: 'POST',
-      headers,
-      body: originalBuffer
-    });
-
-    if (!hfRes.ok) {
-      const errText = await hfRes.text().catch(() => '');
-      return res.status(hfRes.status).json({
-        error: `HF API error: ${hfRes.status}`,
-        raw: errText.slice(0, 200)
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      return res.status(response.status).json({
+        error: `Pollinations failed: ${response.status}`,
+        raw: text.slice(0, 200)
       });
     }
 
-    // 3. HF retourne un PNG mask (noir/blanc) — on le convertit en base64
-    const maskBuffer = Buffer.from(await hfRes.arrayBuffer());
-    const maskBase64 = `data:image/png;base64,${maskBuffer.toString('base64')}`;
+    // Pollinations retourne directement un PNG transparent
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const dataUrl = `data:image/png;base64,${buffer.toString('base64')}`;
 
-    // 4. Retourner le mask comme image détourée (côté client, le JS appliquera le fond transparent)
-    // Pour l'instant, on retourne simplement le mask — le frontend gère la composition
     return res.status(200).json({
       ok: true,
-      image_base64: maskBase64,
-      model: HF_MODEL,
-      provider: 'huggingface',
-      note: 'Mask binaire retourné. Le frontend applique la transparence.'
+      image_base64: dataUrl,
+      provider: 'pollinations-remove-bg'
     });
 
   } catch (err: any) {
