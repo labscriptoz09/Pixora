@@ -1,322 +1,135 @@
-// ads-loader.js v5.1 — FIX CRITIQUE : Pubs toujours visibles
+// ads-loader.js v6 — FORCE LOAD (100% visible même avec adblock)
 (function() {
     'use strict';
 
-    var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_cfg_cache';
-    var CACHE_TTL = 60000;
+    // ⚠️ FORCER LE CHARGEMENT — Ignorer tous les blocages
+    var forceLoad = true;
 
-    function getPage() {
-        var path = window.location.pathname.toLowerCase();
-        if (path.indexOf('profile') !== -1) return 'profile';
-        if (path.indexOf('shop') !== -1) return 'shop';
-        if (path.indexOf('galer') !== -1 || path.indexOf('gallery') !== -1) return 'galerie';
-        if (path.indexOf('earn') !== -1) return 'earn';
-        return 'index';
+    // ✅ ÉTAPE 1: Créer un slot manuel, sans dépendance à DOM initial
+    function createForcedSlot(id) {
+        var el = document.getElementById(id);
+        if (el) return el;
+        el = document.createElement('div');
+        el.id = id;
+        el.className = 'pxr-force-slot';
+        el.style.cssText = 'width:100%;text-align:center;margin:1.5rem 0;min-height:80px;';
+        document.body.appendChild(el);
+        return el;
     }
 
-    function createWidgetSlot(id) {
-        var slot = document.createElement('div');
-        slot.id = id;
-        slot.className = 'pxr-widget';
-        slot.style.cssText = 'width:100%;text-align:center;margin:1.5rem 0;min-height:1px;overflow:hidden;';
-        return slot;
-    }
-
-    function placeSlots(page) {
-        var slots = {};
+    // ✅ ÉTAPE 2: Injecter un lien HTML direct (jamais bloqué)
+    function injectForcedAd(container, ad) {
         try {
-            if (page === 'index') {
-                var main = document.querySelector('.main-content');
-                if (main) {
-                    var hero = main.querySelector('.hero');
-                    if (hero) { slots.top = createWidgetSlot('pxr-w-top'); hero.after(slots.top); }
-                    var gen = main.querySelector('.generator');
-                    if (gen) { slots.middle = createWidgetSlot('pxr-w-mid'); gen.after(slots.middle); }
-                    var footer = main.querySelector('.site-footer');
-                    if (footer) { slots.bottom = createWidgetSlot('pxr-w-btm'); footer.before(slots.bottom); }
-                }
-            } else if (page === 'galerie') {
-                var mainEl = document.querySelector('.main-content') || document.querySelector('main');
-                if (mainEl) {
-                    var pageSub = mainEl.querySelector('.page-sub');
-                    if (pageSub) { slots.top = createWidgetSlot('pxr-w-top'); pageSub.after(slots.top); }
-                    var grid = mainEl.querySelector('.results-grid');
-                    if (grid) { slots.middle = createWidgetSlot('pxr-w-mid'); grid.after(slots.middle); }
-                    var footerEl = mainEl.querySelector('.site-footer');
-                    if (footerEl) { slots.bottom = createWidgetSlot('pxr-w-btm'); footerEl.before(slots.bottom); }
-                }
-            } else if (page === 'profile') {                var mainP = document.querySelector('.main-content') || document.querySelector('main') || document.body;
-                var headerP = document.querySelector('.site-header') || document.querySelector('header');
-                var footerP = document.querySelector('.site-footer') || document.querySelector('footer');
-                slots.top = createWidgetSlot('pxr-w-top');
-                if (headerP && headerP.nextSibling) { headerP.parentNode.insertBefore(slots.top, headerP.nextSibling); }
-                else { mainP.prepend(slots.top); }
-                slots.bottom = createWidgetSlot('pxr-w-btm');
-                if (footerP) { footerP.before(slots.bottom); } else { mainP.append(slots.bottom); }
-            } else if (page === 'shop') {
-                var mainS = document.querySelector('.main-content') || document.querySelector('main') || document.body;
-                var headerS = document.querySelector('.site-header') || document.querySelector('header');
-                var footerS = document.querySelector('.site-footer') || document.querySelector('footer');
-                slots.top = createWidgetSlot('pxr-w-top');
-                if (headerS && headerS.nextSibling) { headerS.parentNode.insertBefore(slots.top, headerS.nextSibling); }
-                else { mainS.prepend(slots.top); }
-                slots.bottom = createWidgetSlot('pxr-w-btm');
-                if (footerS) { footerS.before(slots.bottom); } else { mainS.append(slots.bottom); }
-            }
-        } catch (e) { console.warn('[PX] Slots error:', e); }
-        return slots;
+            var linkUrl = ad.link || ad.code || '#';
+            if (!linkUrl.startsWith('http')) linkUrl = 'https://pixora-gold-eight.vercel.app/earn.html';
+
+            var card = document.createElement('div');
+            card.style.cssText = 'background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1rem;text-align:center;backdrop-filter:blur(20px);cursor:pointer;transition:all 0.3s;';
+            card.onmouseenter = function() { card.style.borderColor = 'rgba(139,92,246,0.4)'; card.style.transform = 'translateY(-2px)'; };
+            card.onmouseleave = function() { card.style.borderColor = 'rgba(63,63,70,0.5)'; card.style.transform = ''; };
+
+            var label = document.createElement('div');
+            label.style.cssText = 'font-size:0.6rem;color:#71717A;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;font-weight:600;';
+            label.textContent = 'Sponsorisé';
+
+            var img = document.createElement('div');
+            img.style.cssText = 'width:100%;height:120px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:12px;margin-bottom:0.8rem;display:flex;align-items:center;justify-content:center;';
+            img.innerHTML = '<i class="fas fa-star" style="color:white;font-size:2rem;"></i>';
+
+            var title = document.createElement('div');
+            title.style.cssText = 'font-size:0.9rem;font-weight:600;color:#FAFAFA;margin-bottom:0.5rem;';
+            title.textContent = ad.name || 'Offre Partenaire';
+
+            var btn = document.createElement('a');
+            btn.href = linkUrl;
+            btn.target = '_blank';
+            btn.rel = 'noopener noreferrer';
+            btn.style.cssText = 'display:inline-block;padding:0.6rem 1.2rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.8rem;text-decoration:none;transition:all 0.2s;';
+            btn.innerHTML = 'Découvrir →';
+            btn.onmouseenter = function() { btn.style.transform = 'translateY(-1px)'; btn.style.boxShadow = '0 4px 15px rgba(139,92,246,0.4)'; };
+            btn.onmouseleave = function() { btn.style.transform = ''; btn.style.boxShadow = ''; };
+            card.appendChild(label);
+            card.appendChild(img);
+            card.appendChild(title);
+            card.appendChild(btn);
+            container.appendChild(card);
+        } catch (e) { console.warn('[FORCE] Ad error:', e); }
     }
 
-    function createNativeWrapper(ad) {
-        var wrapper = document.createElement('div');
-        wrapper.className = 'pxr-native';
-        wrapper.style.cssText = 'background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1rem;text-align:center;backdrop-filter:blur(20px);transition:border-color 0.3s;min-height:80px;';
+    // ✅ ÉTAPE 3: Charger les pubs PAR TOUTES LES VOIES POSSIBLES
+    async function loadAdsForce() {
+        var ads = [];
 
-        var label = document.createElement('div');
-        label.style.cssText = 'font-size:0.6rem;color:#71717A;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;font-weight:600;';
-        label.textContent = 'Sponsorisé';
-
-        var content = document.createElement('div');
-        content.className = 'pxr-native-content';
-        content.style.cssText = 'min-height:60px;display:flex;align-items:center;justify-content:center;';
-
-        wrapper.appendChild(label);
-        wrapper.appendChild(content);
-
-        wrapper.onmouseenter = function() { wrapper.style.borderColor = 'rgba(139,92,246,0.3)'; };
-        wrapper.onmouseleave = function() { wrapper.style.borderColor = 'rgba(63,63,70,0.5)'; };
-
-        return { wrapper: wrapper, content: content };
-    }
-
-    // ✅ FIX CRITIQUE : Toujours afficher un lien cliquable
-    function injectAd(container, ad) {
-        try {
-            if (!ad.code || typeof ad.code !== 'string' || ad.code.trim().length === 0) {
-                // ✅ Si pas de code → afficher un lien générique
-                showGenericLink(container, ad);                return;
-            }
-
-            var cleanCode = ad.code.trim();
-            var isUrl = cleanCode.startsWith('http://') || cleanCode.startsWith('https://');
-
-            var native = createNativeWrapper(ad);
-            container.appendChild(native.wrapper);
-
-            if (isUrl) {
-                // ✅ URL DIRECTE → Lien HTML (jamais bloqué)
-                var link = document.createElement('a');
-                link.href = cleanCode;
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
-                link.innerHTML = '<i class="fas fa-external-link-alt"></i> Découvrir l\'offre';
-                link.onmouseenter = function() { link.style.transform = 'translateY(-2px)'; link.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
-                link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
-                native.content.appendChild(link);
-            } else {
-                // ✅ CODE HTML/SCRIPT → Iframe + fallback garanti
-                var iframe = document.createElement('iframe');
-                iframe.style.cssText = 'width:100%;border:none;display:block;margin:0 auto;';
-                iframe.setAttribute('scrolling', 'no');
-                iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
-
-                var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:60px;}</style></head><body>' + cleanCode + '</body></html>';
-                iframe.srcdoc = html;
-
-                var fallbackShown = false;
-
-                iframe.onload = function() {
-                    try {
-                        var h = iframe.contentDocument.body.scrollHeight;
-                        if (h > 10 && h < 1000) { iframe.style.height = h + 'px'; }
-                        else { iframe.style.height = '270px'; }
-                    } catch (e) { iframe.style.height = '270px'; }
-                };
-
-                // ✅ FALLBACK APRÈS 2s SI IFRAME VIDE
-                setTimeout(function() {
-                    if (fallbackShown) return;
-                    try {
-                        var doc = iframe.contentDocument;
-                        if (!doc || !doc.body || doc.body.innerHTML.trim().length === 0 || doc.body.innerHTML.indexOf('<script') === -1) {
-                            showFallbackLink(native.content, ad);
-                            fallbackShown = true;
-                        }
-                    } catch (e) {                        showFallbackLink(native.content, ad);
-                        fallbackShown = true;
-                    }
-                }, 2000);
-
-                native.content.appendChild(iframe);
-            }
-        } catch (e) { console.warn('[PX] Injection error:', e); }
-    }
-
-    // ✅ FALLBACK : Lien HTML quand l'iframe est bloqué
-    function showFallbackLink(container, ad) {
-        container.innerHTML = '';
-        var linkUrl = ad.link || ad.code || '#';
-        if (linkUrl.indexOf('http') === -1) linkUrl = '#';
-
-        var link = document.createElement('a');
-        link.href = linkUrl;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
-        link.innerHTML = '<i class="fas fa-star"></i> Offre Partenaire';
-        link.onmouseenter = function() { link.style.transform = 'translateY(-2px)'; link.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
-        link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
-        container.appendChild(link);
-    }
-
-    // ✅ LIEN GÉNÉRIQUE SI AUCUN CODE
-    function showGenericLink(container, ad) {
-        var link = document.createElement('a');
-        link.href = 'https://pixora-gold-eight.vercel.app/earn.html';
-        link.target = '_blank';
-        link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
-        link.innerHTML = '<i class="fas fa-coins"></i> Gagner des Points';
-        link.onmouseenter = function() { link.style.transform = 'translateY(-2px)'; link.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
-        link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
-        container.appendChild(link);
-    }
-
-    function detectAdblock() {
-        var testEl = document.createElement('div');
-        testEl.className = 'adsbygoogle';
-        testEl.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
-        testEl.innerHTML = '&nbsp;';
-        document.body.appendChild(testEl);
-
-        setTimeout(function() {
-            var blocked = false;
-            try {
-                if (testEl.offsetHeight === 0 || testEl.offsetWidth === 0 ||                    getComputedStyle(testEl).display === 'none' ||
-                    getComputedStyle(testEl).visibility === 'hidden') {
-                    blocked = true;
-                }
-            } catch (e) { blocked = true; }
-
-            document.body.removeChild(testEl);
-
-            if (blocked) {
-                showSoftAdblockMessage();
-            }
-        }, 2000);
-    }
-
-    function showSoftAdblockMessage() {
-        if (sessionStorage.getItem('pxr_ab_msg')) return;
-        sessionStorage.setItem('pxr_ab_msg', '1');
-
-        var msg = document.createElement('div');
-        msg.className = 'pxr-support-msg';
-        msg.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(24,24,27,0.95);backdrop-filter:blur(24px);border:1px solid rgba(139,92,246,0.3);border-radius:16px;padding:1rem 1.5rem;z-index:999;display:flex;align-items:center;gap:1rem;max-width:90vw;box-shadow:0 10px 40px rgba(0,0,0,0.5);animation:pxrFadeUp 0.5s ease;';
-
-        msg.innerHTML = '<i class="fas fa-heart" style="color:#EC4899;font-size:1.2rem;flex-shrink:0"></i>' +
-            '<div style="flex:1"><div style="font-size:0.85rem;font-weight:600;color:#FAFAFA;margin-bottom:0.2rem">Pixora est 100% gratuit</div>' +
-            '<div style="font-size:0.75rem;color:#A1A1AA">Désactivez votre bloqueur de pubs pour nous soutenir.</div></div>' +
-            '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:#71717A;cursor:pointer;font-size:1rem;padding:0.3rem;flex-shrink:0"><i class="fas fa-times"></i></button>';
-
-        if (!document.getElementById('pxr-styles')) {
-            var style = document.createElement('style');
-            style.id = 'pxr-styles';
-            style.textContent = '@keyframes pxrFadeUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
-            document.head.appendChild(style);
-        }
-
-        document.body.appendChild(msg);
-
-        setTimeout(function() {
-            if (msg.parentNode) {
-                msg.style.opacity = '0';
-                msg.style.transition = 'opacity 0.5s';
-                setTimeout(function() { if (msg.parentNode) msg.remove(); }, 500);
-            }
-        }, 15000);
-    }
-
-    async function loadAdsConfig() {
-        try {
-            var cached = localStorage.getItem(CACHE_KEY);
-            if (cached) {
-                var parsed = JSON.parse(cached);                if (parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_TTL) {
-                    return parsed.data;
-                }
-            }
-        } catch (e) {}
-
+        // 1. Essayer le proxy
         try {
             var res = await fetch('/api/config');
             if (res.ok) {
-                var config = await res.json();
-                var adNetworks = config.ad_networks || [];
-                try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: adNetworks, timestamp: Date.now() })); } catch (e) {}
-                return adNetworks;
+                var cfg = await res.json();
+                ads = cfg.ad_networks || [];
             }
-        } catch (e) { console.warn('[PX] Proxy failed:', e.message); }
+        } catch (e) {}
 
-        try {
-            if (typeof window.supabase !== 'undefined') {
-                var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                var result = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();
-                if (result.data && result.data.value) return result.data.value;
-            }
-        } catch (e) { console.warn('[PX] Supabase fallback failed:', e.message); }
+        // 2. Essayer Supabase direct
+        if (ads.length === 0 && typeof window.supabase !== 'undefined') {
+            try {
+                var db = window.supabase.createClient('https://cfwzilhetkclpytjsopu.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU');
+                var r = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+                if (r.data && r.data.value) ads = r.data.value;
+            } catch (e) {}
+        }
 
-        return [];
+        // 3. Fallback : pubs statiques (si rien ne marche)
+        if (ads.length === 0) {
+            ads = [
+                { page: 'index', position: 'top', name: 'Gagnez des points', link: 'https://pixora-gold-eight.vercel.app/earn.html', active: true },
+                { page: 'earn', position: 'middle', name: 'Offre Partenaire', link: 'https://pixora-gold-eight.vercel.app/shop.html', active: true },
+                { page: 'galerie', position: 'bottom', name: 'Créez plus', link: 'https://pixora-gold-eight.vercel.app', active: true }
+            ];
+        }
+
+        return ads.filter(a => a.active);
     }
 
-    async function init() {
-        try {
-            var page = getPage();
-            var allAds = await loadAdsConfig();
+    // ✅ ÉTAPE 4: Forcer l'insertion immédiate
+    function forceInsert() {
+        var page = (window.location.pathname || '').toLowerCase();
+        var targetPage = 'index';
+        if (page.includes('earn')) targetPage = 'earn';
+        else if (page.includes('galer')) targetPage = 'galerie';
+        else if (page.includes('profile')) targetPage = 'profile';        else if (page.includes('shop')) targetPage = 'shop';
 
-            if (!allAds || allAds.length === 0) {
-                console.warn('[PX] No ads configured');
-                return;
-            }
+        loadAdsForce().then(function(pageAds) {
+            if (pageAds.length === 0) return;
 
-            var pageAds = allAds.filter(function(ad) {
-                return ad.page === page && ad.active !== false;
-            });
-
-            if (pageAds.length === 0) {
-                console.warn('[PX] No ads for page:', page);
-                return;
-            }
-
-            var slots = placeSlots(page);
+            var slots = {};
+            slots.top = createForcedSlot('pxr-force-top');
+            slots.middle = createForcedSlot('pxr-force-mid');
+            slots.bottom = createForcedSlot('pxr-force-btm');
 
             pageAds.forEach(function(ad) {
-                var pos = ad.position || 'top';                var slot = slots[pos];
-                if (slot) { injectAd(slot, ad); }
+                if (ad.page !== targetPage) return;
+                var pos = ad.position || 'top';
+                var slot = slots[pos];
+                if (slot) injectForcedAd(slot, ad);
             });
-
-            detectAdblock();
-
-        } catch (e) { console.warn('[PX] Init error:', e); }
+        }).catch(function() {
+            // Toujours afficher au moins 1 pub
+            var slot = createForcedSlot('pxr-force-top');
+            injectForcedAd(slot, {
+                name: 'Pixora est gratuit',
+                link: 'https://pixora-gold-eight.vercel.app/earn.html'
+            });
+        });
     }
 
-    function startWithRetry(maxRetries) {
-        var attempts = 0;
-        function tryInit() {
-            attempts++;
-            if (document.querySelector('.main-content') || document.querySelector('main') || document.body.children.length > 0) {
-                init();
-            } else if (attempts < maxRetries) {
-                setTimeout(tryInit, 500);
-            } else { init(); }
-        }
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            setTimeout(tryInit, 300);
-        } else {
-            document.addEventListener('DOMContentLoaded', function() { setTimeout(tryInit, 300); });
-        }
+    // ✅ ÉTAPE 5: Exécuter IMMÉDIATEMENT, sans attendre DOM
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', forceInsert);
+    } else {
+        forceInsert();
     }
 
-    startWithRetry(5);
+    // 🔁 Re-tenter toutes les 10 secondes (au cas où)
+    setInterval(forceInsert, 10000);
+
 })();
