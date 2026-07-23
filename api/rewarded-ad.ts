@@ -1,4 +1,4 @@
-// /api/rewarded-ad.ts — Filtre mode=rewarded uniquement
+// /api/rewarded-ad.ts — COMPLET v2 — Fix Upsert Points
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
@@ -95,8 +95,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }, { onConflict: 'key' });
 
             return res.status(200).json({
-                available: true, token, 
-                ad_url: isUrl ? code : null,                 ad_html: isUrl ? null : code,
+                available: true, token,
+                ad_url: isUrl ? code : null,                ad_html: isUrl ? null : code,
                 ad_name: ad.name || 'Offre Partenaire',
                 timer_seconds: config.timer_seconds,
                 points_reward: config.points_per_view,
@@ -133,19 +133,53 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             // Marquer réclamé
             await supabase.from('admin_config').update({ value: { ...session, claimed: true } }).eq('key', 'rewarded_token_' + token);
 
-            // Créditer points
+            // ✅ FIX POINTS : Upsert au lieu de Update
             const pointsReward = session.points || DEFAULT_CONFIG.points_per_view;
-            const { data: userData } = await supabase.from('user_data').select('points, total_earned').eq('user_id', user_id).single();
-            const currentPoints = userData?.points || 0;
-            const currentEarned = userData?.total_earned || 0;
 
-            await supabase.from('user_data').update({ points: currentPoints + pointsReward, total_earned: currentEarned + pointsReward }).eq('user_id', user_id);
-            await supabase.from('transactions').insert({ user_id, type: 'earned', title: 'Pub récompensée', amount: pointsReward });
+            const { data: userData, error: selectError } = await supabase
+                .from('user_data')
+                .select('points, total_earned')
+                .eq('user_id', user_id)
+                .single();
 
-            return res.status(200).json({ success: true, points_earned: pointsReward, new_balance: currentPoints + pointsReward });
+            if (selectError || !userData) {
+                // La ligne n'existe pas → créer avec upsert
+                await supabase.from('user_data').upsert({
+                    user_id: user_id,                    points: pointsReward,
+                    total_earned: pointsReward
+                }, { onConflict: 'user_id' });
+            } else {
+                // La ligne existe → update normal
+                await supabase.from('user_data').update({
+                    points: (userData.points || 0) + pointsReward,
+                    total_earned: (userData.total_earned || 0) + pointsReward
+                }).eq('user_id', user_id);
+            }
+
+            // Enregistrer transaction
+            await supabase.from('transactions').insert({
+                user_id: user_id,
+                type: 'earned',
+                title: 'Pub récompensée',
+                amount: pointsReward
+            });
+
+            // Récupérer le nouveau solde pour la réponse
+            const { data: updatedUser } = await supabase
+                .from('user_data')
+                .select('points')
+                .eq('user_id', user_id)
+                .single();
+
+            return res.status(200).json({
+                success: true,
+                points_earned: pointsReward,
+                new_balance: updatedUser?.points || pointsReward
+            });
 
         } catch (e: any) {
-            console.error('[REWARDED-CLAIM] Error:', e.message);            return res.status(500).json({ error: e.message });
+            console.error('[REWARDED-CLAIM] Error:', e.message);
+            return res.status(500).json({ error: e.message });
         }
     }
 
