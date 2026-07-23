@@ -50,6 +50,10 @@
         .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:0.4rem}        .status-active{background:var(--success)}
         .status-inactive{background:var(--danger)}
 
+        .mode-badge{font-family:'JetBrains Mono',monospace;font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:4px;font-weight:600}
+        .mode-visible{background:rgba(139,92,246,0.2);color:var(--accent)}
+        .mode-rewarded{background:rgba(251,191,36,0.2);color:var(--gold)}
+
         .actions{display:flex;gap:0.4rem}
         .btn-action{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-size:0.8rem}
         .btn-edit:hover{border-color:var(--accent);color:var(--accent)}
@@ -92,14 +96,14 @@
             <div class="title-group">
                 <h1><i class="fas fa-ad"></i> Gestion Publicités <span class="badge-admin">Admin</span></h1>
             </div>
-            <a href="admin.html" class="btn-back"><i class="fas fa-arrow-left"></i> Retour</a>
-        </div>
+            <a href="admin.html" class="btn-back"><i class="fas fa-arrow-left"></i> Retour</a>        </div>
 
         <div class="stats-bar" id="statsBar">
-            <div class="stat-card"><div class="stat-val" id="statTotal">-</div><div class="stat-label">Total</div></div>            <div class="stat-card"><div class="stat-val" id="statActive">-</div><div class="stat-label">Actives</div></div>
+            <div class="stat-card"><div class="stat-val" id="statTotal">-</div><div class="stat-label">Total</div></div>
+            <div class="stat-card"><div class="stat-val" id="statActive">-</div><div class="stat-label">Actives</div></div>
+            <div class="stat-card"><div class="stat-val" id="statVisible">-</div><div class="stat-label">Visibles</div></div>
+            <div class="stat-card"><div class="stat-val" id="statRewarded">-</div><div class="stat-label">Rewardées</div></div>
             <div class="stat-card"><div class="stat-val" id="statEarn">-</div><div class="stat-label">Earn</div></div>
-            <div class="stat-card"><div class="stat-val" id="statIndex">-</div><div class="stat-label">Index</div></div>
-            <div class="stat-card"><div class="stat-val" id="statGalerie">-</div><div class="stat-label">Galerie</div></div>
         </div>
 
         <div class="controls">
@@ -115,6 +119,11 @@
                 <option value="profile">Profile</option>
                 <option value="shop">Shop</option>
             </select>
+            <select class="filter-select" id="modeFilter">
+                <option value="all">Tous les modes</option>
+                <option value="visible">Visible (Site)</option>
+                <option value="rewarded">Rewardé (Modale)</option>
+            </select>
             <button class="btn-add" onclick="openModal()"><i class="fas fa-plus"></i> Nouvelle Pub</button>
         </div>
 
@@ -125,6 +134,7 @@
                         <th>Statut</th>
                         <th>Nom</th>
                         <th>Page</th>
+                        <th>Mode</th>
                         <th>Type</th>
                         <th>Position</th>
                         <th>Points</th>
@@ -132,11 +142,10 @@
                     </tr>
                 </thead>
                 <tbody id="adsTableBody">
-                    <tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Chargement...</td></tr>
+                    <tr><td colspan="8" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Chargement...</td></tr>
                 </tbody>
             </table>
-        </div>
-    </div>
+        </div>    </div>
 
     <!-- Modal Édition / Création -->
     <div class="modal-overlay" id="modalOverlay">
@@ -145,7 +154,8 @@
                 <h2 class="modal-title" id="modalTitle">Nouvelle Publicité</h2>
                 <button class="btn-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
             </div>
-            <form id="adForm">                <input type="hidden" id="editIndex" value="-1">
+            <form id="adForm">
+                <input type="hidden" id="editIndex" value="-1">
                 <div class="form-grid">
                     <div class="form-group full">
                         <label>Nom de la publicité *</label>
@@ -161,9 +171,17 @@
                             <option value="shop">Shop</option>
                         </select>
                     </div>
+                    <!-- ✅ NOUVEAU CHAMP MODE -->
                     <div class="form-group">
-                        <label>Type *</label>
-                        <select id="adType" required>
+                        <label>Mode d'affichage *</label>
+                        <select id="adMode" required>
+                            <option value="visible">📺 Visible (Cadres sur le site)</option>
+                            <option value="rewarded">🎁 Rewardé (Modale Gagner Points)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Type de pub</label>
+                        <select id="adType">
                             <option value="smartlink">Smartlink / Direct Link (CPA)</option>
                             <option value="native">Native Banner (CPM)</option>
                             <option value="banner">Bannière 300x250 (CPM)</option>
@@ -176,8 +194,7 @@
                     <div class="form-group">
                         <label>Position</label>
                         <select id="adPosition">
-                            <option value="top">Haut de page</option>
-                            <option value="middle">Milieu de page</option>
+                            <option value="top">Haut de page</option>                            <option value="middle">Milieu de page</option>
                             <option value="bottom">Bas de page</option>
                             <option value="sidebar">Sidebar</option>
                             <option value="auto">Auto (Popunder)</option>
@@ -194,7 +211,8 @@
                     <div class="form-group">
                         <label>Statut</label>
                         <select id="adActive">
-                            <option value="true">✅ Actif</option>                            <option value="false">❌ Inactif</option>
+                            <option value="true">✅ Actif</option>
+                            <option value="false">❌ Inactif</option>
                         </select>
                     </div>
                 </div>
@@ -220,130 +238,110 @@
         let allAds = [];
         let filteredAds = [];
 
-        // =============================================
-        // ✅ NOUVEAU : Proxy admin-save centralisé
-        // Remplace db.from('admin_config').upsert() bloqué par RLS
-        // =============================================
         async function adminSave(key, value) {
             try {
                 var session = await db.auth.getSession();
                 var token = session.data.session?.access_token;
                 if (!token) throw new Error('Session expirée. Reconnectez-vous.');
-
-                var res = await fetch('/api/admin-save', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    },
+                var res = await fetch('/api/admin-save', {                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify({ key: key, value: value })
                 });
-
                 var data = await res.json();
-                if (!res.ok || !data.ok) {
-                    throw new Error(data.error || 'Erreur serveur ' + res.status);
-                }
-                return true;            } catch(e) {
-                console.error('[ADMIN-SAVE] Error saving key "' + key + '":', e);
+                if (!res.ok || !data.ok) throw new Error(data.error || 'Erreur serveur ' + res.status);
+                return true;
+            } catch(e) {
+                console.error('[ADMIN-SAVE] Error:', e);
                 alert('❌ Erreur sauvegarde : ' + e.message);
                 return false;
             }
         }
 
-        // --- AUTH ---
         async function checkAdmin() {
             try {
                 var sessionResult = await db.auth.getSession();
                 var user = sessionResult.data.session?.user;
-                
                 if (!user || user.email.toLowerCase() !== ADMIN_EMAIL) {
                     document.getElementById('mainContent').style.display = 'none';
                     document.getElementById('accessDenied').style.display = 'block';
                     return;
                 }
-                
                 document.getElementById('mainContent').style.display = 'block';
                 await loadAds();
             } catch(e) {
-                console.error('Auth error:', e);
                 document.getElementById('mainContent').style.display = 'none';
                 document.getElementById('accessDenied').style.display = 'block';
             }
         }
 
-        // --- LOAD ---
         async function loadAds() {
             try {
                 var result = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
                 allAds = result.data?.value || [];
+                // ✅ Rétrocompatibilité : si mode absent → visible par défaut
+                allAds.forEach(function(ad) { if (!ad.mode) ad.mode = 'visible'; });
                 applyFilters();
                 updateStats();
             } catch(e) {
-                console.error('Load ads error:', e);
                 allAds = [];
                 applyFilters();
                 updateStats();
             }
         }
 
-        // --- SAVE (via proxy admin-save) ---
         async function saveAds() {
             var btn = document.getElementById('btnSave');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
-            
-            var ok = await adminSave('ad_networks', allAds);            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';            var ok = await adminSave('ad_networks', allAds);
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-save"></i> Sauvegarder';
-            
             if (!ok) return;
-            
             closeModal();
             await loadAds();
-            alert('✅ Publicités sauvegardées avec succès !');
+            alert('✅ Publicités sauvegardées !');
         }
 
-        // --- FILTERS & SEARCH ---
         function applyFilters() {
             var search = document.getElementById('searchInput').value.toLowerCase();
             var page = document.getElementById('pageFilter').value;
+            var mode = document.getElementById('modeFilter').value;
             
             filteredAds = allAds.filter(function(ad, idx) {
                 var matchSearch = ad.name.toLowerCase().includes(search) || (ad.type || '').toLowerCase().includes(search);
                 var matchPage = page === 'all' || ad.page === page;
+                var matchMode = mode === 'all' || ad.mode === mode;
                 ad._origIndex = idx;
-                return matchSearch && matchPage;
+                return matchSearch && matchPage && matchMode;
             });
-            
             renderTable();
         }
 
         function updateStats() {
             document.getElementById('statTotal').textContent = allAds.length;
             document.getElementById('statActive').textContent = allAds.filter(function(a) { return a.active; }).length;
+            document.getElementById('statVisible').textContent = allAds.filter(function(a) { return a.mode === 'visible'; }).length;
+            document.getElementById('statRewarded').textContent = allAds.filter(function(a) { return a.mode === 'rewarded'; }).length;
             document.getElementById('statEarn').textContent = allAds.filter(function(a) { return a.page === 'earn'; }).length;
-            document.getElementById('statIndex').textContent = allAds.filter(function(a) { return a.page === 'index'; }).length;
-            document.getElementById('statGalerie').textContent = allAds.filter(function(a) { return a.page === 'galerie'; }).length;
         }
 
-        // --- RENDER TABLE ---
         function renderTable() {
             var tbody = document.getElementById('adsTableBody');
-            
             if (filteredAds.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>Aucune publicité trouvée</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i><br>Aucune publicité trouvée</td></tr>';
                 return;
             }
-
             tbody.innerHTML = filteredAds.map(function(ad) {
+                var modeClass = ad.mode === 'rewarded' ? 'mode-rewarded' : 'mode-visible';
+                var modeLabel = ad.mode === 'rewarded' ? '🎁 Rewardé' : '📺 Visible';
                 return '<tr>' +
                     '<td><span class="status-dot ' + (ad.active ? 'status-active' : 'status-inactive') + '"></span>' + (ad.active ? 'Actif' : 'Inactif') + '</td>' +
                     '<td class="ad-name">' + ad.name + '</td>' +
                     '<td class="ad-page">' + ad.page + '</td>' +
+                    '<td><span class="mode-badge ' + modeClass + '">' + modeLabel + '</span></td>' +
                     '<td><span class="ad-type">' + (ad.type || 'smartlink') + '</span></td>' +
-                    '<td>' + (ad.position || 'top') + '</td>' +                    '<td class="ad-points">' + (ad.points != null ? '+' + ad.points : '-') + '</td>' +
-                    '<td style="text-align:right"><div class="actions" style="justify-content:flex-end">' +
-                        '<button class="btn-action btn-edit" title="Modifier" onclick="editAd(' + ad._origIndex + ')"><i class="fas fa-pen"></i></button>' +
+                    '<td>' + (ad.position || 'top') + '</td>' +
+                    '<td class="ad-points">' + (ad.points != null ? '+' + ad.points : '-') + '</td>' +
+                    '<td style="text-align:right"><div class="actions" style="justify-content:flex-end">' +                        '<button class="btn-action btn-edit" title="Modifier" onclick="editAd(' + ad._origIndex + ')"><i class="fas fa-pen"></i></button>' +
                         '<button class="btn-action btn-dup" title="Dupliquer" onclick="duplicateAd(' + ad._origIndex + ')"><i class="fas fa-copy"></i></button>' +
                         '<button class="btn-action" title="' + (ad.active ? 'Désactiver' : 'Activer') + '" onclick="toggleAd(' + ad._origIndex + ')"><i class="fas fa-' + (ad.active ? 'pause' : 'play') + '"></i></button>' +
                         '<button class="btn-action btn-del" title="Supprimer" onclick="deleteAd(' + ad._origIndex + ')"><i class="fas fa-trash"></i></button>' +
@@ -351,17 +349,16 @@
             }).join('');
         }
 
-        // --- MODAL ---
         function openModal(index) {
             var modal = document.getElementById('modalOverlay');
             var title = document.getElementById('modalTitle');
-            
             if (index !== undefined && index >= 0) {
                 var ad = allAds[index];
                 title.textContent = '✏️ Modifier : ' + ad.name;
                 document.getElementById('editIndex').value = index;
                 document.getElementById('adName').value = ad.name || '';
                 document.getElementById('adPage').value = ad.page || 'earn';
+                document.getElementById('adMode').value = ad.mode || 'visible';
                 document.getElementById('adType').value = ad.type || 'smartlink';
                 document.getElementById('adPosition').value = ad.position || 'top';
                 document.getElementById('adPoints').value = ad.points != null ? ad.points : 15;
@@ -371,69 +368,51 @@
                 title.textContent = '➕ Nouvelle Publicité';
                 document.getElementById('editIndex').value = -1;
                 document.getElementById('adForm').reset();
+                document.getElementById('adMode').value = 'visible';
                 document.getElementById('adPoints').value = 15;
             }
-            
             modal.classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        }
-
+        function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
         function editAd(index) { openModal(index); }
 
-        // --- ACTIONS ---
-        async function toggleAd(index) {
-            allAds[index].active = !allAds[index].active;
-            await saveAds();
-        }
-
+        async function toggleAd(index) { allAds[index].active = !allAds[index].active; await saveAds(); }
         function duplicateAd(index) {
-            var copy = JSON.parse(JSON.stringify(allAds[index]));            copy.name = copy.name + ' (copie)';
+            var copy = JSON.parse(JSON.stringify(allAds[index]));
+            copy.name = copy.name + ' (copie)';
             copy.active = false;
             allAds.push(copy);
             saveAds();
         }
-
         async function deleteAd(index) {
-            if (!confirm('⚠️ Supprimer "' + allAds[index].name + '" ?\nCette action est irréversible.')) return;
+            if (!confirm('⚠️ Supprimer "' + allAds[index].name + '" ?')) return;
             allAds.splice(index, 1);
             await saveAds();
         }
-
-        // --- FORM SUBMIT ---
         document.getElementById('adForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             var editIdx = parseInt(document.getElementById('editIndex').value);
             var newAd = {
                 name: document.getElementById('adName').value.trim(),
                 page: document.getElementById('adPage').value,
+                mode: document.getElementById('adMode').value,
                 type: document.getElementById('adType').value,
                 position: document.getElementById('adPosition').value,
                 points: parseInt(document.getElementById('adPoints').value) || 0,
                 code: document.getElementById('adCode').value.trim(),
                 active: document.getElementById('adActive').value === 'true'
             };
-
-            if (editIdx >= 0) {
-                allAds[editIdx] = newAd;
-            } else {
-                allAds.push(newAd);
-            }
-            
+            if (editIdx >= 0) allAds[editIdx] = newAd;
+            else allAds.push(newAd);
             await saveAds();
         });
 
-        // --- EVENT LISTENERS ---
         document.getElementById('searchInput').addEventListener('input', applyFilters);
         document.getElementById('pageFilter').addEventListener('change', applyFilters);
-        document.getElementById('modalOverlay').addEventListener('click', function(e) {
-            if (e.target === e.currentTarget) closeModal();
-        });
+        document.getElementById('modeFilter').addEventListener('change', applyFilters);
+        document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === e.currentTarget) closeModal(); });
 
-        // --- INIT ---
         checkAdmin();
     </script>
 </body>
