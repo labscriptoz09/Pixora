@@ -1,81 +1,73 @@
-// ads-loader.js v11 — CSS intégré, slots compacts, raffiné
+// ads-loader.js v12 — UN slot, compact, raffiné
 (function() {
     'use strict';
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_ads_v11';
+    var CACHE_KEY = 'pxr_ads_v12';
     var CACHE_TTL = 60000;
     var DONE = false;
 
-    // ✅ INJECTION CSS DYNAMIQUE (pas besoin de toucher index.html)
+    // CSS intégré - Compact et élégant
     if (!document.getElementById('pxr-styles')) {
         var style = document.createElement('style');
         style.id = 'pxr-styles';
         style.textContent = `
-            .pxr-slot { width:100%; margin:1rem 0; min-height:auto; }
+            .pxr-slot { 
+                width: 100%; 
+                margin: 0.8rem 0; 
+                display: flex;
+                justify-content: center;
+            }
             .pxr-native {
-                background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(236,72,153,0.08));
-                border: 1px solid rgba(139,92,246,0.2);
-                border-radius: 16px;
-                padding: 1.2rem 1rem;
-                margin: 0.8rem 0;
+                background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(236,72,153,0.06));
+                border: 1px solid rgba(139,92,246,0.15);
+                border-radius: 12px;
+                padding: 1rem;
                 backdrop-filter: blur(20px);
                 transition: all 0.3s ease;
-                position: relative;
-                overflow: hidden;
+                max-width: 400px;
+                width: 100%;
             }
             .pxr-native:hover {
-                border-color: rgba(139,92,246,0.4);
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(139,92,246,0.15);
+                border-color: rgba(139,92,246,0.3);
+                box-shadow: 0 4px 15px rgba(139,92,246,0.1);
             }
-            .pxr-native .sponsor-label {
-                font-size: 0.6rem;
-                color: rgba(139,92,246,0.8);
+            .pxr-label {
+                font-size: 0.55rem;
+                color: rgba(139,92,246,0.7);
                 text-transform: uppercase;
-                letter-spacing: 0.15em;
+                letter-spacing: 0.12em;
                 font-weight: 700;
-                margin-bottom: 0.8rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
+                margin-bottom: 0.6rem;
+                text-align: center;
             }
-            .pxr-native .sponsor-label::before,
-            .pxr-native .sponsor-label::after {
-                content: '';
-                flex: 1;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(139,92,246,0.3));            }
-            .pxr-native-btn {
+            .pxr-btn {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
-                padding: 0.7rem 1.4rem;
-                background: linear-gradient(135deg, #8B5CF6, #EC4899);
-                color: white;
-                border-radius: 10px;
+                padding: 0.6rem 1.2rem;
+                background: linear-gradient(135deg, #8B5CF6, #EC4899);                color: white;
+                border-radius: 8px;
                 font-weight: 600;
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 text-decoration: none;
                 transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(139,92,246,0.3);
+                width: 100%;
+                justify-content: center;
             }
-            .pxr-native-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(139,92,246,0.5);
+            .pxr-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 15px rgba(139,92,246,0.4);
             }
-            .pxr-placeholder {
+            .pxr-ph {
                 text-align: center;
-                padding: 1.5rem;
-                color: rgba(161,161,170,0.6);
-                font-size: 0.8rem;
+                padding: 1rem;
+                color: rgba(161,161,170,0.5);
+                font-size: 0.75rem;
                 cursor: pointer;
-                transition: all 0.3s ease;
             }
-            .pxr-placeholder:hover { color: rgba(139,92,246,0.8); }
-            .pxr-placeholder i { font-size: 1.5rem; margin-bottom: 0.5rem; opacity: 0.4; display: block; }
+            .pxr-ph:hover { color: rgba(139,92,246,0.7); }
         `;
         document.head.appendChild(style);
     }
@@ -93,41 +85,24 @@
         return document.querySelector('.main-content') || document.querySelector('main') || document.body;
     }
 
-    function createSlot(id, afterEl) {
-        var ex = document.getElementById(id);
+    // ✅ UN SEUL SLOT - Juste après le hero
+    function createSingleSlot() {
+        var ex = document.getElementById('pxr-single');
         if (ex) return ex;
-        var s = document.createElement('div');        s.id = id;
-        s.className = 'pxr-slot';
-        if (afterEl && afterEl.parentNode) {
-            afterEl.parentNode.insertBefore(s, afterEl.nextSibling);
-        } else {
-            getContainer().prepend(s);
-        }
-        return s;
-    }
-
-    function placeSlots(page) {
-        var slots = {};
+        
+        var slot = document.createElement('div');
+        slot.id = 'pxr-single';
+        slot.className = 'pxr-slot';
+        
         var main = getContainer();
-        try {
-            if (page === 'index') {
-                var hero = main.querySelector('.hero');
-                var gen = main.querySelector('.generator');
-                if (hero) slots.top = createSlot('pxr-top', hero);
-                if (gen) slots.middle = createSlot('pxr-mid', gen);
-            } else if (page === 'galerie') {
-                var sub = main.querySelector('.page-sub');
-                var grid = main.querySelector('.results-grid');
-                if (sub) slots.top = createSlot('pxr-top', sub);
-                if (grid) slots.middle = createSlot('pxr-mid', grid);
-            } else if (page === 'earn') {
-                var header = main.querySelector('.page-header') || main.querySelector('h1');
-                var refCard = main.querySelector('.referral-card');
-                if (header) slots.top = createSlot('pxr-top', header);
-                if (refCard) slots.middle = createSlot('pxr-mid', refCard);
-            }
-        } catch (e) {}
-        return slots;
+        var hero = main.querySelector('.hero');
+                if (hero && hero.parentNode) {
+            hero.parentNode.insertBefore(slot, hero.nextSibling);
+        } else {
+            main.prepend(slot);
+        }
+        
+        return slot;
     }
 
     function injectAd(container, ad) {
@@ -140,22 +115,20 @@
             wrap.className = 'pxr-native';
 
             var label = document.createElement('div');
-            label.className = 'sponsor-label';
-            label.innerHTML = '<i class="fas fa-star"></i> Sponsorisé <i class="fas fa-star"></i>';
+            label.className = 'pxr-label';
+            label.textContent = '⭐ Sponsorisé ⭐';
             wrap.appendChild(label);
 
-            var content = document.createElement('div');
-            content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.8rem;';
             var isUrl = code.indexOf('http://') === 0 || code.indexOf('https://') === 0;
 
             if (isUrl) {
                 var btn = document.createElement('a');
-                btn.className = 'pxr-native-btn';
+                btn.className = 'pxr-btn';
                 btn.href = code;
                 btn.target = '_blank';
                 btn.rel = 'noopener noreferrer';
                 btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + name;
-                content.appendChild(btn);
+                wrap.appendChild(btn);
             } else if (code && code.length > 10) {
                 var iframe = document.createElement('iframe');
                 iframe.style.cssText = 'width:100%;border:none;display:block;opacity:0;transition:opacity 0.3s;';
@@ -168,36 +141,35 @@
                     resolved = true;
                     try {
                         var h = iframe.contentDocument.body.scrollHeight;
-                        iframe.style.height = (h > 10 && h < 1000) ? h + 'px' : '200px';
-                    } catch (e) { iframe.style.height = '200px'; }
+                        iframe.style.height = (h > 10 && h < 500) ? h + 'px' : '150px';
+                    } catch (e) { iframe.style.height = '150px'; }
                     iframe.style.opacity = '1';
                 };
-
                 setTimeout(function() {
                     if (resolved) return;
                     resolved = true;
                     if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
                     var fbUrl = linkUrl.indexOf('http') === 0 ? linkUrl : '/earn.html';
                     var fb = document.createElement('a');
-                    fb.className = 'pxr-native-btn';
+                    fb.className = 'pxr-btn';
                     fb.href = fbUrl;
                     fb.target = '_blank';
                     fb.innerHTML = '<i class="fas fa-star"></i> ' + name;
-                    content.appendChild(fb);
+                    wrap.appendChild(fb);
                 }, 1500);
 
-                content.appendChild(iframe);
+                wrap.appendChild(iframe);
             } else {
                 var ph = document.createElement('div');
-                ph.className = 'pxr-placeholder';
-                ph.innerHTML = '<i class="fas fa-gift"></i><div>Gagnez des points avec nos partenaires</div>';
+                ph.className = 'pxr-ph';
+                ph.innerHTML = '<i class="fas fa-gift" style="font-size:1.2rem;margin-bottom:0.3rem;display:block"></i>Gagnez des points';
                 ph.onclick = function() { window.location.href = '/earn.html'; };
-                content.appendChild(ph);
+                wrap.appendChild(ph);
             }
-            wrap.appendChild(content);
+
             container.appendChild(wrap);
         } catch (e) {
-            container.innerHTML = '<div class="pxr-placeholder"><i class="fas fa-ad"></i><div>Publicité</div></div>';
+            container.innerHTML = '<div class="pxr-ph"><i class="fas fa-ad"></i><div>Publicité</div></div>';
         }
     }
 
@@ -222,8 +194,7 @@
 
         try {
             if (typeof window.supabase !== 'undefined') {
-                var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                var r = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();
+                var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);                var r = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();
                 if (r.data && r.data.value) return r.data.value;
             }
         } catch (e) {}
@@ -243,14 +214,16 @@
             var pageAds = allAds.filter(function(ad) {
                 return ad.page === page && ad.active !== false;
             });
+
             if (!pageAds.length) return;
 
-            var slots = placeSlots(page);
-            pageAds.forEach(function(ad) {
-                var pos = ad.position || 'top';
-                var slot = slots[pos];
-                if (slot) injectAd(slot, ad);
-            });
+            // ✅ UN SEUL SLOT
+            var slot = createSingleSlot();
+            
+            // Prendre la première pub active
+            var firstAd = pageAds[0];
+            injectAd(slot, firstAd);
+            
         } catch (e) {}
     }
 
