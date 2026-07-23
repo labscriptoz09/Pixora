@@ -220,51 +220,98 @@
         let allAds = [];
         let filteredAds = [];
 
+        // =============================================
+        // ✅ NOUVEAU : Proxy admin-save centralisé
+        // Remplace db.from('admin_config').upsert() bloqué par RLS
+        // =============================================
+        async function adminSave(key, value) {
+            try {
+                var session = await db.auth.getSession();
+                var token = session.data.session?.access_token;
+                if (!token) throw new Error('Session expirée. Reconnectez-vous.');
+
+                var res = await fetch('/api/admin-save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ key: key, value: value })
+                });
+
+                var data = await res.json();
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || 'Erreur serveur ' + res.status);
+                }
+                return true;            } catch(e) {
+                console.error('[ADMIN-SAVE] Error saving key "' + key + '":', e);
+                alert('❌ Erreur sauvegarde : ' + e.message);
+                return false;
+            }
+        }
+
         // --- AUTH ---
         async function checkAdmin() {
-            const { data: { user } } = await db.auth.getUser();
-            if (!user || user.email !== ADMIN_EMAIL) {
+            try {
+                var sessionResult = await db.auth.getSession();
+                var user = sessionResult.data.session?.user;
+                
+                if (!user || user.email.toLowerCase() !== ADMIN_EMAIL) {
+                    document.getElementById('mainContent').style.display = 'none';
+                    document.getElementById('accessDenied').style.display = 'block';
+                    return;
+                }
+                
+                document.getElementById('mainContent').style.display = 'block';
+                await loadAds();
+            } catch(e) {
+                console.error('Auth error:', e);
                 document.getElementById('mainContent').style.display = 'none';
                 document.getElementById('accessDenied').style.display = 'block';
-                return;
             }
-            document.getElementById('mainContent').style.display = 'block';
-            await loadAds();
         }
 
         // --- LOAD ---
         async function loadAds() {
-            const { data } = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
-            allAds = data?.value || [];
-            applyFilters();
-            updateStats();
+            try {
+                var result = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+                allAds = result.data?.value || [];
+                applyFilters();
+                updateStats();
+            } catch(e) {
+                console.error('Load ads error:', e);
+                allAds = [];
+                applyFilters();
+                updateStats();
+            }
         }
 
-        // --- SAVE ---
+        // --- SAVE (via proxy admin-save) ---
         async function saveAds() {
-            const btn = document.getElementById('btnSave');
-            btn.disabled = true;            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
+            var btn = document.getElementById('btnSave');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
             
-            const { error } = await db.from('admin_config').upsert({ key: 'ad_networks', value: allAds });
-            
+            var ok = await adminSave('ad_networks', allAds);            
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-save"></i> Sauvegarder';
             
-            if (error) { alert('Erreur: ' + error.message); return; }
+            if (!ok) return;
             
             closeModal();
             await loadAds();
+            alert('✅ Publicités sauvegardées avec succès !');
         }
 
         // --- FILTERS & SEARCH ---
         function applyFilters() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const page = document.getElementById('pageFilter').value;
+            var search = document.getElementById('searchInput').value.toLowerCase();
+            var page = document.getElementById('pageFilter').value;
             
-            filteredAds = allAds.filter((ad, idx) => {
-                const matchSearch = ad.name.toLowerCase().includes(search) || (ad.type || '').toLowerCase().includes(search);
-                const matchPage = page === 'all' || ad.page === page;
-                ad._origIndex = idx; // Keep track of original index
+            filteredAds = allAds.filter(function(ad, idx) {
+                var matchSearch = ad.name.toLowerCase().includes(search) || (ad.type || '').toLowerCase().includes(search);
+                var matchPage = page === 'all' || ad.page === page;
+                ad._origIndex = idx;
                 return matchSearch && matchPage;
             });
             
@@ -273,50 +320,44 @@
 
         function updateStats() {
             document.getElementById('statTotal').textContent = allAds.length;
-            document.getElementById('statActive').textContent = allAds.filter(a => a.active).length;
-            document.getElementById('statEarn').textContent = allAds.filter(a => a.page === 'earn').length;
-            document.getElementById('statIndex').textContent = allAds.filter(a => a.page === 'index').length;
-            document.getElementById('statGalerie').textContent = allAds.filter(a => a.page === 'galerie').length;
+            document.getElementById('statActive').textContent = allAds.filter(function(a) { return a.active; }).length;
+            document.getElementById('statEarn').textContent = allAds.filter(function(a) { return a.page === 'earn'; }).length;
+            document.getElementById('statIndex').textContent = allAds.filter(function(a) { return a.page === 'index'; }).length;
+            document.getElementById('statGalerie').textContent = allAds.filter(function(a) { return a.page === 'galerie'; }).length;
         }
 
         // --- RENDER TABLE ---
         function renderTable() {
-            const tbody = document.getElementById('adsTableBody');
+            var tbody = document.getElementById('adsTableBody');
             
             if (filteredAds.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>Aucune publicité trouvée</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = filteredAds.map(ad => `
-                <tr>
-                    <td>
-                        <span class="status-dot ${ad.active ? 'status-active' : 'status-inactive'}"></span>
-                        ${ad.active ? 'Actif' : 'Inactif'}                    </td>
-                    <td class="ad-name">${ad.name}</td>
-                    <td class="ad-page">${ad.page}</td>
-                    <td><span class="ad-type">${ad.type || 'smartlink'}</span></td>
-                    <td>${ad.position || 'top'}</td>
-                    <td class="ad-points">${ad.points != null ? '+' + ad.points : '-'}</td>
-                    <td style="text-align:right">
-                        <div class="actions" style="justify-content:flex-end">
-                            <button class="btn-action btn-edit" title="Modifier" onclick="editAd(${ad._origIndex})"><i class="fas fa-pen"></i></button>
-                            <button class="btn-action btn-dup" title="Dupliquer" onclick="duplicateAd(${ad._origIndex})"><i class="fas fa-copy"></i></button>
-                            <button class="btn-action" title="${ad.active ? 'Désactiver' : 'Activer'}" onclick="toggleAd(${ad._origIndex})"><i class="fas fa-${ad.active ? 'pause' : 'play'}"></i></button>
-                            <button class="btn-action btn-del" title="Supprimer" onclick="deleteAd(${ad._origIndex})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = filteredAds.map(function(ad) {
+                return '<tr>' +
+                    '<td><span class="status-dot ' + (ad.active ? 'status-active' : 'status-inactive') + '"></span>' + (ad.active ? 'Actif' : 'Inactif') + '</td>' +
+                    '<td class="ad-name">' + ad.name + '</td>' +
+                    '<td class="ad-page">' + ad.page + '</td>' +
+                    '<td><span class="ad-type">' + (ad.type || 'smartlink') + '</span></td>' +
+                    '<td>' + (ad.position || 'top') + '</td>' +                    '<td class="ad-points">' + (ad.points != null ? '+' + ad.points : '-') + '</td>' +
+                    '<td style="text-align:right"><div class="actions" style="justify-content:flex-end">' +
+                        '<button class="btn-action btn-edit" title="Modifier" onclick="editAd(' + ad._origIndex + ')"><i class="fas fa-pen"></i></button>' +
+                        '<button class="btn-action btn-dup" title="Dupliquer" onclick="duplicateAd(' + ad._origIndex + ')"><i class="fas fa-copy"></i></button>' +
+                        '<button class="btn-action" title="' + (ad.active ? 'Désactiver' : 'Activer') + '" onclick="toggleAd(' + ad._origIndex + ')"><i class="fas fa-' + (ad.active ? 'pause' : 'play') + '"></i></button>' +
+                        '<button class="btn-action btn-del" title="Supprimer" onclick="deleteAd(' + ad._origIndex + ')"><i class="fas fa-trash"></i></button>' +
+                    '</div></td></tr>';
+            }).join('');
         }
 
         // --- MODAL ---
-        function openModal(index = -1) {
-            const modal = document.getElementById('modalOverlay');
-            const title = document.getElementById('modalTitle');
+        function openModal(index) {
+            var modal = document.getElementById('modalOverlay');
+            var title = document.getElementById('modalTitle');
             
-            if (index >= 0) {
-                const ad = allAds[index];
+            if (index !== undefined && index >= 0) {
+                var ad = allAds[index];
                 title.textContent = '✏️ Modifier : ' + ad.name;
                 document.getElementById('editIndex').value = index;
                 document.getElementById('adName').value = ad.name || '';
@@ -341,6 +382,7 @@
         }
 
         function editAd(index) { openModal(index); }
+
         // --- ACTIONS ---
         async function toggleAd(index) {
             allAds[index].active = !allAds[index].active;
@@ -348,8 +390,7 @@
         }
 
         function duplicateAd(index) {
-            const copy = JSON.parse(JSON.stringify(allAds[index]));
-            copy.name = copy.name + ' (copie)';
+            var copy = JSON.parse(JSON.stringify(allAds[index]));            copy.name = copy.name + ' (copie)';
             copy.active = false;
             allAds.push(copy);
             saveAds();
@@ -362,11 +403,11 @@
         }
 
         // --- FORM SUBMIT ---
-        document.getElementById('adForm').addEventListener('submit', async (e) => {
+        document.getElementById('adForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const editIdx = parseInt(document.getElementById('editIndex').value);
-            const newAd = {
+            var editIdx = parseInt(document.getElementById('editIndex').value);
+            var newAd = {
                 name: document.getElementById('adName').value.trim(),
                 page: document.getElementById('adPage').value,
                 type: document.getElementById('adType').value,
@@ -388,9 +429,10 @@
         // --- EVENT LISTENERS ---
         document.getElementById('searchInput').addEventListener('input', applyFilters);
         document.getElementById('pageFilter').addEventListener('change', applyFilters);
-        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
             if (e.target === e.currentTarget) closeModal();
         });
+
         // --- INIT ---
         checkAdmin();
     </script>
