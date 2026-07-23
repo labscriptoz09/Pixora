@@ -1,33 +1,22 @@
-// ads-loader.js v27 — SSA + Rewarded Buttons + Popup Intercept
+// ads-loader.js v28 — SSA Brut + Boutons Rewarded Orange
 (function() {
     'use strict';
 
     var DONE = false;
-    var CACHE_KEY = 'pxr_ssa_v27';
+    var CACHE_KEY = 'pxr_ssa_v28';
     var CACHE_TTL = 30000;
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 
-    // =============================================
-    // NOTIFICATION SÉCURISÉE
-    // =============================================
     function pxrNotify(msg, type) {
         try {
             var n = document.getElementById('notif');
             var nt = document.getElementById('notif-text');
-            if (n && nt) {
-                nt.textContent = msg;
-                n.className = 'notification show ' + (type || 'success');
-                setTimeout(function() { n.classList.remove('show'); }, 3000);
-                return;
-            }
+            if (n && nt) { nt.textContent = msg; n.className = 'notification show ' + (type || 'success'); setTimeout(function() { n.classList.remove('show'); }, 3000); return; }
         } catch(e) {}
         console.log('[PX] ' + msg);
     }
 
-    // =============================================
-    // CSS DYNAMIQUE (Device Auto-Adapt)
-    // =============================================
     function getDeviceClass() {
         var w = window.innerWidth;
         if (w <= 768) return 'mobile';
@@ -39,33 +28,26 @@
         var device = getDeviceClass();
         var styleId = 'pxr-styles-' + device;
         if (document.getElementById(styleId)) return;
-
         var style = document.createElement('style');
         style.id = styleId;
-
         var css = '';
-        // SSA Slots + Native Ads
         css += '.pxr-slot{width:100%;margin:1rem 0}';
         css += '.pxr-native{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(236,72,153,0.08));border:1px solid rgba(139,92,246,0.2);border-radius:16px;padding:1.5rem;backdrop-filter:blur(20px);transition:all 0.3s ease;width:100%;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;overflow:hidden}';
-        css += '.pxr-native:hover{border-color:rgba(139,92,246,0.4);box-shadow:0 8px 25px rgba(139,92,246,0.15)}';        css += '.pxr-label{font-size:0.6rem;color:rgba(139,92,246,0.8);text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin-bottom:1rem;text-align:center}';
-        css += '.pxr-btn{display:inline-flex;align-items:center;gap:0.6rem;padding:0.8rem 2rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:12px;font-weight:600;font-size:0.9rem;text-decoration:none;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}';
-        css += '.pxr-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}';
-        css += '.pxr-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}';
+        css += '.pxr-native:hover{border-color:rgba(139,92,246,0.4);box-shadow:0 8px 25px rgba(139,92,246,0.15)}';
+        css += '.pxr-label{font-size:0.6rem;color:rgba(139,92,246,0.8);text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin-bottom:1rem;text-align:center}';
+        css += '.pxr-ad-content{width:100%;display:flex;flex-direction:column;align-items:center;gap:0.6rem}';
         css += '.pxr-fallback{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:1rem;text-align:center;color:#FBBF24;font-size:0.8rem}';
-
-        // Rewarded Button (entre les pubs)
+        // Bouton ORANGE rewarded
         css += '.pxr-rw-trigger-wrap{text-align:center;margin:0.8rem 0}';
         css += '.pxr-rw-trigger-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#F59E0B,#EF4444);color:white;border:none;border-radius:10px;font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 15px rgba(245,158,11,0.3)}';
         css += '.pxr-rw-trigger-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.4)}';
-
         // Modale Rewarded
         css += '.pxr-rw-overlay{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}';
         css += '.pxr-rw-overlay.active{display:flex}';
         css += '.pxr-rw-modal{background:#0f0f14;border:1px solid rgba(139,92,246,0.3);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow:hidden;position:relative;animation:pxrScaleIn 0.3s ease}';
         css += '@keyframes pxrScaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}';
         css += '.pxr-rw-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;border-bottom:1px solid rgba(63,63,70,0.5)}';
-        css += '.pxr-rw-title{font-size:0.9rem;font-weight:700;color:#FAFAFA;display:flex;align-items:center;gap:0.5rem}';
-        css += '.pxr-rw-close{background:none;border:none;color:#A1A1AA;font-size:1.2rem;cursor:pointer;padding:0.3rem}';
+        css += '.pxr-rw-title{font-size:0.9rem;font-weight:700;color:#FAFAFA;display:flex;align-items:center;gap:0.5rem}';        css += '.pxr-rw-close{background:none;border:none;color:#A1A1AA;font-size:1.2rem;cursor:pointer;padding:0.3rem}';
         css += '.pxr-rw-close:hover{color:#EF4444}';
         css += '.pxr-rw-body{padding:1.2rem;text-align:center}';
         css += '.pxr-rw-timer{font-family:"JetBrains Mono",monospace;font-size:2rem;font-weight:700;color:#8B5CF6;margin:1rem 0}';
@@ -78,35 +60,20 @@
         css += '.pxr-rw-btn-claim:disabled{background:rgba(63,63,70,0.5);color:#71717A;cursor:not-allowed}';
         css += '.pxr-rw-limit{font-size:0.7rem;color:#71717A;margin-top:0.8rem}';
         css += '.pxr-rw-error{color:#EF4444;font-size:0.8rem;margin-top:0.5rem}';
-
-        // Popup Intercept Modale (pour pubs CPM qui veulent ouvrir un popup)
-        css += '.pxr-popup-overlay{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:1rem}';
-        css += '.pxr-popup-overlay.active{display:flex}';
-        css += '.pxr-popup-modal{background:#0f0f14;border:1px solid rgba(63,63,70,0.5);border-radius:16px;width:100%;max-width:600px;max-height:85vh;overflow:hidden;position:relative}';
-        css += '.pxr-popup-header{display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;border-bottom:1px solid rgba(63,63,70,0.5)}';
-        css += '.pxr-popup-title{font-size:0.8rem;font-weight:600;color:#A1A1AA}';
-        css += '.pxr-popup-close{background:none;border:none;color:#A1A1AA;font-size:1.1rem;cursor:pointer;padding:0.3rem}';
-        css += '.pxr-popup-close:hover{color:#EF4444}';
-        css += '.pxr-popup-body{padding:0}';
-        css += '.pxr-popup-iframe{width:100%;height:400px;border:none}';
-
         // Device adapt
         if (device === 'mobile') {
-            css += '.pxr-native{padding:1rem;min-height:80px;max-height:250px}';
-            css += '.pxr-rw-modal{max-width:95vw}.pxr-rw-iframe{height:200px}';
-            css += '.pxr-popup-modal{max-width:95vw}.pxr-popup-iframe{height:300px}';
-            css += '.pxr-rw-trigger-btn{padding:0.6rem 1.2rem;font-size:0.8rem}';
-        } else if (device === 'tablet') {            css += '.pxr-native{padding:1.2rem;min-height:100px;max-height:300px}';
+            css += '.pxr-native{padding:1rem;min-height:80px;max-height:250px}.pxr-rw-modal{max-width:95vw}.pxr-rw-iframe{height:200px}.pxr-rw-trigger-btn{padding:0.6rem 1.2rem;font-size:0.8rem}';
+        } else if (device === 'tablet') {
+            css += '.pxr-native{padding:1.2rem;min-height:100px;max-height:300px}';
         } else {
             css += '.pxr-native{padding:1.5rem;min-height:100px;max-height:400px}';
         }
-
         style.textContent = css;
         document.head.appendChild(style);
     }
 
     // =============================================
-    // MODALE REWARDED AD
+    // MODALE REWARDED
     // =============================================
     function createRewardedModal() {
         if (document.getElementById('pxr-rw-overlay')) return;
@@ -120,33 +87,6 @@
         document.getElementById('pxr-rw-claim-btn').addEventListener('click', window.pxrClaimRewardedAd);
     }
 
-    // =============================================
-    // MODALE POPUP INTERCEPT (pour pubs CPM)
-    // =============================================
-    function createPopupInterceptModal() {
-        if (document.getElementById('pxr-popup-overlay')) return;
-        var overlay = document.createElement('div');
-        overlay.id = 'pxr-popup-overlay';
-        overlay.className = 'pxr-popup-overlay';
-        overlay.innerHTML = '<div class="pxr-popup-modal"><div class="pxr-popup-header"><div class="pxr-popup-title">Publicité</div><button class="pxr-popup-close" id="pxr-popup-close-btn"><i class="fas fa-times"></i></button></div><div class="pxr-popup-body"><iframe id="pxr-popup-iframe" class="pxr-popup-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe></div></div>';
-        document.body.appendChild(overlay);
-        document.getElementById('pxr-popup-close-btn').addEventListener('click', window.pxrClosePopup);
-        overlay.addEventListener('click', function(e) { if (e.target === overlay) window.pxrClosePopup(); });
-    }
-
-    window.pxrOpenPopup = function(url) {
-        var iframe = document.getElementById('pxr-popup-iframe');
-        iframe.src = url;
-        document.getElementById('pxr-popup-overlay').classList.add('active');
-    };
-
-    window.pxrClosePopup = function() {
-        document.getElementById('pxr-popup-overlay').classList.remove('active');
-        document.getElementById('pxr-popup-iframe').src = '';
-    };
-
-    // =============================================    // REWARDED AD LOGIC
-    // =============================================
     var rwTimerInterval = null;
     var rwCurrentToken = null;
     var rwCurrentUserId = null;
@@ -156,47 +96,34 @@
             var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             var userResult = await supabase.auth.getUser();
             if (!userResult.data.user) { pxrNotify('Connectez-vous pour gagner des points !', 'error'); return; }
-            rwCurrentUserId = userResult.data.user.id;
-
-            var res = await fetch('/api/rewarded-ad?action=get&user_id=' + rwCurrentUserId + '&position=rewarded');
+            rwCurrentUserId = userResult.data.user.id;            var res = await fetch('/api/rewarded-ad?action=get&user_id=' + rwCurrentUserId + '&position=rewarded');
             var data = await res.json();
-
             if (!data.available) {
                 if (data.reason === 'daily_limit_reached') pxrNotify('Limite quotidienne atteinte (' + data.daily_limit + '/jour).', 'error');
-                else if (data.reason === 'cooldown_active') pxrNotify('Patientez ' + data.wait_seconds + 's avant la prochaine pub.', 'error');
+                else if (data.reason === 'cooldown_active') pxrNotify('Patientez ' + data.wait_seconds + 's.', 'error');
                 else pxrNotify('Aucune pub disponible.', 'error');
                 return;
             }
-
             rwCurrentToken = data.token;
             document.getElementById('pxr-rw-points').textContent = data.points_reward;
             document.getElementById('pxr-rw-timer-val').textContent = data.timer_seconds;
             document.getElementById('pxr-rw-limit-info').textContent = data.views_today + '/' + data.daily_limit + ' vues aujourd\'hui';
             document.getElementById('pxr-rw-error').style.display = 'none';
-
             var iframe = document.getElementById('pxr-rw-iframe');
             if (data.ad_url) iframe.src = data.ad_url;
             else if (data.ad_html) iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + data.ad_html + '</body></html>';
-
             var claimBtn = document.getElementById('pxr-rw-claim-btn');
-            claimBtn.disabled = true;
-            claimBtn.innerHTML = '<i class="fas fa-clock"></i> Patientez...';
-
+            claimBtn.disabled = true; claimBtn.innerHTML = '<i class="fas fa-clock"></i> Patientez...';
             document.getElementById('pxr-rw-overlay').classList.add('active');
             document.body.style.overflow = 'hidden';
-
             var remaining = data.timer_seconds;
             var timerDisplay = document.getElementById('pxr-rw-timer-display');
-            timerDisplay.textContent = remaining + 's';
-            timerDisplay.classList.remove('done');
-
+            timerDisplay.textContent = remaining + 's'; timerDisplay.classList.remove('done');
             if (rwTimerInterval) clearInterval(rwTimerInterval);
             rwTimerInterval = setInterval(function() {
                 remaining--;
-                if (remaining <= 0) {
-                    clearInterval(rwTimerInterval); rwTimerInterval = null;                    timerDisplay.textContent = '✅ Terminé !'; timerDisplay.classList.add('done');
-                    claimBtn.disabled = false; claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
-                } else { timerDisplay.textContent = remaining + 's'; }
+                if (remaining <= 0) { clearInterval(rwTimerInterval); rwTimerInterval = null; timerDisplay.textContent = '✅ Terminé !'; timerDisplay.classList.add('done'); claimBtn.disabled = false; claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points'; }
+                else { timerDisplay.textContent = remaining + 's'; }
             }, 1000);
         } catch (e) { console.error('[RW] Open error:', e); pxrNotify('Erreur chargement pub.', 'error'); }
     };
@@ -206,20 +133,10 @@
             if (!rwCurrentToken || !rwCurrentUserId) return;
             var claimBtn = document.getElementById('pxr-rw-claim-btn');
             claimBtn.disabled = true; claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...';
-
             var res = await fetch('/api/rewarded-ad?action=claim', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: rwCurrentToken, user_id: rwCurrentUserId }) });
             var data = await res.json();
-
-            if (data.success) {
-                pxrNotify('+' + data.points_earned + ' points ! Solde : ' + data.new_balance, 'success');
-                window.pxrCloseRewarded();
-                if (typeof updateUI === 'function') updateUI();
-            } else {
-                var errEl = document.getElementById('pxr-rw-error');
-                errEl.textContent = data.error === 'timer_not_complete' ? 'Patientez encore ' + data.remaining_seconds + 's.' : (data.error || 'Erreur inconnue');
-                errEl.style.display = 'block';
-                claimBtn.disabled = false; claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
-            }
+            if (data.success) { pxrNotify('+' + data.points_earned + ' points ! Solde : ' + data.new_balance, 'success'); window.pxrCloseRewarded(); if (typeof updateUI === 'function') updateUI(); }
+            else { var errEl = document.getElementById('pxr-rw-error'); errEl.textContent = data.error === 'timer_not_complete' ? 'Patientez encore ' + data.remaining_seconds + 's.' : (data.error || 'Erreur'); errEl.style.display = 'block'; claimBtn.disabled = false; claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points'; }
         } catch (e) { document.getElementById('pxr-rw-error').textContent = 'Erreur réseau.'; document.getElementById('pxr-rw-error').style.display = 'block'; }
     };
 
@@ -227,13 +144,11 @@
         document.getElementById('pxr-rw-overlay').classList.remove('active');
         document.body.style.overflow = '';
         if (rwTimerInterval) { clearInterval(rwTimerInterval); rwTimerInterval = null; }
-        document.getElementById('pxr-rw-iframe').src = '';
-        document.getElementById('pxr-rw-iframe').srcdoc = '';
-        rwCurrentToken = null;
-    };
+        document.getElementById('pxr-rw-iframe').src = ''; document.getElementById('pxr-rw-iframe').srcdoc = '';
+        rwCurrentToken = null;    };
 
     // =============================================
-    // SSA (Server-Side Ads) — INCHANGÉ
+    // SSA + BOUTONS ORANGE
     // =============================================
     function getPage() {
         var p = window.location.pathname.toLowerCase();
@@ -243,11 +158,11 @@
         if (p.indexOf('shop') !== -1) return 'shop';
         return 'index';
     }
+
     function getContainer() { return document.querySelector('.main-content') || document.querySelector('main') || document.body; }
 
     function createSlot(id, anchor, where) {
-        var ex = document.getElementById(id);
-        if (ex) return ex;
+        var ex = document.getElementById(id); if (ex) return ex;
         var s = document.createElement('div'); s.id = id; s.className = 'pxr-slot';
         var main = getContainer();
         if (where === 'after' && anchor && anchor.parentNode) anchor.parentNode.insertBefore(s, anchor.nextSibling);
@@ -257,11 +172,18 @@
         return s;
     }
 
+    function createRewardedButton(id) {
+        var wrap = document.createElement('div'); wrap.id = id; wrap.className = 'pxr-rw-trigger-wrap';
+        var btn = document.createElement('button'); btn.className = 'pxr-rw-trigger-btn';
+        btn.innerHTML = '<i class="fas fa-gift"></i> Gagner des points';
+        btn.addEventListener('click', window.pxrOpenRewardedAd);
+        wrap.appendChild(btn); return wrap;
+    }
+
     function createSlotsWithButtons() {
         var slots = {};
         var main = getContainer();
-
-        // TOP: Hero → Bouton Rewarded → Pub SSA
+        // TOP: Hero → Bouton ORANGE → Pub SSA
         var hero = main.querySelector('.hero');
         if (hero && hero.parentNode) {
             var btnTop = createRewardedButton('pxr-rw-btn-top');
@@ -269,48 +191,32 @@
             slots.top = createSlot('pxr-top', btnTop, 'after');
         } else {
             slots.top = createSlot('pxr-top', main.firstElementChild, 'before');
-            var btnTop2 = createRewardedButton('pxr-rw-btn-top');
-            slots.top.parentNode.insertBefore(btnTop2, slots.top);
+            var btnTop2 = createRewardedButton('pxr-rw-btn-top-fb');
+            if (slots.top.parentNode) slots.top.parentNode.insertBefore(btnTop2, slots.top);
         }
-
-        // MIDDLE: Generator/Results → Bouton Rewarded → Pub SSA
-        var target = main.querySelector('.generator') || main.querySelector('.results-grid') || main.querySelector('.referral-card');
+        // MIDDLE: Generator → Bouton ORANGE → Pub SSA        var target = main.querySelector('.generator') || main.querySelector('.results-grid') || main.querySelector('.referral-card');
         if (target && target.parentNode) {
             var btnMid = createRewardedButton('pxr-rw-btn-mid');
             target.parentNode.insertBefore(btnMid, target.nextSibling);
             slots.middle = createSlot('pxr-mid', btnMid, 'after');
         } else {
-            var children = main.children;
-            var midIndex = Math.floor(children.length / 2);
+            var children = main.children; var midIndex = Math.floor(children.length / 2);
             slots.middle = createSlot('pxr-mid', children[midIndex] || null, children[midIndex] ? 'after' : 'append');
-            var btnMid2 = createRewardedButton('pxr-rw-btn-mid');
-            slots.middle.parentNode.insertBefore(btnMid2, slots.middle);
+            var btnMid2 = createRewardedButton('pxr-rw-btn-mid-fb');
+            if (slots.middle.parentNode) slots.middle.parentNode.insertBefore(btnMid2, slots.middle);
         }
-
-        // BOTTOM: Bouton Rewarded → Pub SSA → Footer
+        // BOTTOM: Bouton ORANGE → Pub SSA → Footer
         var footer = main.querySelector('.site-footer');
         if (footer && footer.parentNode) {
             var btnBtm = createRewardedButton('pxr-rw-btn-btm');
             footer.parentNode.insertBefore(btnBtm, footer);
-            slots.bottom = createSlot('pxr-btm', btnBtm, 'before');        } else {
+            slots.bottom = createSlot('pxr-btm', btnBtm, 'before');
+        } else {
             slots.bottom = createSlot('pxr-btm', null, 'append');
-            var btnBtm2 = createRewardedButton('pxr-rw-btn-btm');
-            slots.bottom.parentNode.appendChild(btnBtm2);
+            var btnBtm2 = createRewardedButton('pxr-rw-btn-btm-fb');
+            if (slots.bottom.parentNode) slots.bottom.parentNode.appendChild(btnBtm2);
         }
-
         return slots;
-    }
-
-    function createRewardedButton(id) {
-        var wrap = document.createElement('div');
-        wrap.id = id;
-        wrap.className = 'pxr-rw-trigger-wrap';
-        var btn = document.createElement('button');
-        btn.className = 'pxr-rw-trigger-btn';
-        btn.innerHTML = '<i class="fas fa-gift"></i> Gagner des points';
-        btn.addEventListener('click', window.pxrOpenRewardedAd);
-        wrap.appendChild(btn);
-        return wrap;
     }
 
     async function fetchAdFromServer(page, position) {
@@ -320,50 +226,51 @@
         return null;
     }
 
+    // ✅ Injection BRUTE du code HTML/script (pas de transformation)
     function injectServerAd(container, adData) {
         try {
-            if (!adData || !adData.html) { container.innerHTML = '<div class="pxr-fallback"><i class="fas fa-gift" style="font-size:1.2rem;margin-bottom:0.3rem;display:block"></i>Offre partenaire</div>'; return; }
+            if (!adData || !adData.html || adData.html.trim().length === 0) {
+                container.innerHTML = '<div class="pxr-fallback"><i class="fas fa-gift" style="font-size:1.2rem;margin-bottom:0.3rem;display:block"></i>Offre partenaire</div>';
+                return;
+            }
             var wrap = document.createElement('div'); wrap.className = 'pxr-native';
-            wrap.innerHTML = '<div class="pxr-label">⭐ Sponsorisé ⭐</div>';
+            var label = document.createElement('div'); label.className = 'pxr-label'; label.textContent = '⭐ Sponsorisé ⭐';
+            wrap.appendChild(label);
             var content = document.createElement('div'); content.className = 'pxr-ad-content';
-            content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.6rem;width:100%;';
+            // Séparer scripts et HTML
             var tempDiv = document.createElement('div'); tempDiv.innerHTML = adData.html;
             var scripts = tempDiv.querySelectorAll('script');
-            content.innerHTML = adData.html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-            scripts.forEach(function(oldScript) {
-                var newScript = document.createElement('script');
+            var htmlOnly = adData.html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            content.innerHTML = htmlOnly;
+            // Réinjecter les scripts un par un (exécution garantie)
+            scripts.forEach(function(oldScript) {                var newScript = document.createElement('script');
                 for (var i = 0; i < oldScript.attributes.length; i++) newScript.setAttribute(oldScript.attributes[i].name, oldScript.attributes[i].value);
-                if (oldScript.innerHTML) newScript.innerHTML = oldScript.innerHTML;
+                if (oldScript.textContent) newScript.textContent = oldScript.textContent;
                 content.appendChild(newScript);
             });
             wrap.appendChild(content); container.appendChild(wrap);
-        } catch (e) { container.innerHTML = '<div class="pxr-fallback">Publicité</div>'; }
+        } catch (e) { console.warn('[SSA] Inject error:', e); container.innerHTML = '<div class="pxr-fallback">Publicité</div>'; }
     }
 
     // =============================================
-    // INIT    // =============================================
+    // INIT
+    // =============================================
     async function init() {
-        if (DONE) return;
-        DONE = true;
+        if (DONE) return; DONE = true;
         try {
             injectDynamicStyles();
             createRewardedModal();
-            createPopupInterceptModal();
-
             var page = getPage();
             var slots = createSlotsWithButtons();
-
             var results = await Promise.all([
                 fetchAdFromServer(page, 'top'),
                 fetchAdFromServer(page, 'middle'),
                 fetchAdFromServer(page, 'bottom')
             ]);
-
             if (slots.top) injectServerAd(slots.top, results[0]);
             if (slots.middle) injectServerAd(slots.middle, results[1]);
             if (slots.bottom) injectServerAd(slots.bottom, results[2]);
-
-            console.log('[ADS] v27 initialized — SSA + Rewarded Buttons + Popup Intercept');
+            console.log('[ADS] v28 OK — SSA brut + boutons orange rewarded');
         } catch (e) { console.error('[ADS] Init error:', e); }
     }
 
