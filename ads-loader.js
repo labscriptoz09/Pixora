@@ -1,10 +1,10 @@
-// ads-loader.js v9 — GARANTI 100% VISIBLE
+// ads-loader.js v10 — Raffiné et Efficace
 (function() {
     'use strict';
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_ads_v9';
+    var CACHE_KEY = 'pxr_ads_v10';
     var CACHE_TTL = 60000;
     var DONE = false;
 
@@ -26,8 +26,8 @@
         if (ex) return ex;
         var s = document.createElement('div');
         s.id = id;
-        s.className = 'pxr-w';
-        s.style.cssText = 'width:100%;text-align:center;margin:1.5rem 0;min-height:80px;';
+        s.className = 'pxr-slot';
+        s.style.cssText = 'width:100%;margin:1.5rem 0;min-height:120px;';
         if (afterEl && afterEl.parentNode) {
             afterEl.parentNode.insertBefore(s, afterEl.nextSibling);
         } else {
@@ -43,75 +43,59 @@
             if (page === 'index') {
                 var hero = main.querySelector('.hero');
                 var gen = main.querySelector('.generator');
-                var footer = main.querySelector('.site-footer');
                 if (hero) slots.top = createSlot('pxr-top', hero);
                 if (gen) slots.middle = createSlot('pxr-mid', gen);
-                if (footer) slots.bottom = createSlot('pxr-btm', footer.previousElementSibling || footer);
-            } else if (page === 'galerie') {                var sub = main.querySelector('.page-sub');
-                var grid = main.querySelector('.results-grid');
-                if (sub) slots.top = createSlot('pxr-top', sub);
+            } else if (page === 'galerie') {
+                var sub = main.querySelector('.page-sub');
+                var grid = main.querySelector('.results-grid');                if (sub) slots.top = createSlot('pxr-top', sub);
                 if (grid) slots.middle = createSlot('pxr-mid', grid);
             } else if (page === 'earn') {
                 var header = main.querySelector('.page-header') || main.querySelector('h1');
                 var refCard = main.querySelector('.referral-card');
                 if (header) slots.top = createSlot('pxr-top', header);
                 if (refCard) slots.middle = createSlot('pxr-mid', refCard);
-            } else {
-                var h = main.querySelector('.page-header') || main.querySelector('h1') || main.firstElementChild;
-                if (h) slots.top = createSlot('pxr-top', h);
-            }
-            if (!slots.bottom) {
-                var ft = main.querySelector('.site-footer') || main.lastElementChild;
-                if (ft) slots.bottom = createSlot('pxr-btm', ft.previousElementSibling || ft);
             }
         } catch (e) {}
         return slots;
     }
 
-    // ✅ GARANTI: Affiche TOUJOURS un bouton cliquable
     function injectAd(container, ad) {
         try {
             var code = (ad.code || '').trim();
             var name = ad.name || 'Offre Partenaire';
             var linkUrl = ad.link || '';
 
-            // Wrapper
+            // Wrapper raffiné
             var wrap = document.createElement('div');
             wrap.className = 'pxr-native';
-            wrap.style.cssText = 'background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1.2rem;text-align:center;backdrop-filter:blur(20px);transition:all 0.3s;min-height:80px;';
-            wrap.onmouseenter = function() { wrap.style.borderColor = 'rgba(139,92,246,0.4)'; wrap.style.transform = 'translateY(-2px)'; };
-            wrap.onmouseleave = function() { wrap.style.borderColor = 'rgba(63,63,70,0.5)'; wrap.style.transform = ''; };
 
+            // Label
             var label = document.createElement('div');
-            label.style.cssText = 'font-size:0.6rem;color:#71717A;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem;font-weight:600;';
-            label.textContent = 'Sponsorisé';
+            label.className = 'sponsor-label';
+            label.innerHTML = '<i class="fas fa-star"></i> Sponsorisé <i class="fas fa-star"></i>';
             wrap.appendChild(label);
 
+            // Contenu
             var content = document.createElement('div');
-            content.style.cssText = 'min-height:60px;display:flex;align-items:center;justify-content:center;';
-            wrap.appendChild(content);
+            content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:1rem;';
 
-            // ✅ STRATÉGIE: URL = lien natif, sinon bouton par défaut
             var isUrl = code.indexOf('http://') === 0 || code.indexOf('https://') === 0;
 
             if (isUrl) {
-                // Lien natif (jamais bloqué)
-                var btn = document.createElement('a');                btn.href = code;
+                // Bouton élégant
+                var btn = document.createElement('a');
+                btn.className = 'pxr-native-btn';
+                btn.href = code;
                 btn.target = '_blank';
                 btn.rel = 'noopener noreferrer';
-                btn.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
                 btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + name;
-                btn.onmouseenter = function() { btn.style.transform = 'translateY(-2px)'; btn.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
-                btn.onmouseleave = function() { btn.style.transform = ''; btn.style.boxShadow = ''; };
                 content.appendChild(btn);
             } else if (code && code.length > 10) {
-                // Code HTML/script → iframe avec fallback IMMÉDIAT
+                // Iframe avec fallback
                 var iframe = document.createElement('iframe');
-                iframe.style.cssText = 'width:100%;border:none;display:block;margin:0 auto;opacity:0;transition:opacity 0.3s;';
-                iframe.setAttribute('scrolling', 'no');
+                iframe.style.cssText = 'width:100%;border:none;display:block;opacity:0;transition:opacity 0.3s;';
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
                 iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:transparent;}</style></head><body>' + code + '</body></html>';
-
                 var resolved = false;
                 iframe.onload = function() {
                     if (resolved) return;
@@ -123,45 +107,35 @@
                     iframe.style.opacity = '1';
                 };
 
-                // Fallback après 1.5s si bloqué
                 setTimeout(function() {
                     if (resolved) return;
                     resolved = true;
-                    if (iframe.parentNode) {
-                        iframe.parentNode.removeChild(iframe);
-                    }
+                    if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
                     var fbUrl = linkUrl.indexOf('http') === 0 ? linkUrl : 'https://pixora-gold-eight.vercel.app/earn.html';
                     var fb = document.createElement('a');
+                    fb.className = 'pxr-native-btn';
                     fb.href = fbUrl;
                     fb.target = '_blank';
-                    fb.rel = 'noopener noreferrer';
-                    fb.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
                     fb.innerHTML = '<i class="fas fa-star"></i> ' + name;
                     content.appendChild(fb);
                 }, 1500);
 
                 content.appendChild(iframe);
             } else {
-                // ✅ Code vide → bouton par défaut (TOUJOURS affiché)
-                var defBtn = document.createElement('a');
-                defBtn.href = 'https://pixora-gold-eight.vercel.app/earn.html';
-                defBtn.target = '_blank';                defBtn.rel = 'noopener noreferrer';
-                defBtn.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
-                defBtn.innerHTML = '<i class="fas fa-coins"></i> Gagner des Points';
-                defBtn.onmouseenter = function() { defBtn.style.transform = 'translateY(-2px)'; defBtn.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
-                defBtn.onmouseleave = function() { defBtn.style.transform = ''; defBtn.style.boxShadow = ''; };
-                content.appendChild(defBtn);
+                // Placeholder élégant
+                var ph = document.createElement('div');
+                ph.className = 'pxr-placeholder';
+                ph.innerHTML = '<i class="fas fa-gift"></i><div>Gagnez des points avec nos partenaires</div>';
+                ph.onclick = function() { window.location.href = '/earn.html'; };
+                ph.style.cssText += 'cursor:pointer;';
+                content.appendChild(ph);
             }
 
+            wrap.appendChild(content);
             container.appendChild(wrap);
         } catch (e) {
-            // ERREUR → bouton par défaut
-            var errBtn = document.createElement('a');
-            errBtn.href = 'https://pixora-gold-eight.vercel.app/earn.html';
-            errBtn.target = '_blank';
-            errBtn.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:#10B981;color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;';
-            errBtn.innerHTML = '<i class="fas fa-coins"></i> Gagner des Points';
-            container.appendChild(errBtn);
+            // Fallback simple
+            container.innerHTML = '<div class="pxr-placeholder"><i class="fas fa-ad"></i><div>Publicité</div></div>';
         }
     }
 
@@ -171,8 +145,7 @@
             if (cached) {
                 var p = JSON.parse(cached);
                 if (p.t && (Date.now() - p.t) < CACHE_TTL) return p.d;
-            }
-        } catch (e) {}
+            }        } catch (e) {}
 
         try {
             var res = await fetch('/api/config');
@@ -194,6 +167,7 @@
 
         return [];
     }
+
     async function init() {
         if (DONE) return;
         DONE = true;
@@ -210,7 +184,6 @@
             if (!pageAds.length) return;
 
             var slots = placeSlots(page);
-
             pageAds.forEach(function(ad) {
                 var pos = ad.position || 'top';
                 var slot = slots[pos];
@@ -221,7 +194,6 @@
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         setTimeout(init, 300);
-    } else {
-        document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
+    } else {        document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
     }
 })();
