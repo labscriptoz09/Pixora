@@ -1,4 +1,4 @@
-// /api/serve-ad.ts — FIX : Fallback sur position
+// /api/serve-ad.ts — Filtre mode=visible uniquement
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
@@ -36,6 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const allAds = data.value as Array<{
             name: string;
             page: string;
+            mode: string;
             type: string;
             position: string;
             points: number;
@@ -43,20 +44,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             active: boolean;
         }>;
 
-        // ✅ ÉTAPE 1 : Chercher avec position exacte
+        // ✅ ÉTAPE 1 : Filtrer UNIQUEMENT les pubs mode=visible (ou undefined pour rétrocompat)
         let matchingAds = allAds.filter(ad =>
             ad.page === page &&
             ad.position === position &&
             ad.active === true &&
+            (ad.mode === 'visible' || !ad.mode) &&
             ad.code && ad.code.trim().length > 0
         );
 
-        // ✅ ÉTAPE 2 : FALLBACK — si aucune pub avec cette position, prendre TOUTES les pubs actives de la page
+        // ✅ ÉTAPE 2 : FALLBACK si aucune pub avec cette position exacte
         if (matchingAds.length === 0) {
-            console.log('[SERVE-AD] No ads for position=' + position + ' on page=' + page + ', using fallback (any position)');
             matchingAds = allAds.filter(ad =>
                 ad.page === page &&
                 ad.active === true &&
+                (ad.mode === 'visible' || !ad.mode) &&
                 ad.code && ad.code.trim().length > 0
             );
         }
@@ -65,7 +67,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(200).json({ html: '', name: '', url: '' });
         }
 
-        // Sélectionner une pub (rotation aléatoire pour varier les affichages)
+        // Rotation aléatoire pour varier les affichages
         const ad = matchingAds[Math.floor(Math.random() * matchingAds.length)];
         const code = ad.code.trim();
 
