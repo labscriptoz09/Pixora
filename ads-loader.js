@@ -1,22 +1,19 @@
-// ads-loader.js v15 — Format LONG sur PC, adapté sur mobile
+// ads-loader.js v16 — FIX CRITIQUE : Slots garantis + Format LONG PC / Compact Mobile
 (function() {
     'use strict';
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_ads_v15';
+    var CACHE_KEY = 'pxr_ads_v16';
     var CACHE_TTL = 60000;
     var DONE = false;
 
-    // ✅ CSS : LONG sur PC (100% largeur), adapté sur mobile
+    // ✅ CSS : LONG sur PC, adapté mobile
     if (!document.getElementById('pxr-styles')) {
         var style = document.createElement('style');
         style.id = 'pxr-styles';
         style.textContent = `
-            .pxr-slot { 
-                width: 100%; 
-                margin: 1rem 0; 
-            }
+            .pxr-slot { width: 100%; margin: 1rem 0; }
             .pxr-native {
                 background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(236,72,153,0.08));
                 border: 1px solid rgba(139,92,246,0.2);
@@ -30,6 +27,7 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                box-sizing: border-box;
             }
             .pxr-native:hover {
                 border-color: rgba(139,92,246,0.4);
@@ -71,16 +69,9 @@
             }
             .pxr-ph:hover { color: rgba(139,92,246,0.8); }
             
-            /* Mobile : plus compact */
             @media (max-width: 768px) {
-                .pxr-native {
-                    padding: 1rem;
-                    min-height: 80px;
-                }
-                .pxr-btn {
-                    padding: 0.7rem 1.5rem;
-                    font-size: 0.85rem;
-                }
+                .pxr-native { padding: 1rem; min-height: 80px; }
+                .pxr-btn { padding: 0.7rem 1.5rem; font-size: 0.85rem; }
             }
         `;
         document.head.appendChild(style);
@@ -99,26 +90,42 @@
         return document.querySelector('.main-content') || document.querySelector('main') || document.body;
     }
 
+    // ✅ FIX : Création de slots GARANTIE (fallback si élément cible manquant)
     function createSlots() {
         var slots = { top: null, middle: null, bottom: null };
         var main = getContainer();
 
-        // Haut : après .hero
+        // Haut
         var hero = main.querySelector('.hero');
         if (hero && hero.parentNode) {
             slots.top = createSlot('pxr-top', hero, 'after');
+        } else {
+            // Fallback : insérer au début du container
+            slots.top = createSlot('pxr-top', main.firstElementChild, 'before');
         }
 
-        // Milieu : après .generator ou .results-grid ou .referral-card
+        // Milieu
         var target = main.querySelector('.generator') || main.querySelector('.results-grid') || main.querySelector('.referral-card');
         if (target && target.parentNode) {
             slots.middle = createSlot('pxr-mid', target, 'after');
+        } else {
+            // Fallback : insérer au milieu approximatif
+            var children = main.children;
+            var midIndex = Math.floor(children.length / 2);
+            if (children[midIndex]) {
+                slots.middle = createSlot('pxr-mid', children[midIndex], 'after');
+            } else {
+                slots.middle = createSlot('pxr-mid', null, 'append');
+            }
         }
 
-        // Bas : avant .site-footer
+        // Bas
         var footer = main.querySelector('.site-footer');
         if (footer && footer.parentNode) {
             slots.bottom = createSlot('pxr-btm', footer, 'before');
+        } else {
+            // Fallback : insérer à la fin
+            slots.bottom = createSlot('pxr-btm', null, 'append');
         }
 
         return slots;
@@ -137,8 +144,10 @@
             anchor.parentNode.insertBefore(s, anchor.nextSibling);
         } else if (where === 'before' && anchor && anchor.parentNode) {
             anchor.parentNode.insertBefore(s, anchor);
-        } else {
+        } else if (where === 'append') {
             main.appendChild(s);
+        } else {
+            main.prepend(s);
         }
         
         return s;
@@ -159,7 +168,6 @@
             wrap.appendChild(label);
 
             if (isUrl) {
-                // URL → bouton natif
                 var btn = document.createElement('a');
                 btn.className = 'pxr-btn';
                 btn.href = code;
@@ -168,7 +176,6 @@
                 btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + name;
                 wrap.appendChild(btn);
             } else if (code && code.length > 10) {
-                // HTML/JS → iframe
                 var iframe = document.createElement('iframe');
                 iframe.style.cssText = 'width:100%;border:none;display:block;opacity:0;transition:opacity 0.3s;';
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
@@ -199,7 +206,6 @@
 
                 wrap.appendChild(iframe);
             } else {
-                // Pas de code → placeholder
                 var ph = document.createElement('div');
                 ph.className = 'pxr-ph';
                 ph.innerHTML = '<i class="fas fa-gift" style="font-size:1.5rem;margin-bottom:0.5rem;display:block"></i>Gagnez des points avec nos partenaires';
@@ -250,13 +256,23 @@
         try {
             var page = getPage();
             var allAds = await loadAds();
-            if (!allAds || !allAds.length) return;
+            
+            // DEBUG : Afficher dans la console ce qu'on a chargé
+            console.log('[ADS] Page:', page, 'Total ads:', allAds ? allAds.length : 0);
+            
+            if (!allAds || !allAds.length) {
+                console.warn('[ADS] Aucune pub chargée !');
+                return;
+            }
 
             var slots = createSlots();
+            console.log('[ADS] Slots créés:', !!slots.top, !!slots.middle, !!slots.bottom);
 
             var pageAds = allAds.filter(function(ad) {
                 return ad.page === page && ad.active === true;
             });
+            
+            console.log('[ADS] Pubs pour cette page:', pageAds.length);
 
             var positions = { top: [], middle: [], bottom: [] };
             pageAds.forEach(function(ad) {
@@ -264,12 +280,21 @@
                 if (positions[pos]) positions[pos].push(ad);
             });
 
-            if (slots.top && positions.top[0]) injectAd(slots.top, positions.top[0]);
-            if (slots.middle && positions.middle[0]) injectAd(slots.middle, positions.middle[0]);
-            if (slots.bottom && positions.bottom[0]) injectAd(slots.bottom, positions.bottom[0]);
+            if (slots.top && positions.top[0]) {
+                console.log('[ADS] Injection TOP');
+                injectAd(slots.top, positions.top[0]);
+            }
+            if (slots.middle && positions.middle[0]) {
+                console.log('[ADS] Injection MIDDLE');
+                injectAd(slots.middle, positions.middle[0]);
+            }
+            if (slots.bottom && positions.bottom[0]) {
+                console.log('[ADS] Injection BOTTOM');
+                injectAd(slots.bottom, positions.bottom[0]);
+            }
 
         } catch (e) {
-            console.warn('[ADS] Init error:', e);
+            console.error('[ADS] Init error:', e);
         }
     }
 
