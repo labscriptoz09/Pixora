@@ -1,14 +1,15 @@
-// ads-loader.js v18 — Détection Réseau (Fiable) + Fallback Auto
+// ads-loader.js v19 — Motivation Désactivation + Bonus Points
 (function() {
     'use strict';
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_ads_v18';
+    var CACHE_KEY = 'pxr_ads_v19';
     var CACHE_TTL = 60000;
     var DONE = false;
+    var BONUS_GRANTED_KEY = 'pxr_adblock_bonus_granted';
 
-    // ✅ CSS : Message Anti-Adblock + Slots
+    // ✅ CSS : Message motivant + Slots
     if (!document.getElementById('pxr-styles')) {
         var style = document.createElement('style');
         style.id = 'pxr-styles';
@@ -69,12 +70,12 @@
             }
             .pxr-ph:hover { color: rgba(139,92,246,0.8); }
             
-            /* Message Anti-Adblock */
+            /* Message Anti-Adblock Motivational */
             .pxr-adblock-msg {
                 background: rgba(245,158,11,0.1);
                 border: 1px solid rgba(245,158,11,0.3);
                 border-radius: 12px;
-                padding: 1.2rem;
+                padding: 1.5rem;
                 text-align: center;
                 margin: 1rem 0;
                 animation: pxrFadeIn 0.5s ease;
@@ -82,39 +83,80 @@
             @keyframes pxrFadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
             .pxr-adblock-msg i {
                 color: #F59E0B;
-                font-size: 1.5rem;
-                margin-bottom: 0.5rem;
+                font-size: 2rem;
+                margin-bottom: 0.8rem;
                 display: block;
             }
+            .pxr-adblock-msg h3 {
+                color: #FAFAFA;
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+                font-weight: 700;
+            }
             .pxr-adblock-msg p {
-                color: rgba(255,255,255,0.8);
+                color: rgba(255,255,255,0.7);
                 font-size: 0.85rem;
-                margin-bottom: 0.8rem;
+                margin-bottom: 1rem;
                 line-height: 1.5;
             }
-            .pxr-adblock-btn {
+            .pxr-adblock-bonus {
+                background: rgba(16,185,129,0.15);
+                border: 1px solid rgba(16,185,129,0.3);
+                border-radius: 8px;
+                padding: 0.6rem;
+                margin-bottom: 1rem;
+                color: #10B981;
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
+            .pxr-adblock-actions {
+                display: flex;
+                gap: 0.8rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .pxr-adblock-btn-primary {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
-                padding: 0.6rem 1.2rem;
-                background: rgba(245,158,11,0.2);
-                border: 1px solid rgba(245,158,11,0.4);
+                padding: 0.7rem 1.4rem;
+                background: linear-gradient(135deg, #F59E0B, #EF4444);
+                border: none;
                 border-radius: 8px;
-                color: #FBBF24;
+                color: white;
                 font-weight: 600;
-                font-size: 0.8rem;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .pxr-adblock-btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(245,158,11,0.4);
+            }
+            .pxr-adblock-btn-secondary {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.7rem 1.4rem;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 8px;
+                color: rgba(255,255,255,0.7);
+                font-weight: 600;
+                font-size: 0.85rem;
                 text-decoration: none;
                 cursor: pointer;
                 transition: all 0.3s;
             }
-            .pxr-adblock-btn:hover {
-                background: rgba(245,158,11,0.3);
-                transform: translateY(-1px);
+            .pxr-adblock-btn-secondary:hover {
+                background: rgba(255,255,255,0.1);
+                color: white;
             }
             
             @media (max-width: 768px) {
                 .pxr-native { padding: 1rem; min-height: 80px; }
                 .pxr-btn { padding: 0.7rem 1.5rem; font-size: 0.85rem; }
+                .pxr-adblock-actions { flex-direction: column; }
             }
         `;
         document.head.appendChild(style);
@@ -132,22 +174,22 @@
                 if (checks >= totalChecks) resolve(detected);
             }
 
-            // Test 1: Charger un script connu comme bloqué
+            // Test 1: Script Google Ads
             var s1 = document.createElement('script');
-            s1.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+            s1.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?' + Date.now();
             s1.onerror = function() { detected = true; checkDone(); };
-            s1.onload = function() { checkDone(); }; // Si chargé = pas d'adblock (rare)
+            s1.onload = function() { checkDone(); };
             document.body.appendChild(s1);
 
-            // Test 2: Fetch vers un domaine pub
-            fetch('https://cdn.adskeeper.com/s/invoke.js', { method: 'HEAD', mode: 'no-cors' })
+            // Test 2: Fetch domaine pub connu
+            fetch('https://cdn.adskeeper.com/s/invoke.js?' + Date.now(), { method: 'HEAD', mode: 'no-cors' })
                 .then(function(r) { 
                     if (r.type === 'error') detected = true; 
                     checkDone(); 
                 })
                 .catch(function() { detected = true; checkDone(); });
 
-            // Test 3: Image pixel pub
+            // Test 3: Image tracker pub
             var img = new Image();
             img.src = 'https://www.google-analytics.com/analytics.js?' + Date.now();
             img.onerror = function() { detected = true; checkDone(); };
@@ -224,15 +266,60 @@
         return s;
     }
 
+    // ✅ FONCTION POUR DONNER LE BONUS POINTS
+    async function grantAdblockBonus() {
+        try {
+            // Vérifier si bonus déjà donné cette session
+            if (sessionStorage.getItem(BONUS_GRANTED_KEY)) return false;
+            
+            var user = await window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY).auth.getUser();
+            if (!user.data.user) return false;
+            
+            var userId = user.data.user.id;
+            var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            
+            // Ajouter 5 points
+            var userData = await supabase.from('user_data').select('points,total_earned').eq('user_id', userId).single();
+            if (!userData.data) return false;
+            
+            var currentPoints = userData.data.points || 0;
+            var currentEarned = userData.data.total_earned || 0;
+            
+            await supabase.from('user_data').update({
+                points: currentPoints + 5,
+                total_earned: currentEarned + 5
+            }).eq('user_id', userId);
+            
+            // Enregistrer transaction
+            await supabase.from('transactions').insert({
+                user_id: userId,
+                type: 'earned',
+                title: 'Bonus désactivation AdBlock',
+                amount: 5
+            });
+            
+            sessionStorage.setItem(BONUS_GRANTED_KEY, 'true');
+            return true;
+        } catch (e) {
+            console.error('[ADS] Bonus error:', e);
+            return false;
+        }
+    }
+
     function injectAd(container, ad, isAdblock) {
         try {
-            // ✅ Si AdBlock détecté → message poli + alternative
+            // ✅ Si AdBlock détecté → message motivant + bonus
             if (isAdblock) {
                 var msg = document.createElement('div');
                 msg.className = 'pxr-adblock-msg';
-                msg.innerHTML = '<i class="fas fa-shield-alt"></i>' +
-                    '<p>Pixora est 100% gratuit grâce aux publicités.<br>Votre bloqueur empêche l\'affichage des offres partenaires.</p>' +
-                    '<a href="/earn.html" class="pxr-adblock-btn"><i class="fas fa-coins"></i> Gagner des points autrement</a>';
+                msg.innerHTML = '<i class="fas fa-heart"></i>' +
+                    '<h3>Pixora reste gratuit grâce à vous</h3>' +
+                    '<p>Les publicités nous permettent d\'offrir des générations IA illimitées sans abonnement.<br>Désactivez votre bloqueur pour soutenir le projet.</p>' +
+                    '<div class="pxr-adblock-bonus">🎁 Bonus : +5 points offerts si vous désactivez !</div>' +
+                    '<div class="pxr-adblock-actions">' +
+                        '<button class="pxr-adblock-btn-primary" onclick="location.reload()"><i class="fas fa-sync"></i> J\'ai désactivé, recharger</button>' +
+                        '<a href="/earn.html" class="pxr-adblock-btn-secondary"><i class="fas fa-coins"></i> Gagner des points autrement</a>' +
+                    '</div>';
                 container.appendChild(msg);
                 return;
             }
@@ -246,11 +333,10 @@
 
             var label = document.createElement('div');
             label.className = 'pxr-label';
-            label.textContent = '⭐ Sponsorisé ⭐';
+            label.textContent = '⭐ Sponsorisé ';
             wrap.appendChild(label);
 
             if (isUrl) {
-                // URL directe → bouton natif (jamais bloqué)
                 var btn = document.createElement('a');
                 btn.className = 'pxr-btn';
                 btn.href = code;
@@ -259,7 +345,6 @@
                 btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + name;
                 wrap.appendChild(btn);
             } else if (code && code.length > 10) {
-                // Script/HTML → iframe avec fallback auto
                 var iframe = document.createElement('iframe');
                 iframe.style.cssText = 'width:100%;border:none;display:block;opacity:0;transition:opacity 0.3s;';
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
@@ -276,7 +361,6 @@
                     iframe.style.opacity = '1';
                 };
 
-                // Fallback après 2s si iframe vide/bloqué
                 setTimeout(function() {
                     if (resolved) return;
                     resolved = true;
@@ -341,9 +425,9 @@
         try {
             var page = getPage();
             
-            // ✅ Détecter AdBlock par réseau (fiable)
+            // ✅ Détecter AdBlock par réseau
             var adblockActive = await detectAdblockByNetwork();
-            console.log('[ADS] AdBlock détecté (réseau):', adblockActive);
+            console.log('[ADS] AdBlock détecté:', adblockActive);
 
             var allAds = await loadAds();
             console.log('[ADS] Page:', page, 'Total ads:', allAds ? allAds.length : 0);
@@ -362,16 +446,36 @@
             
             console.log('[ADS] Pubs pour cette page:', pageAds.length);
 
-            // ✅ Si AdBlock actif → message alternatif dans TOUS les slots
+            // ✅ Si AdBlock actif → message motivant + bonus
             if (adblockActive) {
-                console.log('[ADS] AdBlock actif → affichage message alternatif');
+                console.log('[ADS] AdBlock actif → affichage message motivant');
                 if (slots.top) injectAd(slots.top, null, true);
                 if (slots.middle) injectAd(slots.middle, null, true);
                 if (slots.bottom) injectAd(slots.bottom, null, true);
+                
+                // Donner le bonus si l'utilisateur clique "J'ai désactivé"
+                // (Le reload donnera les points au prochain chargement)
                 return;
             }
 
-            // Sinon afficher les pubs normales
+            // ✅ Si PAS d'AdBlock → vérifier si on doit donner le bonus
+            if (!sessionStorage.getItem(BONUS_GRANTED_KEY)) {
+                // L'utilisateur a probablement désactivé AdBlock
+                var bonusGiven = await grantAdblockBonus();
+                if (bonusGiven) {
+                    console.log('[ADS] Bonus +5 points accordé !');
+                    // Notifier l'utilisateur
+                    setTimeout(function() {
+                        var notif = document.createElement('div');
+                        notif.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(16,185,129,0.95);color:white;padding:0.8rem 1.5rem;border-radius:12px;font-weight:600;z-index:9999;animation:pxrFadeIn 0.5s ease;box-shadow:0 8px 25px rgba(16,185,129,0.4);';
+                        notif.innerHTML = '<i class="fas fa-gift"></i> +5 points bonus pour votre soutien !';
+                        document.body.appendChild(notif);
+                        setTimeout(function() { notif.remove(); }, 4000);
+                    }, 1000);
+                }
+            }
+
+            // Afficher les pubs normales
             var positions = { top: [], middle: [], bottom: [] };
             pageAds.forEach(function(ad) {
                 var pos = ad.position || 'top';
