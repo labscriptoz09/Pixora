@@ -1,16 +1,15 @@
-// ads-loader.js v21 — Server-Side Ad Serving (Anti-Adblock Définitif)
+// ads-loader.js v23 — Injection correcte des scripts
 (function() {
     'use strict';
 
     var DONE = false;
-    var CACHE_KEY = 'pxr_ssa_cache';
+    var CACHE_KEY = 'pxr_ssa_v23';
     var CACHE_TTL = 30000;
 
-    // CSS injecté dynamiquement
     if (!document.getElementById('pxr-styles')) {
         var style = document.createElement('style');
         style.id = 'pxr-styles';
-        style.textContent = '.pxr-slot{width:100%;margin:1rem 0}.pxr-native{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(236,72,153,0.08));border:1px solid rgba(139,92,246,0.2);border-radius:16px;padding:1.5rem;backdrop-filter:blur(20px);transition:all 0.3s ease;width:100%;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box}.pxr-native:hover{border-color:rgba(139,92,246,0.4);box-shadow:0 8px 25px rgba(139,92,246,0.15)}.pxr-label{font-size:0.6rem;color:rgba(139,92,246,0.8);text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin-bottom:1rem;text-align:center}.pxr-btn{display:inline-flex;align-items:center;gap:0.6rem;padding:0.8rem 2rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:12px;font-weight:600;font-size:0.9rem;text-decoration:none;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(139,92,246,0.3)}.pxr-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}.pxr-ph{text-align:center;padding:1.5rem;color:rgba(161,161,170,0.6);font-size:0.85rem;cursor:pointer}.pxr-ph:hover{color:rgba(139,92,246,0.8)}@media(max-width:768px){.pxr-native{padding:1rem;min-height:80px}.pxr-btn{padding:0.7rem 1.5rem;font-size:0.85rem}}';
+        style.textContent = '.pxr-slot{width:100%;margin:1rem 0}.pxr-native{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(236,72,153,0.08));border:1px solid rgba(139,92,246,0.2);border-radius:16px;padding:1.5rem;backdrop-filter:blur(20px);transition:all 0.3s ease;width:100%;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box}.pxr-native:hover{border-color:rgba(139,92,246,0.4);box-shadow:0 8px 25px rgba(139,92,246,0.15)}.pxr-label{font-size:0.6rem;color:rgba(139,92,246,0.8);text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin-bottom:1rem;text-align:center}.pxr-btn{display:inline-flex;align-items:center;gap:0.6rem;padding:0.8rem 2rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:12px;font-weight:600;font-size:0.9rem;text-decoration:none;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(139,92,246,0.3)}.pxr-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}.pxr-ph{text-align:center;padding:1.5rem;color:rgba(161,161,170,0.6);font-size:0.85rem;cursor:pointer}.pxr-ph:hover{color:rgba(139,92,246,0.8)}.pxr-fallback{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:1rem;text-align:center;color:#FBBF24;font-size:0.8rem}@media(max-width:768px){.pxr-native{padding:1rem;min-height:80px}.pxr-btn{padding:0.7rem 1.5rem;font-size:0.85rem}}';
         document.head.appendChild(style);
     }
 
@@ -47,8 +46,8 @@
     }
 
     function createSlots() {
-        var slots = { top: null, middle: null, bottom: null };        var main = getContainer();
-        var hero = main.querySelector('.hero');
+        var slots = { top: null, middle: null, bottom: null };
+        var main = getContainer();        var hero = main.querySelector('.hero');
         if (hero && hero.parentNode) {
             slots.top = createSlot('pxr-top', hero, 'after');
         } else {
@@ -75,7 +74,6 @@
         return slots;
     }
 
-    // ✅ Appel serveur : AdBlock ne peut PAS bloquer cette requête
     async function fetchAdFromServer(page, position) {
         var cacheId = CACHE_KEY + '_' + page + '_' + position;
         try {
@@ -87,20 +85,28 @@
         } catch (e) {}
 
         try {
-            var res = await fetch('/api/serve-ad?page=' + encodeURIComponent(page) + '&position=' + encodeURIComponent(position));
+            var url = '/api/serve-ad?page=' + encodeURIComponent(page) + '&position=' + encodeURIComponent(position);
+            var res = await fetch(url);
             if (res.ok) {
                 var data = await res.json();
                 try { localStorage.setItem(cacheId, JSON.stringify({ d: data, t: Date.now() })); } catch (e) {}
                 return data;
             }
         } catch (e) {
-            console.warn('[SSA] Fetch error for ' + page + '/' + position + ':', e.message);
+            console.error('[SSA] Fetch error:', e.message);
         }
-        return null;    }
-
+        return null;
+    }
+    // ✅ Injection SÉPARÉE des scripts
     function injectServerAd(container, adData) {
         try {
-            if (!adData || !adData.html) return;
+            if (!adData || !adData.html) {
+                var fb = document.createElement('div');
+                fb.className = 'pxr-fallback';
+                fb.innerHTML = '<i class="fas fa-gift" style="font-size:1.2rem;margin-bottom:0.3rem;display:block"></i>Offre partenaire';
+                container.appendChild(fb);
+                return;
+            }
 
             var wrap = document.createElement('div');
             wrap.className = 'pxr-native';
@@ -113,13 +119,35 @@
             var content = document.createElement('div');
             content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.6rem;width:100%;';
 
-            // ✅ Le HTML vient de TON serveur → AdBlock ne peut PAS le bloquer
-            content.innerHTML = adData.html;
+            // Extraire les scripts du HTML
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = adData.html;
+            var scripts = tempDiv.querySelectorAll('script');
+            
+            // Injecter HTML sans scripts
+            var htmlWithoutScripts = adData.html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            content.innerHTML = htmlWithoutScripts;
+
+            // Puis injecter les scripts un par un (ils s'exécuteront)
+            scripts.forEach(function(oldScript) {
+                var newScript = document.createElement('script');
+                for (var i = 0; i < oldScript.attributes.length; i++) {
+                    var attr = oldScript.attributes[i];
+                    newScript.setAttribute(attr.name, attr.value);
+                }
+                if (oldScript.innerHTML) {
+                    newScript.innerHTML = oldScript.innerHTML;
+                }
+                content.appendChild(newScript);
+            });
 
             wrap.appendChild(content);
             container.appendChild(wrap);
         } catch (e) {
             console.warn('[SSA] Inject error:', e);
+            var fb = document.createElement('div');            fb.className = 'pxr-fallback';
+            fb.textContent = 'Publicité';
+            container.appendChild(fb);
         }
     }
 
@@ -130,26 +158,16 @@
         try {
             var page = getPage();
             var slots = createSlots();
-            console.log('[SSA] Page:', page, '| Slots:', !!slots.top, !!slots.middle, !!slots.bottom);
 
-            // ✅ Charger les 3 positions EN PARALLÈLE depuis le serveur
             var results = await Promise.all([
                 fetchAdFromServer(page, 'top'),
                 fetchAdFromServer(page, 'middle'),
                 fetchAdFromServer(page, 'bottom')
             ]);
 
-            if (slots.top && results[0] && results[0].html) {
-                injectServerAd(slots.top, results[0]);
-                console.log('[SSA] TOP injecté');
-            }
-            if (slots.middle && results[1] && results[1].html) {
-                injectServerAd(slots.middle, results[1]);
-                console.log('[SSA] MIDDLE injecté');            }
-            if (slots.bottom && results[2] && results[2].html) {
-                injectServerAd(slots.bottom, results[2]);
-                console.log('[SSA] BOTTOM injecté');
-            }
+            if (slots.top) injectServerAd(slots.top, results[0]);
+            if (slots.middle) injectServerAd(slots.middle, results[1]);
+            if (slots.bottom) injectServerAd(slots.bottom, results[2]);
 
         } catch (e) {
             console.error('[SSA] Init error:', e);
