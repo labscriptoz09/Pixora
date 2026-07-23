@@ -1,14 +1,14 @@
-// ads-loader.js v17 — Anti-Adblock + Slots garantis + Format LONG
+// ads-loader.js v18 — Détection Réseau (Fiable) + Fallback Auto
 (function() {
     'use strict';
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_ads_v17';
+    var CACHE_KEY = 'pxr_ads_v18';
     var CACHE_TTL = 60000;
     var DONE = false;
 
-    // ✅ CSS : Anti-adblock message + Slots
+    // ✅ CSS : Message Anti-Adblock + Slots
     if (!document.getElementById('pxr-styles')) {
         var style = document.createElement('style');
         style.id = 'pxr-styles';
@@ -69,7 +69,7 @@
             }
             .pxr-ph:hover { color: rgba(139,92,246,0.8); }
             
-            /* Anti-adblock message */
+            /* Message Anti-Adblock */
             .pxr-adblock-msg {
                 background: rgba(245,158,11,0.1);
                 border: 1px solid rgba(245,158,11,0.3);
@@ -77,16 +77,20 @@
                 padding: 1.2rem;
                 text-align: center;
                 margin: 1rem 0;
+                animation: pxrFadeIn 0.5s ease;
             }
+            @keyframes pxrFadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
             .pxr-adblock-msg i {
                 color: #F59E0B;
                 font-size: 1.5rem;
                 margin-bottom: 0.5rem;
+                display: block;
             }
             .pxr-adblock-msg p {
                 color: rgba(255,255,255,0.8);
                 font-size: 0.85rem;
                 margin-bottom: 0.8rem;
+                line-height: 1.5;
             }
             .pxr-adblock-btn {
                 display: inline-flex;
@@ -116,56 +120,39 @@
         document.head.appendChild(style);
     }
 
-    // ✅ DÉTECTION ADBLOCK
-    function detectAdblock() {
-        var adBlockDetected = false;
+    // ✅ DÉTECTION FIABLE PAR RÉSEAU
+    function detectAdblockByNetwork() {
+        return new Promise(function(resolve) {
+            var detected = false;
+            var checks = 0;
+            var totalChecks = 3;
 
-        // Test 1: Elements piégés
-        var testEl = document.createElement('div');
-        testEl.innerHTML = '&nbsp;';
-        testEl.className = 'adsbox adsense ad-unit ad-banner';
-        testEl.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
-        document.body.appendChild(testEl);
-
-        setTimeout(function() {
-            try {
-                if (testEl.offsetHeight === 0 || testEl.offsetWidth === 0 ||
-                    getComputedStyle(testEl).display === 'none' ||
-                    getComputedStyle(testEl).visibility === 'hidden') {
-                    adBlockDetected = true;
-                }
-            } catch (e) {
-                adBlockDetected = true;
+            function checkDone() {
+                checks++;
+                if (checks >= totalChecks) resolve(detected);
             }
-            document.body.removeChild(testEl);
-        }, 100);
 
-        // Test 2: Variables piégées
-        setTimeout(function() {
-            var fakeAd = document.createElement('div');
-            fakeAd.innerHTML = '<div class="ad-banner" style="height:1px"></div>';
-            document.body.appendChild(fakeAd);
-            
-            try {
-                var adFrame = document.createElement('iframe');
-                adFrame.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
-                adFrame.className = 'adsbygoogle';
-                document.body.appendChild(adFrame);
-                
-                setTimeout(function() {
-                    if (adFrame.offsetWidth === 0 || adFrame.offsetHeight === 0) {
-                        adBlockDetected = true;
-                    }
-                    document.body.removeChild(adFrame);
-                    document.body.removeChild(fakeAd);
-                }, 100);
-            } catch (e) {
-                adBlockDetected = true;
-                if (fakeAd.parentNode) document.body.removeChild(fakeAd);
-            }
-        }, 100);
+            // Test 1: Charger un script connu comme bloqué
+            var s1 = document.createElement('script');
+            s1.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+            s1.onerror = function() { detected = true; checkDone(); };
+            s1.onload = function() { checkDone(); }; // Si chargé = pas d'adblock (rare)
+            document.body.appendChild(s1);
 
-        return adBlockDetected;
+            // Test 2: Fetch vers un domaine pub
+            fetch('https://cdn.adskeeper.com/s/invoke.js', { method: 'HEAD', mode: 'no-cors' })
+                .then(function(r) { 
+                    if (r.type === 'error') detected = true; 
+                    checkDone(); 
+                })
+                .catch(function() { detected = true; checkDone(); });
+
+            // Test 3: Image pixel pub
+            var img = new Image();
+            img.src = 'https://www.google-analytics.com/analytics.js?' + Date.now();
+            img.onerror = function() { detected = true; checkDone(); };
+            img.onload = function() { checkDone(); };
+        });
     }
 
     function getPage() {
@@ -239,12 +226,12 @@
 
     function injectAd(container, ad, isAdblock) {
         try {
-            // ✅ Si AdBlock détecté → afficher message poli
+            // ✅ Si AdBlock détecté → message poli + alternative
             if (isAdblock) {
                 var msg = document.createElement('div');
                 msg.className = 'pxr-adblock-msg';
-                msg.innerHTML = '<i class="fas fa-exclamation-triangle"></i>' +
-                    '<p>Pixora est 100% gratuit grâce aux publicités.<br>Désactivez votre bloqueur pour nous soutenir et accéder à toutes les fonctionnalités.</p>' +
+                msg.innerHTML = '<i class="fas fa-shield-alt"></i>' +
+                    '<p>Pixora est 100% gratuit grâce aux publicités.<br>Votre bloqueur empêche l\'affichage des offres partenaires.</p>' +
                     '<a href="/earn.html" class="pxr-adblock-btn"><i class="fas fa-coins"></i> Gagner des points autrement</a>';
                 container.appendChild(msg);
                 return;
@@ -263,6 +250,7 @@
             wrap.appendChild(label);
 
             if (isUrl) {
+                // URL directe → bouton natif (jamais bloqué)
                 var btn = document.createElement('a');
                 btn.className = 'pxr-btn';
                 btn.href = code;
@@ -271,6 +259,7 @@
                 btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + name;
                 wrap.appendChild(btn);
             } else if (code && code.length > 10) {
+                // Script/HTML → iframe avec fallback auto
                 var iframe = document.createElement('iframe');
                 iframe.style.cssText = 'width:100%;border:none;display:block;opacity:0;transition:opacity 0.3s;';
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
@@ -287,6 +276,7 @@
                     iframe.style.opacity = '1';
                 };
 
+                // Fallback après 2s si iframe vide/bloqué
                 setTimeout(function() {
                     if (resolved) return;
                     resolved = true;
@@ -297,7 +287,7 @@
                     fb.target = '_blank';
                     fb.innerHTML = '<i class="fas fa-star"></i> ' + name;
                     wrap.appendChild(fb);
-                }, 1500);
+                }, 2000);
 
                 wrap.appendChild(iframe);
             } else {
@@ -351,9 +341,9 @@
         try {
             var page = getPage();
             
-            // ✅ Détecter AdBlock
-            var adblockActive = detectAdblock();
-            console.log('[ADS] AdBlock détecté:', adblockActive);
+            // ✅ Détecter AdBlock par réseau (fiable)
+            var adblockActive = await detectAdblockByNetwork();
+            console.log('[ADS] AdBlock détecté (réseau):', adblockActive);
 
             var allAds = await loadAds();
             console.log('[ADS] Page:', page, 'Total ads:', allAds ? allAds.length : 0);
@@ -372,7 +362,7 @@
             
             console.log('[ADS] Pubs pour cette page:', pageAds.length);
 
-            // ✅ Si AdBlock actif → afficher message dans TOUS les slots
+            // ✅ Si AdBlock actif → message alternatif dans TOUS les slots
             if (adblockActive) {
                 console.log('[ADS] AdBlock actif → affichage message alternatif');
                 if (slots.top) injectAd(slots.top, null, true);
