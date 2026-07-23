@@ -1,12 +1,16 @@
-// ads-loader.js v24 — Adaptation Device Automatique + Server-Side
+// ads-loader.js v25 — SSA + Rewarded Ad Window Sécurisée
 (function() {
     'use strict';
 
     var DONE = false;
-    var CACHE_KEY = 'pxr_ssa_v24';
+    var CACHE_KEY = 'pxr_ssa_v25';
     var CACHE_TTL = 30000;
+    var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 
-    // ✅ Détection device + injection CSS dynamique
+    // =============================================
+    // CSS DYNAMIQUE (Device Auto-Adapt + Modale)
+    // =============================================
     function getDeviceClass() {
         var w = window.innerWidth;
         if (w <= 768) return 'mobile';
@@ -22,106 +26,209 @@
         var style = document.createElement('style');
         style.id = styleId;
 
-        var base = `
-            .pxr-slot { width: 100%; margin: 1rem 0; }
-            .pxr-native {
-                background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(236,72,153,0.08));
-                border: 1px solid rgba(139,92,246,0.2);
-                border-radius: 16px;
-                padding: 1.5rem;
-                backdrop-filter: blur(20px);
-                transition: all 0.3s ease;
-                width: 100%;
-                min-height: 100px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                box-sizing: border-box;
-                overflow: hidden;
-            }
-            .pxr-native:hover {
-                border-color: rgba(139,92,246,0.4);
-                box-shadow: 0 8px 25px rgba(139,92,246,0.15);
-            }
-            .pxr-label {
-                font-size: 0.6rem;
-                color: rgba(139,92,246,0.8);
-                text-transform: uppercase;                letter-spacing: 0.15em;
-                font-weight: 700;
-                margin-bottom: 1rem;
-                text-align: center;
-            }
-            .pxr-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.6rem;
-                padding: 0.8rem 2rem;
-                background: linear-gradient(135deg, #8B5CF6, #EC4899);
-                color: white;
-                border-radius: 12px;
-                font-weight: 600;
-                font-size: 0.9rem;
-                text-decoration: none;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(139,92,246,0.3);
-            }
-            .pxr-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(139,92,246,0.5);
-            }
-            .pxr-ph {
-                text-align: center;
-                padding: 1.5rem;
-                color: rgba(161,161,170,0.6);
-                font-size: 0.85rem;
-                cursor: pointer;
-            }
-            .pxr-ph:hover { color: rgba(139,92,246,0.8); }
-            .pxr-fallback {
-                background: rgba(245,158,11,0.1);
-                border: 1px solid rgba(245,158,11,0.3);
-                border-radius: 12px;
-                padding: 1rem;
-                text-align: center;
-                color: #FBBF24;
-                font-size: 0.8rem;
-            }
-        `;
+        var base = '.pxr-slot{width:100%;margin:1rem 0}.pxr-native{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(236,72,153,0.08));border:1px solid rgba(139,92,246,0.2);border-radius:16px;padding:1.5rem;backdrop-filter:blur(20px);transition:all 0.3s ease;width:100%;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;overflow:hidden}.pxr-native:hover{border-color:rgba(139,92,246,0.4);box-shadow:0 8px 25px rgba(139,92,246,0.15)}.pxr-label{font-size:0.6rem;color:rgba(139,92,246,0.8);text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin-bottom:1rem;text-align:center}.pxr-btn{display:inline-flex;align-items:center;gap:0.6rem;padding:0.8rem 2rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:12px;font-weight:600;font-size:0.9rem;text-decoration:none;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}.pxr-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}.pxr-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}.pxr-ph{text-align:center;padding:1.5rem;color:rgba(161,161,170,0.6);font-size:0.85rem;cursor:pointer}.pxr-ph:hover{color:rgba(139,92,246,0.8)}.pxr-fallback{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:1rem;text-align:center;color:#FBBF24;font-size:0.8rem}';
+
+        // Modale Rewarded Ad
+        var modal = '.pxr-rw-overlay{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}.pxr-rw-overlay.active{display:flex}.pxr-rw-modal{background:#0f0f14;border:1px solid rgba(139,92,246,0.3);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow:hidden;position:relative;animation:pxrScaleIn 0.3s ease}@keyframes pxrScaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}.pxr-rw-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;border-bottom:1px solid rgba(63,63,70,0.5)}.pxr-rw-title{font-size:0.9rem;font-weight:700;color:#FAFAFA;display:flex;align-items:center;gap:0.5rem}.pxr-rw-close{background:none;border:none;color:#A1A1AA;font-size:1.2rem;cursor:pointer;padding:0.3rem}.pxr-rw-close:hover{color:#EF4444}.pxr-rw-body{padding:1.2rem;text-align:center}.pxr-rw-timer{font-family:"JetBrains Mono",monospace;font-size:2rem;font-weight:700;color:#8B5CF6;margin:1rem 0}.pxr-rw-timer.done{color:#10B981}.pxr-rw-info{font-size:0.8rem;color:#A1A1AA;margin-bottom:1rem;line-height:1.5}.pxr-rw-reward{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:0.4rem 0.8rem;color:#FBBF24;font-weight:700;font-size:0.85rem;margin-bottom:1rem}.pxr-rw-iframe{width:100%;height:250px;border:none;border-radius:12px;background:rgba(255,255,255,0.03);margin-bottom:1rem}.pxr-rw-btn-claim{width:100%;padding:0.9rem;background:linear-gradient(135deg,#10B981,#059669);color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem}.pxr-rw-btn-claim:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.4)}.pxr-rw-btn-claim:disabled{background:rgba(63,63,70,0.5);color:#71717A;cursor:not-allowed}.pxr-rw-limit{font-size:0.7rem;color:#71717A;margin-top:0.8rem}.pxr-rw-error{color:#EF4444;font-size:0.8rem;margin-top:0.5rem}';
 
         var rules = '';
         if (device === 'mobile') {
-            rules = `
-                .pxr-native { padding: 1rem; min-height: 80px; max-height: 250px; }
-                .pxr-native .pxr-ad-content { max-height: 200px; }
-                .pxr-native .pxr-ad-content img,
-                .pxr-native .pxr-ad-content a img {
-                    max-width: 100%;                    max-height: 180px;
-                    object-fit: contain;
-                }
-                .pxr-btn { padding: 0.7rem 1.5rem; font-size: 0.85rem; }
-            `;
+            rules = '.pxr-native{padding:1rem;min-height:80px;max-height:250px}.pxr-native .pxr-ad-content{max-height:200px}.pxr-native .pxr-ad-content img{max-height:180px;object-fit:contain}.pxr-btn{padding:0.7rem 1.5rem;font-size:0.85rem}.pxr-rw-modal{max-width:95vw}.pxr-rw-iframe{height:200px}';
         } else if (device === 'tablet') {
-            rules = `
-                .pxr-native { padding: 1.2rem; min-height: 100px; max-height: 300px; }
-                .pxr-native .pxr-ad-content { max-height: 250px; }
-                .pxr-native .pxr-ad-content img { max-height: 220px; }
-                .pxr-btn { padding: 0.75rem 1.7rem; font-size: 0.87rem; }
-            `;
+            rules = '.pxr-native{padding:1.2rem;min-height:100px;max-height:300px}.pxr-native .pxr-ad-content{max-height:250px}.pxr-native .pxr-ad-content img{max-height:220px}.pxr-btn{padding:0.75rem 1.7rem;font-size:0.87rem}';
         } else {
-            // desktop
-            rules = `
-                .pxr-native { padding: 1.5rem; min-height: 100px; max-height: 400px; }
-                .pxr-native .pxr-ad-content { max-height: 350px; }
-                .pxr-native .pxr-ad-content img { max-height: 300px; }
-                .pxr-btn { padding: 0.8rem 2rem; font-size: 0.9rem; }
-            `;
+            rules = '.pxr-native{padding:1.5rem;min-height:100px;max-height:400px}.pxr-native .pxr-ad-content{max-height:350px}.pxr-native .pxr-ad-content img{max-height:300px}.pxr-btn{padding:0.8rem 2rem;font-size:0.9rem}';
         }
 
-        style.textContent = base + rules;
+        style.textContent = base + modal + rules;
         document.head.appendChild(style);
     }
 
+    // =============================================
+    // MODALE REWARDED AD (Sécurisée)
+    // =============================================
+    function createRewardedModal() {        if (document.getElementById('pxr-rw-overlay')) return;
+
+        var overlay = document.createElement('div');
+        overlay.id = 'pxr-rw-overlay';
+        overlay.className = 'pxr-rw-overlay';
+        overlay.innerHTML = '<div class="pxr-rw-modal">' +
+            '<div class="pxr-rw-header">' +
+                '<div class="pxr-rw-title"><i class="fas fa-gift"></i> Pub Récompensée</div>' +
+                '<button class="pxr-rw-close" onclick="window.pxrCloseRewarded()"><i class="fas fa-times"></i></button>' +
+            '</div>' +
+            '<div class="pxr-rw-body">' +
+                '<div class="pxr-rw-reward"><i class="fas fa-bolt"></i> <span id="pxr-rw-points">0.5</span> points</div>' +
+                '<div class="pxr-rw-info">Regarde cette annonce pendant <span id="pxr-rw-timer-val">20</span>s pour gagner des points.<br>Ton site reste ouvert derrière cette fenêtre.</div>' +
+                '<iframe id="pxr-rw-iframe" class="pxr-rw-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>' +
+                '<div class="pxr-rw-timer" id="pxr-rw-timer-display">20s</div>' +
+                '<button id="pxr-rw-claim-btn" class="pxr-rw-btn-claim" disabled><i class="fas fa-clock"></i> Patientez...</button>' +
+                '<div class="pxr-rw-limit" id="pxr-rw-limit-info"></div>' +
+                '<div class="pxr-rw-error" id="pxr-rw-error" style="display:none"></div>' +
+            '</div>' +
+        '</div>';
+
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) window.pxrCloseRewarded();
+        });
+
+        document.body.appendChild(overlay);
+    }
+
+    var rwTimerInterval = null;
+    var rwCurrentToken = null;
+    var rwCurrentUserId = null;
+
+    async function openRewardedAd() {
+        try {
+            // Vérifier si connecté
+            var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            var userResult = await supabase.auth.getUser();
+            if (!userResult.data.user) {
+                notify('Connectez-vous pour gagner des points !', 'error');
+                return;
+            }
+            rwCurrentUserId = userResult.data.user.id;
+
+            // Demander une pub au serveur
+            var res = await fetch('/api/rewarded-ad?action=get&user_id=' + rwCurrentUserId + '&position=rewarded');
+            var data = await res.json();
+
+            if (!data.available) {
+                if (data.reason === 'daily_limit_reached') {
+                    notify('Limite quotidienne atteinte (' + data.daily_limit + '/jour). Revenez demain !', 'error');                } else if (data.reason === 'cooldown_active') {
+                    notify('Patientez ' + data.wait_seconds + 's avant la prochaine pub.', 'error');
+                } else {
+                    notify('Aucune pub disponible pour le moment.', 'error');
+                }
+                return;
+            }
+
+            rwCurrentToken = data.token;
+
+            // Remplir la modale
+            document.getElementById('pxr-rw-points').textContent = data.points_reward;
+            document.getElementById('pxr-rw-timer-val').textContent = data.timer_seconds;
+            document.getElementById('pxr-rw-limit-info').textContent = data.views_today + '/' + data.daily_limit + ' vues aujourd\'hui';
+            document.getElementById('pxr-rw-error').style.display = 'none';
+
+            // Charger la pub dans l'iframe
+            var iframe = document.getElementById('pxr-rw-iframe');
+            if (data.ad_url) {
+                iframe.src = data.ad_url;
+            } else if (data.ad_html) {
+                iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + data.ad_html + '</body></html>';
+            }
+
+            // Reset bouton
+            var claimBtn = document.getElementById('pxr-rw-claim-btn');
+            claimBtn.disabled = true;
+            claimBtn.innerHTML = '<i class="fas fa-clock"></i> Patientez...';
+
+            // Afficher la modale
+            document.getElementById('pxr-rw-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Lancer le timer CÔTÉ CLIENT (visuel uniquement, la vraie vérif est serveur)
+            var remaining = data.timer_seconds;
+            var timerDisplay = document.getElementById('pxr-rw-timer-display');
+            timerDisplay.textContent = remaining + 's';
+            timerDisplay.classList.remove('done');
+
+            if (rwTimerInterval) clearInterval(rwTimerInterval);
+            rwTimerInterval = setInterval(function() {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(rwTimerInterval);
+                    rwTimerInterval = null;
+                    timerDisplay.textContent = '✅ Terminé !';
+                    timerDisplay.classList.add('done');
+                    claimBtn.disabled = false;
+                    claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                } else {                    timerDisplay.textContent = remaining + 's';
+                }
+            }, 1000);
+
+        } catch (e) {
+            console.error('[RW] Open error:', e);
+            notify('Erreur chargement pub. Réessayez.', 'error');
+        }
+    }
+
+    async function claimRewardedAd() {
+        try {
+            if (!rwCurrentToken || !rwCurrentUserId) return;
+
+            var claimBtn = document.getElementById('pxr-rw-claim-btn');
+            claimBtn.disabled = true;
+            claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...';
+
+            var res = await fetch('/api/rewarded-ad?action=claim', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: rwCurrentToken, user_id: rwCurrentUserId })
+            });
+
+            var data = await res.json();
+
+            if (data.success) {
+                notify('+' + data.points_earned + ' points ! Nouveau solde : ' + data.new_balance, 'success');
+                window.pxrCloseRewarded();
+                // Rafraîchir l'UI points si possible
+                if (typeof updateUI === 'function') updateUI();
+            } else {
+                var errEl = document.getElementById('pxr-rw-error');
+                if (data.error === 'timer_not_complete') {
+                    errEl.textContent = 'Timer non terminé. Patientez encore ' + data.remaining_seconds + 's.';
+                } else if (data.error === 'already_claimed') {
+                    errEl.textContent = 'Déjà réclamé !';
+                } else {
+                    errEl.textContent = 'Erreur : ' + (data.error || 'Inconnue');
+                }
+                errEl.style.display = 'block';
+                claimBtn.disabled = false;
+                claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+            }
+
+        } catch (e) {
+            console.error('[RW] Claim error:', e);
+            document.getElementById('pxr-rw-error').textContent = 'Erreur réseau. Réessayez.';
+            document.getElementById('pxr-rw-error').style.display = 'block';
+        }    }
+
+    window.pxrCloseRewarded = function() {
+        document.getElementById('pxr-rw-overlay').classList.remove('active');
+        document.body.style.overflow = '';
+        if (rwTimerInterval) { clearInterval(rwTimerInterval); rwTimerInterval = null; }
+        document.getElementById('pxr-rw-iframe').src = '';
+        document.getElementById('pxr-rw-iframe').srcdoc = '';
+        rwCurrentToken = null;
+    };
+
+    // Exposer openRewardedAd globalement
+    window.pxrOpenRewardedAd = openRewardedAd;
+
+    // =============================================
+    // NOTIFICATION (réutilise celle du site si dispo)
+    // =============================================
+    function notify(msg, type) {
+        if (typeof window.notify === 'function') {
+            window.notify(msg, type);
+        } else {
+            var n = document.getElementById('notif');
+            if (n) {
+                document.getElementById('notif-text').textContent = msg;
+                n.className = 'notification show ' + (type || 'success');
+                setTimeout(function() { n.classList.remove('show'); }, 3000);
+            } else {
+                alert(msg);
+            }
+        }
+    }
+
+    // =============================================
+    // SSA EXISTANT (inchangé)
+    // =============================================
     function getPage() {
         var p = window.location.pathname.toLowerCase();
         if (p.indexOf('earn') !== -1) return 'earn';
@@ -136,8 +243,7 @@
     }
 
     function createSlot(id, anchor, where) {
-        var ex = document.getElementById(id);
-        if (ex) return ex;
+        var ex = document.getElementById(id);        if (ex) return ex;
         var s = document.createElement('div');
         s.id = id;
         s.className = 'pxr-slot';
@@ -145,7 +251,8 @@
         if (where === 'after' && anchor && anchor.parentNode) {
             anchor.parentNode.insertBefore(s, anchor.nextSibling);
         } else if (where === 'before' && anchor && anchor.parentNode) {
-            anchor.parentNode.insertBefore(s, anchor);        } else if (where === 'append') {
+            anchor.parentNode.insertBefore(s, anchor);
+        } else if (where === 'append') {
             main.appendChild(s);
         } else {
             main.prepend(s);
@@ -185,16 +292,15 @@
 
     async function fetchAdFromServer(page, position) {
         var cacheId = CACHE_KEY + '_' + page + '_' + position;
-        try {
-            var cached = localStorage.getItem(cacheId);
+        try {            var cached = localStorage.getItem(cacheId);
             if (cached) {
                 var p = JSON.parse(cached);
                 if (p.t && (Date.now() - p.t) < CACHE_TTL) return p.d;
             }
         } catch (e) {}
-
         try {
-            var url = '/api/serve-ad?page=' + encodeURIComponent(page) + '&position=' + encodeURIComponent(position);            var res = await fetch(url);
+            var url = '/api/serve-ad?page=' + encodeURIComponent(page) + '&position=' + encodeURIComponent(position);
+            var res = await fetch(url);
             if (res.ok) {
                 var data = await res.json();
                 try { localStorage.setItem(cacheId, JSON.stringify({ d: data, t: Date.now() })); } catch (e) {}
@@ -215,44 +321,31 @@
                 container.appendChild(fb);
                 return;
             }
-
             var wrap = document.createElement('div');
             wrap.className = 'pxr-native';
-
             var label = document.createElement('div');
             label.className = 'pxr-label';
             label.textContent = '⭐ Sponsorisé ⭐';
             wrap.appendChild(label);
-
             var content = document.createElement('div');
             content.className = 'pxr-ad-content';
             content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.6rem;width:100%;';
-
-            // Extraire et injecter les scripts
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = adData.html;
             var scripts = tempDiv.querySelectorAll('script');
-
-            // HTML sans scripts
             var htmlWithoutScripts = adData.html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
             content.innerHTML = htmlWithoutScripts;
-
-            // Injecter les scripts un par un
             scripts.forEach(function(oldScript) {
                 var newScript = document.createElement('script');
                 for (var i = 0; i < oldScript.attributes.length; i++) {
                     var attr = oldScript.attributes[i];
                     newScript.setAttribute(attr.name, attr.value);
-                }                if (oldScript.innerHTML) {
-                    newScript.innerHTML = oldScript.innerHTML;
                 }
-                content.appendChild(newScript);
+                if (oldScript.innerHTML) newScript.innerHTML = oldScript.innerHTML;                content.appendChild(newScript);
             });
-
             wrap.appendChild(content);
             container.appendChild(wrap);
         } catch (e) {
-            console.warn('[SSA] Inject error:', e);
             var fb = document.createElement('div');
             fb.className = 'pxr-fallback';
             fb.textContent = 'Publicité';
@@ -260,12 +353,33 @@
         }
     }
 
+    // ✅ Bouton "Pub Récompensée" ajouté en bas de page
+    function injectRewardedButton() {
+        var existing = document.getElementById('pxr-rw-trigger');
+        if (existing) return;
+
+        var main = getContainer();
+        var footer = main.querySelector('.site-footer');
+        if (!footer) return;
+
+        var btnWrap = document.createElement('div');
+        btnWrap.id = 'pxr-rw-trigger';
+        btnWrap.style.cssText = 'text-align:center;margin:1.5rem 0;';
+        btnWrap.innerHTML = '<button class="pxr-btn" onclick="window.pxrOpenRewardedAd()" style="background:linear-gradient(135deg,#F59E0B,#EF4444);box-shadow:0 4px 15px rgba(245,158,11,0.3)"><i class="fas fa-gift"></i> Gagner des points (Pub Récompensée)</button>';
+        footer.parentNode.insertBefore(btnWrap, footer);
+    }
+
+    // =============================================
+    // INIT
+    // =============================================
     async function init() {
         if (DONE) return;
         DONE = true;
 
         try {
-            injectDynamicStyles(); // ✅ Injecte le bon CSS selon device
+            injectDynamicStyles();
+            createRewardedModal();
+
             var page = getPage();
             var slots = createSlots();
 
@@ -276,11 +390,13 @@
             ]);
 
             if (slots.top) injectServerAd(slots.top, results[0]);
-            if (slots.middle) injectServerAd(slots.middle, results[1]);
-            if (slots.bottom) injectServerAd(slots.bottom, results[2]);
+            if (slots.middle) injectServerAd(slots.middle, results[1]);            if (slots.bottom) injectServerAd(slots.bottom, results[2]);
+
+            // ✅ Ajouter le bouton rewarded sur toutes les pages
+            injectRewardedButton();
 
         } catch (e) {
-            console.error('[SSA] Init error:', e);
+            console.error('[ADS] Init error:', e);
         }
     }
 
