@@ -1,29 +1,9 @@
-// /api/serve-ad.ts — Version Anti-Popup (Nettoyage Server-Side)
+// /api/serve-ad.ts — Version ZÉRO POPUP (Blocage Scripts Tiers)
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-
-// ✅ Fonction de nettoyage anti-popup
-function cleanAdCode(code: string): string {
-    if (!code) return '';
-    
-    // Supprimer window.open()
-    let cleaned = code.replace(/window\.open\s*\([^)]*\)/gi, 'void(0)');
-    
-    // Supprimer onclick="window.open..."
-    cleaned = cleaned.replace(/onclick\s*=\s*["'][^"']*window\.open[^"']*["']/gi, '');
-    
-    // Supprimer les scripts auto-exécutables suspects (popunder)
-    cleaned = cleaned.replace(/<script[^>]*>(?:(?!<\/script>)[\s\S])*?(?:popunder|popUp|window\.open)[\s\S]*?<\/script>/gi, '');
-    
-    // Supprimer les redirections automatiques
-    cleaned = cleaned.replace(/location\.href\s*=\s*["'][^"']+["']/gi, '');
-    cleaned = cleaned.replace(/document\.location\s*=\s*["'][^"']+["']/gi, '');
-    
-    return cleaned;
-}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -78,19 +58,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const isUrl = code.startsWith('http://') || code.startsWith('https://');
 
         let html = '';
+
         if (isUrl) {
-            // Smartlink URL → bouton natif (jamais de popup)
+            // ✅ Smartlink URL → Bouton natif (ZÉRO popup garanti)
             html = `<a href="${code}" target="_blank" rel="noopener noreferrer" class="pxr-btn"><i class="fas fa-external-link-alt"></i> ${ad.name}</a>`;
         } else {
-            // ✅ Code HTML/JS → NETTOYÉ avant envoi
-            html = cleanAdCode(code);
+            // ❌ Code HTML avec scripts → BLOQUÉ (trop de popups)
+            // On retourne un bouton fallback vers earn.html
+            html = `<a href="/earn.html" class="pxr-btn"><i class="fas fa-coins"></i> Gagner des points</a>`;
         }
 
-        return res.status(200).json({ 
-            html, 
-            name: ad.name, 
-            url: isUrl ? code : '', 
-            points: ad.points || 0 
+        return res.status(200).json({
+            html,
+            name: ad.name,
+            url: isUrl ? code : '',
+            points: ad.points || 0
         });
 
     } catch (e: any) {
