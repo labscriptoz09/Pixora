@@ -1,28 +1,29 @@
-// ads-loader.js v13 — Adapté à ton adminads.html (structure exacte)
+// ads-loader.js v14 — 3 slots (haut/milieu/bas), compact, mobile-first
 (function() {
     'use strict';
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_ads_v13';
+    var CACHE_KEY = 'pxr_ads_v14';
     var CACHE_TTL = 60000;
     var DONE = false;
 
-    // ✅ CSS intégré — compact, élégant, sans largeur excessive
+    // ✅ CSS compact + mobile-first (injecté dynamiquement)
     if (!document.getElementById('pxr-styles')) {
         var style = document.createElement('style');
         style.id = 'pxr-styles';
         style.textContent = `
-            .pxr-slot { width: 100%; margin: 0.8rem 0; display: flex; justify-content: center; }
+            .pxr-slot { width: 100%; margin: 0.8rem 0; }
             .pxr-native {
                 background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(236,72,153,0.06));
                 border: 1px solid rgba(139,92,246,0.15);
                 border-radius: 12px;
-                padding: 1rem;
+                padding: 0.9rem 0.8rem;
                 backdrop-filter: blur(20px);
                 transition: all 0.3s ease;
                 max-width: 400px;
                 width: 100%;
+                margin: 0 auto;
             }
             .pxr-native:hover {
                 border-color: rgba(139,92,246,0.3);
@@ -34,20 +35,20 @@
                 text-transform: uppercase;
                 letter-spacing: 0.12em;
                 font-weight: 700;
-                margin-bottom: 0.6rem;
+                margin-bottom: 0.5rem;
                 text-align: center;
             }
             .pxr-btn {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
-                padding: 0.6rem 1.2rem;
+                padding: 0.6rem 1.1rem;
                 background: linear-gradient(135deg, #8B5CF6, #EC4899);
                 color: white;
                 border-radius: 8px;
                 font-weight: 600;
-                font-size: 0.8rem;
-                text-decoration: none;                transition: all 0.3s ease;
+                font-size: 0.8rem;                text-decoration: none;
+                transition: all 0.3s ease;
                 width: 100%;
                 justify-content: center;
             }
@@ -57,7 +58,7 @@
             }
             .pxr-ph {
                 text-align: center;
-                padding: 1rem;
+                padding: 0.9rem;
                 color: rgba(161,161,170,0.5);
                 font-size: 0.75rem;
                 cursor: pointer;
@@ -80,24 +81,59 @@
         return document.querySelector('.main-content') || document.querySelector('main') || document.body;
     }
 
-    // ✅ UN SEUL SLOT — après le hero, compact
-    function createSingleSlot() {
-        var ex = document.getElementById('pxr-single');
+    // ✅ Créer 3 slots : haut, milieu, bas
+    function createSlots() {
+        var slots = { top: null, middle: null, bottom: null };
+        
+        // Haut : après .hero
+        var hero = getContainer().querySelector('.hero');
+        if (hero && hero.parentNode) {
+            slots.top = createSlot('pxr-top', hero, 'after');
+        } else {
+            slots.top = createSlot('pxr-top', null, 'prepend');
+        }
+
+        // Milieu : après .generator (index) ou .results-grid (galerie) ou .referral-card (earn)
+        var gen = getContainer().querySelector('.generator');
+        var grid = getContainer().querySelector('.results-grid');
+        var ref = getContainer().querySelector('.referral-card');        var target = gen || grid || ref;
+        if (target && target.parentNode) {
+            slots.middle = createSlot('pxr-mid', target, 'after');
+        } else {
+            slots.middle = createSlot('pxr-mid', null, 'prepend');
+        }
+
+        // Bas : avant .site-footer
+        var footer = getContainer().querySelector('.site-footer');
+        if (footer && footer.parentNode) {
+            slots.bottom = createSlot('pxr-btm', footer, 'before');
+        } else {
+            slots.bottom = createSlot('pxr-btm', null, 'append');
+        }
+
+        return slots;
+    }
+
+    function createSlot(id, anchor, where) {
+        var ex = document.getElementById(id);
         if (ex) return ex;
         
-        var slot = document.createElement('div');
-        slot.id = 'pxr-single';
-        slot.className = 'pxr-slot';
+        var s = document.createElement('div');
+        s.id = id;
+        s.className = 'pxr-slot';
         
         var main = getContainer();
-        var hero = main.querySelector('.hero');
-        
-        if (hero && hero.parentNode) {
-            hero.parentNode.insertBefore(slot, hero.nextSibling);
+        if (where === 'after' && anchor && anchor.parentNode) {
+            anchor.parentNode.insertBefore(s, anchor.nextSibling);
+        } else if (where === 'before' && anchor && anchor.parentNode) {
+            anchor.parentNode.insertBefore(s, anchor);
+        } else if (where === 'prepend') {
+            main.prepend(s);
         } else {
-            main.prepend(slot);
-        }        
-        return slot;
+            main.appendChild(s);
+        }
+        
+        return s;
     }
 
     function injectAd(container, ad) {
@@ -109,16 +145,15 @@
             var wrap = document.createElement('div');
             wrap.className = 'pxr-native';
 
-            var label = document.createElement('div');
-            label.className = 'pxr-label';
+            var label = document.createElement('div');            label.className = 'pxr-label';
             label.textContent = '⭐ Sponsorisé ⭐';
             wrap.appendChild(label);
 
             var content = document.createElement('div');
-            content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.6rem;';
+            content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.5rem;';
 
             if (isUrl) {
-                // ✅ Smartlink = URL → bouton natif (jamais bloqué)
+                // URL → bouton natif (jamais bloqué)
                 var btn = document.createElement('a');
                 btn.className = 'pxr-btn';
                 btn.href = code;
@@ -127,7 +162,7 @@
                 btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + name;
                 content.appendChild(btn);
             } else if (code && code.length > 10) {
-                // ✅ HTML/JS → iframe sandboxé
+                // HTML/JS → iframe sandboxé
                 var iframe = document.createElement('iframe');
                 iframe.style.cssText = 'width:100%;border:none;display:block;opacity:0;transition:opacity 0.3s;';
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
@@ -145,7 +180,8 @@
                 };
 
                 setTimeout(function() {
-                    if (resolved) return;                    resolved = true;
+                    if (resolved) return;
+                    resolved = true;
                     if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
                     var fb = document.createElement('a');
                     fb.className = 'pxr-btn';
@@ -157,9 +193,8 @@
 
                 content.appendChild(iframe);
             } else {
-                // ✅ Pas de code → placeholder propre
-                var ph = document.createElement('div');
-                ph.className = 'pxr-ph';
+                // Pas de code → placeholder propre
+                var ph = document.createElement('div');                ph.className = 'pxr-ph';
                 ph.innerHTML = '<i class="fas fa-gift" style="font-size:1.2rem;margin-bottom:0.3rem;display:block"></i>Gagnez des points';
                 ph.onclick = function() { window.location.href = '/earn.html'; };
                 content.appendChild(ph);
@@ -194,7 +229,8 @@
         try {
             if (typeof window.supabase !== 'undefined') {
                 var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                var r = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();                if (r.data && r.data.value) return r.data.value;
+                var r = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();
+                if (r.data && r.data.value) return r.data.value;
             }
         } catch (e) {}
 
@@ -207,19 +243,27 @@
 
         try {
             var page = getPage();
-            var allAds = await loadAds();
-            if (!allAds || !allAds.length) return;
+            var allAds = await loadAds();            if (!allAds || !allAds.length) return;
 
-            // ✅ Prendre la première pub active pour la page courante
-            var targetAd = allAds.find(function(ad) {
+            var slots = createSlots();
+
+            // Filtrer les pubs pour la page courante et actives
+            var pageAds = allAds.filter(function(ad) {
                 return ad.page === page && ad.active === true;
             });
 
-            if (!targetAd) return;
+            // Assigner par position : top / middle / bottom
+            var positions = { top: [], middle: [], bottom: [] };
+            pageAds.forEach(function(ad) {
+                var pos = ad.position || 'top';
+                if (positions[pos]) positions[pos].push(ad);
+            });
 
-            var slot = createSingleSlot();
-            injectAd(slot, targetAd);
-            
+            // Injecter la première pub de chaque position
+            if (slots.top && positions.top[0]) injectAd(slots.top, positions.top[0]);
+            if (slots.middle && positions.middle[0]) injectAd(slots.middle, positions.middle[0]);
+            if (slots.bottom && positions.bottom[0]) injectAd(slots.bottom, positions.bottom[0]);
+
         } catch (e) {
             console.warn('[ADS] Init error:', e);
         }
