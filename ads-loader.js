@@ -1,24 +1,19 @@
-// ads-loader.js v12 — UN slot, compact, raffiné
+// ads-loader.js v13 — Adapté à ton adminads.html (structure exacte)
 (function() {
     'use strict';
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pxr_ads_v12';
+    var CACHE_KEY = 'pxr_ads_v13';
     var CACHE_TTL = 60000;
     var DONE = false;
 
-    // CSS intégré - Compact et élégant
+    // ✅ CSS intégré — compact, élégant, sans largeur excessive
     if (!document.getElementById('pxr-styles')) {
         var style = document.createElement('style');
         style.id = 'pxr-styles';
         style.textContent = `
-            .pxr-slot { 
-                width: 100%; 
-                margin: 0.8rem 0; 
-                display: flex;
-                justify-content: center;
-            }
+            .pxr-slot { width: 100%; margin: 0.8rem 0; display: flex; justify-content: center; }
             .pxr-native {
                 background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(236,72,153,0.06));
                 border: 1px solid rgba(139,92,246,0.15);
@@ -47,12 +42,12 @@
                 align-items: center;
                 gap: 0.5rem;
                 padding: 0.6rem 1.2rem;
-                background: linear-gradient(135deg, #8B5CF6, #EC4899);                color: white;
+                background: linear-gradient(135deg, #8B5CF6, #EC4899);
+                color: white;
                 border-radius: 8px;
                 font-weight: 600;
                 font-size: 0.8rem;
-                text-decoration: none;
-                transition: all 0.3s ease;
+                text-decoration: none;                transition: all 0.3s ease;
                 width: 100%;
                 justify-content: center;
             }
@@ -85,7 +80,7 @@
         return document.querySelector('.main-content') || document.querySelector('main') || document.body;
     }
 
-    // ✅ UN SEUL SLOT - Juste après le hero
+    // ✅ UN SEUL SLOT — après le hero, compact
     function createSingleSlot() {
         var ex = document.getElementById('pxr-single');
         if (ex) return ex;
@@ -96,12 +91,12 @@
         
         var main = getContainer();
         var hero = main.querySelector('.hero');
-                if (hero && hero.parentNode) {
+        
+        if (hero && hero.parentNode) {
             hero.parentNode.insertBefore(slot, hero.nextSibling);
         } else {
             main.prepend(slot);
-        }
-        
+        }        
         return slot;
     }
 
@@ -109,7 +104,7 @@
         try {
             var code = (ad.code || '').trim();
             var name = ad.name || 'Offre Partenaire';
-            var linkUrl = ad.link || '';
+            var isUrl = code.indexOf('http://') === 0 || code.indexOf('https://') === 0;
 
             var wrap = document.createElement('div');
             wrap.className = 'pxr-native';
@@ -119,17 +114,20 @@
             label.textContent = '⭐ Sponsorisé ⭐';
             wrap.appendChild(label);
 
-            var isUrl = code.indexOf('http://') === 0 || code.indexOf('https://') === 0;
+            var content = document.createElement('div');
+            content.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.6rem;';
 
             if (isUrl) {
+                // ✅ Smartlink = URL → bouton natif (jamais bloqué)
                 var btn = document.createElement('a');
                 btn.className = 'pxr-btn';
                 btn.href = code;
                 btn.target = '_blank';
                 btn.rel = 'noopener noreferrer';
                 btn.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + name;
-                wrap.appendChild(btn);
+                content.appendChild(btn);
             } else if (code && code.length > 10) {
+                // ✅ HTML/JS → iframe sandboxé
                 var iframe = document.createElement('iframe');
                 iframe.style.cssText = 'width:100%;border:none;display:block;opacity:0;transition:opacity 0.3s;';
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
@@ -145,28 +143,29 @@
                     } catch (e) { iframe.style.height = '150px'; }
                     iframe.style.opacity = '1';
                 };
+
                 setTimeout(function() {
-                    if (resolved) return;
-                    resolved = true;
+                    if (resolved) return;                    resolved = true;
                     if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-                    var fbUrl = linkUrl.indexOf('http') === 0 ? linkUrl : '/earn.html';
                     var fb = document.createElement('a');
                     fb.className = 'pxr-btn';
-                    fb.href = fbUrl;
+                    fb.href = '/earn.html';
                     fb.target = '_blank';
                     fb.innerHTML = '<i class="fas fa-star"></i> ' + name;
-                    wrap.appendChild(fb);
+                    content.appendChild(fb);
                 }, 1500);
 
-                wrap.appendChild(iframe);
+                content.appendChild(iframe);
             } else {
+                // ✅ Pas de code → placeholder propre
                 var ph = document.createElement('div');
                 ph.className = 'pxr-ph';
                 ph.innerHTML = '<i class="fas fa-gift" style="font-size:1.2rem;margin-bottom:0.3rem;display:block"></i>Gagnez des points';
                 ph.onclick = function() { window.location.href = '/earn.html'; };
-                wrap.appendChild(ph);
+                content.appendChild(ph);
             }
 
+            wrap.appendChild(content);
             container.appendChild(wrap);
         } catch (e) {
             container.innerHTML = '<div class="pxr-ph"><i class="fas fa-ad"></i><div>Publicité</div></div>';
@@ -194,8 +193,8 @@
 
         try {
             if (typeof window.supabase !== 'undefined') {
-                var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);                var r = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();
-                if (r.data && r.data.value) return r.data.value;
+                var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                var r = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();                if (r.data && r.data.value) return r.data.value;
             }
         } catch (e) {}
 
@@ -211,20 +210,19 @@
             var allAds = await loadAds();
             if (!allAds || !allAds.length) return;
 
-            var pageAds = allAds.filter(function(ad) {
-                return ad.page === page && ad.active !== false;
+            // ✅ Prendre la première pub active pour la page courante
+            var targetAd = allAds.find(function(ad) {
+                return ad.page === page && ad.active === true;
             });
 
-            if (!pageAds.length) return;
+            if (!targetAd) return;
 
-            // ✅ UN SEUL SLOT
             var slot = createSingleSlot();
+            injectAd(slot, targetAd);
             
-            // Prendre la première pub active
-            var firstAd = pageAds[0];
-            injectAd(slot, firstAd);
-            
-        } catch (e) {}
+        } catch (e) {
+            console.warn('[ADS] Init error:', e);
+        }
     }
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
