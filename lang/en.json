@@ -1,0 +1,100 @@
+{
+    "meta": {
+        "title": "Pixora — AI Studio",
+        "description": "Generate professional AI images. Free. No limits. No credit card."
+    },
+    "header": {
+        "login": "Login",
+        "points": "Points"
+    },
+    "nav": {
+        "studio": "Studio",
+        "gallery": "Gallery",
+        "earn": "Earn",
+        "profile": "Profile"
+    },
+    "hero": {
+        "title": "Generate the impossible",
+        "subtitle": "Professional AI images. Free. No limits."
+    },
+    "generator": {
+        "placeholder": "Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic lighting 8k",
+        "image": "Image",
+        "video": "Video",
+        "video_soon": "Coming Soon",
+        "generate": "Generate",
+        "discount_active": "-50% ACTIVE",
+        "expires_in": "Expires in",
+        "cost_pts": "pts"
+    },
+    "results": {
+        "title": "Your Creations",
+        "auto_delete": "Auto-delete after 1h",
+        "download": "Download",
+        "generating": "Generating...",
+        "generated_in": "Generated in",
+        "failed": "Generation failed. Try again.",
+        "error": "Generation error. Try again."
+    },
+    "stats": {
+        "points": "Points",
+        "streak": "Streak",
+        "creations": "Creations",
+        "total_earned": "Total Earned"
+    },
+    "auth": {
+        "login_title": "Login",
+        "register_title": "Sign Up",
+        "email": "Email",
+        "password": "Password",
+        "password_min": "Min. 8 characters",
+        "username": "Username",
+        "login_btn": "Log In",
+        "register_btn": "Create Account",
+        "or_continue": "or continue with",
+        "google": "Continue with Google",
+        "github": "Continue with GitHub",
+        "github_soon": "GitHub coming soon...",
+        "footer": "By continuing, you accept our",
+        "conditions": "terms",
+        "welcome": "Welcome!",
+        "connected": "Connected!",
+        "account_created": "Account created! +15 pts bonus",
+        "wrong_credentials": "Wrong credentials",
+        "email_exists": "This email is already registered",
+        "password_short": "Password too short",
+        "signup_error": "Registration error",
+        "google_error": "Google Login error",
+        "logout": "Logged out",
+        "connect_to_generate": "Log in to generate and earn points"
+    },
+    "menu": {
+        "my_profile": "My Profile",
+        "earn_points": "Earn Points",
+        "my_purchases": "My Purchases",
+        "logout": "Log Out"
+    },
+    "notifications": {
+        "enter_prompt": "Please enter a prompt",
+        "insufficient_points": "Not enough points! Visit the Earn page.",
+        "generating": "🎨 Generating...",
+        "downloaded": "📥 Downloaded!",
+        "no_image": "❌ No image found"
+    },
+    "footer": {
+        "earn_points": "Earn Points",
+        "gallery": "Gallery",
+        "shop": "Shop",
+        "profile": "Profile",
+        "privacy": "Privacy",
+        "copyright": "© 2026 Pixora. All rights reserved."
+    },
+    "language": {
+        "label": "Language",
+        "fr": "Français",
+        "en": "English",
+        "es": "Español",
+        "pt": "Português",
+        "ar": "العربية"
+    }
+}
