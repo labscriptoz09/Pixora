@@ -1,4 +1,4 @@
-// /api/serve-ad.ts — RESTAURÉ : Renvoie le code HTML/script BRUT
+// /api/serve-ad.ts — FIX : Fallback sur position
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
@@ -43,27 +43,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             active: boolean;
         }>;
 
-        const matchingAds = allAds.filter(ad =>
+        // ✅ ÉTAPE 1 : Chercher avec position exacte
+        let matchingAds = allAds.filter(ad =>
             ad.page === page &&
             ad.position === position &&
             ad.active === true &&
             ad.code && ad.code.trim().length > 0
         );
 
+        // ✅ ÉTAPE 2 : FALLBACK — si aucune pub avec cette position, prendre TOUTES les pubs actives de la page
+        if (matchingAds.length === 0) {
+            console.log('[SERVE-AD] No ads for position=' + position + ' on page=' + page + ', using fallback (any position)');
+            matchingAds = allAds.filter(ad =>
+                ad.page === page &&
+                ad.active === true &&
+                ad.code && ad.code.trim().length > 0
+            );
+        }
+
         if (matchingAds.length === 0) {
             return res.status(200).json({ html: '', name: '', url: '' });
         }
 
-        const ad = matchingAds[0];
+        // Sélectionner une pub (rotation aléatoire pour varier les affichages)
+        const ad = matchingAds[Math.floor(Math.random() * matchingAds.length)];
         const code = ad.code.trim();
 
-        // ✅ RENVOIE LE CODE TEL QUEL (script HTML ou URL)
-        // Plus aucune transformation en bouton
         return res.status(200).json({
             html: code,
             name: ad.name || '',
             url: code.startsWith('http') ? code : '',
-            points: ad.points || 0
+            points: ad.points || 0,
+            matched_position: ad.position,
+            requested_position: position
         });
 
     } catch (e: any) {
