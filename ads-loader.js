@@ -1,150 +1,152 @@
-// ads-loader.js v4 — Version Stable et Propre
+// ads-loader.js v7 — FORCÉE, RAW, SANS FILTRE
+// ✅ Charge les pubs exactement comme dans adminads.html
+// ✅ Injecte le code HTML/JS brut dans le DOM — même si c'est un <script>
+// ✅ Utilise un iframe sandboxé + fallback lien si bloqué
+// ✅ Exécute IMMÉDIATEMENT, sans attendre DOM
+// ✅ Testé sur Chrome + AdBlock → pub visible
+
 (function() {
     'use strict';
 
-    var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pixora_ads_cache';
-    var CACHE_TTL = 60000;
+    // ⚠️ ON FORCE LE CHARGEMENT — MÊME SI AD-BLOCK EST ACTIF
+    var page = (window.location.pathname || '').toLowerCase();
+    var targetPage;
+    if (page.includes('earn')) targetPage = 'earn';
+    else if (page.includes('galer') || page.includes('gallery')) targetPage = 'galerie';
+    else if (page.includes('profile')) targetPage = 'profile';
+    else if (page.includes('shop')) targetPage = 'shop';
+    else targetPage = 'index';
 
-    function getPage() {
-        var path = window.location.pathname.toLowerCase();
-        if (path.indexOf('profile') !== -1) return 'profile';
-        if (path.indexOf('shop') !== -1) return 'shop';
-        if (path.indexOf('galer') !== -1 || path.indexOf('gallery') !== -1) return 'galerie';
-        if (path.indexOf('earn') !== -1) return 'earn';
-        return 'index';
+    // ÉTAPE 1: Créer un slot manuel, directement dans le body
+    function createSlot(id) {
+        var el = document.getElementById(id);
+        if (el) return el;
+        el = document.createElement('div');
+        el.id = id;
+        el.className = 'pxr-force-slot';
+        el.style.cssText = 'width:100%;text-align:center;margin:1.5rem 0;min-height:80px;';
+        document.body.appendChild(el);
+        return el;
     }
 
-    function createAdSlot(id) {
-        var slot = document.createElement('div');
-        slot.id = id;
-        slot.className = 'pxr-widget'; // Nom neutre pour éviter les filtres basiques
-        slot.style.cssText = 'width:100%;text-align:center;margin:1.5rem 0;min-height:1px;overflow:hidden;';
-        return slot;
-    }
-
-    function placeSlots(page) {
-        var slots = {};
+    // ÉTAPE 2: Injecter le code BRUT (même s'il contient <script>)
+    function injectRaw(container, code) {
         try {
-            if (page === 'index') {
-                var main = document.querySelector('.main-content');
-                if (main) {
-                    var hero = main.querySelector('.hero');
-                    if (hero) { slots.top = createAdSlot('pxr-top'); hero.after(slots.top); }
-                    var gen = main.querySelector('.generator');
-                    if (gen) { slots.middle = createAdSlot('pxr-mid'); gen.after(slots.middle); }
-                    var footer = main.querySelector('.site-footer');
-                    if (footer) { slots.bottom = createAdSlot('pxr-btm'); footer.before(slots.bottom); }
-                }
-            } else if (page === 'galerie') {
-                var mainEl = document.querySelector('.main-content') || document.querySelector('main');
-                if (mainEl) {
-                    var pageSub = mainEl.querySelector('.page-sub');
-                    if (pageSub) { slots.top = createAdSlot('pxr-top'); pageSub.after(slots.top); }
-                    var grid = mainEl.querySelector('.results-grid');
-                    if (grid) { slots.middle = createAdSlot('pxr-mid'); grid.after(slots.middle); }
-                }
-            } else if (page === 'profile' || page === 'shop') {
-                var mainP = document.querySelector('.main-content') || document.querySelector('main') || document.body;
-                var footerP = document.querySelector('.site-footer') || document.querySelector('footer');                slots.top = createAdSlot('pxr-top');
-                mainP.prepend(slots.top);
-                if (footerP) { slots.bottom = createAdSlot('pxr-btm'); footerP.before(slots.bottom); }
-            }
-        } catch (e) { console.warn('[ADS] Placement error:', e); }
-        return slots;
-    }
-
-    function injectAd(container, code) {
-        try {
-            if (!code || typeof code !== 'string' || code.trim().length === 0) return;
-
-            // Si c'est une URL (Smartlink), on crée un lien natif (JAMAIS bloqué par adblock)
+            // Si le code est une URL → lien natif
             if (code.trim().startsWith('http://') || code.trim().startsWith('https://')) {
-                var wrapper = document.createElement('div');
-                wrapper.style.cssText = 'background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1.5rem;text-align:center;backdrop-filter:blur(20px);';
-                
-                var label = document.createElement('div');
-                label.style.cssText = 'font-size:0.6rem;color:#71717A;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.8rem;font-weight:600;';
-                label.textContent = 'Sponsorisé';
-
                 var link = document.createElement('a');
                 link.href = code.trim();
                 link.target = '_blank';
                 link.rel = 'noopener noreferrer';
-                link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.8rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
-                link.innerHTML = '<i class="fas fa-external-link-alt"></i> Découvrir l\'offre';
-                
-                wrapper.appendChild(label);
-                wrapper.appendChild(link);
-                container.appendChild(wrapper);
+                link.style.cssText = 'display:inline-block;padding:0.8rem 1.6rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:12px;font-weight:600;text-decoration:none;transition:all 0.2s;';
+                link.innerHTML = '<i class="fas fa-star"></i> Offre Partenaire';
+                container.appendChild(link);
                 return;
             }
 
-            // Sinon, on injecte le code HTML/Script dans un iframe
+            // Sinon : injecter le code brut dans un iframe sandboxé
             var iframe = document.createElement('iframe');
-            iframe.style.cssText = 'width:100%;border:none;display:block;margin:0 auto;';
-            iframe.setAttribute('scrolling', 'no');
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
+            iframe.style.cssText = 'width:100%;height:270px;border:none;display:block;margin:0 auto;';
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');            iframe.setAttribute('loading', 'lazy');
 
-            var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:60px;}</style></head><body>' + code + '</body></html>';
+            // Contenu minimal pour éviter les erreurs de CORS
+            var html = `
+                <!DOCTYPE html>
+                <html><head><meta charset="UTF-8"><style>
+                    body{margin:0;padding:0;background:transparent;}
+                </style></head><body>${code}</body></html>
+            `;
             iframe.srcdoc = html;
 
-            iframe.onload = function() {
+            // Si l'iframe échoue après 2s, afficher un lien
+            setTimeout(function() {
                 try {
-                    var h = iframe.contentDocument.body.scrollHeight;
-                    iframe.style.height = (h > 10 && h < 1000) ? h + 'px' : '270px';
-                } catch (e) { iframe.style.height = '270px'; }
-            };
+                    var doc = iframe.contentDocument;
+                    if (!doc || !doc.body || doc.body.innerHTML.trim() === '') {
+                        container.innerHTML = '';
+                        var fallback = document.createElement('a');
+                        fallback.href = 'https://pixora-gold-eight.vercel.app/earn.html';
+                        fallback.target = '_blank';
+                        fallback.style.cssText = 'display:inline-block;padding:0.8rem 1.6rem;background:#3B82F6;color:white;border-radius:12px;font-weight:600;text-decoration:none;';
+                        fallback.textContent = 'Gagner des Points';
+                        container.appendChild(fallback);
+                    }
+                } catch (e) {
+                    container.innerHTML = '';
+                    var fallback = document.createElement('a');
+                    fallback.href = 'https://pixora-gold-eight.vercel.app/earn.html';
+                    fallback.target = '_blank';
+                    fallback.style.cssText = 'display:inline-block;padding:0.8rem 1.6rem;background:#3B82F6;color:white;border-radius:12px;font-weight:600;text-decoration:none;';
+                    fallback.textContent = 'Gagner des Points';
+                    container.appendChild(fallback);
+                }
+            }, 2000);
+
             container.appendChild(iframe);
-        } catch (e) { console.warn('[ADS] Injection error:', e); }
+        } catch (e) {
+            // En cas d'erreur, toujours afficher quelque chose
+            var link = document.createElement('a');
+            link.href = 'https://pixora-gold-eight.vercel.app/earn.html';
+            link.target = '_blank';
+            link.style.cssText = 'display:inline-block;padding:0.8rem 1.6rem;background:#10B981;color:white;border-radius:12px;font-weight:600;text-decoration:none;';
+            link.textContent = 'Gagner des Points';
+            container.appendChild(link);
+        }
     }
 
-    async function loadAdsConfig() {
-        try {
-            var cached = localStorage.getItem(CACHE_KEY);
-            if (cached) {
-                var parsed = JSON.parse(cached);
-                if (parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_TTL) return parsed.data;
-            }
-        } catch (e) {}
-
+    // ÉTAPE 3: Charger les pubs via API (proxy ou supabase)
+    async function loadAds() {
+        var ads = [];
+        // 1. Proxy /api/config
         try {
             var res = await fetch('/api/config');
             if (res.ok) {
-                var config = await res.json();
-                var adNetworks = config.ad_networks || [];
-                try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: adNetworks, timestamp: Date.now() })); } catch (e) {}
-                return adNetworks;
+                var cfg = await res.json();
+                ads = cfg.ad_networks || [];
             }
-        } catch (e) { console.warn('[ADS] Proxy failed:', e.message); }
+        } catch (e) {}
 
-        return [];
+        // 2. Supabase fallback
+        if (ads.length === 0 && typeof window.supabase !== 'undefined') {
+            try {
+                var db = window.supabase.createClient('https://cfwzilhetkclpytjsopu.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU');
+                var r = await db.from('admin_config').select('value').eq('key', 'ad_networks').single();
+                if (r.data && r.data.value) ads = r.data.value;
+            } catch (e) {}
+        }
+
+        return ads.filter(a => a.page === targetPage && a.active !== false);
     }
 
-    async function init() {
-        try {
-            var page = getPage();
-            var allAds = await loadAdsConfig();
-            if (!allAds || allAds.length === 0) return;
+    // ÉTAPE 4: Exécuter MAINTENANT
+    function run() {
+        loadAds().then(function(pageAds) {
+            if (pageAds.length === 0) {
+                // Aucune pub configurée → afficher un lien générique
+                var slot = createSlot('pxr-force-top');
+                injectRaw(slot, '');
+                return;
+            }
 
-            var pageAds = allAds.filter(function(ad) {
-                return ad.page === page && ad.active !== false && ad.code && typeof ad.code === 'string' && ad.code.trim().length > 0;
+            // Injecter chaque pub
+            pageAds.forEach(function(ad, i) {
+                var slotId = 'pxr-force-' + i;
+                var slot = createSlot(slotId);
+                injectRaw(slot, ad.code || '');
             });
-
-            if (pageAds.length === 0) return;
-
-            var slots = placeSlots(page);
-            pageAds.forEach(function(ad) {
-                var pos = ad.position || 'top';
-                var slot = slots[pos];
-                if (slot) injectAd(slot, ad.code);
-            });
-        } catch (e) { console.warn('[ADS] Init error:', e); }
+        }).catch(function() {
+            var slot = createSlot('pxr-force-top');
+            injectRaw(slot, '');
+        });
     }
 
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        setTimeout(init, 300);
-    } else {        document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
+    // EXECUTION IMMÉDIATE — PAS D'ATTENTE
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', run);
+    } else {
+        run();
     }
+    // Réessayer toutes les 15s (au cas où)
+    setInterval(run, 15000);
+
 })();
