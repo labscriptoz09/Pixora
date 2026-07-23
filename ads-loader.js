@@ -1,10 +1,4 @@
-// ads-loader.js v5 — Anti-Adblock + Native Format + Fallback Link
-// ✅ Classes renommées (indétectables par adblock)
-// ✅ Détection douce adblock (message discret, pas de mur)
-// ✅ Format natif intégré (ressemble au contenu du site)
-// ✅ Fallback lien direct si iframe bloqué (jamais bloqué)
-// 📌 Compatible : index, earn, gallery, profile, shop
-
+// ads-loader.js v5.1 — FIX CRITIQUE : Pubs toujours visibles
 (function() {
     'use strict';
 
@@ -13,9 +7,6 @@
     var CACHE_KEY = 'pxr_cfg_cache';
     var CACHE_TTL = 60000;
 
-    // =============================================
-    // DÉTECTION PAGE
-    // =============================================
     function getPage() {
         var path = window.location.pathname.toLowerCase();
         if (path.indexOf('profile') !== -1) return 'profile';
@@ -25,11 +16,6 @@
         return 'index';
     }
 
-    // =============================================
-    // ✅ CLASSES RENOMMÉES (anti-adblock)
-    // Ancien: pixora-ad-slot → Nouveau: pxr-widget
-    // Aucun mot-clé "ad", "banner", "sponsor" dans les noms
-    // =============================================
     function createWidgetSlot(id) {
         var slot = document.createElement('div');
         slot.id = id;
@@ -38,16 +24,14 @@
         return slot;
     }
 
-    // =============================================
-    // PLACEMENT DES SLOTS (inchangé, noms mis à jour)
-    // =============================================
     function placeSlots(page) {
         var slots = {};
         try {
             if (page === 'index') {
                 var main = document.querySelector('.main-content');
                 if (main) {
-                    var hero = main.querySelector('.hero');                    if (hero) { slots.top = createWidgetSlot('pxr-w-top'); hero.after(slots.top); }
+                    var hero = main.querySelector('.hero');
+                    if (hero) { slots.top = createWidgetSlot('pxr-w-top'); hero.after(slots.top); }
                     var gen = main.querySelector('.generator');
                     if (gen) { slots.middle = createWidgetSlot('pxr-w-mid'); gen.after(slots.middle); }
                     var footer = main.querySelector('.site-footer');
@@ -63,8 +47,7 @@
                     var footerEl = mainEl.querySelector('.site-footer');
                     if (footerEl) { slots.bottom = createWidgetSlot('pxr-w-btm'); footerEl.before(slots.bottom); }
                 }
-            } else if (page === 'profile') {
-                var mainP = document.querySelector('.main-content') || document.querySelector('main') || document.body;
+            } else if (page === 'profile') {                var mainP = document.querySelector('.main-content') || document.querySelector('main') || document.body;
                 var headerP = document.querySelector('.site-header') || document.querySelector('header');
                 var footerP = document.querySelector('.site-footer') || document.querySelector('footer');
                 slots.top = createWidgetSlot('pxr-w-top');
@@ -86,17 +69,14 @@
         return slots;
     }
 
-    // =============================================
-    // ✅ FORMAT NATIF INTÉGRÉ
-    // La pub ressemble à une carte du site (pas une bannière externe)
-    // =============================================
     function createNativeWrapper(ad) {
         var wrapper = document.createElement('div');
         wrapper.className = 'pxr-native';
-        wrapper.style.cssText = 'background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1rem;text-align:center;backdrop-filter:blur(20px);transition:border-color 0.3s;';
+        wrapper.style.cssText = 'background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1rem;text-align:center;backdrop-filter:blur(20px);transition:border-color 0.3s;min-height:80px;';
 
         var label = document.createElement('div');
-        label.style.cssText = 'font-size:0.6rem;color:#71717A;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;font-weight:600;';        label.textContent = 'Sponsorisé';
+        label.style.cssText = 'font-size:0.6rem;color:#71717A;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;font-weight:600;';
+        label.textContent = 'Sponsorisé';
 
         var content = document.createElement('div');
         content.className = 'pxr-native-content';
@@ -111,24 +91,22 @@
         return { wrapper: wrapper, content: content };
     }
 
-    // =============================================
-    // ✅ INJECTION IFRAME + FALLBACK LIEN DIRECT
-    // Si l'iframe est bloqué par adblock → affiche un lien HTML simple
-    // Les liens HTML simples ne sont JAMAIS bloqués par les adblockers
-    // =============================================
+    // ✅ FIX CRITIQUE : Toujours afficher un lien cliquable
     function injectAd(container, ad) {
         try {
-            if (!ad.code || typeof ad.code !== 'string' || ad.code.trim().length === 0) return;
+            if (!ad.code || typeof ad.code !== 'string' || ad.code.trim().length === 0) {
+                // ✅ Si pas de code → afficher un lien générique
+                showGenericLink(container, ad);                return;
+            }
 
             var cleanCode = ad.code.trim();
             var isUrl = cleanCode.startsWith('http://') || cleanCode.startsWith('https://');
 
-            // Créer le wrapper natif
             var native = createNativeWrapper(ad);
             container.appendChild(native.wrapper);
 
             if (isUrl) {
-                // ✅ SMARTLINK / URL DIRECTE → Lien HTML natif (JAMAIS bloqué)
+                // ✅ URL DIRECTE → Lien HTML (jamais bloqué)
                 var link = document.createElement('a');
                 link.href = cleanCode;
                 link.target = '_blank';
@@ -139,13 +117,14 @@
                 link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
                 native.content.appendChild(link);
             } else {
-                // ✅ CODE HTML/BANNER → Iframe + détection blocage + fallback
+                // ✅ CODE HTML/SCRIPT → Iframe + fallback garanti
                 var iframe = document.createElement('iframe');
                 iframe.style.cssText = 'width:100%;border:none;display:block;margin:0 auto;';
                 iframe.setAttribute('scrolling', 'no');
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
 
-                var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:60px;}</style></head><body>' + cleanCode + '</body></html>';                iframe.srcdoc = html;
+                var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:60px;}</style></head><body>' + cleanCode + '</body></html>';
+                iframe.srcdoc = html;
 
                 var fallbackShown = false;
 
@@ -154,39 +133,36 @@
                         var h = iframe.contentDocument.body.scrollHeight;
                         if (h > 10 && h < 1000) { iframe.style.height = h + 'px'; }
                         else { iframe.style.height = '270px'; }
-                    } catch (e) {
-                        iframe.style.height = '270px';
-                    }
+                    } catch (e) { iframe.style.height = '270px'; }
                 };
 
-                // ✅ DÉTECTION BLOCAGE : si l'iframe ne charge pas après 3s → fallback
+                // ✅ FALLBACK APRÈS 2s SI IFRAME VIDE
                 setTimeout(function() {
                     if (fallbackShown) return;
                     try {
                         var doc = iframe.contentDocument;
-                        if (!doc || !doc.body || doc.body.innerHTML.trim().length === 0) {
+                        if (!doc || !doc.body || doc.body.innerHTML.trim().length === 0 || doc.body.innerHTML.indexOf('<script') === -1) {
                             showFallbackLink(native.content, ad);
                             fallbackShown = true;
                         }
-                    } catch (e) {
-                        // Cross-origin ou bloqué → fallback
-                        showFallbackLink(native.content, ad);
+                    } catch (e) {                        showFallbackLink(native.content, ad);
                         fallbackShown = true;
                     }
-                }, 3000);
+                }, 2000);
 
                 native.content.appendChild(iframe);
             }
         } catch (e) { console.warn('[PX] Injection error:', e); }
     }
 
-    // =============================================
     // ✅ FALLBACK : Lien HTML quand l'iframe est bloqué
-    // =============================================
     function showFallbackLink(container, ad) {
         container.innerHTML = '';
+        var linkUrl = ad.link || ad.code || '#';
+        if (linkUrl.indexOf('http') === -1) linkUrl = '#';
+
         var link = document.createElement('a');
-        link.href = (ad.link || ad.code || '#').trim();
+        link.href = linkUrl;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
@@ -195,12 +171,20 @@
         link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
         container.appendChild(link);
     }
-    // =============================================
-    // ✅ DÉTECTION DOUCE ADBLOCK
-    // Message discret, pas de mur, pas de blocage du site
-    // =============================================
+
+    // ✅ LIEN GÉNÉRIQUE SI AUCUN CODE
+    function showGenericLink(container, ad) {
+        var link = document.createElement('a');
+        link.href = 'https://pixora-gold-eight.vercel.app/earn.html';
+        link.target = '_blank';
+        link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
+        link.innerHTML = '<i class="fas fa-coins"></i> Gagner des Points';
+        link.onmouseenter = function() { link.style.transform = 'translateY(-2px)'; link.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
+        link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
+        container.appendChild(link);
+    }
+
     function detectAdblock() {
-        // Méthode 1 : Tester si un élément avec classe "ad" est caché
         var testEl = document.createElement('div');
         testEl.className = 'adsbygoogle';
         testEl.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
@@ -210,8 +194,7 @@
         setTimeout(function() {
             var blocked = false;
             try {
-                if (testEl.offsetHeight === 0 || testEl.offsetWidth === 0 ||
-                    getComputedStyle(testEl).display === 'none' ||
+                if (testEl.offsetHeight === 0 || testEl.offsetWidth === 0 ||                    getComputedStyle(testEl).display === 'none' ||
                     getComputedStyle(testEl).visibility === 'hidden') {
                     blocked = true;
                 }
@@ -226,7 +209,6 @@
     }
 
     function showSoftAdblockMessage() {
-        // Ne montrer qu'une fois par session
         if (sessionStorage.getItem('pxr_ab_msg')) return;
         sessionStorage.setItem('pxr_ab_msg', '1');
 
@@ -236,19 +218,18 @@
 
         msg.innerHTML = '<i class="fas fa-heart" style="color:#EC4899;font-size:1.2rem;flex-shrink:0"></i>' +
             '<div style="flex:1"><div style="font-size:0.85rem;font-weight:600;color:#FAFAFA;margin-bottom:0.2rem">Pixora est 100% gratuit</div>' +
-            '<div style="font-size:0.75rem;color:#A1A1AA">Désactivez votre bloqueur de pubs pour nous soutenir et accéder à toutes les fonctionnalités.</div></div>' +
+            '<div style="font-size:0.75rem;color:#A1A1AA">Désactivez votre bloqueur de pubs pour nous soutenir.</div></div>' +
             '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:#71717A;cursor:pointer;font-size:1rem;padding:0.3rem;flex-shrink:0"><i class="fas fa-times"></i></button>';
 
-        // Ajouter l'animation CSS si pas déjà présente
         if (!document.getElementById('pxr-styles')) {
             var style = document.createElement('style');
             style.id = 'pxr-styles';
-            style.textContent = '@keyframes pxrFadeUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';            document.head.appendChild(style);
+            style.textContent = '@keyframes pxrFadeUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+            document.head.appendChild(style);
         }
 
         document.body.appendChild(msg);
 
-        // Auto-dismiss après 15 secondes
         setTimeout(function() {
             if (msg.parentNode) {
                 msg.style.opacity = '0';
@@ -258,15 +239,11 @@
         }, 15000);
     }
 
-    // =============================================
-    // CHARGEMENT CONFIG (proxy + cache)
-    // =============================================
     async function loadAdsConfig() {
         try {
             var cached = localStorage.getItem(CACHE_KEY);
             if (cached) {
-                var parsed = JSON.parse(cached);
-                if (parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_TTL) {
+                var parsed = JSON.parse(cached);                if (parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_TTL) {
                     return parsed.data;
                 }
             }
@@ -292,39 +269,38 @@
 
         return [];
     }
-    // =============================================
-    // INIT PRINCIPAL
-    // =============================================
+
     async function init() {
         try {
             var page = getPage();
             var allAds = await loadAdsConfig();
 
-            if (!allAds || allAds.length === 0) return;
+            if (!allAds || allAds.length === 0) {
+                console.warn('[PX] No ads configured');
+                return;
+            }
 
             var pageAds = allAds.filter(function(ad) {
-                return ad.page === page && ad.active !== false && ad.code && typeof ad.code === 'string' && ad.code.trim().length > 0;
+                return ad.page === page && ad.active !== false;
             });
 
-            if (pageAds.length === 0) return;
+            if (pageAds.length === 0) {
+                console.warn('[PX] No ads for page:', page);
+                return;
+            }
 
             var slots = placeSlots(page);
 
             pageAds.forEach(function(ad) {
-                var pos = ad.position || 'top';
-                var slot = slots[pos];
+                var pos = ad.position || 'top';                var slot = slots[pos];
                 if (slot) { injectAd(slot, ad); }
             });
 
-            // ✅ Lancer la détection douce adblock
             detectAdblock();
 
         } catch (e) { console.warn('[PX] Init error:', e); }
     }
 
-    // =============================================
-    // DÉMARRAGE INTELLIGENT
-    // =============================================
     function startWithRetry(maxRetries) {
         var attempts = 0;
         function tryInit() {
@@ -341,5 +317,6 @@
             document.addEventListener('DOMContentLoaded', function() { setTimeout(tryInit, 300); });
         }
     }
+
     startWithRetry(5);
 })();
