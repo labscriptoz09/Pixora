@@ -1,8 +1,8 @@
-// ads-loader.js v4 — Proxy /api/config + Cache + Retry
-// ✅ Lit les pubs via /api/config (bypass RLS)
-// ✅ Cache localStorage 60s pour performance
-// ✅ Fallback Supabase direct si proxy échoue
-// ✅ Placement intelligent par page
+// ads-loader.js v5 — Anti-Adblock + Native Format + Fallback Link
+// ✅ Classes renommées (indétectables par adblock)
+// ✅ Détection douce adblock (message discret, pas de mur)
+// ✅ Format natif intégré (ressemble au contenu du site)
+// ✅ Fallback lien direct si iframe bloqué (jamais bloqué)
 // 📌 Compatible : index, earn, gallery, profile, shop
 
 (function() {
@@ -10,8 +10,8 @@
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    var CACHE_KEY = 'pixora_ads_cache';
-    var CACHE_TTL = 60000; // 60 secondes
+    var CACHE_KEY = 'pxr_cfg_cache';
+    var CACHE_TTL = 60000;
 
     // =============================================
     // DÉTECTION PAGE
@@ -26,282 +26,320 @@
     }
 
     // =============================================
-    // CRÉATION SLOTS
+    // ✅ CLASSES RENOMMÉES (anti-adblock)
+    // Ancien: pixora-ad-slot → Nouveau: pxr-widget
+    // Aucun mot-clé "ad", "banner", "sponsor" dans les noms
     // =============================================
-    function createAdSlot(id) {
+    function createWidgetSlot(id) {
         var slot = document.createElement('div');
         slot.id = id;
-        slot.className = 'pixora-ad-slot';
+        slot.className = 'pxr-widget';
         slot.style.cssText = 'width:100%;text-align:center;margin:1.5rem 0;min-height:1px;overflow:hidden;';
         return slot;
     }
 
+    // =============================================
+    // PLACEMENT DES SLOTS (inchangé, noms mis à jour)
+    // =============================================
     function placeSlots(page) {
         var slots = {};
-
         try {
-            // === INDEX ===
             if (page === 'index') {
                 var main = document.querySelector('.main-content');
                 if (main) {
-                    var hero = main.querySelector('.hero');
-                    if (hero) {
-                        slots.top = createAdSlot('ad-index-top');
-                        hero.after(slots.top);                    }
+                    var hero = main.querySelector('.hero');                    if (hero) { slots.top = createWidgetSlot('pxr-w-top'); hero.after(slots.top); }
                     var gen = main.querySelector('.generator');
-                    if (gen) {
-                        slots.middle = createAdSlot('ad-index-middle');
-                        gen.after(slots.middle);
-                    }
+                    if (gen) { slots.middle = createWidgetSlot('pxr-w-mid'); gen.after(slots.middle); }
                     var footer = main.querySelector('.site-footer');
-                    if (footer) {
-                        slots.bottom = createAdSlot('ad-index-bottom');
-                        footer.before(slots.bottom);
-                    }
+                    if (footer) { slots.bottom = createWidgetSlot('pxr-w-btm'); footer.before(slots.bottom); }
                 }
-            }
-            // === GALERIE ===
-            else if (page === 'galerie') {
+            } else if (page === 'galerie') {
                 var mainEl = document.querySelector('.main-content') || document.querySelector('main');
                 if (mainEl) {
                     var pageSub = mainEl.querySelector('.page-sub');
-                    if (pageSub) {
-                        slots.top = createAdSlot('ad-galerie-top');
-                        pageSub.after(slots.top);
-                    }
+                    if (pageSub) { slots.top = createWidgetSlot('pxr-w-top'); pageSub.after(slots.top); }
                     var grid = mainEl.querySelector('.results-grid');
-                    if (grid) {
-                        slots.middle = createAdSlot('ad-galerie-middle');
-                        grid.after(slots.middle);
-                    }
+                    if (grid) { slots.middle = createWidgetSlot('pxr-w-mid'); grid.after(slots.middle); }
                     var footerEl = mainEl.querySelector('.site-footer');
-                    if (footerEl) {
-                        slots.bottom = createAdSlot('ad-galerie-bottom');
-                        footerEl.before(slots.bottom);
-                    }
+                    if (footerEl) { slots.bottom = createWidgetSlot('pxr-w-btm'); footerEl.before(slots.bottom); }
                 }
-            }
-            // === PROFILE ===
-            else if (page === 'profile') {
+            } else if (page === 'profile') {
                 var mainP = document.querySelector('.main-content') || document.querySelector('main') || document.body;
                 var headerP = document.querySelector('.site-header') || document.querySelector('header');
                 var footerP = document.querySelector('.site-footer') || document.querySelector('footer');
-
-                slots.top = createAdSlot('ad-profile-top');
-                if (headerP && headerP.nextSibling) {
-                    headerP.parentNode.insertBefore(slots.top, headerP.nextSibling);
-                } else {
-                    mainP.prepend(slots.top);
-                }
-
-                slots.bottom = createAdSlot('ad-profile-bottom');
-                if (footerP) {
-                    footerP.before(slots.bottom);                } else {
-                    mainP.append(slots.bottom);
-                }
-            }
-            // === SHOP ===
-            else if (page === 'shop') {
+                slots.top = createWidgetSlot('pxr-w-top');
+                if (headerP && headerP.nextSibling) { headerP.parentNode.insertBefore(slots.top, headerP.nextSibling); }
+                else { mainP.prepend(slots.top); }
+                slots.bottom = createWidgetSlot('pxr-w-btm');
+                if (footerP) { footerP.before(slots.bottom); } else { mainP.append(slots.bottom); }
+            } else if (page === 'shop') {
                 var mainS = document.querySelector('.main-content') || document.querySelector('main') || document.body;
                 var headerS = document.querySelector('.site-header') || document.querySelector('header');
                 var footerS = document.querySelector('.site-footer') || document.querySelector('footer');
-
-                slots.top = createAdSlot('ad-shop-top');
-                if (headerS && headerS.nextSibling) {
-                    headerS.parentNode.insertBefore(slots.top, headerS.nextSibling);
-                } else {
-                    mainS.prepend(slots.top);
-                }
-
-                slots.bottom = createAdSlot('ad-shop-bottom');
-                if (footerS) {
-                    footerS.before(slots.bottom);
-                } else {
-                    mainS.append(slots.bottom);
-                }
+                slots.top = createWidgetSlot('pxr-w-top');
+                if (headerS && headerS.nextSibling) { headerS.parentNode.insertBefore(slots.top, headerS.nextSibling); }
+                else { mainS.prepend(slots.top); }
+                slots.bottom = createWidgetSlot('pxr-w-btm');
+                if (footerS) { footerS.before(slots.bottom); } else { mainS.append(slots.bottom); }
             }
-        } catch (e) {
-            console.warn('[ADS] Slots placement error:', e);
-        }
-
+        } catch (e) { console.warn('[PX] Slots error:', e); }
         return slots;
     }
 
     // =============================================
-    // INJECTION PUB (avec validation sécurité)
+    // ✅ FORMAT NATIF INTÉGRÉ
+    // La pub ressemble à une carte du site (pas une bannière externe)
     // =============================================
-    function injectAd(container, code) {
-        try {
-            // ✅ Validation basique du code avant injection
-            if (!code || typeof code !== 'string' || code.trim().length === 0) return;
+    function createNativeWrapper(ad) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'pxr-native';
+        wrapper.style.cssText = 'background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1rem;text-align:center;backdrop-filter:blur(20px);transition:border-color 0.3s;';
 
-            // Bloquer les scripts inline dangereux
-            var cleanCode = code.trim();
-            if (cleanCode.indexOf('<script>') !== -1 && cleanCode.indexOf('</script>') === -1) {
-                console.warn('[ADS] Blocked malformed script tag');
-                return;
-            }
+        var label = document.createElement('div');
+        label.style.cssText = 'font-size:0.6rem;color:#71717A;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;font-weight:600;';        label.textContent = 'Sponsorisé';
 
-            var iframe = document.createElement('iframe');
-            iframe.style.cssText = 'width:100%;border:none;display:block;margin:0 auto;';
-            iframe.setAttribute('scrolling', 'no');
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
-            var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:60px;}</style></head><body>' + cleanCode + '</body></html>';
+        var content = document.createElement('div');
+        content.className = 'pxr-native-content';
+        content.style.cssText = 'min-height:60px;display:flex;align-items:center;justify-content:center;';
 
-            iframe.srcdoc = html;
+        wrapper.appendChild(label);
+        wrapper.appendChild(content);
 
-            iframe.onload = function() {
-                try {
-                    var h = iframe.contentDocument.body.scrollHeight;
-                    if (h > 10 && h < 1000) {
-                        iframe.style.height = h + 'px';
-                    } else {
-                        iframe.style.height = '270px';
-                    }
-                } catch (e) {
-                    // Cross-origin : hauteur par défaut sécurisée
-                    iframe.style.height = '270px';
-                }
-            };
+        wrapper.onmouseenter = function() { wrapper.style.borderColor = 'rgba(139,92,246,0.3)'; };
+        wrapper.onmouseleave = function() { wrapper.style.borderColor = 'rgba(63,63,70,0.5)'; };
 
-            container.appendChild(iframe);
-        } catch (e) {
-            console.warn('[ADS] Injection error:', e);
-        }
+        return { wrapper: wrapper, content: content };
     }
 
     // =============================================
-    // ✅ NOUVEAU : Chargement via proxy /api/config avec cache
+    // ✅ INJECTION IFRAME + FALLBACK LIEN DIRECT
+    // Si l'iframe est bloqué par adblock → affiche un lien HTML simple
+    // Les liens HTML simples ne sont JAMAIS bloqués par les adblockers
+    // =============================================
+    function injectAd(container, ad) {
+        try {
+            if (!ad.code || typeof ad.code !== 'string' || ad.code.trim().length === 0) return;
+
+            var cleanCode = ad.code.trim();
+            var isUrl = cleanCode.startsWith('http://') || cleanCode.startsWith('https://');
+
+            // Créer le wrapper natif
+            var native = createNativeWrapper(ad);
+            container.appendChild(native.wrapper);
+
+            if (isUrl) {
+                // ✅ SMARTLINK / URL DIRECTE → Lien HTML natif (JAMAIS bloqué)
+                var link = document.createElement('a');
+                link.href = cleanCode;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
+                link.innerHTML = '<i class="fas fa-external-link-alt"></i> Découvrir l\'offre';
+                link.onmouseenter = function() { link.style.transform = 'translateY(-2px)'; link.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
+                link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
+                native.content.appendChild(link);
+            } else {
+                // ✅ CODE HTML/BANNER → Iframe + détection blocage + fallback
+                var iframe = document.createElement('iframe');
+                iframe.style.cssText = 'width:100%;border:none;display:block;margin:0 auto;';
+                iframe.setAttribute('scrolling', 'no');
+                iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
+
+                var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:60px;}</style></head><body>' + cleanCode + '</body></html>';                iframe.srcdoc = html;
+
+                var fallbackShown = false;
+
+                iframe.onload = function() {
+                    try {
+                        var h = iframe.contentDocument.body.scrollHeight;
+                        if (h > 10 && h < 1000) { iframe.style.height = h + 'px'; }
+                        else { iframe.style.height = '270px'; }
+                    } catch (e) {
+                        iframe.style.height = '270px';
+                    }
+                };
+
+                // ✅ DÉTECTION BLOCAGE : si l'iframe ne charge pas après 3s → fallback
+                setTimeout(function() {
+                    if (fallbackShown) return;
+                    try {
+                        var doc = iframe.contentDocument;
+                        if (!doc || !doc.body || doc.body.innerHTML.trim().length === 0) {
+                            showFallbackLink(native.content, ad);
+                            fallbackShown = true;
+                        }
+                    } catch (e) {
+                        // Cross-origin ou bloqué → fallback
+                        showFallbackLink(native.content, ad);
+                        fallbackShown = true;
+                    }
+                }, 3000);
+
+                native.content.appendChild(iframe);
+            }
+        } catch (e) { console.warn('[PX] Injection error:', e); }
+    }
+
+    // =============================================
+    // ✅ FALLBACK : Lien HTML quand l'iframe est bloqué
+    // =============================================
+    function showFallbackLink(container, ad) {
+        container.innerHTML = '';
+        var link = document.createElement('a');
+        link.href = (ad.link || ad.code || '#').trim();
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.style.cssText = 'display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;';
+        link.innerHTML = '<i class="fas fa-star"></i> Offre Partenaire';
+        link.onmouseenter = function() { link.style.transform = 'translateY(-2px)'; link.style.boxShadow = '0 8px 25px rgba(139,92,246,0.4)'; };
+        link.onmouseleave = function() { link.style.transform = ''; link.style.boxShadow = ''; };
+        container.appendChild(link);
+    }
+    // =============================================
+    // ✅ DÉTECTION DOUCE ADBLOCK
+    // Message discret, pas de mur, pas de blocage du site
+    // =============================================
+    function detectAdblock() {
+        // Méthode 1 : Tester si un élément avec classe "ad" est caché
+        var testEl = document.createElement('div');
+        testEl.className = 'adsbygoogle';
+        testEl.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
+        testEl.innerHTML = '&nbsp;';
+        document.body.appendChild(testEl);
+
+        setTimeout(function() {
+            var blocked = false;
+            try {
+                if (testEl.offsetHeight === 0 || testEl.offsetWidth === 0 ||
+                    getComputedStyle(testEl).display === 'none' ||
+                    getComputedStyle(testEl).visibility === 'hidden') {
+                    blocked = true;
+                }
+            } catch (e) { blocked = true; }
+
+            document.body.removeChild(testEl);
+
+            if (blocked) {
+                showSoftAdblockMessage();
+            }
+        }, 2000);
+    }
+
+    function showSoftAdblockMessage() {
+        // Ne montrer qu'une fois par session
+        if (sessionStorage.getItem('pxr_ab_msg')) return;
+        sessionStorage.setItem('pxr_ab_msg', '1');
+
+        var msg = document.createElement('div');
+        msg.className = 'pxr-support-msg';
+        msg.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(24,24,27,0.95);backdrop-filter:blur(24px);border:1px solid rgba(139,92,246,0.3);border-radius:16px;padding:1rem 1.5rem;z-index:999;display:flex;align-items:center;gap:1rem;max-width:90vw;box-shadow:0 10px 40px rgba(0,0,0,0.5);animation:pxrFadeUp 0.5s ease;';
+
+        msg.innerHTML = '<i class="fas fa-heart" style="color:#EC4899;font-size:1.2rem;flex-shrink:0"></i>' +
+            '<div style="flex:1"><div style="font-size:0.85rem;font-weight:600;color:#FAFAFA;margin-bottom:0.2rem">Pixora est 100% gratuit</div>' +
+            '<div style="font-size:0.75rem;color:#A1A1AA">Désactivez votre bloqueur de pubs pour nous soutenir et accéder à toutes les fonctionnalités.</div></div>' +
+            '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:#71717A;cursor:pointer;font-size:1rem;padding:0.3rem;flex-shrink:0"><i class="fas fa-times"></i></button>';
+
+        // Ajouter l'animation CSS si pas déjà présente
+        if (!document.getElementById('pxr-styles')) {
+            var style = document.createElement('style');
+            style.id = 'pxr-styles';
+            style.textContent = '@keyframes pxrFadeUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';            document.head.appendChild(style);
+        }
+
+        document.body.appendChild(msg);
+
+        // Auto-dismiss après 15 secondes
+        setTimeout(function() {
+            if (msg.parentNode) {
+                msg.style.opacity = '0';
+                msg.style.transition = 'opacity 0.5s';
+                setTimeout(function() { if (msg.parentNode) msg.remove(); }, 500);
+            }
+        }, 15000);
+    }
+
+    // =============================================
+    // CHARGEMENT CONFIG (proxy + cache)
     // =============================================
     async function loadAdsConfig() {
-        // 1. Vérifier le cache localStorage
         try {
             var cached = localStorage.getItem(CACHE_KEY);
             if (cached) {
                 var parsed = JSON.parse(cached);
                 if (parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_TTL) {
-                    console.log('[ADS] Cache hit (' + Math.round((CACHE_TTL - (Date.now() - parsed.timestamp)) / 1000) + 's remaining)');
                     return parsed.data;
                 }
             }
-        } catch (e) {
-            // Cache corrompu, on continue sans cache
-        }
+        } catch (e) {}
 
-        // 2. Appeler le proxy /api/config
         try {
             var res = await fetch('/api/config');
             if (res.ok) {
                 var config = await res.json();
                 var adNetworks = config.ad_networks || [];
-                // Sauvegarder dans le cache
-                try {
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({
-                        data: adNetworks,
-                        timestamp: Date.now()
-                    }));
-                } catch (e) {
-                    // localStorage plein ou indisponible
-                }
-
-                console.log('[ADS] Loaded ' + adNetworks.length + ' ads via proxy');
+                try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: adNetworks, timestamp: Date.now() })); } catch (e) {}
                 return adNetworks;
             }
-        } catch (e) {
-            console.warn('[ADS] Proxy failed, trying Supabase fallback:', e.message);
-        }
+        } catch (e) { console.warn('[PX] Proxy failed:', e.message); }
 
-        // 3. Fallback Supabase direct (pour admin connecté uniquement)
         try {
             if (typeof window.supabase !== 'undefined') {
                 var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 var result = await client.from('admin_config').select('value').eq('key', 'ad_networks').single();
-                if (result.data && result.data.value) {
-                    console.log('[ADS] Loaded via Supabase fallback');
-                    return result.data.value;
-                }
+                if (result.data && result.data.value) return result.data.value;
             }
-        } catch (e) {
-            console.warn('[ADS] Supabase fallback also failed:', e.message);
-        }
+        } catch (e) { console.warn('[PX] Supabase fallback failed:', e.message); }
 
-        console.warn('[ADS] No ads loaded from any source');
         return [];
     }
-
     // =============================================
     // INIT PRINCIPAL
     // =============================================
     async function init() {
         try {
             var page = getPage();
-            console.log('[ADS] Initializing for page: ' + page);
-
-            // Charger les configs via proxy + cache
             var allAds = await loadAdsConfig();
 
-            if (!allAds || allAds.length === 0) {
-                console.log('[ADS] No ads configured');
-                return;
-            }
-            // Filtrer les pubs pour la page courante
+            if (!allAds || allAds.length === 0) return;
+
             var pageAds = allAds.filter(function(ad) {
                 return ad.page === page && ad.active !== false && ad.code && typeof ad.code === 'string' && ad.code.trim().length > 0;
             });
 
-            if (pageAds.length === 0) {
-                console.log('[ADS] No active ads for page: ' + page);
-                return;
-            }
+            if (pageAds.length === 0) return;
 
-            console.log('[ADS] Injecting ' + pageAds.length + ' ads on ' + page);
-
-            // Placer les slots et injecter les pubs
             var slots = placeSlots(page);
 
             pageAds.forEach(function(ad) {
                 var pos = ad.position || 'top';
                 var slot = slots[pos];
-                if (slot) {
-                    injectAd(slot, ad.code);
-                } else {
-                    console.warn('[ADS] No slot for position "' + pos + '" on page ' + page);
-                }
+                if (slot) { injectAd(slot, ad); }
             });
 
-        } catch (e) {
-            console.warn('[ADS] Init error:', e);
-        }
+            // ✅ Lancer la détection douce adblock
+            detectAdblock();
+
+        } catch (e) { console.warn('[PX] Init error:', e); }
     }
 
     // =============================================
-    // DÉMARRAGE INTELLIGENT (DOMContentLoaded + retry)
+    // DÉMARRAGE INTELLIGENT
     // =============================================
     function startWithRetry(maxRetries) {
         var attempts = 0;
-
         function tryInit() {
             attempts++;
-            // Vérifier que le DOM est prêt
             if (document.querySelector('.main-content') || document.querySelector('main') || document.body.children.length > 0) {
                 init();
             } else if (attempts < maxRetries) {
                 setTimeout(tryInit, 500);
-            } else {
-                console.warn('[ADS] DOM not ready after ' + maxRetries + ' retries, forcing init');
-                init();
-            }
+            } else { init(); }
         }
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             setTimeout(tryInit, 300);
         } else {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(tryInit, 300);
-            });
+            document.addEventListener('DOMContentLoaded', function() { setTimeout(tryInit, 300); });
         }
     }
-
-    // Lancer avec max 5 retries
     startWithRetry(5);
-
 })();
