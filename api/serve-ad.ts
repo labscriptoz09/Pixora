@@ -1,4 +1,4 @@
-// /api/serve-ad.ts — Version ZÉRO POPUP (Blocage Scripts Tiers)
+// /api/serve-ad.ts — RESTAURÉ : Renvoie le code HTML/script BRUT
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
@@ -22,6 +22,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
         const { data, error } = await supabase
             .from('admin_config')
             .select('value')
@@ -55,23 +56,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const ad = matchingAds[0];
         const code = ad.code.trim();
-        const isUrl = code.startsWith('http://') || code.startsWith('https://');
 
-        let html = '';
-
-        if (isUrl) {
-            // ✅ Smartlink URL → Bouton natif (ZÉRO popup garanti)
-            html = `<a href="${code}" target="_blank" rel="noopener noreferrer" class="pxr-btn"><i class="fas fa-external-link-alt"></i> ${ad.name}</a>`;
-        } else {
-            // ❌ Code HTML avec scripts → BLOQUÉ (trop de popups)
-            // On retourne un bouton fallback vers earn.html
-            html = `<a href="/earn.html" class="pxr-btn"><i class="fas fa-coins"></i> Gagner des points</a>`;
-        }
-
+        // ✅ RENVOIE LE CODE TEL QUEL (script HTML ou URL)
+        // Plus aucune transformation en bouton
         return res.status(200).json({
-            html,
-            name: ad.name,
-            url: isUrl ? code : '',
+            html: code,
+            name: ad.name || '',
+            url: code.startsWith('http') ? code : '',
             points: ad.points || 0
         });
 
