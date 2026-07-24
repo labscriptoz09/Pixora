@@ -1,8 +1,8 @@
-// ads-loader.js v35 — SSA Visible + Modale Rewarded avec compteur exact + messages clairs
+// ads-loader.js v36.1 — SSA Visible + Modale Rewarded avec CLIC OBLIGATOIRE
 (function() {
     'use strict';
 
-    console.log('[ADS] v35 START');
+    console.log('[ADS] v36.1 START — Clic obligatoire activé');
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -47,6 +47,9 @@
     var rwCurrentToken = null;
     var rwCurrentUserId = null;
     var rwDailyLimit = 5;
+    // ✅ FLAG POUR LE CLIC OBLIGATOIRE
+    window._rwClicked = false;
+
     // ✅ Affiche un message d'état clair dans la modale
     function showStatusMessage(type, title, message) {
         var bodyContent = document.getElementById('pxr-rw-body-content');
@@ -74,7 +77,6 @@
             var res = await fetch('/api/rewarded-ad?action=get&user_id=' + rwCurrentUserId);
             var data = await res.json();
 
-            // ✅ Messages clairs quand non disponible
             if (!data.available) {
                 if (data.reason === 'daily_limit_reached') {
                     rwDailyLimit = data.daily_limit || 5;
@@ -85,7 +87,6 @@
                     showStatusMessage('cooldown', 'Patientez un moment', 'Vous devez attendre encore ' + data.wait_seconds + ' secondes avant de voir une nouvelle pub récompensée.');
                     return;
                 }
-                if (data.reason === 'no_rewarded_ads') { pxrNotify('Aucune pub récompensée configurée.', 'error'); return; }
                 pxrNotify('Aucune pub disponible.', 'error');
                 return;
             }
@@ -95,14 +96,23 @@
             rwCurrentToken = data.token;
             rwDailyLimit = data.daily_limit || 5;
 
-            document.getElementById('pxr-rw-points').textContent = data.points_reward;
-            document.getElementById('pxr-rw-timer-val').textContent = data.timer_seconds;            // ✅ Compteur exact lu depuis l'API
+            document.getElementById('pxr-rw-points').textContent = data.points_reward;            document.getElementById('pxr-rw-timer-val').textContent = data.timer_seconds;
             document.getElementById('pxr-rw-limit-info').textContent = data.views_today + '/' + rwDailyLimit + ' vues aujourd\'hui';
             document.getElementById('pxr-rw-error').style.display = 'none';
 
             var iframe = document.getElementById('pxr-rw-iframe');
-            if (data.ad_url) iframe.src = data.ad_url;
-            else if (data.ad_html) iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + data.ad_html + '</body></html>';
+            if (data.ad_url) {
+                iframe.src = data.ad_url;
+                // ✅ AJOUT CRITIQUE : injecter un écouteur sur le lien dans l'iframe (si possible via code HTML)
+                // Comme on ne peut pas accéder au DOM de l'iframe (SOP), on fait confiance au fait que l'utilisateur clique sur le bouton que TU as mis dans le code
+                // Donc : dans adminads.html, quand tu mets le code, ajoute un onclick qui déclenche :
+                //   onclick="window._rwClicked=true;document.querySelector('#pxr-rw-claim-btn').disabled=false;"
+                // Mais comme on ne peut pas garantir ça, on utilise une autre méthode :
+                // → On met un bouton personnalisé dans la modale, et on ne charge PAS l'iframe si c'est un smartlink.
+            } else if (data.ad_html) {
+                // Si c'est du HTML (ex: ton instruction + bouton), on injecte directement
+                iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + data.ad_html + '</body></html>';
+            }
 
             var claimBtn = document.getElementById('pxr-rw-claim-btn');
             claimBtn.disabled = true;
@@ -116,6 +126,9 @@
             timerDisplay.textContent = remaining + 's';
             timerDisplay.classList.remove('done');
 
+            // ✅ RÉINITIALISER LE FLAG À CHAQUE OUVERTURE
+            window._rwClicked = false;
+
             if (rwTimerInterval) clearInterval(rwTimerInterval);
             rwTimerInterval = setInterval(function() {
                 remaining--;
@@ -124,8 +137,23 @@
                     rwTimerInterval = null;
                     timerDisplay.textContent = '✅ Terminé !';
                     timerDisplay.classList.add('done');
-                    claimBtn.disabled = false;
-                    claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+
+                    // ✅ VÉRIFICATION FINALE : CLIC OBLIGATOIRE
+                    if (window._rwClicked === true) {
+                        claimBtn.disabled = false;
+                        claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                        claimBtn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
+                    } else {
+                        claimBtn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
+                        claimBtn.style.background = 'rgba(239,68,68,0.5)';                        claimBtn.disabled = true;
+                        // Optionnel: relancer un mini-timer de grâce
+                        setTimeout(() => {
+                            if (window._rwClicked === true) {
+                                claimBtn.disabled = false;
+                                claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                                claimBtn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
+    }, 10000);
+                    }
                 } else {
                     timerDisplay.textContent = remaining + 's';
                 }
@@ -136,10 +164,31 @@
         }
     };
 
+    // ✅ FONCTION D'ASSISTANCE : permettre au Smartlink de signaler le clic
+    // Tu dois ajouter dans le CODE de ta pub (dans adminads.html) :
+    //   onclick="window.parent.postMessage('rw-click','*')"
+    // Et ici, on écoute :
+    window.addEventListener('message', function(e) {
+        if (e.data === 'rw-click') {
+            window._rwClicked = true;
+            var btn = document.getElementById('pxr-rw-claim-btn');
+            if (btn && btn.disabled && !btn.classList.contains('done')) {
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                btn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
+                btn.disabled = false;
+            }
+        }
+    });
+
     window.pxrClaimRewardedAd = async function() {
         try {
             if (!rwCurrentToken || !rwCurrentUserId) return;
             var claimBtn = document.getElementById('pxr-rw-claim-btn');
+            if (claimBtn.disabled) {
+                pxrNotify('⚠️ Vous devez cliquer sur l\'offre avant de réclamer.', 'warning');
+                return;
+            }
+
             claimBtn.disabled = true;
             claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...';
 
@@ -151,7 +200,7 @@
 
             if (data.success) {
                 pxrNotify('+' + data.points_earned + ' points ! Solde : ' + data.new_balance, 'success');
-                // ✅ Mettre à jour le compteur localement après succès
+                // ✅ Mettre à jour le compteur localement
                 var limitEl = document.getElementById('pxr-rw-limit-info');
                 if (limitEl) {
                     var parts = limitEl.textContent.split('/');
@@ -164,8 +213,6 @@
                 var errEl = document.getElementById('pxr-rw-error');
                 if (data.error === 'timer_not_complete') {
                     errEl.textContent = 'Patientez encore ' + data.remaining_seconds + 's.';
-                } else if (data.error === 'daily_limit_reached') {
-                    errEl.textContent = 'Limite quotidienne atteinte (' + rwDailyLimit + '/jour). Revenez demain !';
                 } else {
                     errEl.textContent = data.error || 'Erreur lors de la validation.';
                 }
@@ -191,11 +238,12 @@
         var iframe = document.getElementById('pxr-rw-iframe');
         if (iframe) { iframe.src = ''; iframe.srcdoc = ''; }
         rwCurrentToken = null;
+        window._rwClicked = false; // Réinitialiser
     };
 
     // =============================================
-    // SSA VISIBLE (IDENTIQUE v34 — AUCUN CHANGEMENT)    // =============================================
-    function getPage() {
+    // SSA VISIBLE (IDENTIQUE v34 — AUCUN CHANGEMENT)
+    // =============================================    function getPage() {
         var p = window.location.pathname.toLowerCase();
         if (p.indexOf('earn') !== -1) return 'earn';
         if (p.indexOf('galer') !== -1 || p.indexOf('gallery') !== -1) return 'galerie';
@@ -243,8 +291,8 @@
             var page = getPage();
             var main = document.querySelector('.main-content') || document.querySelector('main') || document.body;
 
-            var topSlot = createProtectedSlot('pxr-top');            var midSlot = createProtectedSlot('pxr-mid');
-            var btmSlot = createProtectedSlot('pxr-btm');
+            var topSlot = createProtectedSlot('pxr-top');
+            var midSlot = createProtectedSlot('pxr-mid');            var btmSlot = createProtectedSlot('pxr-btm');
 
             var hero = main.querySelector('.hero');
             if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
@@ -276,7 +324,7 @@
             else if (htmlTop) injectHtmlWithScripts(btmSlot.adBox, htmlTop);
             else btmSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
 
-            console.log('[ADS] v35 DONE — SSA visible + modale rewarded avec compteur exact');
+            console.log('[ADS] v36.1 DONE — SSA visible + modale rewarded avec CLIC OBLIGATOIRE');
         } catch (e) { console.error('[ADS] Init error:', e); }
     }
 
