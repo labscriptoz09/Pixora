@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Pixora Debug</title>
+    <style>
+        body { background: #0f0f14; color: #e5e7eb; font-family: -apple-system, sans-serif; padding: 1rem; }
+        .card { background: #1a1a24; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #374151; }
+        h2 { color: #8B5CF6; margin-top: 0; }
+        .item { margin: 0.8rem 0; }
+        .key { color: #F59E0B; font-weight: 600; }
+        .val { color: #E5E7EB; }
+        .error { color: #EF4444; font-weight: 600; }
+        .success { color: #10B981; }
+        button { background: #8B5CF6; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; margin-top: 1rem; cursor: pointer; }
+        pre { background: #1e293b; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Pixora Debug — GSM</h1>
+    <div id="result"></div>
+
+    <script>
+        async function runDebug() {
+            const resultEl = document.getElementById('result');
+            resultEl.innerHTML = '<div class="card"><p>🔍 Démarrage du diagnostic...</p></div>';
+
+            // Chargement Supabase JS
+            const supabaseScript = document.createElement('script');
+            supabaseScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.41.0/dist/umd/supabase.min.js';
+            supabaseScript.onload = async () => {
+                const supabase = window.supabase.createClient(
+                    'https://cfwzilhetkclpytjsopu.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU'
+                );
+
+                const user = await supabase.auth.getUser();
+                if (!user.data.user) {
+                    resultEl.innerHTML = `
+                        <div class="card">
+                            <h2>❌ Pas connecté</h2>
+                            <p>Veuillez vous connecter sur le site avant d'exécuter ce debug.</p>
+                            <button onclick="location.reload()">Recharger</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const userId = user.data.user.id;                const today = new Date().toISOString().split('T')[0];
+
+                const items = [];
+
+                // 1. User data
+                try {
+                    const { data, error } = await supabase
+                        .from('user_data')
+                        .select('points')
+                        .eq('user_id', userId)
+                        .single();
+                    items.push({
+                        label: 'Solde points',
+                        value: data?.points ?? '0',
+                        error: error ? `<span class="error">${error.message}</span>` : ''
+                    });
+                } catch (e) {
+                    items.push({ label: 'Solde points', value: 'ERREUR', error: `<span class="error">${e.message}</span>` });
+                }
+
+                // 2. Transactions aujourd'hui
+                try {
+                    const { data, error } = await supabase
+                        .from('transactions')
+                        .select('id')
+                        .eq('user_id', userId)
+                        .eq('title', 'Pub récompensée')
+                        .gte('created_at', today + 'T00:00:00')
+                        .lte('created_at', today + 'T23:59:59');
+                    items.push({
+                        label: 'Transactions aujourd’hui',
+                        value: data?.length ?? '0',
+                        error: error ? `<span class="error">${error.message}</span>` : ''
+                    });
+                } catch (e) {
+                    items.push({ label: 'Transactions aujourd’hui', value: 'ERREUR', error: `<span class="error">${e.message}</span>` });
+                }
+
+                // 3. Test INSERT (sans bloquer)
+                try {
+                    const { data, error } = await supabase
+                        .from('transactions')
+                        .insert({
+                            user_id: 'DEBUG-' + Date.now(),
+                            type: 'debug',
+                            title: 'TEST',
+                            amount: 0
+                        })
+                        .select();
+                    items.push({                        label: 'Test INSERT',
+                        value: error ? '<span class="error">ÉCHEC</span>' : '<span class="success">SUCCÈS</span>',
+                        error: error ? `<span class="error">${error.message}</span>` : ''
+                    });
+                    // Nettoyage
+                    if (data && data.length > 0) {
+                        await supabase.from('transactions').delete().eq('title', 'TEST');
+                    }
+                } catch (e) {
+                    items.push({ label: 'Test INSERT', value: '<span class="error">ÉCHEC</span>', error: `<span class="error">${e.message}</span>` });
+                }
+
+                // Affichage
+                let html = `<div class="card"><h2>📊 Résultats</h2>`;
+                items.forEach(item => {
+                    html += `<div class="item"><span class="key">${item.label}:</span> <span class="val">${item.value}</span> ${item.error}</div>`;
+                });
+                html += '</div>';
+                resultEl.innerHTML = html;
+            };
+            document.head.appendChild(supabaseScript);
+        }
+
+        window.onload = runDebug;
+    </script>
+</body>
+</html>
