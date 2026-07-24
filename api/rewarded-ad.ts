@@ -1,4 +1,4 @@
-// /api/rewarded-ad.ts — v34.3 CLEAN — Sans validation UUID, RLS off
+// /api/rewarded-ad.ts — v35 BLACK BOX — RPC Only
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
@@ -15,9 +15,7 @@ const DEFAULT_CONFIG = {
 function generateToken(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
-    for (let i = 0; i < 32; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    for (let i = 0; i < 32; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
     return result + '_' + Date.now();
 }
 
@@ -39,92 +37,45 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const userId = req.query.user_id as string;
             if (!userId) return res.status(400).json({ error: 'user_id required' });
 
-            let config = DEFAULT_CONFIG;
-            try {
-                const cfg = await supabase.from('admin_config').select('value').eq('key', 'rewarded_ad_config').single();
-                if (cfg.data?.value) config = { ...DEFAULT_CONFIG, ...cfg.data.value };
-            } catch (e) {}
+            // Compteur via RPC Black Box
+            const { data: viewsToday, error: countErr } = await supabase.rpc('get_daily_rewarded_count', { p_user_id: userId });
+            if (countErr) console.error('[GET] RPC count error:', countErr.message);
 
-            // Comptage exact — user_id tel quel, sans transformation
-            const today = new Date().toISOString().split('T')[0];
-            const { count, error: countError } = await supabase                .from('transactions')
-                .select('*', { count: 'exact', head: true })
-                .eq('user_id', userId)
-                .eq('title', 'Pub récompensée')
-                .gte('created_at', today + 'T00:00:00')
-                .lte('created_at', today + 'T23:59:59');
+            const config = DEFAULT_CONFIG;
+            const currentViews = viewsToday || 0;
 
-            if (countError) console.error('[REWARDED-GET] Count error:', countError.message);
-            const viewsToday = count || 0;
-
-            if (viewsToday >= config.daily_limit) {
+            if (currentViews >= config.daily_limit) {
                 return res.status(200).json({
-                    available: false,
-                    reason: 'daily_limit_reached',
-                    views_today: viewsToday,
-                    daily_limit: config.daily_limit,
-                    message: `Vous avez déjà vu ${viewsToday}/${config.daily_limit} pubs récompensées aujourd'hui. Revenez demain.`
+                    available: false, reason: 'daily_limit_reached',
+                    views_today: currentViews, daily_limit: config.daily_limit,                    message: `Vous avez déjà vu ${currentViews}/${config.daily_limit} pubs aujourd'hui. Revenez demain.`
                 });
             }
 
-            // Cooldown
-            const { data: lastView } = await supabase
-                .from('transactions')
-                .select('created_at')
-                .eq('user_id', userId)
-                .eq('title', 'Pub récompensée')
-                .order('created_at', { ascending: false })
-                .limit(1)
-                .single();
-
-            if (lastView) {
-                const elapsed = (Date.now() - new Date(lastView.created_at).getTime()) / 1000;
-                if (elapsed < config.cooldown_seconds) {
-                    return res.status(200).json({
-                        available: false,
-                        reason: 'cooldown_active',
-                        wait_seconds: Math.ceil(config.cooldown_seconds - elapsed),
-                        message: `Patientez encore ${Math.ceil(config.cooldown_seconds - elapsed)}s.`
-                    });
-                }
-            }
-
-            // Pubs rewarded
+            // Pub aléatoire
             const { data: adsData } = await supabase.from('admin_config').select('value').eq('key', 'ad_networks').single();
             if (!adsData?.value) return res.status(200).json({ available: false, reason: 'no_ads' });
 
-            const allAds = adsData.value as Array<any>;
-            const rewardedAds = allAds.filter((ad: any) =>
-                ad.mode === 'rewarded' && ad.active === true && ad.code && ad.code.trim().length > 0
-            );
-            if (rewardedAds.length === 0) {
-                return res.status(200).json({ available: false, reason: 'no_rewarded_ads' });
-            }
+            const rewardedAds = (adsData.value as any[]).filter(ad => ad.mode === 'rewarded' && ad.active && ad.code?.trim());
+            if (rewardedAds.length === 0) return res.status(200).json({ available: false, reason: 'no_rewarded_ads' });
 
             const ad = rewardedAds[Math.floor(Math.random() * rewardedAds.length)];
             const code = ad.code.trim();
-            const isUrl = code.startsWith('http://') || code.startsWith('https://');
+            const isUrl = code.startsWith('http');
             const token = generateToken();
 
             await supabase.from('admin_config').upsert({
                 key: 'rewarded_token_' + token,
-                value: { user_id: userId, created_at: Date.now(), ad_name: ad.name, points: config.points_per_view, timer: config.timer_seconds, claimed: false }
+                value: { user_id: userId, created_at: Date.now(), points: config.points_per_view, timer: config.timer_seconds, claimed: false }
             }, { onConflict: 'key' });
 
             return res.status(200).json({
-                available: true,
-                token,
-                ad_url: isUrl ? code : null,
-                ad_html: isUrl ? null : code,
+                available: true, token,
+                ad_url: isUrl ? code : null, ad_html: isUrl ? null : code,
                 ad_name: ad.name || 'Offre Partenaire',
-                timer_seconds: config.timer_seconds,
-                points_reward: config.points_per_view,
-                views_today: viewsToday,
-                daily_limit: config.daily_limit
+                timer_seconds: config.timer_seconds, points_reward: config.points_per_view,
+                views_today: currentViews, daily_limit: config.daily_limit
             });
-
         } catch (e: any) {
-            console.error('[REWARDED-GET] Error:', e.message);
             return res.status(500).json({ error: e.message });
         }
     }
@@ -137,64 +88,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const { token, user_id } = req.body;
             if (!token || !user_id) return res.status(400).json({ error: 'token and user_id required' });
 
+            // Validation token
             const { data: tokenData } = await supabase.from('admin_config').select('value').eq('key', 'rewarded_token_' + token).single();
             if (!tokenData?.value) return res.status(400).json({ error: 'invalid_token' });
 
             const session = tokenData.value as any;
             if (session.user_id !== user_id) return res.status(403).json({ error: 'token_mismatch' });
-            if (session.claimed === true) return res.status(400).json({ error: 'already_claimed' });
+            if (session.claimed) return res.status(400).json({ error: 'already_claimed' });
 
-            const elapsedSec = (Date.now() - session.created_at) / 1000;
-            if (elapsedSec < session.timer) {                return res.status(400).json({
-                    error: 'timer_not_complete',
-                    remaining_seconds: Math.ceil(session.timer - elapsedSec)
-                });
+            const elapsed = (Date.now() - session.created_at) / 1000;            if (elapsed < session.timer) {
+                return res.status(400).json({ error: 'timer_not_complete', remaining_seconds: Math.ceil(session.timer - elapsed) });
             }
 
+            // Marquer token comme utilisé
             await supabase.from('admin_config').update({ value: { ...session, claimed: true } }).eq('key', 'rewarded_token_' + token);
 
-            const pointsReward = Math.floor(session.points || DEFAULT_CONFIG.points_per_view);
-
-            // Créditer points dans user_data
-            const { data: userData, error: selectError } = await supabase
-                .from('user_data')
-                .select('points')
-                .eq('user_id', user_id)
-                .single();
-
-            if (selectError || !userData) {
-                await supabase.from('user_data').insert({ user_id: user_id, points: pointsReward });
-            } else {
-                await supabase.from('user_data').update({ points: (userData.points || 0) + pointsReward }).eq('user_id', user_id);
-            }
-
-            // Insérer transaction — user_id tel quel, RLS off
-            const { error: transError } = await supabase
-                .from('transactions')
-                .insert({
-                    user_id: user_id,
-                    type: 'earned',
-                    title: 'Pub récompensée',
-                    amount: pointsReward
-                });
-
-            if (transError) {
-                console.error('[REWARDED] Transaction INSERT failed:', transError.message);
-            }
-
-            // Relire solde
-            const { data: finalData } = await supabase.from('user_data').select('points').eq('user_id', user_id).single();
-
-            return res.status(200).json({
-                success: true,
-                points_earned: pointsReward,
-                new_balance: finalData?.points || pointsReward
+            // ✅ CLAIM via RPC Black Box (limite + cooldown + insert + crédit en 1 appel)
+            const { data: result, error: rpcErr } = await supabase.rpc('claim_rewarded_ad', {
+                p_user_id: user_id,
+                p_points: Math.floor(session.points || DEFAULT_CONFIG.points_per_view)
             });
 
+            if (rpcErr) return res.status(500).json({ error: rpcErr.message });
+            if (!result.success) return res.status(400).json(result);
+
+            return res.status(200).json(result);
         } catch (e: any) {
-            console.error('[REWARDED-CLAIM] Error:', e);
             return res.status(500).json({ error: e.message });
-        }    }
+        }
+    }
 
     return res.status(400).json({ error: 'Invalid action' });
 }
