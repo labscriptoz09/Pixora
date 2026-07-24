@@ -1,4 +1,4 @@
-// /api/rewarded-ad.ts — v34.1 — CORRIGÉ : compteur exact + limite stricte + RLS bypass
+// /api/rewarded-ad.ts — v34.2 — FIX UUID + Compteur exact + Limite 5/jour
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
@@ -8,9 +8,18 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const DEFAULT_CONFIG = {
     points_per_view: 1,
     timer_seconds: 20,
-    daily_limit: 5, // ✅ Limité à 5/jour
+    daily_limit: 5,
     cooldown_seconds: 60,
 };
+
+// ✅ Validation UUID stricte
+function isValidUUID(str: string): boolean {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str);
+}
+
+function safeUUID(str: string): string {
+    return isValidUUID(str) ? str : '00000000-0000-4000-8000-000000000000';
+}
 
 function generateToken(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -38,6 +47,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         try {
             const userId = req.query.user_id as string;
             if (!userId) return res.status(400).json({ error: 'user_id required' });
+            // ✅ Valider UUID dès le début
+            const safeUserId = safeUUID(userId);
 
             let config = DEFAULT_CONFIG;
             try {
@@ -45,18 +56,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 if (cfg.data?.value) config = { ...DEFAULT_CONFIG, ...cfg.data.value };
             } catch (e) {}
 
-            // ✅ Comptage exact des vues aujourd'hui (bypass RLS via service_role)
+            // ✅ Comptage exact avec UUID validé
             const today = new Date().toISOString().split('T')[0];
-            const { data: viewsData, error: countError } = await supabase                .from('transactions')
+            const { data: viewsData, error: countError } = await supabase
+                .from('transactions')
                 .select('id', { count: 'exact', head: true })
-                .eq('user_id', userId)
+                .eq('user_id', safeUserId)
                 .eq('title', 'Pub récompensée')
                 .gte('created_at', today + 'T00:00:00')
                 .lte('created_at', today + 'T23:59:59');
 
-            if (countError) {
-                console.error('[REWARDED-GET] Count error:', countError.message);
-            }
+            if (countError) console.error('[REWARDED-GET] Count error:', countError.message);
             const viewsToday = viewsData?.length || 0;
 
             if (viewsToday >= config.daily_limit) {
@@ -69,10 +79,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 });
             }
 
+            // Cooldown
             const { data: lastView } = await supabase
                 .from('transactions')
                 .select('created_at')
-                .eq('user_id', userId)
+                .eq('user_id', safeUserId)
                 .eq('title', 'Pub récompensée')
                 .order('created_at', { ascending: false })
                 .limit(1)
@@ -85,11 +96,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                         available: false,
                         reason: 'cooldown_active',
                         wait_seconds: Math.ceil(config.cooldown_seconds - elapsed),
-                        message: `Vous devez attendre encore ${Math.ceil(config.cooldown_seconds - elapsed)}s avant de voir une nouvelle pub.`
-                    });
+                        message: `Patientez encore ${Math.ceil(config.cooldown_seconds - elapsed)}s.`                    });
                 }
             }
 
+            // Pubs rewarded
             const { data: adsData } = await supabase.from('admin_config').select('value').eq('key', 'ad_networks').single();
             if (!adsData?.value) return res.status(200).json({ available: false, reason: 'no_ads' });
 
@@ -97,6 +108,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const rewardedAds = allAds.filter((ad: any) =>
                 ad.mode === 'rewarded' && ad.active === true && ad.code && ad.code.trim().length > 0
             );
+
             if (rewardedAds.length === 0) {
                 return res.status(200).json({ available: false, reason: 'no_rewarded_ads' });
             }
@@ -108,7 +120,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             await supabase.from('admin_config').upsert({
                 key: 'rewarded_token_' + token,
-                value: { user_id: userId, created_at: Date.now(), ad_name: ad.name, points: config.points_per_view, timer: config.timer_seconds, claimed: false }
+                value: { user_id: safeUserId, created_at: Date.now(), ad_name: ad.name, points: config.points_per_view, timer: config.timer_seconds, claimed: false }
             }, { onConflict: 'key' });
 
             return res.status(200).json({
@@ -133,19 +145,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // POST ?action=claim
     // =============================================
     if (req.method === 'POST' && req.query.action === 'claim') {
-        try {
-            const { token, user_id } = req.body;
+        try {            const { token, user_id } = req.body;
             if (!token || !user_id) return res.status(400).json({ error: 'token and user_id required' });
+
+            // ✅ Valider UUID
+            const safeUserId = safeUUID(user_id);
 
             const { data: tokenData } = await supabase.from('admin_config').select('value').eq('key', 'rewarded_token_' + token).single();
             if (!tokenData?.value) return res.status(400).json({ error: 'invalid_token' });
 
             const session = tokenData.value as any;
-            if (session.user_id !== user_id) return res.status(403).json({ error: 'token_mismatch' });
+            if (session.user_id !== safeUserId) return res.status(403).json({ error: 'token_mismatch' });
             if (session.claimed === true) return res.status(400).json({ error: 'already_claimed' });
 
             const elapsedSec = (Date.now() - session.created_at) / 1000;
-            if (elapsedSec < session.timer) {                return res.status(400).json({
+            if (elapsedSec < session.timer) {
+                return res.status(400).json({
                     error: 'timer_not_complete',
                     remaining_seconds: Math.ceil(session.timer - elapsedSec)
                 });
@@ -155,11 +170,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             const pointsReward = Math.floor(session.points || DEFAULT_CONFIG.points_per_view);
 
-            // ✅ Créditer points (user_id, pas uuid)
+            // ✅ Créditer points (user_data.user_id est TEXT, pas UUID)
             const { data: userData, error: selectError } = await supabase
                 .from('user_data')
                 .select('points')
-                .eq('user_id', user_id)
+                .eq('user_id', user_id) // user_data utilise TEXT, pas UUID
                 .single();
 
             if (selectError || !userData) {
@@ -168,33 +183,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 await supabase.from('user_data').update({ points: (userData.points || 0) + pointsReward }).eq('user_id', user_id);
             }
 
-            // ✅ Insérer transaction — force avec .select() pour bypass RLS
+            // ✅ INSÉRER TRANSACTION AVEC UUID VALIDÉ
             const { error: transError } = await supabase
                 .from('transactions')
                 .insert({
-                    user_id: user_id,
+                    user_id: safeUserId, // ← UUID validé ici
                     type: 'earned',
                     title: 'Pub récompensée',
                     amount: pointsReward
                 })
-                .select(); // ← .select() force l'exécution même avec RLS
+                .select();
 
-            if (transError) {
-                console.warn('[REWARDED] Transaction insert failed (non-blocking):', transError.message);
+            if (transError) {                console.error('[REWARDED] Transaction INSERT failed:', transError.message);
+            } else {
+                console.log('[REWARDED] Transaction inserted successfully for user:', safeUserId);
             }
 
-            // ✅ Relire le solde
+            // Relire solde
             const { data: finalData } = await supabase.from('user_data').select('points').eq('user_id', user_id).single();
 
             return res.status(200).json({
                 success: true,
                 points_earned: pointsReward,
-                new_balance: finalData?.points || pointsReward,
-                views_today: (finalData?.points || 0) > 0 ? 1 : 0 // placeholder — le vrai compteur vient du GET
+                new_balance: finalData?.points || pointsReward
             });
 
         } catch (e: any) {
-            console.error('[REWARDED-CLAIM] Error:', e);            return res.status(500).json({ error: e.message });
+            console.error('[REWARDED-CLAIM] Error:', e);
+            return res.status(500).json({ error: e.message });
         }
     }
 
