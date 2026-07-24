@@ -1,4 +1,3 @@
-// /api/rewarded-ad.ts — FINAL FIX: uuid + points entiers
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
@@ -31,9 +30,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-    // =============================================
-    // GET ?action=get
-    // =============================================
     if (req.method === 'GET' && req.query.action === 'get') {
         try {
             const userId = req.query.user_id as string;
@@ -47,11 +43,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             const today = new Date().toISOString().split('T')[0];
             const { data: todayViews } = await supabase
-                .from('transactions').select('id')                .eq('user_id', userId).eq('title', 'Pub récompensée')
+                .from('transactions').select('id')
+                .eq('user_id', userId).eq('title', 'Pub récompensée')
                 .gte('created_at', today + 'T00:00:00');
             const viewsToday = todayViews?.length || 0;
-            if (viewsToday >= config.daily_limit) {
-                return res.status(200).json({ available: false, reason: 'daily_limit_reached', views_today: viewsToday, daily_limit: config.daily_limit });
+            if (viewsToday >= config.daily_limit) {                return res.status(200).json({ available: false, reason: 'daily_limit_reached', views_today: viewsToday, daily_limit: config.daily_limit });
             }
 
             const { data: lastView } = await supabase
@@ -96,15 +92,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 points_reward: config.points_per_view,
                 views_today: viewsToday, daily_limit: config.daily_limit
             });
+
         } catch (e: any) {
             console.error('[REWARDED-GET] Error:', e.message);
             return res.status(500).json({ error: e.message });
-        }
-    }
+        }    }
 
-    // =============================================
-    // POST ?action=claim — CORRECTED FOR uuid
-    // =============================================
     if (req.method === 'POST' && req.query.action === 'claim') {
         try {
             const { token, user_id } = req.body;
@@ -129,25 +122,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             const pointsReward = Math.floor(session.points || DEFAULT_CONFIG.points_per_view);
 
-            // ✅ CORRECTION CLÉ : utiliser 'uuid' au lieu de 'user_id'
+            // ✅ FIX : user_id partout (pas uuid)
             const { data: userData, error: selectError } = await supabase
                 .from('user_data')
                 .select('points')
-                .eq('uuid', user_id)  // ← ICI : uuid, pas user_id
+                .eq('user_id', user_id)
                 .single();
 
             if (selectError || !userData) {
-                // Créer
                 const { error: insertError } = await supabase
                     .from('user_data')
-                    .insert({ uuid: user_id, points: pointsReward });  // ← ICI aussi : uuid
-                if (insertError) throw insertError;
+                    .insert({ user_id: user_id, points: pointsReward });
+                if (insertError) {
+                    console.error('[REWARDED] INSERT error:', insertError.message);
+                    // Fallback RPC
+                    await supabase.rpc('add_user_points', { p_user_id: user_id, p_points: pointsReward });
+                }
             } else {
-                // Mettre à jour
                 const { error: updateError } = await supabase
-                    .from('user_data')                    .update({ points: (userData.points || 0) + pointsReward })
-                    .eq('uuid', user_id);  // ← ICI aussi : uuid
-                if (updateError) throw updateError;
+                    .from('user_data')
+                    .update({ points: (userData.points || 0) + pointsReward })
+                    .eq('user_id', user_id);
+                if (updateError) {
+                    console.error('[REWARDED] UPDATE error:', updateError.message);
+                    // Fallback RPC                    await supabase.rpc('add_user_points', { p_user_id: user_id, p_points: pointsReward });
+                }
             }
 
             await supabase.from('transactions').insert({
@@ -157,7 +156,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 amount: pointsReward
             });
 
-            const { data: finalData } = await supabase.from('user_data').select('points').eq('uuid', user_id).single();
+            const { data: finalData } = await supabase.from('user_data').select('points').eq('user_id', user_id).single();
 
             return res.status(200).json({
                 success: true,
