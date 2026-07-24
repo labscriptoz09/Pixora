@@ -3,123 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔍 Pixora Debug</title>
+    <title>🔍 Pixora Debug — GSM</title>
     <style>
-        body { background: #0f0f14; color: #e5e7eb; font-family: -apple-system, sans-serif; padding: 1rem; }
-        .card { background: #1a1a24; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #374151; }
+        body { background: #0f0f14; color: #e5e7eb; font-family: sans-serif; padding: 1rem; }
+        .box { background: #1a1a24; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; border-left: 4px solid #8B5CF6; }
         h2 { color: #8B5CF6; margin-top: 0; }
-        .item { margin: 0.8rem 0; }
-        .key { color: #F59E0B; font-weight: 600; }
-        .val { color: #E5E7EB; }
+        .step { margin: 1rem 0; padding: 0.8rem; background: #1e293b; border-radius: 8px; font-size: 0.85rem; }
+        .ok { color: #10B981; }
         .error { color: #EF4444; font-weight: 600; }
-        .success { color: #10B981; }
-        button { background: #8B5CF6; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; margin-top: 1rem; cursor: pointer; }
-        pre { background: #1e293b; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; }
+        .warn { color: #F59E0B; }
+        pre { background: #0f172a; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; }
+        button { background: #8B5CF6; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; margin: 0.5rem 0; cursor: pointer; }
     </style>
 </head>
 <body>
     <h1>🔍 Pixora Debug — GSM</h1>
-    <div id="result"></div>
+    <div id="log"></div>
 
     <script>
-        async function runDebug() {
-            const resultEl = document.getElementById('result');
-            resultEl.innerHTML = '<div class="card"><p>🔍 Démarrage du diagnostic...</p></div>';
+        const log = (html) => {
+            document.getElementById('log').innerHTML += `<div class="box">${html}</div>`;
+        };
 
-            // Chargement Supabase JS
-            const supabaseScript = document.createElement('script');
-            supabaseScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.41.0/dist/umd/supabase.min.js';
-            supabaseScript.onload = async () => {
-                const supabase = window.supabase.createClient(
-                    'https://cfwzilhetkclpytjsopu.supabase.co',
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU'
-                );
+        log('<h2>⏳ Démarrage du diagnostic...</h2>');
 
-                const user = await supabase.auth.getUser();
-                if (!user.data.user) {
-                    resultEl.innerHTML = `
-                        <div class="card">
-                            <h2>❌ Pas connecté</h2>
-                            <p>Veuillez vous connecter sur le site avant d'exécuter ce debug.</p>
-                            <button onclick="location.reload()">Recharger</button>
-                        </div>
-                    `;
+        // ÉTAPE 1: Charger Supabase JS
+        const supabaseScript = document.createElement('script');
+        supabaseScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.41.0/dist/umd/supabase.min.js';
+        supabaseScript.onload = async () => {
+            log('<div class="step">✅ Supabase chargé</div>');
+
+            const supabase = window.supabase.createClient(
+                'https://cfwzilhetkclpytjsopu.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU'
+            );
+
+            try {
+                // ÉTAPE 2: User auth
+                const userRes = await supabase.auth.getUser();
+                const userId = userRes.data?.user?.id;
+                log(`<div class="step"><strong>User ID:</strong> <span class="${userId ? 'ok' : 'error'}">${userId || '❌ NON CONNECTÉ'}</span></div>`);
+
+                if (!userId) {
+                    log('<div class="box"><h2>🛑 Arrêt — Connectez-vous d\'abord sur le site</h2><p>Ouvrez pixora, connectez-vous, puis relancez ce debug.</p></div>');
                     return;
                 }
+                // ÉTAPE 3: Appeler /api/rewarded-ad?action=get
+                const getRes = await fetch(`/api/rewarded-ad?action=get&user_id=${encodeURIComponent(userId)}`);
+                const getData = await getRes.json();
+                log(`<div class="step"><strong>GET /rewarded-ad:</strong> status=${getRes.status} | available=${getData.available}</div>`);
+                if (getData.error) log(`<div class="step error">→ Erreur: ${getData.error}</div>`);
+                if (getData.message) log(`<div class="step warn">→ Message: ${getData.message}</div>`);
 
-                const userId = user.data.user.id;                const today = new Date().toISOString().split('T')[0];
+                // ÉTAPE 4: Lire transactions aujourd'hui
+                const today = new Date().toISOString().split('T')[0];
+                const { data: transData, error: transErr } = await supabase
+                    .from('transactions')
+                    .select('id, title, created_at')
+                    .eq('user_id', userId)
+                    .eq('title', 'Pub récompensée')
+                    .gte('created_at', today + 'T00:00:00');
 
-                const items = [];
+                log(`<div class="step"><strong>Transactions aujourd'hui:</strong> ${transData?.length || 0} ${transErr ? '(❌ erreur)' : ''}</div>`);
+                if (transErr) log(`<div class="step error">→ trans err: ${transErr.message}</div>`);
 
-                // 1. User data
+                // ÉTAPE 5: Lire user_data
+                const { data: userData, error: userErr } = await supabase
+                    .from('user_data')
+                    .select('points')
+                    .eq('user_id', userId)
+                    .single();
+                log(`<div class="step"><strong>Solde points:</strong> ${userData?.points || 0} ${userErr ? '(❌ erreur)' : ''}</div>`);
+                if (userErr) log(`<div class="step error">→ user err: ${userErr.message}</div>`);
+
+                // ÉTAPE 6: Test INSERT (sans bloquer)
                 try {
-                    const { data, error } = await supabase
-                        .from('user_data')
-                        .select('points')
-                        .eq('user_id', userId)
-                        .single();
-                    items.push({
-                        label: 'Solde points',
-                        value: data?.points ?? '0',
-                        error: error ? `<span class="error">${error.message}</span>` : ''
-                    });
-                } catch (e) {
-                    items.push({ label: 'Solde points', value: 'ERREUR', error: `<span class="error">${e.message}</span>` });
-                }
-
-                // 2. Transactions aujourd'hui
-                try {
-                    const { data, error } = await supabase
-                        .from('transactions')
-                        .select('id')
-                        .eq('user_id', userId)
-                        .eq('title', 'Pub récompensée')
-                        .gte('created_at', today + 'T00:00:00')
-                        .lte('created_at', today + 'T23:59:59');
-                    items.push({
-                        label: 'Transactions aujourd’hui',
-                        value: data?.length ?? '0',
-                        error: error ? `<span class="error">${error.message}</span>` : ''
-                    });
-                } catch (e) {
-                    items.push({ label: 'Transactions aujourd’hui', value: 'ERREUR', error: `<span class="error">${e.message}</span>` });
-                }
-
-                // 3. Test INSERT (sans bloquer)
-                try {
+                    const testId = 'DEBUG-' + Date.now();
                     const { data, error } = await supabase
                         .from('transactions')
-                        .insert({
-                            user_id: 'DEBUG-' + Date.now(),
-                            type: 'debug',
-                            title: 'TEST',
-                            amount: 0
-                        })
+                        .insert({ user_id: testId, type: 'debug', title: 'TEST', amount: 0 })
                         .select();
-                    items.push({                        label: 'Test INSERT',
-                        value: error ? '<span class="error">ÉCHEC</span>' : '<span class="success">SUCCÈS</span>',
-                        error: error ? `<span class="error">${error.message}</span>` : ''
-                    });
-                    // Nettoyage
-                    if (data && data.length > 0) {
+                    log(`<div class="step">Test INSERT: ${error ? '<span class="error">ÉCHEC</span>' : '<span class="ok">SUCCÈS</span>'}</div>`);
+                    if (!error && data?.length > 0) {
                         await supabase.from('transactions').delete().eq('title', 'TEST');
                     }
                 } catch (e) {
-                    items.push({ label: 'Test INSERT', value: '<span class="error">ÉCHEC</span>', error: `<span class="error">${e.message}</span>` });
+                    log(`<div class="step error">Test INSERT échoué: ${e.message}</div>`);
                 }
 
-                // Affichage
-                let html = `<div class="card"><h2>📊 Résultats</h2>`;
-                items.forEach(item => {
-                    html += `<div class="item"><span class="key">${item.label}:</span> <span class="val">${item.value}</span> ${item.error}</div>`;
-                });
-                html += '</div>';
-                resultEl.innerHTML = html;
-            };
-            document.head.appendChild(supabaseScript);
-        }
+                // RÉSUMÉ FINAL
+                log(`<div class="box"><h2>📊 Résumé</h2>
+                    <p><strong>User ID:</strong> ${userId}</p>
+                    <p><strong>GET disponible:</strong> ${getData.available ? '✅ Oui' : '❌ Non'}</p>
+                    <p><strong>Transactions aujourd’hui:</strong> ${transData?.length || 0}</p>
+                    <p><strong>Solde:</strong> ${userData?.points || 0}</p>                    <p><strong>Problème probable:</strong> 
+                    ${transData?.length === 0 && getData.available === true 
+                        ? '➡️ L\'insertion dans transactions échoue (UUID invalide ou RLS)' 
+                        : 'Autre cause'}
+                    </p>
+                </div>`);
 
-        window.onload = runDebug;
+            } catch (e) {
+                log(`<div class="box"><h2>💥 Erreur fatale</h2><pre>${e.stack || e.message}</pre></div>`);
+            }
+        };
+        document.head.appendChild(supabaseScript);
     </script>
 </body>
 </html>
