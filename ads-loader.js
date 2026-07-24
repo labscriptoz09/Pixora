@@ -1,8 +1,8 @@
-// ads-loader.js v36.1 — SSA Visible + Modale Rewarded avec CLIC OBLIGATOIRE
+// ads-loader.js v36.2 — SSA Visible + Modale Rewarded avec CLIC OBLIGATOIRE (CORRIGÉ)
 (function() {
     'use strict';
 
-    console.log('[ADS] v36.1 START — Clic obligatoire activé');
+    console.log('[ADS] v36.2 START');
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -20,7 +20,7 @@
     }
 
     // =============================================
-    // CSS (Identique v34 + Messages état)
+    // CSS
     // =============================================
     var style = document.createElement('style');
     style.textContent = '.pxr-wrapper{width:100%;margin:1rem 0;border:2px dashed #8B5CF6;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:12px;text-align:center;max-height:400px;overflow:hidden}.pxr-ad-box{max-height:280px;overflow:hidden;margin-bottom:0.5rem}.pxr-ad-box img{max-width:100%;max-height:250px;object-fit:contain}.pxr-label{font-size:0.7rem;color:#8B5CF6;margin-bottom:0.5rem;font-weight:700}.pxr-btn-box{margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(139,92,246,0.2)}.pxr-rw-btn{background:linear-gradient(135deg,#F59E0B,#EF4444);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;display:inline-flex;align-items:center;gap:0.4rem}.pxr-rw-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.4)}' +
@@ -29,7 +29,7 @@
     document.head.appendChild(style);
 
     // =============================================
-    // MODALE REWARDED (Création + Logique)
+    // MODALE REWARDED
     // =============================================
     function createRewardedModal() {
         if (document.getElementById('pxr-rw-overlay')) return;
@@ -47,10 +47,7 @@
     var rwCurrentToken = null;
     var rwCurrentUserId = null;
     var rwDailyLimit = 5;
-    // ✅ FLAG POUR LE CLIC OBLIGATOIRE
-    window._rwClicked = false;
-
-    // ✅ Affiche un message d'état clair dans la modale
+    var rwClicked = false; // ✅ FLAG CLIC OBLIGATOIRE
     function showStatusMessage(type, title, message) {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
@@ -59,13 +56,24 @@
         document.body.style.overflow = 'hidden';
     }
 
-    // ✅ Restaure le contenu normal de la modale
     function restoreModalContent() {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
         bodyContent.innerHTML = '<div class="pxr-rw-reward"><i class="fas fa-bolt"></i> <span id="pxr-rw-points">1</span> points</div><div class="pxr-rw-info">Regarde cette annonce pendant <span id="pxr-rw-timer-val">20</span>s pour gagner des points.</div><iframe id="pxr-rw-iframe" class="pxr-rw-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe><div class="pxr-rw-timer" id="pxr-rw-timer-display">20s</div><button id="pxr-rw-claim-btn" class="pxr-rw-btn-claim" disabled><i class="fas fa-clock"></i> Patientez...</button><div class="pxr-rw-limit" id="pxr-rw-limit-info"></div><div class="pxr-rw-error" id="pxr-rw-error" style="display:none"></div>';
         document.getElementById('pxr-rw-claim-btn').addEventListener('click', window.pxrClaimRewardedAd);
     }
+
+    // ✅ ÉCOUTEUR POSTMESSAGE (reçoit le signal de clic depuis l'iframe)
+    window.addEventListener('message', function(e) {
+        if (e.data && e.data === 'rw-click') {
+            rwClicked = true;
+            var btn = document.getElementById('pxr-rw-claim-btn');
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                btn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
+            }
+        }
+    });
 
     window.pxrOpenRewardedAd = async function() {
         try {
@@ -88,31 +96,21 @@
                     return;
                 }
                 pxrNotify('Aucune pub disponible.', 'error');
-                return;
-            }
+                return;            }
 
-            // ✅ Pub disponible → ouvrir la modale normale
             restoreModalContent();
             rwCurrentToken = data.token;
             rwDailyLimit = data.daily_limit || 5;
+            rwClicked = false; // ✅ Reset du flag
 
-            document.getElementById('pxr-rw-points').textContent = data.points_reward;            document.getElementById('pxr-rw-timer-val').textContent = data.timer_seconds;
+            document.getElementById('pxr-rw-points').textContent = data.points_reward;
+            document.getElementById('pxr-rw-timer-val').textContent = data.timer_seconds;
             document.getElementById('pxr-rw-limit-info').textContent = data.views_today + '/' + rwDailyLimit + ' vues aujourd\'hui';
             document.getElementById('pxr-rw-error').style.display = 'none';
 
             var iframe = document.getElementById('pxr-rw-iframe');
-            if (data.ad_url) {
-                iframe.src = data.ad_url;
-                // ✅ AJOUT CRITIQUE : injecter un écouteur sur le lien dans l'iframe (si possible via code HTML)
-                // Comme on ne peut pas accéder au DOM de l'iframe (SOP), on fait confiance au fait que l'utilisateur clique sur le bouton que TU as mis dans le code
-                // Donc : dans adminads.html, quand tu mets le code, ajoute un onclick qui déclenche :
-                //   onclick="window._rwClicked=true;document.querySelector('#pxr-rw-claim-btn').disabled=false;"
-                // Mais comme on ne peut pas garantir ça, on utilise une autre méthode :
-                // → On met un bouton personnalisé dans la modale, et on ne charge PAS l'iframe si c'est un smartlink.
-            } else if (data.ad_html) {
-                // Si c'est du HTML (ex: ton instruction + bouton), on injecte directement
-                iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + data.ad_html + '</body></html>';
-            }
+            if (data.ad_url) iframe.src = data.ad_url;
+            else if (data.ad_html) iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + data.ad_html + '</body></html>';
 
             var claimBtn = document.getElementById('pxr-rw-claim-btn');
             claimBtn.disabled = true;
@@ -126,9 +124,6 @@
             timerDisplay.textContent = remaining + 's';
             timerDisplay.classList.remove('done');
 
-            // ✅ RÉINITIALISER LE FLAG À CHAQUE OUVERTURE
-            window._rwClicked = false;
-
             if (rwTimerInterval) clearInterval(rwTimerInterval);
             rwTimerInterval = setInterval(function() {
                 remaining--;
@@ -138,21 +133,20 @@
                     timerDisplay.textContent = '✅ Terminé !';
                     timerDisplay.classList.add('done');
 
-                    // ✅ VÉRIFICATION FINALE : CLIC OBLIGATOIRE
-                    if (window._rwClicked === true) {
+                    // ✅ VÉRIFICATION CLIC OBLIGATOIRE
+                    if (rwClicked === true) {
                         claimBtn.disabled = false;
                         claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
-                        claimBtn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
                     } else {
                         claimBtn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
-                        claimBtn.style.background = 'rgba(239,68,68,0.5)';                        claimBtn.disabled = true;
-                        // Optionnel: relancer un mini-timer de grâce
-                        setTimeout(() => {
-                            if (window._rwClicked === true) {
+                        claimBtn.style.background = 'rgba(239,68,68,0.5)';
+                        // Délai de grâce 10s
+                        setTimeout(function() {
+                            if (rwClicked === true) {
                                 claimBtn.disabled = false;
                                 claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
-                                claimBtn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
-    }, 10000);
+                                claimBtn.style.background = 'linear-gradient(135deg,#10B981,#059669)';                            }
+                        }, 10000);
                     }
                 } else {
                     timerDisplay.textContent = remaining + 's';
@@ -164,43 +158,26 @@
         }
     };
 
-    // ✅ FONCTION D'ASSISTANCE : permettre au Smartlink de signaler le clic
-    // Tu dois ajouter dans le CODE de ta pub (dans adminads.html) :
-    //   onclick="window.parent.postMessage('rw-click','*')"
-    // Et ici, on écoute :
-    window.addEventListener('message', function(e) {
-        if (e.data === 'rw-click') {
-            window._rwClicked = true;
-            var btn = document.getElementById('pxr-rw-claim-btn');
-            if (btn && btn.disabled && !btn.classList.contains('done')) {
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
-                btn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
-                btn.disabled = false;
-            }
-        }
-    });
-
     window.pxrClaimRewardedAd = async function() {
         try {
             if (!rwCurrentToken || !rwCurrentUserId) return;
             var claimBtn = document.getElementById('pxr-rw-claim-btn');
             if (claimBtn.disabled) {
-                pxrNotify('⚠️ Vous devez cliquer sur l\'offre avant de réclamer.', 'warning');
+                pxrNotify('️ Vous devez cliquer sur l\'offre avant de réclamer.', 'error');
                 return;
             }
-
             claimBtn.disabled = true;
             claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...';
 
             var res = await fetch('/api/rewarded-ad?action=claim', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },                body: JSON.stringify({ token: rwCurrentToken, user_id: rwCurrentUserId })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: rwCurrentToken, user_id: rwCurrentUserId })
             });
             var data = await res.json();
 
             if (data.success) {
                 pxrNotify('+' + data.points_earned + ' points ! Solde : ' + data.new_balance, 'success');
-                // ✅ Mettre à jour le compteur localement
                 var limitEl = document.getElementById('pxr-rw-limit-info');
                 if (limitEl) {
                     var parts = limitEl.textContent.split('/');
@@ -217,8 +194,7 @@
                     errEl.textContent = data.error || 'Erreur lors de la validation.';
                 }
                 errEl.style.display = 'block';
-                claimBtn.disabled = false;
-                claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                claimBtn.disabled = false;                claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
             }
         } catch (e) {
             document.getElementById('pxr-rw-error').textContent = 'Erreur réseau. Réessayez.';
@@ -238,12 +214,13 @@
         var iframe = document.getElementById('pxr-rw-iframe');
         if (iframe) { iframe.src = ''; iframe.srcdoc = ''; }
         rwCurrentToken = null;
-        window._rwClicked = false; // Réinitialiser
+        rwClicked = false;
     };
 
     // =============================================
-    // SSA VISIBLE (IDENTIQUE v34 — AUCUN CHANGEMENT)
-    // =============================================    function getPage() {
+    // SSA VISIBLE (inchangé)
+    // =============================================
+    function getPage() {
         var p = window.location.pathname.toLowerCase();
         if (p.indexOf('earn') !== -1) return 'earn';
         if (p.indexOf('galer') !== -1 || p.indexOf('gallery') !== -1) return 'galerie';
@@ -266,8 +243,7 @@
         var btnBox = document.createElement('div');
         btnBox.className = 'pxr-btn-box';
         var btn = document.createElement('button');
-        btn.className = 'pxr-rw-btn';
-        btn.innerHTML = '🎁 Gagner des points';
+        btn.className = 'pxr-rw-btn';        btn.innerHTML = '🎁 Gagner des points';
         btn.addEventListener('click', window.pxrOpenRewardedAd);
         btnBox.appendChild(btn);
         wrapper.appendChild(btnBox);
@@ -292,7 +268,8 @@
             var main = document.querySelector('.main-content') || document.querySelector('main') || document.body;
 
             var topSlot = createProtectedSlot('pxr-top');
-            var midSlot = createProtectedSlot('pxr-mid');            var btmSlot = createProtectedSlot('pxr-btm');
+            var midSlot = createProtectedSlot('pxr-mid');
+            var btmSlot = createProtectedSlot('pxr-btm');
 
             var hero = main.querySelector('.hero');
             if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
@@ -315,8 +292,7 @@
             var res2 = await fetch('/api/serve-ad?page=' + page + '&position=middle');
             var data2 = await res2.json();
             if (data2.html && data2.html.trim().length > 0) injectHtmlWithScripts(midSlot.adBox, data2.html);
-            else if (htmlTop) injectHtmlWithScripts(midSlot.adBox, htmlTop);
-            else midSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
+            else if (htmlTop) injectHtmlWithScripts(midSlot.adBox, htmlTop);            else midSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
 
             var res3 = await fetch('/api/serve-ad?page=' + page + '&position=bottom');
             var data3 = await res3.json();
@@ -324,13 +300,10 @@
             else if (htmlTop) injectHtmlWithScripts(btmSlot.adBox, htmlTop);
             else btmSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
 
-            console.log('[ADS] v36.1 DONE — SSA visible + modale rewarded avec CLIC OBLIGATOIRE');
+            console.log('[ADS] v36.2 DONE');
         } catch (e) { console.error('[ADS] Init error:', e); }
     }
 
-    // =============================================
-    // INIT
-    // =============================================
     async function init() {
         createRewardedModal();
         await loadAndInjectAds();
