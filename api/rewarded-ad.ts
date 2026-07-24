@@ -7,7 +7,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const DEFAULT_CONFIG = {
     points_per_view: 1,
     timer_seconds: 20,
-    daily_limit: 15,
+    daily_limit: 5,
     cooldown_seconds: 60,
 };
 
