@@ -180,7 +180,7 @@
         .auth-footer a{color:var(--prim);font-weight:500}
         .discount-badge{display:inline-flex;align-items:center;gap:0.3rem;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(249,115,22,0.2));border:1px solid rgba(251,191,36,0.4);color:var(--gold);font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:6px;margin-top:4px;font-family:var(--mono)}
         .cost-original{text-decoration:line-through;opacity:0.5;font-size:0.6rem;margin-right:4px}
-        /* ✅ FREEMIUM DOUX — Styles ajoutés */
+        /* ✅ FREEMIUM DOUX */
         .pxr-soft-signup{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:pxrFadeIn 0.3s ease}
         @keyframes pxrFadeIn{from{opacity:0}to{opacity:1}}
         .pxr-soft-modal{background:var(--surf);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(139,92,246,0.3);border-radius:24px;padding:2rem 1.5rem;max-width:400px;width:100%;text-align:center;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
@@ -190,7 +190,7 @@
         .pxr-soft-benefits{text-align:left;margin-bottom:1.5rem;padding:0 0.5rem}
         .pxr-soft-benefit{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;font-size:0.82rem;color:var(--text)}
         .pxr-soft-benefit i{color:var(--success);font-size:0.8rem;width:16px;text-align:center}
-        .pxr-soft-cta{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;text-decoration:none;border-radius:12px;font-weight:700;font-size:0.95rem;margin-bottom:0.8rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+        .pxr-soft-cta{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;text-decoration:none;border-radius:12px;font-weight:700;font-size:0.95rem;margin-bottom:0.8rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
         .pxr-soft-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         .pxr-soft-skip{background:none;border:none;color:var(--dim);cursor:pointer;font-size:0.8rem;padding:0.5rem;transition:color 0.2s}
         .pxr-soft-skip:hover{color:var(--muted)}
@@ -310,7 +310,7 @@
 <script src="ads-loader.js"></script>
 <script>
 // =============================================
-// ✅ FREEMIUM DOUX — Système complet
+// ✅ FREEMIUM DOUX
 // =============================================
 var PX_ANON_KEY = 'pxr_anon_gen_count';
 var PX_FREE_LIMIT = 3;
@@ -328,7 +328,6 @@ function incrementAnonCount() {
 function showSoftSignupPrompt() {
     if (sessionStorage.getItem('pxr_signup_shown')) return;
     sessionStorage.setItem('pxr_signup_shown', '1');
-
     var overlay = document.createElement('div');
     overlay.id = 'pxr-soft-signup';
     overlay.className = 'pxr-soft-signup';
@@ -341,14 +340,13 @@ function showSoftSignupPrompt() {
             '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées sans compteur</div>' +
             '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div>' +
             '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle</div>' +
-        '</div>' +        '<a href="/index.html?signup=true" class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove()">S\'inscrire gratuitement</a>' +
-        '<button class="pxr-soft-skip" onclick="document.getElementById(\'pxr-soft-signup\').remove()">Non merci, continuer en anonyme</button>' +
+        '</div>' +
+        '<button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button>' +        '<button class="pxr-soft-skip" onclick="document.getElementById(\'pxr-soft-signup\').remove()">Non merci, continuer en anonyme</button>' +
     '</div>';
     document.body.appendChild(overlay);
 }
 
 function checkFreemiumAfterGeneration() {
-    // Ne vérifier que si utilisateur NON connecté
     db.auth.getUser().then(function(result) {
         if (!result.data.user) {
             var count = incrementAnonCount();
@@ -356,13 +354,10 @@ function checkFreemiumAfterGeneration() {
                 showSoftSignupPrompt();
             }
         } else {
-            // Utilisateur connecté → reset compteur anonyme
             localStorage.removeItem(PX_ANON_KEY);
         }
     });
 }
-// =============================================
-// FIN FREEMIUM DOUX
 // =============================================
 
 var I18N = {};
@@ -391,11 +386,11 @@ function t(key) {
     }
     return val || key;
 }
+
 async function loadLang(lang) {
     currentLang = lang;
     I18N = JSON.parse(JSON.stringify(FR_TRANSLATIONS));
-    if (lang !== 'fr') {
-        try {
+    if (lang !== 'fr') {        try {
             var res = await fetch('/lang/' + lang + '.json');
             if (res.ok) {
                 var data = await res.json();
@@ -439,12 +434,12 @@ function detectLang() {
     if (nav.indexOf('en') !== -1) return 'en';
     return 'fr';
 }
+
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var BUCKET = 'pixora-gallery';
-var curType = 'image';
-var lbUrl = '';
+var curType = 'image';var lbUrl = '';
 var lbType = 'image';
 var DEFAULT_TIERS = {
     1: { costs:{image:4,video:18}, rewards:{video:8,survey:20,sponsor:2,streak:3,share:5}, limits:{video:3,sponsor:5,share:1} },
@@ -488,12 +483,12 @@ function buildImageOverlay(){return'<div class="result-overlay"><button class="i
 function detectReferral(){var params=new URLSearchParams(window.location.search);var ref=params.get('ref');if(ref&&ref.length>10){pendingReferrer=ref;localStorage.setItem('pixora_ref',ref)}else{pendingReferrer=localStorage.getItem('pixora_ref')}}
 async function processReferral(newUserId){var referrerId=pendingReferrer||localStorage.getItem('pixora_ref');if(!referrerId||referrerId===newUserId)return;try{var refConfigR=await db.from('admin_config').select('value').eq('key','referral_config').single();var config=(refConfigR.data&&refConfigR.data.value)?refConfigR.data.value:{enabled:true,points:10};if(!config.enabled)return;var existR=await db.from('referrals').select('id').eq('sponsor_id',referrerId).eq('referred_id',newUserId).single();if(existR.data)return;await db.from('referrals').insert({sponsor_id:referrerId,referred_id:newUserId,points:config.points||10,validated:false});localStorage.removeItem('pixora_ref');pendingReferrer=null}catch(e){console.error('Referral error:',e)}}
 async function validatePendingReferral(userId){try{var refsR=await db.from('referrals').select('id').eq('referred_id',userId).eq('validated',false);var refs=refsR.data||[];for(var i=0;i<refs.length;i++){await db.from('referrals').update({validated:true}).eq('id',refs[i].id)}}catch(e){console.error('Validate referral error:',e)}}
-async function ensureUserData(userId){try{var existing=await db.from('user_data').select('user_id').eq('user_id',userId).single();if(!existing.data){await db.from('user_data').insert({user_id:userId,points:0,streak:0,last_login:null,total_generated:0,total_earned:0,tier:1})}}catch(e){console.error('Ensure user_data error:',e)}}async function grantSignupBonus(userId){try{var bonusR=await db.from('admin_config').select('value').eq('key','signup_bonus').single();var bonus=(bonusR.data&&bonusR.data.value!==undefined)?bonusR.data.value:15;if(bonus<=0)return;var existR=await db.from('transactions').select('id').eq('user_id',userId).eq('title','Bonus inscription').single();if(existR.data)return;var ud=await db.from('user_data').select('points,total_earned').eq('user_id',userId).single();var curPts=(ud.data&&ud.data.points)||0;var curEarned=(ud.data&&ud.data.total_earned)||0;await db.from('user_data').update({points:curPts+bonus,total_earned:curEarned+bonus}).eq('user_id',userId);await db.from('transactions').insert({user_id:userId,type:'earned',title:'Bonus inscription',amount:bonus})}catch(e){console.error('Signup bonus error:',e)}}
+async function ensureUserData(userId){try{var existing=await db.from('user_data').select('user_id').eq('user_id',userId).single();if(!existing.data){await db.from('user_data').insert({user_id:userId,points:0,streak:0,last_login:null,total_generated:0,total_earned:0,tier:1})}}catch(e){console.error('Ensure user_data error:',e)}}
+async function grantSignupBonus(userId){try{var bonusR=await db.from('admin_config').select('value').eq('key','signup_bonus').single();var bonus=(bonusR.data&&bonusR.data.value!==undefined)?bonusR.data.value:15;if(bonus<=0)return;var existR=await db.from('transactions').select('id').eq('user_id',userId).eq('title','Bonus inscription').single();if(existR.data)return;var ud=await db.from('user_data').select('points,total_earned').eq('user_id',userId).single();var curPts=(ud.data&&ud.data.points)||0;var curEarned=(ud.data&&ud.data.total_earned)||0;await db.from('user_data').update({points:curPts+bonus,total_earned:curEarned+bonus}).eq('user_id',userId);await db.from('transactions').insert({user_id:userId,type:'earned',title:'Bonus inscription',amount:bonus})}catch(e){console.error('Signup bonus error:',e)}}
 async function loadUserTier(){try{var u=await getUser();if(!u){currentTier=1;currentDiscountUntil=null;updateCostUI();return}var d=await getUserData();currentTier=d.tier||1;currentDiscountUntil=d.discount_until||null}catch(e){currentTier=1;currentDiscountUntil=null}updateCostUI()}
 function notify(m,t_type){t_type=t_type||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t_type;setTimeout(function(){n.classList.remove('show')},3000)}
 async function getUser(){var r=await db.auth.getUser();return r.data.user}
-async function isLogged(){return!!await getUser()}
-function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
+async function isLogged(){return!!await getUser()}function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeAuth(){document.getElementById('auth-modal').classList.remove('active');document.body.style.overflow=''}
 document.getElementById('auth-modal').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(tab,i){tab.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
@@ -514,15 +509,95 @@ async function dlDirect(btn){var card=btn.closest('.result-card');var media=card
 function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(function(c,i){c.classList.toggle('active',(tp==='image'&&i===0)||(tp==='video'&&i===1))})}
 async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.storage.from(BUCKET).list('',{limit:20,sortBy:{column:'created_at',order:'desc'}});if(!result.data||result.data.length===0)return;var now=Date.now();grid.innerHTML='';result.data.forEach(function(file){var createdAt=new Date(file.created_at).getTime();if((now-createdAt)<3600000){var urlData=db.storage.from(BUCKET).getPublicUrl(file.name);var url=urlData.data.publicUrl;var isVideo=file.name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';var vid=card.querySelector('video');vid.onmouseenter=function(){vid.play()};vid.onmouseleave=function(){vid.pause();vid.currentTime=0}}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=function(){openLB(url,isVideo?'video':'image')};grid.appendChild(card);setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000-(now-createdAt))}})}catch(err){console.error('Studio load error:',err)}}
 async function uploadToStorage(mediaUrl,type){try{var response=await fetch(mediaUrl);var blob=await response.blob();var prefix=type==='video'?'_video_':'_img_';var fileName=Date.now()+prefix+Math.floor(Math.random()*100000)+(type==='video'?'.mp4':'.jpg');var contentType=type==='video'?'video/mp4':'image/jpeg';await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false});loadStudio()}catch(err){console.error('Upload failed:',err)}}
-async function generate(){if(curType==='video'){notifyVideoSoon();return}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');return}var logged=await isLogged();if(!logged){openAuth();return}await loadUserTier();var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];var userData=await getUserData();var baseCost=c.costs.image;var isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();var cost=isDiscounted?Math.ceil(baseCost/2):baseCost;if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid');var card=document.createElement('div');card.className='result-card';var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now();var tmr=document.getElementById(tmrId);var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);var media=card.querySelector('img');var loaded=false;var currentUser=await getUser();try{var result=await generateWithFallback(p,'image');var url=result.url;var providerName=result.provider;if(providerName!=='fal.ai'&&providerName!=='Pollinations'){notify(t('notifications.via_provider')+' '+providerName,'success')}media.src=url;function onLoad(){if(loaded)return;loaded=true;clearInterval(iv);var elapsed=((Date.now()-st)/1000).toFixed(1);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image')};uploadToStorage(url,'image');saveTransaction('spent','Génération image'+(isDiscounted?' (-50%)':''),-cost).then(function(){updateUI()});if(currentUser&&currentUser.id){validatePendingReferral(currentUser.id);getUserData().then(function(freshData){var newGen=(freshData.total_generated||0)+1;db.from('user_data').update({total_generated:newGen}).eq('user_id',currentUser.id).catch(function(){})})}var discountMsg=isDiscounted?t('notifications.discount_tag'):'';notify('✅ '+t('results.generated_in')+' '+elapsed+'s ! (-'+cost+' '+t('generator.cost_pts')+discountMsg+')','success');
-// ✅ FREEMIUM DOUX : Vérifier après génération réussie
-checkFreemiumAfterGeneration();
-setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000)}media.onload=onLoad;media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}}catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}}
-var authNotified=false;
-db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();
-// ✅ FREEMIUM DOUX : Reset compteur anonyme à la connexion
-localStorage.removeItem(PX_ANON_KEY);
-if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED'){updateUI()}});
+
+// ✅ GENERATE CORRIGÉ : Libre pour anonymes, coût uniquement si connecté
+async function generate(){
+    if(curType==='video'){notifyVideoSoon();return}
+    var p=document.getElementById('prompt').value.trim();
+    if(!p){notify(t('notifications.enter_prompt'),'error');return}
+
+    var logged=await isLogged();
+    var cost=0;
+    var isDiscounted=false;
+
+    // ✅ Coût en points UNIQUEMENT si connecté
+    if(logged){
+        await loadUserTier();
+        var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];
+        var userData=await getUserData();
+        var baseCost=c.costs.image;
+        isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();
+        cost=isDiscounted?Math.ceil(baseCost/2):baseCost;
+        if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}
+    }
+
+    notify(t('notifications.generating'),'success');
+    var grid=document.getElementById('results-grid');
+    var card=document.createElement('div');
+    card.className='result-card';
+    var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+    card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();
+    grid.insertBefore(card,grid.firstChild);    var st=Date.now();
+    var tmr=document.getElementById(tmrId);
+    var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);
+    var media=card.querySelector('img');
+    var loaded=false;
+    var currentUser=await getUser();
+
+    try{
+        var result=await generateWithFallback(p,'image');
+        var url=result.url;
+        var providerName=result.provider;
+        if(logged&&providerName!=='fal.ai'&&providerName!=='Pollinations'){notify(t('notifications.via_provider')+' '+providerName,'success')}
+        media.src=url;
+
+        function onLoad(){
+            if(loaded)return;
+            loaded=true;
+            clearInterval(iv);
+            var elapsed=((Date.now()-st)/1000).toFixed(1);
+            var to=card.querySelector('.timer-overlay');
+            if(to)to.remove();
+            media.style.opacity='1';
+            card.onclick=function(){openLB(url,'image')};
+            uploadToStorage(url,'image');
+
+            // ✅ Déduire points + incrémenter total_generated UNIQUEMENT si connecté
+            if(logged&&currentUser&&currentUser.id){
+                saveTransaction('spent','Génération image'+(isDiscounted?' (-50%)':''),-cost).then(function(){updateUI()});
+                validatePendingReferral(currentUser.id);
+                getUserData().then(function(freshData){
+                    var newGen=(freshData.total_generated||0)+1;
+                    db.from('user_data').update({total_generated:newGen}).eq('user_id',currentUser.id).catch(function(){});
+                });
+            }
+
+            var discountMsg=isDiscounted?t('notifications.discount_tag'):'';
+            var costDisplay=logged?(' (-'+cost+' '+t('generator.cost_pts')+discountMsg+')'):'';
+            notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+costDisplay,'success');
+
+            // ✅ FREEMIUM DOUX : Vérifier après génération
+            checkFreemiumAfterGeneration();
+
+            setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000);
+        }
+        media.onload=onLoad;
+        media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}
+    }catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}
+}
+
+var authNotified=false;db.auth.onAuthStateChange(async function(event){
+    if(event==='SIGNED_IN'){
+        await loadUserTier();updateUI();closeAuth();
+        // ✅ Reset compteur anonyme à la connexion
+        localStorage.removeItem(PX_ANON_KEY);
+        if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}
+    }else if(event==='SIGNED_OUT'){
+        currentTier=1;currentDiscountUntil=null;
+        if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}
+        updateCostUI();updateUI();authNotified=false
+    }else if(event==='TOKEN_REFRESHED'){updateUI()}
+});
 document.addEventListener('DOMContentLoaded',async function(){await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await loadStudio()});
 </script>
 </body>
