@@ -83,23 +83,20 @@
         .ref-stat{text-align:center}
         .ref-stat-value{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold)}
         .ref-stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
-        .pending-ref-list{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.6rem}
-        .pending-ref-card{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:all 0.2s}
-        .pending-ref-card:hover{border-color:var(--gold);background:rgba(251,191,36,0.1)}
-        .pending-ref-info{display:flex;align-items:center;gap:0.8rem}
-        .pending-ref-icon{width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--gold)}
-        .pending-ref-details h4{font-size:0.9rem;font-weight:600;margin-bottom:0.1rem}
-        .pending-ref-details p{font-size:0.75rem;color:var(--muted)}
-        .btn-claim-ref{padding:0.5rem 1rem;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;background:var(--gold);color:#000;transition:all 0.2s;display:flex;align-items:center;gap:0.3rem;white-space:nowrap}
-        .btn-claim-ref:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(251,191,36,0.3)}
-        .btn-claim-ref:disabled{background:var(--border);color:var(--muted);cursor:default;transform:none;box-shadow:none}
+        .referral-history{margin-top:1.5rem;display:flex;flex-direction:column;gap:0.6rem}
+        .referral-history-item{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:0.8rem}
+        .referral-history-icon{width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--success);flex-shrink:0}
+        .referral-history-details{flex:1;min-width:0}
+        .referral-history-details h4{font-size:0.85rem;font-weight:600;margin-bottom:0.1rem}
+        .referral-history-details p{font-size:0.75rem;color:var(--muted)}
+        .referral-history-points{font-family:var(--mono);font-size:0.85rem;font-weight:700;color:var(--gold);flex-shrink:0}
         .pending-ref-empty{text-align:center;padding:1rem;color:var(--dim);font-size:0.85rem;font-style:italic}
         .earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
         .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all 0.3s}
-        .earn-card.completed{opacity:0.7}        .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+        .earn-card.completed{opacity:0.7}
+        .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
         .card-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(236,72,153,0.2));display:flex;align-items:center;justify-content:center;font-size:1.8rem}
-        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}
-        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
+        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
         .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem}
         .ad-container{margin:1rem 0;border-radius:10px;overflow:hidden;background:#fff}
         .ad-container iframe{width:100%;height:270px;border:none;display:block}
@@ -128,8 +125,6 @@
             .streak-days{justify-content:center}
             .referral-link-box{flex-direction:column}
             .referral-stats{justify-content:center}
-            .pending-ref-card{flex-direction:column;text-align:center}
-            .pending-ref-info{flex-direction:column}
         }
     </style>
 </head>
@@ -145,11 +140,11 @@
                 <option value="en">🇬🇧 EN</option>
             </select>
             <div class="balance-pill">
-                <i class="fas fa-coins"></i>                <span id="pointsDisplay">---</span>
+                <i class="fas fa-coins"></i>
+                <span id="pointsDisplay">---</span>
             </div>
         </div>
     </header>
-
     <main>
         <div class="validation-banner" id="validationBanner" style="display:none">
             <i class="fas fa-check-circle"></i>
@@ -188,17 +183,17 @@
         <div class="section-title"><i class="fas fa-user-friends"></i> <span data-i18n="sections.referral">Parrainage</span></div>
         <div class="referral-card">
             <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem" data-i18n="referral.title_html">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
-            <p style="font-size:0.85rem;color:var(--muted)" data-i18n="referral.desc">Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.</p>
+            <p style="font-size:0.85rem;color:var(--muted)" data-i18n="referral.desc_auto">Partagez votre lien unique. Les points sont crédités automatiquement quand vos amis s'inscrivent.</p>
             <div class="referral-link-box">
                 <input type="text" class="referral-input" id="referralLink" readonly value="...">
                 <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> <span data-i18n="referral.copy">Copier</span></button>
             </div>
             <div class="referral-stats">
-                <div class="ref-stat"><div class="ref-stat-value" id="refCount">0</div><div class="ref-stat-label" data-i18n="referral.godchildren">Filleuls</div></div>                <div class="ref-stat"><div class="ref-stat-value" id="refPoints">0</div><div class="ref-stat-label" data-i18n="referral.points_earned">Points gagnés</div></div>
+                <div class="ref-stat"><div class="ref-stat-value" id="refCount">0</div><div class="ref-stat-label" data-i18n="referral.godchildren">Filleuls</div></div>
+                <div class="ref-stat"><div class="ref-stat-value" id="refPoints">0</div><div class="ref-stat-label" data-i18n="referral.points_earned">Points gagnés</div></div>
             </div>
-            <div id="pendingReferralsContainer"></div>
+            <div id="referralHistoryContainer"></div>
         </div>
-
         <div class="section-title"><i class="fas fa-ad"></i> <span data-i18n="sections.ads">Offres Sponsorisées</span></div>
         <div class="earn-grid" id="adsContainer">
             <div class="empty-state">
@@ -220,7 +215,7 @@ var EARN_I18N = {
         bonus:{claim:'Réclamer',claimed:'✅ Bonus Réclamé !',day:'🔥 Jour',come_back:'Revenez demain pour continuer votre série',login_pts:'pts connexion',streak_pts:'pts streak',already_claimed:'Déjà réclamé',error:'Erreur lors de la réclamation du bonus.',impossible:'Impossible de réclamer le bonus.',network_error:'Erreur réseau. Réessayez.'},
         tasks:{no_tasks:'Aucune tâche disponible',today:"aujourd'hui",done:'Terminé',do:'Faire',limit_reached:"Limite atteinte pour aujourd'hui",coming_soon:'Cette tâche sera disponible prochainement.',loading_error:'Erreur chargement tâches',vote_detected:'✅ Vote détecté automatiquement ! +2 points crédités.',comment_detected:'✅ Commentaire détecté automatiquement ! +2 points crédités.',profile_detected:'✅ Profil complété détecté ! +3 points crédités.',vote_validated:'✅ Vote validé ! +2 points crédités.',comment_validated:'✅ Commentaire validé ! +2 points crédités.',profile_validated:'✅ Profil complété ! +3 points crédités.',vote_already:'✅ Vote déjà validé aujourd\'hui.',comment_already:'✅ Commentaire déjà validé aujourd\'hui.',profile_already:'✅ Profil déjà validé aujourd\'hui.'},
         badges:{loading:'Chargement des badges...',locked:'Verrouillé',available:'Disponible !',claimed:'Obtenu',unlock:'Badge débloqué !',error_claim:'Erreur lors de la réclamation du badge.',impossible_claim:'Impossible de réclamer ce badge.',network_error:'Erreur réseau. Réessayez.',loading_error:'Erreur chargement badges',images:'images'},
-        referral:{title_html:'Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul',desc:'Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.',copy:'Copier',copied:'Copié !',godchildren:'Filleuls',points_earned:'Points gagnés',new_godchild:'Nouveau filleul',registered_via:'Inscrit via votre lien',confirm:'Confirmer',all_confirmed:'Tous vos parrainages sont confirmés !',already_confirmed:'Ce parrainage a déjà été confirmé.',confirmed:'✅ Parrainage confirmé !',error:'Erreur: ',share_confirm:'Lien copié ! Confirmez-vous avoir partagé Pixora ?',share_clipboard:'Lien copié dans le presse-papier ! Partagez-le puis revenez.',share_success:'✅ Partage confirmé !'},
+        referral:{title_html:'Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul',desc_auto:'Partagez votre lien unique. Les points sont crédités automatiquement quand vos amis s\'inscrivent.',copy:'Copier',copied:'Copié !',godchildren:'Filleuls',points_earned:'Points gagnés',new_godchild:'Nouveau filleul',registered_via:'Inscrit via votre lien',all_confirmed:'Aucun nouveau filleul pour le moment.',auto_validated:'✅ Parrainages auto-validés !',share_confirm:'Lien copié ! Confirmez-vous avoir partagé Pixora ?',share_clipboard:'Lien copié dans le presse-papier ! Partagez-le puis revenez.',share_success:'✅ Partage confirmé !',history_title:'Historique des parrainages'},
         ads:{no_offers:'Aucune offre disponible pour le moment',come_back_later:'Revenez plus tard !',completed:'Déjà complété',finished:'Terminé',start:'Commencer',loading_error:'Erreur de chargement',window_opened:'Une nouvelle fenêtre s\'est ouverte.',visit_partner:'Visitez le site partenaire, puis revenez ici.',wait:'Patientez',click_first:'⚠️ Cliquez d\'abord sur l\'offre !',finished_btn:"J'ai terminé",must_click:'⚠️ Vous devez cliquer sur l\'offre avant de réclamer vos points.',validating:'Validation...'},
         ad_types:{video:'Regarder une vidéo',video_desc:'Regardez une vidéo complète pour gagner des points',smartlink:'Smartlink',smartlink_desc:'Visitez un site partenaire et confirmez votre visite',banner:'Bannière 300x250',banner_desc:'Visualisez cette publicité puis confirmez',native:'Contenu sponsorisé',native_desc:'Lisez cet article sponsorisé puis confirmez',social_bar:'Notification',social_bar_desc:'Activez les notifications puis confirmez',popunder:'Popunder',popunder_desc:'Ouvrez la fenêtre publicitaire puis confirmez'},
         common:{loading:'Chargement...',loading_badges:'Chargement des badges...',loading_ads:'Chargement des offres...'},
@@ -232,7 +227,7 @@ var EARN_I18N = {
         bonus:{claim:'Claim',claimed:'✅ Bonus Claimed!',day:'🔥 Day',come_back:'Come back tomorrow to continue your streak',login_pts:'login pts',streak_pts:'streak pts',already_claimed:'Already claimed',error:'Error claiming bonus.',impossible:'Unable to claim bonus.',network_error:'Network error. Try again.'},
         tasks:{no_tasks:'No tasks available',today:'today',done:'Done',do:'Do',limit_reached:'Daily limit reached',coming_soon:'This task will be available soon.',loading_error:'Tasks loading error',vote_detected:'✅ Vote detected automatically! +2 points credited.',comment_detected:'✅ Comment detected automatically! +2 points credited.',profile_detected:'✅ Profile completed detected! +3 points credited.',vote_validated:'✅ Vote validated! +2 points credited.',comment_validated:'✅ Comment validated! +2 points credited.',profile_validated:'✅ Profile completed! +3 points credited.',vote_already:'✅ Vote already validated today.',comment_already:'✅ Comment already validated today.',profile_already:'✅ Profile already validated today.'},
         badges:{loading:'Loading badges...',locked:'Locked',available:'Available!',claimed:'Earned',unlock:'Badge unlocked!',error_claim:'Error claiming badge.',impossible_claim:'Unable to claim this badge.',network_error:'Network error. Try again.',loading_error:'Badges loading error',images:'images'},
-        referral:{title_html:'Invite friends and earn <span style="color:var(--gold)">10 points</span> per referral',desc:'Share your unique link. Confirm your referrals below to receive your points.',copy:'Copy',copied:'Copied!',godchildren:'Referrals',points_earned:'Points earned',new_godchild:'New referral',registered_via:'Registered via your link',confirm:'Confirm',all_confirmed:'All your referrals are confirmed!',already_confirmed:'This referral has already been confirmed.',confirmed:'✅ Referral confirmed!',error:'Error: ',share_confirm:'Link copied! Confirm you shared Pixora?',share_clipboard:'Link copied to clipboard! Share it then come back.',share_success:'✅ Share confirmed!'},
+        referral:{title_html:'Invite friends and earn <span style="color:var(--gold)">10 points</span> per referral',desc_auto:'Share your unique link. Points are credited automatically when your friends sign up.',copy:'Copy',copied:'Copied!',godchildren:'Referrals',points_earned:'Points earned',new_godchild:'New referral',registered_via:'Registered via your link',all_confirmed:'No new referrals at the moment.',auto_validated:'✅ Referrals auto-validated!',share_confirm:'Link copied! Confirm you shared Pixora?',share_clipboard:'Link copied to clipboard! Share it then come back.',share_success:'✅ Share confirmed!',history_title:'Referral history'},
         ads:{no_offers:'No offers available right now',come_back_later:'Come back later!',completed:'Already completed',finished:'Finished',start:'Start',loading_error:'Loading error',window_opened:'A new window has opened.',visit_partner:'Visit the partner site, then come back here.',wait:'Wait',click_first:'⚠️ Click on the offer first!',finished_btn:"I'm done",must_click:'⚠️ You must click on the offer before claiming your points.',validating:'Validating...'},
         ad_types:{video:'Watch a video',video_desc:'Watch a full video to earn points',smartlink:'Smartlink',smartlink_desc:'Visit a partner site and confirm your visit',banner:'Banner 300x250',banner_desc:'View this ad then confirm',native:'Sponsored content',native_desc:'Read this sponsored article then confirm',social_bar:'Notification',social_bar_desc:'Enable notifications then confirm',popunder:'Popunder',popunder_desc:'Open the ad window then confirm'},
         common:{loading:'Loading...',loading_badges:'Loading badges...',loading_ads:'Loading offers...'},
@@ -243,12 +238,12 @@ var EARN_I18N = {
 var currentEarnLang = 'fr';
 
 function tEarn(key) {
-    var keys = key.split('.');    var val = EARN_I18N[currentEarnLang];
+    var keys = key.split('.');
+    var val = EARN_I18N[currentEarnLang];
     for (var i = 0; i < keys.length; i++) {
         if (val && typeof val === 'object') val = val[keys[i]];
         else return key;
-    }
-    return val || key;
+    }    return val || key;
 }
 
 function applyEarnTranslations() {
@@ -292,12 +287,12 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let user = null;
 let adsData = [];
 let userTier = 1;
-let remoteConfig = {};let adClicked = false;
+let remoteConfig = {};
+let adClicked = false;
 
 function getAdConfig(type) {
     var map = {
-        video: { icon: '🎬', labelKey: 'ad_types.video', descKey: 'ad_types.video_desc' },
-        smartlink: { icon: '🔗', labelKey: 'ad_types.smartlink', descKey: 'ad_types.smartlink_desc' },
+        video: { icon: '🎬', labelKey: 'ad_types.video', descKey: 'ad_types.video_desc' },        smartlink: { icon: '🔗', labelKey: 'ad_types.smartlink', descKey: 'ad_types.smartlink_desc' },
         banner: { icon: '🖼️', labelKey: 'ad_types.banner', descKey: 'ad_types.banner_desc' },
         native: { icon: '📰', labelKey: 'ad_types.native', descKey: 'ad_types.native_desc' },
         social_bar: { icon: '🔔', labelKey: 'ad_types.social_bar', descKey: 'ad_types.social_bar_desc' },
@@ -341,12 +336,12 @@ async function init() {
     user = u;
     await loadRemoteConfig();
     await updatePoints();
-    await detectTier();    await autoValidateTasks();
+    await detectTier();
+    await autoValidateTasks();
     await checkValidationReturn();
     await loadDailyBonus();
     await loadTasks();
-    await loadBadges();
-    await loadReferral();
+    await loadBadges();    await loadReferral();
     await loadAds();
 
     window.addEventListener('focus', function() {
@@ -390,12 +385,12 @@ async function autoValidateTasks() {
         const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
         if (userData?.profile_complete) {
             const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
-            if (!alreadyCredited || alreadyCredited.length === 0) {                const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
+            if (!alreadyCredited || alreadyCredited.length === 0) {
+                const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
                 if (result) showBanner(tEarn('tasks.profile_detected'), 'success');
             }
         }
-    } catch(e) { console.error('Auto-validate error:', e); }
-}
+    } catch(e) { console.error('Auto-validate error:', e); }}
 
 function showBanner(message, type) {
     const banner = document.getElementById('validationBanner');
@@ -439,12 +434,12 @@ async function checkValidationReturn() {
                 banner.className = 'validation-banner info show';
                 banner.style.display = 'flex';
             } else {
-                const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);                if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
+                const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
                     const result = await creditTaskPoints('Commenter une création', 'comment', 2);
                     if (result) {
                         message.textContent = tEarn('tasks.comment_validated');
-                        banner.className = 'validation-banner show';
-                        banner.style.display = 'flex';
+                        banner.className = 'validation-banner show';                        banner.style.display = 'flex';
                     }
                 }
             }
@@ -488,12 +483,12 @@ async function creditTaskPoints(taskName, taskType, points) {
 async function loadDailyBonus() {
     try {
         const { data: userData } = await db.from('user_data').select('streak,last_login').eq('user_id', user.id).single();
-        const rc = remoteConfig.retention_config || {};        const tierData = rc[userTier] || rc[1] || {};
+        const rc = remoteConfig.retention_config || {};
+        const tierData = rc[userTier] || rc[1] || {};
         const streak = userData?.streak || 0;
         const lastLogin = userData?.last_login;
         const today = new Date().toISOString().split('T')[0];
-        const alreadyClaimed = lastLogin === today;
-        let bonusPts = tierData.bonus_login || 5;
+        const alreadyClaimed = lastLogin === today;        let bonusPts = tierData.bonus_login || 5;
         let streakPts = tierData.streak_j1_3 || 3;
         if (streak >= 7) streakPts = tierData.streak_j7 || 10;
         else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
@@ -537,12 +532,12 @@ async function claimDailyBonus() {
             p_user_id: user.id,
             p_bonus_points: bonusPts,
             p_streak_points: streakPts
-        });        if (error) {
+        });
+        if (error) {
             console.error('RPC claim_daily_bonus error:', error);
             alert(tEarn('bonus.error'));
             await loadDailyBonus();
-            return;
-        }
+            return;        }
         if (data && data.success) {
             showBanner('🔥 ' + tEarn('bonus.day') + ' ' + data.new_streak + ' ! +' + data.points_earned + ' points', 'success');
             await updatePoints();
@@ -586,12 +581,12 @@ async function loadTasks() {
             if (t.type === 'comment' && hasCommentedToday) effectiveIsMaxed = true;
             if (t.type === 'profile' && profileComplete) effectiveIsMaxed = true;
             var btnText = effectiveIsMaxed
-                ? '<i class="fas fa-check"></i> ' + tEarn('tasks.done')                : '<i class="fas fa-play"></i> ' + tEarn('tasks.do');
+                ? '<i class="fas fa-check"></i> ' + tEarn('tasks.done')
+                : '<i class="fas fa-play"></i> ' + tEarn('tasks.do');
             return '<div class="task-card ' + (effectiveIsMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
                 '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
                 '<div class="task-name">' + t.name + '</div>' +
-                '<div class="task-desc">' + (t.desc || '') + '</div>' +
-                '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' ' + tEarn('tasks.today') + '</div>' +
+                '<div class="task-desc">' + (t.desc || '') + '</div>' +                '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' ' + tEarn('tasks.today') + '</div>' +
                 '<button class="btn-task ' + (effectiveIsMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (effectiveIsMaxed ? 'disabled' : '') + '>' +
                 btnText +
                 '</button></div>';
@@ -635,12 +630,12 @@ async function loadBadges() {
                 '<div class="badge-status ' + statusClass + '">' + statusText + '</div>' +
                 btnHtml +
                 '</div>';
-        }).join('');    } catch(e) {
+        }).join('');
+    } catch(e) {
         console.error('Badges error:', e);
         container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('badges.loading_error') + '</p></div>';
     }
 }
-
 async function checkBadge(badgeId, points) {
     try {
         const { data, error } = await db.rpc('claim_badge', {
@@ -684,12 +679,12 @@ async function doShareTask(taskName, points) {
         if (navigator.share) {
             await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
             const result = await creditTaskPoints(taskName, 'share', points);
-            if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }        } else {
+            if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }
+        } else {
             await navigator.clipboard.writeText(shareUrl);
             if (confirm(tEarn('referral.share_confirm'))) {
                 const result = await creditTaskPoints(taskName, 'share', points);
-                if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }
-            }
+                if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }            }
         }
     } catch(e) {
         if (e.name !== 'AbortError') {
@@ -699,60 +694,87 @@ async function doShareTask(taskName, points) {
     }
 }
 
+// ✅ PARRAINAGE AUTO-VALIDÉ (corrigé)
 async function loadReferral() {
     try {
         const config = remoteConfig.referral_config || {};
         if (!config.enabled) { document.querySelector('.referral-card').style.display = 'none'; return; }
+
         const link = window.location.origin + '/?ref=' + user.id;
         document.getElementById('referralLink').value = link;
-        const { data: refs } = await db.from('referrals').select('id,referred_id,points,validated,claimed').eq('sponsor_id', user.id);
-        const allRefs = refs || [];
-        const validated = allRefs.filter(function(r) { return r.validated; });
-        document.getElementById('refCount').textContent = validated.length;
-        const claimedRefs = validated.filter(function(r) { return r.claimed === true; });
-        const claimedPoints = claimedRefs.reduce(function(sum, r) { return sum + (r.points || 0); }, 0);
+
+        // Récupérer TOUS les filleuls (validés ET non validés)
+        const { data: allRefs } = await db.from('referrals')
+            .select('id,referred_id,points,validated,claimed,created_at')
+            .eq('sponsor_id', user.id);
+
+        const refs = allRefs || [];
+
+        // ✅ AUTO-VALIDER les filleuls non validés et créditer les points
+        var newlyValidated = 0;
+        for (var i = 0; i < refs.length; i++) {
+            var ref = refs[i];
+            if (!ref.validated) {
+                // Valider le filleul
+                await db.from('referrals').update({ validated: true, claimed: true }).eq('id', ref.id);
+
+                // Créditer les points au sponsor
+                var refPoints = ref.points || 10;
+                var { data: sponsorData } = await db.from('user_data').select('points,total_earned').eq('user_id', user.id).single();
+                var newPts = (sponsorData?.points || 0) + refPoints;
+                var newEarned = (sponsorData?.total_earned || 0) + refPoints;
+
+                await Promise.all([
+                    db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),
+                    db.from('transactions').insert({
+                        user_id: user.id,
+                        type: 'earned',
+                        title: 'Parrainage:' + ref.referred_id,
+                        amount: refPoints
+                    })
+                ]);
+                // Marquer comme validé et réclamé localement
+                refs[i].validated = true;
+                refs[i].claimed = true;
+                newlyValidated++;
+            }
+        }
+
+        // Si des filleuls ont été auto-validés, rafraîchir le solde
+        if (newlyValidated > 0) {
+            await updatePoints();
+            showBanner(tEarn('referral.auto_validated') + ' +' + (newlyValidated * 10) + ' pts', 'success');
+        }
+
+        // Compter les filleuls validés
+        const validatedRefs = refs.filter(function(r) { return r.validated; });
+        document.getElementById('refCount').textContent = validatedRefs.length;
+
+        const claimedPoints = validatedRefs.reduce(function(sum, r) { return sum + (r.points || 0); }, 0);
         document.getElementById('refPoints').textContent = claimedPoints;
-        const pendingContainer = document.getElementById('pendingReferralsContainer');
-        const pendingRefs = validated.filter(function(r) { return r.claimed !== true; });
-        if (pendingRefs.length === 0) {
-            pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> ' + tEarn('referral.all_confirmed') + '</div>';
+
+        // Afficher l'historique des parrainages
+        const historyContainer = document.getElementById('referralHistoryContainer');
+        if (validatedRefs.length === 0) {
+            historyContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-user-plus" style="color:var(--muted);margin-right:0.3rem"></i> ' + tEarn('referral.all_confirmed') + '</div>';
         } else {
-            let html = '<div class="pending-ref-list">';
-            pendingRefs.forEach(function(ref) {
-                html += '<div class="pending-ref-card" id="ref-card-' + ref.id + '">' +
-                    '<div class="pending-ref-info">' +
-                    '<div class="pending-ref-icon"><i class="fas fa-user-plus"></i></div>' +
-                    '<div class="pending-ref-details">' +
+            var locale = currentEarnLang === 'en' ? 'en-US' : 'fr-FR';
+            var html = '<div class="referral-history">';
+            validatedRefs.forEach(function(ref) {
+                var dateStr = ref.created_at ? new Date(ref.created_at).toLocaleDateString(locale) : '';
+                html += '<div class="referral-history-item">' +
+                    '<div class="referral-history-icon"><i class="fas fa-check"></i></div>' +
+                    '<div class="referral-history-details">' +
                     '<h4>' + tEarn('referral.new_godchild') + '</h4>' +
-                    '<p>' + tEarn('referral.registered_via') + ' • +' + (ref.points || 10) + ' points</p>' +
-                    '</div></div>' +
-                    '<button class="btn-claim-ref" onclick="claimReferral(\'' + ref.id + '\',' + (ref.points || 10) + ')" id="btn-ref-' + ref.id + '">' +
-                    '<i class="fas fa-hand-holding-usd"></i> ' + tEarn('referral.confirm') +
-                    '</button></div>';
+                    '<p>' + tEarn('referral.registered_via') + ' • ' + dateStr + '</p>' +
+                    '</div>' +
+                    '<div class="referral-history-points">+' + (ref.points || 10) + ' pts</div>' +
+                    '</div>';
             });
             html += '</div>';
-            pendingContainer.innerHTML = html;
+            historyContainer.innerHTML = html;
         }
-    } catch(e) { console.error('Referral error:', e); }}
-
-async function claimReferral(refId, points) {
-    const btn = document.getElementById('btn-ref-' + refId);
-    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...'; }
-    try {
-        const { data: refCheck } = await db.from('referrals').select('id,claimed').eq('id', refId).eq('sponsor_id', user.id).single();
-        if (!refCheck || refCheck.claimed === true) { alert(tEarn('referral.already_confirmed')); await loadReferral(); return; }
-        const { data: userData } = await db.from('user_data').select('points,total_earned').eq('user_id', user.id).single();
-        const newPoints = (userData?.points || 0) + points;
-        const newEarned = (userData?.total_earned || 0) + points;
-        await Promise.all([
-            db.from('referrals').update({ claimed: true }).eq('id', refId),
-            db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
-            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Parrainage:' + refId, amount: points })
-        ]);
-        document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
-        alert(tEarn('referral.confirmed') + ' +' + points + ' points');
-    } catch(e) { console.error('Claim referral error:', e); alert(tEarn('referral.error') + e.message); }
-    await loadReferral();
+    } catch(e) { console.error('Referral error:', e); }
 }
 
 function copyReferralLink() {
@@ -760,8 +782,7 @@ function copyReferralLink() {
     input.select();
     navigator.clipboard.writeText(input.value).then(function() {
         const btn = document.querySelector('.btn-copy');
-        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('referral.copied');
-        setTimeout(function() { btn.innerHTML = '<i class="fas fa-copy"></i> ' + tEarn('referral.copy'); }, 2000);
+        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('referral.copied');        setTimeout(function() { btn.innerHTML = '<i class="fas fa-copy"></i> ' + tEarn('referral.copy'); }, 2000);
     });
 }
 
@@ -782,7 +803,8 @@ async function loadAds() {
             const isCompleted = completedNames.has(ad.name);
             const actualIndex = adsData.findIndex(function(a) { return a.name === ad.name; });
             if (isCompleted) {
-                return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +                    '<div class="card-header"><div class="card-icon">' + cfg.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
+                return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +
+                    '<div class="card-header"><div class="card-icon">' + cfg.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
                     '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + desc + '</p>' +
                     '<div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i><p style="margin-top:0.5rem;font-weight:600">' + tEarn('ads.completed') + '</p></div>' +
                     '<button class="btn btn-disabled" disabled><i class="fas fa-check"></i> ' + tEarn('ads.finished') + '</button></div>';
@@ -809,8 +831,7 @@ function loadAdScript(container, htmlCode) {
     iframe.style.border = 'none';
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
     container.appendChild(iframe);
-    iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };
-}
+    iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };}
 
 function startAd(adIndex) {
     const ad = adsData[adIndex];
@@ -831,7 +852,8 @@ function startAd(adIndex) {
         adContainer.className = 'ad-container';
         adContainer.id = 'ad-' + ad.name.replace(/\s/g,'');
         loadAdScript(adContainer, ad.code);
-        card.insertBefore(adContainer, btn);        setTimeout(function() { adClicked = true; }, 3000);
+        card.insertBefore(adContainer, btn);
+        setTimeout(function() { adClicked = true; }, 3000);
     }
     btn.disabled = true;
     btn.classList.remove('btn-primary');
@@ -858,8 +880,7 @@ function startAd(adIndex) {
                         btn.disabled = false;
                         btn.classList.remove('btn-disabled');
                         btn.classList.add('btn-success');
-                        btn.style.background = '';
-                        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('ads.finished_btn');
+                        btn.style.background = '';                        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('ads.finished_btn');
                         btn.onclick = function() { confirmAd(adIndex); };
                     }
                 }, 10000);
@@ -880,7 +901,8 @@ async function confirmAd(adIndex) {
         const adPoints = ad.points || 10;
         const newPoints = (userData?.points || 0) + adPoints;
         const newEarned = (userData?.total_earned || 0) + adPoints;
-        await Promise.all([            db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
+        await Promise.all([
+            db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
             db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),
             db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
         ]);
