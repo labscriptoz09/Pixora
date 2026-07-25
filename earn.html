@@ -15,6 +15,9 @@
         .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none}
         .logo svg{width:28px;height:28px}
         .logo span{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-right{display:flex;align-items:center;gap:0.5rem}
+        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}
+        .lang-select option{background:var(--bg);color:var(--text)}
         .balance-pill{display:flex;align-items:center;gap:0.5rem;background:var(--surface);padding:0.5rem 1rem;border-radius:100px;border:1px solid var(--border);font-weight:600;font-size:0.9rem}
         .balance-pill i{color:var(--gold)}
         .balance-pill span{font-family:var(--mono)}
@@ -44,10 +47,10 @@
         .task-icon{width:40px;height:40px;border-radius:10px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--accent)}
         .task-points{font-family:var(--mono);font-size:0.9rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.3rem 0.6rem;border-radius:6px}
         .task-name{font-size:0.95rem;font-weight:600}
-        .task-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}
-        .task-progress{font-size:0.7rem;color:var(--dim);font-family:var(--mono)}
+        .task-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}        .task-progress{font-size:0.7rem;color:var(--dim);font-family:var(--mono)}
         .btn-task{padding:0.6rem;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:0.3rem}
-        .btn-task:hover{background:var(--accent2)}        .btn-task.done{background:var(--border);color:var(--muted);cursor:default}
+        .btn-task:hover{background:var(--accent2)}
+        .btn-task.done{background:var(--border);color:var(--muted);cursor:default}
         .badge-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;gap:0.6rem;transition:all 0.3s;position:relative;overflow:hidden}
         .badge-card.available{border-color:var(--gold);box-shadow:0 0 15px rgba(251,191,36,0.15)}
         .badge-card.claimed{border-color:var(--success);opacity:0.7}
@@ -93,10 +96,10 @@
         .pending-ref-empty{text-align:center;padding:1rem;color:var(--dim);font-size:0.85rem;font-style:italic}
         .earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
         .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all 0.3s}
-        .earn-card.completed{opacity:0.7}
-        .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+        .earn-card.completed{opacity:0.7}        .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
         .card-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(236,72,153,0.2));display:flex;align-items:center;justify-content:center;font-size:1.8rem}
-        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
+        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}
+        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
         .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem}
         .ad-container{margin:1rem 0;border-radius:10px;overflow:hidden;background:#fff}
         .ad-container iframe{width:100%;height:270px;border:none;display:block}
@@ -136,704 +139,803 @@
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
             <span>Pixora</span>
         </a>
-        <div class="balance-pill">
-            <i class="fas fa-coins"></i>
-            <span id="pointsDisplay">---</span>
+        <div class="header-right">
+            <select class="lang-select" id="lang-select" onchange="changeEarnLang(this.value)">
+                <option value="fr">🇫🇷 FR</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
+            <div class="balance-pill">
+                <i class="fas fa-coins"></i>                <span id="pointsDisplay">---</span>
+            </div>
         </div>
     </header>
 
     <main>
         <div class="validation-banner" id="validationBanner" style="display:none">
             <i class="fas fa-check-circle"></i>
-            <span id="validationMessage">Tâche validée ! Points crédités.</span>        </div>
+            <span id="validationMessage"></span>
+        </div>
 
         <div class="page-header">
-            <h1 class="page-title">Gagnez des Points</h1>
-            <p class="page-subtitle">Complétez des actions pour alimenter votre compte. Chaque action est unique.</p>
+            <h1 class="page-title" data-i18n="page.title">Gagnez des Points</h1>
+            <p class="page-subtitle" data-i18n="page.subtitle">Complétez des actions pour alimenter votre compte. Chaque action est unique.</p>
         </div>
 
         <div class="streak-card" id="streakCard">
             <div class="streak-left">
                 <div class="streak-icon">🔥</div>
                 <div class="streak-info">
-                    <h3 id="streakTitle">Bonus Quotidien</h3>
-                    <p id="streakDesc">Connectez-vous chaque jour pour gagner des points bonus</p>
+                    <h3 id="streakTitle"></h3>
+                    <p id="streakDesc"></p>
                     <div class="streak-days" id="streakDots"></div>
                 </div>
             </div>
             <button class="btn-claim" id="btnClaimBonus" onclick="claimDailyBonus()">
-                <i class="fas fa-gift"></i> Réclamer
+                <i class="fas fa-gift"></i> <span data-i18n="bonus.claim">Réclamer</span>
             </button>
         </div>
 
-        <div class="section-title"><i class="fas fa-tasks"></i> Tâches Rapides</div>
+        <div class="section-title"><i class="fas fa-tasks"></i> <span data-i18n="sections.tasks">Tâches Rapides</span></div>
         <div class="tasks-grid" id="tasksContainer">
-            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p data-i18n="common.loading">Chargement...</p></div>
         </div>
 
-        <div class="section-title"><i class="fas fa-trophy"></i> Badges Créateur</div>
+        <div class="section-title"><i class="fas fa-trophy"></i> <span data-i18n="sections.badges">Badges Créateur</span></div>
         <div class="tasks-grid" id="badgesContainer">
-            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement des badges...</p></div>
+            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p data-i18n="common.loading_badges">Chargement des badges...</p></div>
         </div>
 
-        <div class="section-title"><i class="fas fa-user-friends"></i> Parrainage</div>
+        <div class="section-title"><i class="fas fa-user-friends"></i> <span data-i18n="sections.referral">Parrainage</span></div>
         <div class="referral-card">
-            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
-            <p style="font-size:0.85rem;color:var(--muted)">Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.</p>
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem" data-i18n="referral.title">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
+            <p style="font-size:0.85rem;color:var(--muted)" data-i18n="referral.desc">Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.</p>
             <div class="referral-link-box">
                 <input type="text" class="referral-input" id="referralLink" readonly value="Chargement...">
-                <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copier</button>
+                <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> <span data-i18n="referral.copy">Copier</span></button>
             </div>
             <div class="referral-stats">
-                <div class="ref-stat"><div class="ref-stat-value" id="refCount">0</div><div class="ref-stat-label">Filleuls</div></div>
-                <div class="ref-stat"><div class="ref-stat-value" id="refPoints">0</div><div class="ref-stat-label">Points gagnés</div></div>
+                <div class="ref-stat"><div class="ref-stat-value" id="refCount">0</div><div class="ref-stat-label" data-i18n="referral.godchildren">Filleuls</div></div>                <div class="ref-stat"><div class="ref-stat-value" id="refPoints">0</div><div class="ref-stat-label" data-i18n="referral.points_earned">Points gagnés</div></div>
             </div>
             <div id="pendingReferralsContainer"></div>
         </div>
 
-        <div class="section-title"><i class="fas fa-ad"></i> Offres Sponsorisées</div>
+        <div class="section-title"><i class="fas fa-ad"></i> <span data-i18n="sections.ads">Offres Sponsorisées</span></div>
         <div class="earn-grid" id="adsContainer">
             <div class="empty-state">
-                <i class="fas fa-spinner fa-spin"></i>                <p>Chargement des offres...</p>
+                <i class="fas fa-spinner fa-spin"></i>
+                <p data-i18n="common.loading_ads">Chargement des offres...</p>
             </div>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let user = null;
-        let adsData = [];
-        let userTier = 1;
-        let remoteConfig = {};
-        let adClicked = false;
+// =============================================
+// I18N EARN
+// =============================================
+var EARN_I18N = {
+    fr: {
+        page:{title:'Gagnez des Points',subtitle:'Complétez des actions pour alimenter votre compte. Chaque action est unique.'},
+        sections:{tasks:'Tâches Rapides',badges:'Badges Créateur',referral:'Parrainage',ads:'Offres Sponsorisées'},
+        bonus:{claim:'Réclamer',claimed:'✅ Bonus Réclamé !',day:'🔥 Jour',come_back:'Revenez demain pour continuer votre série',login_pts:'pts connexion',streak_pts:'pts streak',already_claimed:'Déjà réclamé',error:'Erreur lors de la réclamation du bonus.',impossible:'Impossible de réclamer le bonus.',network_error:'Erreur réseau. Réessayez.'},
+        tasks:{no_tasks:'Aucune tâche disponible',today:"aujourd'hui",done:'Terminé',do:'Faire',limit_reached:"Limite atteinte pour aujourd'hui",coming_soon:'Cette tâche sera disponible prochainement.',loading_error:'Erreur chargement tâches',vote_detected:'✅ Vote détecté automatiquement ! +2 points crédités.',comment_detected:'✅ Commentaire détecté automatiquement ! +2 points crédités.',profile_detected:'✅ Profil complété détecté ! +3 points crédités.',vote_validated:'✅ Vote validé ! +2 points crédités.',comment_validated:'✅ Commentaire validé ! +2 points crédités.',profile_validated:'✅ Profil complété ! +3 points crédités.',vote_already:'✅ Vote déjà validé aujourd\'hui.',comment_already:'✅ Commentaire déjà validé aujourd\'hui.',profile_already:'✅ Profil déjà validé aujourd\'hui.'},
+        badges:{loading:'Chargement des badges...',locked:'Verrouillé',available:'Disponible !',claimed:'Obtenu',unlock:'Badge débloqué !',error_claim:'Erreur lors de la réclamation du badge.',impossible_claim:'Impossible de réclamer ce badge.',network_error:'Erreur réseau. Réessayez.',loading_error:'Erreur chargement badges',images:'images'},
+        referral:{title:'Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul',desc:'Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.',copy:'Copier',copied:'Copié !',godchildren:'Filleuls',points_earned:'Points gagnés',new_godchild:'Nouveau filleul',registered_via:'Inscrit via votre lien',confirm:'Confirmer',all_confirmed:'Tous vos parrainages sont confirmés !',already_confirmed:'Ce parrainage a déjà été confirmé.',confirmed:'✅ Parrainage confirmé !',error:'Erreur: ',share_confirm:'Lien copié ! Confirmez-vous avoir partagé Pixora ?',share_clipboard:'Lien copié dans le presse-papier ! Partagez-le puis revenez.',share_success:'✅ Partage confirmé !'},
+        ads:{no_offers:'Aucune offre disponible pour le moment',come_back_later:'Revenez plus tard !',completed:'Déjà complété',finished:'Terminé',start:'Commencer',loading_error:'Erreur de chargement',window_opened:'Une nouvelle fenêtre s\'est ouverte.',visit_partner:'Visitez le site partenaire, puis revenez ici.',wait:'Patientez',click_first:'⚠️ Cliquez d\'abord sur l\'offre !',finished_btn:"J'ai terminé",must_click:'⚠️ Vous devez cliquer sur l\'offre avant de réclamer vos points.',validating:'Validation...'},
+        ad_types:{video:'Regarder une vidéo',video_desc:'Regardez une vidéo complète pour gagner des points',smartlink:'Smartlink',smartlink_desc:'Visitez un site partenaire et confirmez votre visite',banner:'Bannière 300x250',banner_desc:'Visualisez cette publicité puis confirmez',native:'Contenu sponsorisé',native_desc:'Lisez cet article sponsorisé puis confirmez',social_bar:'Notification',social_bar_desc:'Activez les notifications puis confirmez',popunder:'Popunder',popunder_desc:'Ouvrez la fenêtre publicitaire puis confirmez'},
+        common:{loading:'Chargement...',loading_badges:'Chargement des badges...',loading_ads:'Chargement des offres...'},
+        badge_names:{bronze:'Apprenti Créateur',silver:'Créateur Confirmé',gold:'Maître Créateur',diamond:'Légende Pixora'}
+    },
+    en: {
+        page:{title:'Earn Points',subtitle:'Complete actions to fund your account. Each action is unique.'},
+        sections:{tasks:'Quick Tasks',badges:'Creator Badges',referral:'Referral',ads:'Sponsored Offers'},
+        bonus:{claim:'Claim',claimed:'✅ Bonus Claimed!',day:'🔥 Day',come_back:'Come back tomorrow to continue your streak',login_pts:'login pts',streak_pts:'streak pts',already_claimed:'Already claimed',error:'Error claiming bonus.',impossible:'Unable to claim bonus.',network_error:'Network error. Try again.'},
+        tasks:{no_tasks:'No tasks available',today:'today',done:'Done',do:'Do',limit_reached:'Daily limit reached',coming_soon:'This task will be available soon.',loading_error:'Tasks loading error',vote_detected:'✅ Vote detected automatically! +2 points credited.',comment_detected:'✅ Comment detected automatically! +2 points credited.',profile_detected:'✅ Profile completed detected! +3 points credited.',vote_validated:'✅ Vote validated! +2 points credited.',comment_validated:'✅ Comment validated! +2 points credited.',profile_validated:'✅ Profile completed! +3 points credited.',vote_already:'✅ Vote already validated today.',comment_already:'✅ Comment already validated today.',profile_already:'✅ Profile already validated today.'},
+        badges:{loading:'Loading badges...',locked:'Locked',available:'Available!',claimed:'Earned',unlock:'Badge unlocked!',error_claim:'Error claiming badge.',impossible_claim:'Unable to claim this badge.',network_error:'Network error. Try again.',loading_error:'Badges loading error',images:'images'},
+        referral:{title:'Invite friends and earn <span style="color:var(--gold)">10 points</span> per referral',desc:'Share your unique link. Confirm your referrals below to receive your points.',copy:'Copy',copied:'Copied!',godchildren:'Referrals',points_earned:'Points earned',new_godchild:'New referral',registered_via:'Registered via your link',confirm:'Confirm',all_confirmed:'All your referrals are confirmed!',already_confirmed:'This referral has already been confirmed.',confirmed:'✅ Referral confirmed!',error:'Error: ',share_confirm:'Link copied! Confirm you shared Pixora?',share_clipboard:'Link copied to clipboard! Share it then come back.',share_success:'✅ Share confirmed!'},
+        ads:{no_offers:'No offers available right now',come_back_later:'Come back later!',completed:'Already completed',finished:'Finished',start:'Start',loading_error:'Loading error',window_opened:'A new window has opened.',visit_partner:'Visit the partner site, then come back here.',wait:'Wait',click_first:'⚠️ Click on the offer first!',finished_btn:"I'm done",must_click:'⚠️ You must click on the offer before claiming your points.',validating:'Validating...'},
+        ad_types:{video:'Watch a video',video_desc:'Watch a full video to earn points',smartlink:'Smartlink',smartlink_desc:'Visit a partner site and confirm your visit',banner:'Banner 300x250',banner_desc:'View this ad then confirm',native:'Sponsored content',native_desc:'Read this sponsored article then confirm',social_bar:'Notification',social_bar_desc:'Enable notifications then confirm',popunder:'Popunder',popunder_desc:'Open the ad window then confirm'},
+        common:{loading:'Loading...',loading_badges:'Loading badges...',loading_ads:'Loading offers...'},
+        badge_names:{bronze:'Apprentice Creator',silver:'Confirmed Creator',gold:'Master Creator',diamond:'Pixora Legend'}
+    }
+};
 
-        const AD_CONFIG = {
-            video: { icon: '🎬', label: 'Regarder une vidéo', desc: 'Regardez une vidéo complète pour gagner des points' },
-            smartlink: { icon: '🔗', label: 'Smartlink', desc: 'Visitez un site partenaire et confirmez votre visite' },
-            banner: { icon: '🖼️', label: 'Bannière 300x250', desc: 'Visualisez cette publicité puis confirmez' },
-            native: { icon: '📰', label: 'Contenu sponsorisé', desc: 'Lisez cet article sponsorisé puis confirmez' },
-            social_bar: { icon: '🔔', label: 'Notification', desc: 'Activez les notifications puis confirmez' },
-            popunder: { icon: '🪟', label: 'Popunder', desc: 'Ouvrez la fenêtre publicitaire puis confirmez' }
-        };
+var currentEarnLang = 'fr';
 
-        const TASK_ICONS = { vote:'fa-heart', comment:'fa-comment', share:'fa-share-alt', profile:'fa-user-edit', badge:'fa-trophy', daily:'fa-calendar-check', social:'fa-hashtag' };
+function tEarn(key) {
+    var keys = key.split('.');    var val = EARN_I18N[currentEarnLang];
+    for (var i = 0; i < keys.length; i++) {
+        if (val && typeof val === 'object') val = val[keys[i]];
+        else return key;
+    }
+    return val || key;
+}
 
-        const BADGES_CONFIG = [
-            { id: 'bronze', name: 'Apprenti Créateur', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
-            { id: 'silver', name: 'Créateur Confirmé', icon: '🖌️', threshold: 15, points: 10, colorClass: 'silver' },
-            { id: 'gold', name: 'Maître Créateur', icon: '👑', threshold: 20, points: 20, colorClass: 'gold' },
-            { id: 'diamond', name: 'Légende Pixora', icon: '💎', threshold: 50, points: 50, colorClass: 'diamond' }
-        ];
+function applyEarnTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        var val = tEarn(key);
+        if (val !== key) el.innerHTML = val;
+    });
+}
 
-        function isURL(str) { return str && (str.startsWith('http://') || str.startsWith('https://')); }
+function changeEarnLang(lang) {
+    currentEarnLang = lang;
+    localStorage.setItem('pixora_lang', lang);
+    document.documentElement.lang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    applyEarnTranslations();
+    // Recharger les contenus dynamiques avec la bonne langue
+    if (user) {
+        loadDailyBonus();
+        loadTasks();
+        loadBadges();
+        loadReferral();
+        loadAds();
+    }
+}
 
-        async function loadRemoteConfig() {
-            try {
-                const res = await fetch('/api/config');
-                if (!res.ok) throw new Error('Config fetch failed: ' + res.status);
-                remoteConfig = await res.json();
-                console.log('[CONFIG] Loaded via proxy:', Object.keys(remoteConfig));
-            } catch(e) {
-                console.error('[CONFIG] Proxy error:', e);
-                remoteConfig = {};
-            }
-        }
+function detectEarnLang() {
+    var saved = localStorage.getItem('pixora_lang');
+    if (saved && (saved === 'fr' || saved === 'en')) return saved;
+    var nav = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
+    if (nav.indexOf('en') !== -1) return 'en';
+    return 'fr';
+}
 
-        async function init() {
-            const { data: { user: u }, error } = await db.auth.getUser();            if (error || !u) { window.location.href = '/index.html'; return; }
-            user = u;
-            await loadRemoteConfig();
-            await updatePoints();
-            await detectTier();
-            await autoValidateTasks();
-            await checkValidationReturn();
-            await loadDailyBonus();
-            await loadTasks();
-            await loadBadges();
-            await loadReferral();
-            await loadAds();
+// =============================================
+// SUPABASE + CONFIG
+// =============================================
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let user = null;
+let adsData = [];
+let userTier = 1;let remoteConfig = {};
+let adClicked = false;
 
-            window.addEventListener('focus', function() {
-                if (adClicked === true) {
-                    var claimBtns = document.querySelectorAll('.btn.btn-success');
-                    claimBtns.forEach(function(btn) {
-                        if (btn.disabled && btn.textContent.indexOf('Patientez') !== -1) {
-                            // Timer pas fini, clic déjà enregistré
-                        }
-                    });
+function getAdConfig(type) {
+    var map = {
+        video: { icon: '🎬', labelKey: 'ad_types.video', descKey: 'ad_types.video_desc' },
+        smartlink: { icon: '🔗', labelKey: 'ad_types.smartlink', descKey: 'ad_types.smartlink_desc' },
+        banner: { icon: '🖼️', labelKey: 'ad_types.banner', descKey: 'ad_types.banner_desc' },
+        native: { icon: '📰', labelKey: 'ad_types.native', descKey: 'ad_types.native_desc' },
+        social_bar: { icon: '🔔', labelKey: 'ad_types.social_bar', descKey: 'ad_types.social_bar_desc' },
+        popunder: { icon: '🪟', labelKey: 'ad_types.popunder', descKey: 'ad_types.popunder_desc' }
+    };
+    return map[type] || map.smartlink;
+}
+
+const TASK_ICONS = { vote:'fa-heart', comment:'fa-comment', share:'fa-share-alt', profile:'fa-user-edit', badge:'fa-trophy', daily:'fa-calendar-check', social:'fa-hashtag' };
+
+const BADGES_CONFIG = [
+    { id: 'bronze', nameKey: 'badge_names.bronze', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
+    { id: 'silver', nameKey: 'badge_names.silver', icon: '🖌️', threshold: 15, points: 10, colorClass: 'silver' },
+    { id: 'gold', nameKey: 'badge_names.gold', icon: '👑', threshold: 20, points: 20, colorClass: 'gold' },
+    { id: 'diamond', nameKey: 'badge_names.diamond', icon: '💎', threshold: 50, points: 50, colorClass: 'diamond' }
+];
+
+function isURL(str) { return str && (str.startsWith('http://') || str.startsWith('https://')); }
+
+async function loadRemoteConfig() {
+    try {
+        const res = await fetch('/api/config');
+        if (!res.ok) throw new Error('Config fetch failed: ' + res.status);
+        remoteConfig = await res.json();
+    } catch(e) {
+        console.error('[CONFIG] Proxy error:', e);
+        remoteConfig = {};
+    }
+}
+
+async function init() {
+    // Détecter la langue AVANT tout
+    var lang = detectEarnLang();
+    currentEarnLang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    document.documentElement.lang = lang;
+    applyEarnTranslations();
+
+    const { data: { user: u }, error } = await db.auth.getUser();
+    if (error || !u) { window.location.href = '/index.html'; return; }
+    user = u;
+    await loadRemoteConfig();    await updatePoints();
+    await detectTier();
+    await autoValidateTasks();
+    await checkValidationReturn();
+    await loadDailyBonus();
+    await loadTasks();
+    await loadBadges();
+    await loadReferral();
+    await loadAds();
+
+    window.addEventListener('focus', function() {
+        if (adClicked === true) {
+            var claimBtns = document.querySelectorAll('.btn.btn-success');
+            claimBtns.forEach(function(btn) {
+                if (btn.disabled && btn.textContent.indexOf(tEarn('ads.wait')) !== -1) {
+                    // Timer pas fini, clic déjà enregistré
                 }
             });
         }
+    });
+}
 
-        async function detectTier() {
-            try {
-                const { data } = await db.from('user_data').select('tier').eq('user_id', user.id).single();
-                userTier = data?.tier || 1;
-            } catch(e) { userTier = 1; }
+async function detectTier() {
+    try {
+        const { data } = await db.from('user_data').select('tier').eq('user_id', user.id).single();
+        userTier = data?.tier || 1;
+    } catch(e) { userTier = 1; }
+}
+
+async function autoValidateTasks() {
+    const today = new Date().toISOString().split('T')[0];
+    try {
+        const { data: existingVote } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+        if (existingVote && existingVote.length > 0) {
+            const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
+            if (!alreadyCredited || alreadyCredited.length === 0) {
+                const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
+                if (result) showBanner(tEarn('tasks.vote_detected'), 'success');
+            }
         }
+        const { data: existingComment } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+        if (existingComment && existingComment.length > 0 && existingComment[0].content && existingComment[0].content.length >= 10) {
+            const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Commenter une création').gte('created_at', today + 'T00:00:00').limit(1);
+            if (!alreadyCredited || alreadyCredited.length === 0) {
+                const result = await creditTaskPoints('Commenter une création', 'comment', 2);
+                if (result) showBanner(tEarn('tasks.comment_detected'), 'success');
+            }
+        }
+        const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
+        if (userData?.profile_complete) {            const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
+            if (!alreadyCredited || alreadyCredited.length === 0) {
+                const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
+                if (result) showBanner(tEarn('tasks.profile_detected'), 'success');
+            }
+        }
+    } catch(e) { console.error('Auto-validate error:', e); }
+}
 
-        async function autoValidateTasks() {
-            const today = new Date().toISOString().split('T')[0];
-            try {
-                const { data: existingVote } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                if (existingVote && existingVote.length > 0) {
-                    const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
-                    if (!alreadyCredited || alreadyCredited.length === 0) {
-                        const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
-                        if (result) showBanner('✅ Vote détecté automatiquement ! +2 points crédités.', 'success');
+function showBanner(message, type) {
+    const banner = document.getElementById('validationBanner');
+    const msgEl = document.getElementById('validationMessage');
+    msgEl.textContent = message;
+    banner.className = 'validation-banner show' + (type === 'info' ? ' info' : '');
+    banner.style.display = 'flex';
+    setTimeout(() => { banner.style.display = 'none'; }, 5000);
+}
+
+async function checkValidationReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const validated = params.get('validated');
+    const returnFrom = params.get('return');
+    if (!validated && !returnFrom) return;
+    const today = new Date().toISOString().split('T')[0];
+    const banner = document.getElementById('validationBanner');
+    const message = document.getElementById('validationMessage');
+    try {
+        if (validated === 'vote' || returnFrom === 'earn') {
+            const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
+            if (alreadyDone && alreadyDone.length > 0) {
+                message.textContent = tEarn('tasks.vote_already');
+                banner.className = 'validation-banner info show';
+                banner.style.display = 'flex';
+            } else {
+                const { data: existing } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                if (existing && existing.length > 0) {
+                    const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
+                    if (result) {
+                        message.textContent = tEarn('tasks.vote_validated');
+                        banner.className = 'validation-banner show';
+                        banner.style.display = 'flex';
                     }
                 }
-                const { data: existingComment } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                if (existingComment && existingComment.length > 0 && existingComment[0].content && existingComment[0].content.length >= 10) {
-                    const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Commenter une création').gte('created_at', today + 'T00:00:00').limit(1);
-                    if (!alreadyCredited || alreadyCredited.length === 0) {
-                        const result = await creditTaskPoints('Commenter une création', 'comment', 2);
-                        if (result) showBanner('✅ Commentaire détecté automatiquement ! +2 points crédités.', 'success');
-                    }                }
+            }
+        } else if (validated === 'comment') {
+            const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Commenter une création').gte('created_at', today + 'T00:00:00').limit(1);
+            if (alreadyDone && alreadyDone.length > 0) {
+                message.textContent = tEarn('tasks.comment_already');
+                banner.className = 'validation-banner info show';
+                banner.style.display = 'flex';            } else {
+                const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+                if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
+                    const result = await creditTaskPoints('Commenter une création', 'comment', 2);
+                    if (result) {
+                        message.textContent = tEarn('tasks.comment_validated');
+                        banner.className = 'validation-banner show';
+                        banner.style.display = 'flex';
+                    }
+                }
+            }
+        } else if (validated === 'profile') {
+            const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
+            if (alreadyDone && alreadyDone.length > 0) {
+                message.textContent = tEarn('tasks.profile_already');
+                banner.className = 'validation-banner info show';
+                banner.style.display = 'flex';
+            } else {
                 const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
                 if (userData?.profile_complete) {
-                    const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
-                    if (!alreadyCredited || alreadyCredited.length === 0) {
-                        const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
-                        if (result) showBanner('✅ Profil complété détecté ! +3 points crédités.', 'success');
-                    }
-                }
-            } catch(e) { console.error('Auto-validate error:', e); }
-        }
-
-        function showBanner(message, type) {
-            const banner = document.getElementById('validationBanner');
-            const msgEl = document.getElementById('validationMessage');
-            msgEl.textContent = message;
-            banner.className = 'validation-banner show' + (type === 'info' ? ' info' : '');
-            banner.style.display = 'flex';
-            setTimeout(() => { banner.style.display = 'none'; }, 5000);
-        }
-
-        async function checkValidationReturn() {
-            const params = new URLSearchParams(window.location.search);
-            const validated = params.get('validated');
-            const returnFrom = params.get('return');
-            if (!validated && !returnFrom) return;
-            const today = new Date().toISOString().split('T')[0];
-            const banner = document.getElementById('validationBanner');
-            const message = document.getElementById('validationMessage');
-            try {
-                if (validated === 'vote' || returnFrom === 'earn') {
-                    const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
-                    if (alreadyDone && alreadyDone.length > 0) {
-                        message.textContent = '✅ Vote déjà validé aujourd\'hui.';
-                        banner.className = 'validation-banner info show';
-                        banner.style.display = 'flex';
-                    } else {
-                        const { data: existing } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                        if (existing && existing.length > 0) {
-                            const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
-                            if (result) {
-                                message.textContent = '✅ Vote validé ! +2 points crédités.';
-                                banner.className = 'validation-banner show';
-                                banner.style.display = 'flex';
-                            }
-                        }
-                    }
-                } else if (validated === 'comment') {
-                    const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Commenter une création').gte('created_at', today + 'T00:00:00').limit(1);
-                    if (alreadyDone && alreadyDone.length > 0) {                        message.textContent = '✅ Commentaire déjà validé aujourd\'hui.';
-                        banner.className = 'validation-banner info show';
-                        banner.style.display = 'flex';
-                    } else {
-                        const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                        if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
-                            const result = await creditTaskPoints('Commenter une création', 'comment', 2);
-                            if (result) {
-                                message.textContent = '✅ Commentaire validé ! +2 points crédités.';
-                                banner.className = 'validation-banner show';
-                                banner.style.display = 'flex';
-                            }
-                        }
-                    }
-                } else if (validated === 'profile') {
-                    const { data: alreadyDone } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
-                    if (alreadyDone && alreadyDone.length > 0) {
-                        message.textContent = '✅ Profil déjà validé aujourd\'hui.';
-                        banner.className = 'validation-banner info show';
-                        banner.style.display = 'flex';
-                    } else {
-                        const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
-                        if (userData?.profile_complete) {
-                            const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
-                            if (result) {
-                                message.textContent = '✅ Profil complété ! +3 points crédités.';
-                                banner.className = 'validation-banner show';
-                                banner.style.display = 'flex';
-                            }
-                        }
-                    }
-                }
-                window.history.replaceState({}, document.title, window.location.pathname);
-                setTimeout(() => { banner.style.display = 'none'; }, 5000);
-            } catch(e) { console.error('Validation error:', e); }
-        }
-
-        // ✅ MODIFIÉ ÉTAPE 3 : Utilise RPC credit_task_points()
-        async function creditTaskPoints(taskName, taskType, points) {
-            try {
-                const { data, error } = await db.rpc('credit_task_points', {
-                    p_user_id: user.id,
-                    p_task_name: taskName,
-                    p_task_type: taskType,
-                    p_points: points
-                });
-
-                if (error) {
-                    console.error('RPC credit_task_points error:', error);
-                    return false;                }
-
-                if (data && data.success) {
-                    await updatePoints();
-                    return true;
-                } else {
-                    console.log('[TASK] Already credited or failed:', data?.error);
-                    return false;
-                }
-            } catch(e) {
-                console.error('Credit task error:', e);
-                return false;
-            }
-        }
-
-        async function loadDailyBonus() {
-            try {
-                const { data: userData } = await db.from('user_data').select('streak,last_login').eq('user_id', user.id).single();
-                const rc = remoteConfig.retention_config || {};
-                const tierData = rc[userTier] || rc[1] || {};
-                const streak = userData?.streak || 0;
-                const lastLogin = userData?.last_login;
-                const today = new Date().toISOString().split('T')[0];
-                const alreadyClaimed = lastLogin === today;
-                let bonusPts = tierData.bonus_login || 5;
-                let streakPts = tierData.streak_j1_3 || 3;
-                if (streak >= 7) streakPts = tierData.streak_j7 || 10;
-                else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
-                const totalDaily = bonusPts + streakPts;
-                document.getElementById('streakTitle').textContent = alreadyClaimed ? '✅ Bonus Réclamé !' : '🔥 Jour ' + (streak + 1) + ' — +' + totalDaily + ' pts';
-                document.getElementById('streakDesc').textContent = alreadyClaimed ? 'Revenez demain pour continuer votre série' : bonusPts + ' pts connexion + ' + streakPts + ' pts streak';
-                let dotsHtml = '';
-                for (let i = 1; i <= 7; i++) {
-                    let cls = 'streak-dot';
-                    if (i <= streak) cls += ' active';
-                    if (i === streak + 1 && !alreadyClaimed) cls += ' today';
-                    dotsHtml += '<div class="' + cls + '">' + i + '</div>';
-                }
-                document.getElementById('streakDots').innerHTML = dotsHtml;
-                const btn = document.getElementById('btnClaimBonus');
-                if (alreadyClaimed) {
-                    btn.classList.add('claimed');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Déjà réclamé';
-                    btn.disabled = true;
-                } else {
-                    btn.innerHTML = '<i class="fas fa-gift"></i> +' + totalDaily + ' pts';
-                }
-            } catch(e) { console.error('Bonus error:', e); }
-        }
-        // ✅ MODIFIÉ ÉTAPE 3 : Utilise RPC claim_daily_bonus()
-        async function claimDailyBonus() {
-            const btn = document.getElementById('btnClaimBonus');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
-            try {
-                const rc = remoteConfig.retention_config || {};
-                const tierData = rc[userTier] || rc[1] || {};
-                let bonusPts = tierData.bonus_login || 5;
-                let streakPts = tierData.streak_j1_3 || 3;
-
-                const { data: userData } = await db.from('user_data').select('streak').eq('user_id', user.id).single();
-                const currentStreak = (userData?.streak || 0) + 1;
-                if (currentStreak >= 7) streakPts = tierData.streak_j7 || 10;
-                else if (currentStreak >= 4) streakPts = tierData.streak_j4_6 || 7;
-
-                const { data, error } = await db.rpc('claim_daily_bonus', {
-                    p_user_id: user.id,
-                    p_bonus_points: bonusPts,
-                    p_streak_points: streakPts
-                });
-
-                if (error) {
-                    console.error('RPC claim_daily_bonus error:', error);
-                    alert('Erreur lors de la réclamation du bonus.');
-                    await loadDailyBonus();
-                    return;
-                }
-
-                if (data && data.success) {
-                    showBanner('🔥 Bonus Jour ' + data.new_streak + ' ! +' + data.points_earned + ' points', 'success');
-                    await updatePoints();
-                    await loadDailyBonus();
-                } else {
-                    alert(data?.error || 'Impossible de réclamer le bonus.');
-                    await loadDailyBonus();
-                }
-            } catch(e) {
-                console.error('Claim bonus error:', e);
-                alert('Erreur réseau. Réessayez.');
-                await loadDailyBonus();
-            }
-        }
-
-        async function loadTasks() {
-            const container = document.getElementById('tasksContainer');
-            try {
-                const tasks = remoteConfig.internal_tasks || [];
-                const activeTasks = tasks.filter(function(t) { return t.active && t.type !== 'badge'; });
-                if (activeTasks.length === 0) { container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Aucune tâche disponible</p></div>'; return; }                const today = new Date().toISOString().split('T')[0];
-                const { data: completed } = await db.from('task_completions').select('task_name').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
-                const completedMap = {};
-                (completed || []).forEach(function(c) { completedMap[c.task_name] = (completedMap[c.task_name] || 0) + 1; });
-
-                const { data: recentVotes } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                const hasVotedToday = recentVotes && recentVotes.length > 0;
-
-                const { data: recentComments } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                const hasCommentedToday = recentComments && recentComments.length > 0 && recentComments[0].content && recentComments[0].content.length >= 10;
-
-                const { data: userDataForProfile } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
-                const profileComplete = userDataForProfile?.profile_complete || false;
-
-                container.innerHTML = activeTasks.map(function(t) {
-                    const doneCount = completedMap[t.name] || 0;
-                    const isMaxed = doneCount >= t.limit;
-                    const icon = TASK_ICONS[t.type] || 'fa-check';
-
-                    let effectiveIsMaxed = isMaxed;
-                    if (t.type === 'vote' && hasVotedToday) effectiveIsMaxed = true;
-                    if (t.type === 'comment' && hasCommentedToday) effectiveIsMaxed = true;
-                    if (t.type === 'profile' && profileComplete) effectiveIsMaxed = true;
-
-                    return '<div class="task-card ' + (effectiveIsMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
-                        '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
-                        '<div class="task-name">' + t.name + '</div>' +
-                        '<div class="task-desc">' + (t.desc || '') + '</div>' +
-                        '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' aujourd\'hui</div>' +
-                        '<button class="btn-task ' + (effectiveIsMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (effectiveIsMaxed ? 'disabled' : '') + '>' +
-                        (effectiveIsMaxed ? '<i class="fas fa-check"></i> Terminé' : '<i class="fas fa-play"></i> Faire') +
-                        '</button></div>';
-                }).join('');
-            } catch(e) { console.error('Tasks error:', e); container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement tâches</p></div>'; }
-        }
-
-        async function loadBadges() {
-            const container = document.getElementById('badgesContainer');
-            try {
-                const { data: userData } = await db.from('user_data').select('total_generated,badges_claimed').eq('user_id', user.id).single();
-                const genCount = userData?.total_generated || 0;
-                const claimedBadges = userData?.badges_claimed || [];
-
-                container.innerHTML = BADGES_CONFIG.map(function(badge) {
-                    const isClaimed = claimedBadges.includes(badge.id);
-                    const canClaim = genCount >= badge.threshold && !isClaimed;
-                    const progress = Math.min(genCount, badge.threshold);
-                    const progressPercent = Math.min((genCount / badge.threshold) * 100, 100);
-
-                    let statusClass = 'locked';                    let statusText = '🔒 ' + progress + '/' + badge.threshold + ' images';
-                    let btnHtml = '<button class="btn-badge locked" disabled><i class="fas fa-lock"></i> Verrouillé</button>';
-
-                    if (isClaimed) {
-                        statusClass = 'claimed';
-                        statusText = '✅ Débloqué';
-                        btnHtml = '<button class="btn-badge done" disabled><i class="fas fa-check"></i> Obtenu</button>';
-                    } else if (canClaim) {
-                        statusClass = 'available';
-                        statusText = '🎁 Disponible !';
-                        btnHtml = '<button class="btn-badge claim" onclick="checkBadge(\'' + badge.id + '\',' + badge.points + ')"><i class="fas fa-gift"></i> Réclamer +' + badge.points + ' pts</button>';
-                    }
-
-                    return '<div class="badge-card ' + statusClass + '">' +
-                        '<div class="badge-icon">' + badge.icon + '</div>' +
-                        '<div class="badge-level">' + badge.id + '</div>' +
-                        '<div class="badge-name">' + badge.name + '</div>' +
-                        '<div class="badge-reward">+' + badge.points + ' points</div>' +
-                        '<div class="badge-progress"><div class="badge-progress-bar ' + badge.colorClass + '" style="width:' + progressPercent + '%"></div></div>' +
-                        '<div class="badge-status ' + statusClass + '">' + statusText + '</div>' +
-                        btnHtml +
-                        '</div>';
-                }).join('');
-            } catch(e) {
-                console.error('Badges error:', e);
-                container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement badges</p></div>';
-            }
-        }
-
-        async function checkBadge(badgeId, points) {
-            try {
-                const { data, error } = await db.rpc('claim_badge', {
-                    p_user_id: user.id,
-                    p_badge_id: badgeId,
-                    p_points: points
-                });
-
-                if (error) {
-                    console.error('RPC claim_badge error:', error);
-                    alert('Erreur lors de la réclamation du badge.');
-                    return;
-                }
-
-                if (data && data.success) {
-                    showBanner('🏆 Badge débloqué ! +' + data.points_earned + ' points', 'success');
-                    await updatePoints();
-                    await loadBadges();
-                } else {
-                    alert(data?.error || 'Impossible de réclamer ce badge.');
-                }            } catch(e) {
-                console.error('Check badge error:', e);
-                alert('Erreur réseau. Réessayez.');
-            }
-        }
-
-        async function doTask(taskName, taskType, points, limit) {
-            const today = new Date().toISOString().split('T')[0];
-            const { data: completed } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', taskName).gte('created_at', today + 'T00:00:00');
-            if ((completed?.length || 0) >= limit) { alert('Limite atteinte pour aujourd\'hui'); await loadTasks(); return; }
-            if (taskType === 'vote') { window.location.href = '/gallery.html?task=vote&return=earn'; }
-            else if (taskType === 'comment') { window.location.href = '/gallery.html?task=comment&return=earn'; }
-            else if (taskType === 'profile') { window.location.href = '/profile.html?task=profile&return=earn'; }
-            else if (taskType === 'share') { await doShareTask(taskName, points); }
-            else { alert('Cette tâche sera disponible prochainement.'); }
-        }
-
-        async function doShareTask(taskName, points) {
-            const shareUrl = window.location.origin + '/?ref=' + user.id;
-            const shareText = 'Découvrez Pixora - Générateur IA gratuit !';
-            try {
-                if (navigator.share) {
-                    await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
-                    const result = await creditTaskPoints(taskName, 'share', points);
+                    const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
                     if (result) {
-                        alert('✅ Partage confirmé ! +' + points + ' points');
-                        await loadTasks();
+                        message.textContent = tEarn('tasks.profile_validated');
+                        banner.className = 'validation-banner show';
+                        banner.style.display = 'flex';
                     }
-                } else {
-                    await navigator.clipboard.writeText(shareUrl);
-                    if (confirm('Lien copié ! Confirmez-vous avoir partagé Pixora ?')) {
-                        const result = await creditTaskPoints(taskName, 'share', points);
-                        if (result) {
-                            alert('✅ Partage confirmé ! +' + points + ' points');
-                            await loadTasks();
-                        }
-                    }
-                }
-            } catch(e) {
-                if (e.name !== 'AbortError') {
-                    await navigator.clipboard.writeText(shareUrl);
-                    alert('Lien copié dans le presse-papier ! Partagez-le puis revenez.');
                 }
             }
         }
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setTimeout(() => { banner.style.display = 'none'; }, 5000);
+    } catch(e) { console.error('Validation error:', e); }
+}
 
-        async function loadReferral() {
-            try {
-                const config = remoteConfig.referral_config || {};
-                if (!config.enabled) { document.querySelector('.referral-card').style.display = 'none'; return; }                const link = window.location.origin + '/?ref=' + user.id;
-                document.getElementById('referralLink').value = link;
-                const { data: refs } = await db.from('referrals').select('id,referred_id,points,validated,claimed').eq('sponsor_id', user.id);
-                const allRefs = refs || [];
-                const validated = allRefs.filter(function(r) { return r.validated; });
-                document.getElementById('refCount').textContent = validated.length;
-                const claimedRefs = validated.filter(function(r) { return r.claimed === true; });
-                const claimedPoints = claimedRefs.reduce(function(sum, r) { return sum + (r.points || 0); }, 0);
-                document.getElementById('refPoints').textContent = claimedPoints;
-                const pendingContainer = document.getElementById('pendingReferralsContainer');
-                const pendingRefs = validated.filter(function(r) { return r.claimed !== true; });
-                if (pendingRefs.length === 0) {
-                    pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> Tous vos parrainages sont confirmés !</div>';
-                } else {
-                    let html = '<div class="pending-ref-list">';
-                    pendingRefs.forEach(function(ref) {
-                        html += '<div class="pending-ref-card" id="ref-card-' + ref.id + '">' +
-                            '<div class="pending-ref-info">' +
-                            '<div class="pending-ref-icon"><i class="fas fa-user-plus"></i></div>' +
-                            '<div class="pending-ref-details">' +
-                            '<h4>Nouveau filleul</h4>' +
-                            '<p>Inscrit via votre lien • +' + (ref.points || 10) + ' points</p>' +
-                            '</div></div>' +
-                            '<button class="btn-claim-ref" onclick="claimReferral(\'' + ref.id + '\',' + (ref.points || 10) + ')" id="btn-ref-' + ref.id + '">' +
-                            '<i class="fas fa-hand-holding-usd"></i> Confirmer' +
-                            '</button></div>';
-                    });
-                    html += '</div>';
-                    pendingContainer.innerHTML = html;
-                }
-            } catch(e) { console.error('Referral error:', e); }
+// ✅ RPC credit_task_points (IDENTIQUE)
+async function creditTaskPoints(taskName, taskType, points) {
+    try {
+        const { data, error } = await db.rpc('credit_task_points', {
+            p_user_id: user.id,
+            p_task_name: taskName,
+            p_task_type: taskType,
+            p_points: points
+        });
+        if (error) { console.error('RPC credit_task_points error:', error); return false; }
+        if (data && data.success) { await updatePoints(); return true; }
+        else { console.log('[TASK] Already credited or failed:', data?.error); return false; }
+    } catch(e) { console.error('Credit task error:', e); return false; }
+}
+
+// ✅ loadDailyBonus avec i18nasync function loadDailyBonus() {
+    try {
+        const { data: userData } = await db.from('user_data').select('streak,last_login').eq('user_id', user.id).single();
+        const rc = remoteConfig.retention_config || {};
+        const tierData = rc[userTier] || rc[1] || {};
+        const streak = userData?.streak || 0;
+        const lastLogin = userData?.last_login;
+        const today = new Date().toISOString().split('T')[0];
+        const alreadyClaimed = lastLogin === today;
+        let bonusPts = tierData.bonus_login || 5;
+        let streakPts = tierData.streak_j1_3 || 3;
+        if (streak >= 7) streakPts = tierData.streak_j7 || 10;
+        else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
+        const totalDaily = bonusPts + streakPts;
+        document.getElementById('streakTitle').textContent = alreadyClaimed ? tEarn('bonus.claimed') : tEarn('bonus.day') + ' ' + (streak + 1) + ' — +' + totalDaily + ' pts';
+        document.getElementById('streakDesc').textContent = alreadyClaimed ? tEarn('bonus.come_back') : bonusPts + ' ' + tEarn('bonus.login_pts') + ' + ' + streakPts + ' ' + tEarn('bonus.streak_pts');
+        let dotsHtml = '';
+        for (let i = 1; i <= 7; i++) {
+            let cls = 'streak-dot';
+            if (i <= streak) cls += ' active';
+            if (i === streak + 1 && !alreadyClaimed) cls += ' today';
+            dotsHtml += '<div class="' + cls + '">' + i + '</div>';
         }
-
-        async function claimReferral(refId, points) {
-            const btn = document.getElementById('btn-ref-' + refId);
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...'; }
-            try {
-                const { data: refCheck } = await db.from('referrals').select('id,claimed').eq('id', refId).eq('sponsor_id', user.id).single();
-                if (!refCheck || refCheck.claimed === true) { alert('Ce parrainage a déjà été confirmé.'); await loadReferral(); return; }
-                const { data: userData } = await db.from('user_data').select('points,total_earned').eq('user_id', user.id).single();
-                const newPoints = (userData?.points || 0) + points;
-                const newEarned = (userData?.total_earned || 0) + points;
-                await Promise.all([
-                    db.from('referrals').update({ claimed: true }).eq('id', refId),
-                    db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
-                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Parrainage:' + refId, amount: points })
-                ]);
-                document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
-                alert('✅ Parrainage confirmé ! +' + points + ' points');
-            } catch(e) { console.error('Claim referral error:', e); alert('Erreur: ' + e.message); }            await loadReferral();
-        }
-
-        function copyReferralLink() {
-            const input = document.getElementById('referralLink');
-            input.select();
-            navigator.clipboard.writeText(input.value).then(function() {
-                const btn = document.querySelector('.btn-copy');
-                btn.innerHTML = '<i class="fas fa-check"></i> Copié !';
-                setTimeout(function() { btn.innerHTML = '<i class="fas fa-copy"></i> Copier'; }, 2000);
-            });
-        }
-
-        async function loadAds() {
-            const container = document.getElementById('adsContainer');
-            try {
-                adsData = remoteConfig.ad_networks || [];
-                const activeAds = adsData.filter(function(ad) { return ad.active && ad.page === 'earn'; });
-                if (activeAds.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune offre disponible pour le moment</p><p style="font-size:0.85rem;margin-top:0.5rem">Revenez plus tard !</p></div>';
-                    return;
-                }
-                const { data: completedData } = await db.from('ad_clicks').select('ad_name').eq('user_id', user.id).eq('status', 'paid');
-                const completedNames = new Set(completedData?.map(function(c) { return c.ad_name; }) || []);
-                container.innerHTML = activeAds.map(function(ad, index) {
-                    const config = AD_CONFIG[ad.type] || AD_CONFIG.smartlink;
-                    const isCompleted = completedNames.has(ad.name);
-                    const actualIndex = adsData.findIndex(function(a) { return a.name === ad.name; });
-                    if (isCompleted) {
-                        return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +
-                            '<div class="card-header"><div class="card-icon">' + config.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
-                            '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + config.desc + '</p>' +
-                            '<div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i><p style="margin-top:0.5rem;font-weight:600">Déjà complété</p></div>' +
-                            '<button class="btn btn-disabled" disabled><i class="fas fa-check"></i> Terminé</button></div>';
-                    }
-                    return '<div class="earn-card" id="card-' + ad.name.replace(/\s/g,'') + '">' +
-                        '<div class="card-header"><div class="card-icon">' + config.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
-                        '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + config.desc + '</p>' +
-                        '<button class="btn btn-primary" onclick="startAd(' + actualIndex + ')"><i class="fas fa-play"></i> Commencer</button></div>';
-                }).join('');
-            } catch (e) {
-                console.error('Load ads error:', e);
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p style="color:var(--danger)">Erreur de chargement</p></div>';
-            }
-        }
-
-        function loadAdScript(container, htmlCode) {
-            const fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:100vh}</style></head><body>' + htmlCode + '</body></html>';
-            const blob = new Blob([fullHtml], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);            const iframe = document.createElement('iframe');
-            iframe.src = url;
-            iframe.style.width = '100%';
-            iframe.style.height = '270px';
-            iframe.style.border = 'none';
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-            container.appendChild(iframe);
-            iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };
-        }
-
-        function startAd(adIndex) {
-            const ad = adsData[adIndex];
-            const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
-            const btn = card.querySelector('.btn');
-            const hasCode = ad.code && ad.code.length > 0;
-            const isSmartlink = isURL(ad.code);
-
-            adClicked = false;
-
-            if (isSmartlink) {
-                window.open(ad.code, '_blank', 'noopener,noreferrer');
-                adClicked = true;
-                const smartlinkInfo = document.createElement('div');
-                smartlinkInfo.className = 'smartlink-info';
-                smartlinkInfo.innerHTML = '<i class="fas fa-external-link-alt"></i><p><strong>Une nouvelle fenêtre s\'est ouverte.</strong></p><p>Visitez le site partenaire, puis revenez ici.</p>';
-                card.insertBefore(smartlinkInfo, btn);
-            } else if (hasCode) {
-                const adContainer = document.createElement('div');
-                adContainer.className = 'ad-container';
-                adContainer.id = 'ad-' + ad.name.replace(/\s/g,'');
-                loadAdScript(adContainer, ad.code);
-                card.insertBefore(adContainer, btn);
-                setTimeout(function() { adClicked = true; }, 3000);
-            }
-
+        document.getElementById('streakDots').innerHTML = dotsHtml;
+        const btn = document.getElementById('btnClaimBonus');
+        if (alreadyClaimed) {
+            btn.classList.add('claimed');
+            btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('bonus.already_claimed');
             btn.disabled = true;
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-disabled');
-            let seconds = 20;
-            btn.innerHTML = '<i class="fas fa-clock"></i> Patientez ' + seconds + 's...';
-            const timer = setInterval(function() {
-                seconds--;
-                if (seconds > 0) {
-                    btn.innerHTML = '<i class="fas fa-clock"></i> Patientez ' + seconds + 's...';
-                } else {
-                    clearInterval(timer);
+        } else {
+            btn.innerHTML = '<i class="fas fa-gift"></i> +' + totalDaily + ' pts';
+            btn.disabled = false;
+        }
+    } catch(e) { console.error('Bonus error:', e); }
+}
+
+// ✅ claimDailyBonus avec i18n (RPC IDENTIQUE)
+async function claimDailyBonus() {
+    const btn = document.getElementById('btnClaimBonus');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+    try {
+        const rc = remoteConfig.retention_config || {};
+        const tierData = rc[userTier] || rc[1] || {};
+        let bonusPts = tierData.bonus_login || 5;
+        let streakPts = tierData.streak_j1_3 || 3;
+        const { data: userData } = await db.from('user_data').select('streak').eq('user_id', user.id).single();
+        const currentStreak = (userData?.streak || 0) + 1;
+        if (currentStreak >= 7) streakPts = tierData.streak_j7 || 10;
+        else if (currentStreak >= 4) streakPts = tierData.streak_j4_6 || 7;        const { data, error } = await db.rpc('claim_daily_bonus', {
+            p_user_id: user.id,
+            p_bonus_points: bonusPts,
+            p_streak_points: streakPts
+        });
+        if (error) {
+            console.error('RPC claim_daily_bonus error:', error);
+            alert(tEarn('bonus.error'));
+            await loadDailyBonus();
+            return;
+        }
+        if (data && data.success) {
+            showBanner('🔥 ' + tEarn('bonus.day') + ' ' + data.new_streak + ' ! +' + data.points_earned + ' points', 'success');
+            await updatePoints();
+            await loadDailyBonus();
+        } else {
+            alert(data?.error || tEarn('bonus.impossible'));
+            await loadDailyBonus();
+        }
+    } catch(e) {
+        console.error('Claim bonus error:', e);
+        alert(tEarn('bonus.network_error'));
+        await loadDailyBonus();
+    }
+}
+// ✅ loadTasks avec i18n
+async function loadTasks() {
+    const container = document.getElementById('tasksContainer');
+    try {
+        const tasks = remoteConfig.internal_tasks || [];
+        const activeTasks = tasks.filter(function(t) { return t.active && t.type !== 'badge'; });
+        if (activeTasks.length === 0) {
+            container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('tasks.no_tasks') + '</p></div>';
+            return;
+        }
+        const today = new Date().toISOString().split('T')[0];
+        const { data: completed } = await db.from('task_completions').select('task_name').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
+        const completedMap = {};
+        (completed || []).forEach(function(c) { completedMap[c.task_name] = (completedMap[c.task_name] || 0) + 1; });
+
+        const { data: recentVotes } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+        const hasVotedToday = recentVotes && recentVotes.length > 0;
+
+        const { data: recentComments } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+        const hasCommentedToday = recentComments && recentComments.length > 0 && recentComments[0].content && recentComments[0].content.length >= 10;
+
+        const { data: userDataForProfile } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
+        const profileComplete = userDataForProfile?.profile_complete || false;
+
+        container.innerHTML = activeTasks.map(function(t) {
+            const doneCount = completedMap[t.name] || 0;
+            const isMaxed = doneCount >= t.limit;
+            const icon = TASK_ICONS[t.type] || 'fa-check';
+
+            let effectiveIsMaxed = isMaxed;
+            if (t.type === 'vote' && hasVotedToday) effectiveIsMaxed = true;
+            if (t.type === 'comment' && hasCommentedToday) effectiveIsMaxed = true;
+            if (t.type === 'profile' && profileComplete) effectiveIsMaxed = true;
+
+            var btnText = effectiveIsMaxed
+                ? '<i class="fas fa-check"></i> ' + tEarn('tasks.done')
+                : '<i class="fas fa-play"></i> ' + tEarn('tasks.do');
+
+            return '<div class="task-card ' + (effectiveIsMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
+                '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
+                '<div class="task-name">' + t.name + '</div>' +
+                '<div class="task-desc">' + (t.desc || '') + '</div>' +
+                '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' ' + tEarn('tasks.today') + '</div>' +
+                '<button class="btn-task ' + (effectiveIsMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (effectiveIsMaxed ? 'disabled' : '') + '>' +
+                btnText +
+                '</button></div>';
+        }).join('');
+    } catch(e) {
+        console.error('Tasks error:', e);
+        container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('tasks.loading_error') + '</p></div>';    }
+}
+
+// ✅ loadBadges avec i18n
+async function loadBadges() {
+    const container = document.getElementById('badgesContainer');
+    try {
+        const { data: userData } = await db.from('user_data').select('total_generated,badges_claimed').eq('user_id', user.id).single();
+        const genCount = userData?.total_generated || 0;
+        const claimedBadges = userData?.badges_claimed || [];
+
+        container.innerHTML = BADGES_CONFIG.map(function(badge) {
+            const isClaimed = claimedBadges.includes(badge.id);
+            const canClaim = genCount >= badge.threshold && !isClaimed;
+            const progress = Math.min(genCount, badge.threshold);
+            const progressPercent = Math.min((genCount / badge.threshold) * 100, 100);
+            const badgeName = tEarn(badge.nameKey);
+
+            let statusClass = 'locked';
+            let statusText = '🔒 ' + progress + '/' + badge.threshold + ' ' + tEarn('badges.images');
+            let btnHtml = '<button class="btn-badge locked" disabled><i class="fas fa-lock"></i> ' + tEarn('badges.locked') + '</button>';
+
+            if (isClaimed) {
+                statusClass = 'claimed';
+                statusText = '✅ ' + tEarn('badges.claimed');
+                btnHtml = '<button class="btn-badge done" disabled><i class="fas fa-check"></i> ' + tEarn('badges.claimed') + '</button>';
+            } else if (canClaim) {
+                statusClass = 'available';
+                statusText = '🎁 ' + tEarn('badges.available');
+                btnHtml = '<button class="btn-badge claim" onclick="checkBadge(\'' + badge.id + '\',' + badge.points + ')"><i class="fas fa-gift"></i> ' + tEarn('bonus.claim') + ' +' + badge.points + ' pts</button>';
+            }
+
+            return '<div class="badge-card ' + statusClass + '">' +
+                '<div class="badge-icon">' + badge.icon + '</div>' +
+                '<div class="badge-level">' + badge.id + '</div>' +
+                '<div class="badge-name">' + badgeName + '</div>' +
+                '<div class="badge-reward">+' + badge.points + ' points</div>' +
+                '<div class="badge-progress"><div class="badge-progress-bar ' + badge.colorClass + '" style="width:' + progressPercent + '%"></div></div>' +
+                '<div class="badge-status ' + statusClass + '">' + statusText + '</div>' +
+                btnHtml +
+                '</div>';
+        }).join('');
+    } catch(e) {
+        console.error('Badges error:', e);
+        container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('badges.loading_error') + '</p></div>';
+    }
+}
+
+// ✅ checkBadge avec i18n (RPC IDENTIQUE)
+async function checkBadge(badgeId, points) {    try {
+        const { data, error } = await db.rpc('claim_badge', {
+            p_user_id: user.id,
+            p_badge_id: badgeId,
+            p_points: points
+        });
+        if (error) {
+            console.error('RPC claim_badge error:', error);
+            alert(tEarn('badges.error_claim'));
+            return;
+        }
+        if (data && data.success) {
+            showBanner('🏆 ' + tEarn('badges.unlock') + ' +' + data.points_earned + ' points', 'success');
+            await updatePoints();
+            await loadBadges();
+        } else {
+            alert(data?.error || tEarn('badges.impossible_claim'));
+        }
+    } catch(e) {
+        console.error('Check badge error:', e);
+        alert(tEarn('badges.network_error'));
+    }
+}
+
+// ✅ doTask avec i18n
+async function doTask(taskName, taskType, points, limit) {
+    const today = new Date().toISOString().split('T')[0];
+    const { data: completed } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', taskName).gte('created_at', today + 'T00:00:00');
+    if ((completed?.length || 0) >= limit) { alert(tEarn('tasks.limit_reached')); await loadTasks(); return; }
+    if (taskType === 'vote') { window.location.href = '/gallery.html?task=vote&return=earn'; }
+    else if (taskType === 'comment') { window.location.href = '/gallery.html?task=comment&return=earn'; }
+    else if (taskType === 'profile') { window.location.href = '/profile.html?task=profile&return=earn'; }
+    else if (taskType === 'share') { await doShareTask(taskName, points); }
+    else { alert(tEarn('tasks.coming_soon')); }
+}
+
+// ✅ doShareTask avec i18n
+async function doShareTask(taskName, points) {
+    const shareUrl = window.location.origin + '/?ref=' + user.id;
+    const shareText = currentEarnLang === 'en' ? 'Discover Pixora - Free AI Generator!' : 'Découvrez Pixora - Générateur IA gratuit !';
+    try {
+        if (navigator.share) {
+            await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
+            const result = await creditTaskPoints(taskName, 'share', points);
+            if (result) {
+                alert(tEarn('referral.share_success') + ' +' + points + ' points');
+                await loadTasks();
+            }
+        } else {
+            await navigator.clipboard.writeText(shareUrl);            if (confirm(tEarn('referral.share_confirm'))) {
+                const result = await creditTaskPoints(taskName, 'share', points);
+                if (result) {
+                    alert(tEarn('referral.share_success') + ' +' + points + ' points');
+                    await loadTasks();
+                }
+            }
+        }
+    } catch(e) {
+        if (e.name !== 'AbortError') {
+            await navigator.clipboard.writeText(shareUrl);
+            alert(tEarn('referral.share_clipboard'));
+        }
+    }
+}
+
+// ✅ loadReferral avec i18n
+async function loadReferral() {
+    try {
+        const config = remoteConfig.referral_config || {};
+        if (!config.enabled) { document.querySelector('.referral-card').style.display = 'none'; return; }
+        const link = window.location.origin + '/?ref=' + user.id;
+        document.getElementById('referralLink').value = link;
+        const { data: refs } = await db.from('referrals').select('id,referred_id,points,validated,claimed').eq('sponsor_id', user.id);
+        const allRefs = refs || [];
+        const validated = allRefs.filter(function(r) { return r.validated; });
+        document.getElementById('refCount').textContent = validated.length;
+        const claimedRefs = validated.filter(function(r) { return r.claimed === true; });
+        const claimedPoints = claimedRefs.reduce(function(sum, r) { return sum + (r.points || 0); }, 0);
+        document.getElementById('refPoints').textContent = claimedPoints;
+        const pendingContainer = document.getElementById('pendingReferralsContainer');
+        const pendingRefs = validated.filter(function(r) { return r.claimed !== true; });
+        if (pendingRefs.length === 0) {
+            pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> ' + tEarn('referral.all_confirmed') + '</div>';
+        } else {
+            let html = '<div class="pending-ref-list">';
+            pendingRefs.forEach(function(ref) {
+                html += '<div class="pending-ref-card" id="ref-card-' + ref.id + '">' +
+                    '<div class="pending-ref-info">' +
+                    '<div class="pending-ref-icon"><i class="fas fa-user-plus"></i></div>' +
+                    '<div class="pending-ref-details">' +
+                    '<h4>' + tEarn('referral.new_godchild') + '</h4>' +
+                    '<p>' + tEarn('referral.registered_via') + ' • +' + (ref.points || 10) + ' points</p>' +
+                    '</div></div>' +
+                    '<button class="btn-claim-ref" onclick="claimReferral(\'' + ref.id + '\',' + (ref.points || 10) + ')" id="btn-ref-' + ref.id + '">' +
+                    '<i class="fas fa-hand-holding-usd"></i> ' + tEarn('referral.confirm') +
+                    '</button></div>';
+            });
+            html += '</div>';
+            pendingContainer.innerHTML = html;        }
+    } catch(e) { console.error('Referral error:', e); }
+}
+
+// ✅ claimReferral avec i18n
+async function claimReferral(refId, points) {
+    const btn = document.getElementById('btn-ref-' + refId);
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...'; }
+    try {
+        const { data: refCheck } = await db.from('referrals').select('id,claimed').eq('id', refId).eq('sponsor_id', user.id).single();
+        if (!refCheck || refCheck.claimed === true) { alert(tEarn('referral.already_confirmed')); await loadReferral(); return; }
+        const { data: userData } = await db.from('user_data').select('points,total_earned').eq('user_id', user.id).single();
+        const newPoints = (userData?.points || 0) + points;
+        const newEarned = (userData?.total_earned || 0) + points;
+        await Promise.all([
+            db.from('referrals').update({ claimed: true }).eq('id', refId),
+            db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
+            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Parrainage:' + refId, amount: points })
+        ]);
+        document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
+        alert(tEarn('referral.confirmed') + ' +' + points + ' points');
+    } catch(e) { console.error('Claim referral error:', e); alert(tEarn('referral.error') + e.message); }
+    await loadReferral();
+}
+
+// ✅ copyReferralLink avec i18n
+function copyReferralLink() {
+    const input = document.getElementById('referralLink');
+    input.select();
+    navigator.clipboard.writeText(input.value).then(function() {
+        const btn = document.querySelector('.btn-copy');
+        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('referral.copied');
+        setTimeout(function() { btn.innerHTML = '<i class="fas fa-copy"></i> ' + tEarn('referral.copy'); }, 2000);
+    });
+}
+
+// ✅ loadAds avec i18n
+async function loadAds() {
+    const container = document.getElementById('adsContainer');
+    try {
+        adsData = remoteConfig.ad_networks || [];
+        const activeAds = adsData.filter(function(ad) { return ad.active && ad.page === 'earn'; });
+        if (activeAds.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>' + tEarn('ads.no_offers') + '</p><p style="font-size:0.85rem;margin-top:0.5rem">' + tEarn('ads.come_back_later') + '</p></div>';
+            return;
+        }
+        const { data: completedData } = await db.from('ad_clicks').select('ad_name').eq('user_id', user.id).eq('status', 'paid');
+        const completedNames = new Set(completedData?.map(function(c) { return c.ad_name; }) || []);
+        container.innerHTML = activeAds.map(function(ad, index) {
+            const cfg = getAdConfig(ad.type);            const label = tEarn(cfg.labelKey);
+            const desc = tEarn(cfg.descKey);
+            const isCompleted = completedNames.has(ad.name);
+            const actualIndex = adsData.findIndex(function(a) { return a.name === ad.name; });
+            if (isCompleted) {
+                return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +
+                    '<div class="card-header"><div class="card-icon">' + cfg.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
+                    '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + desc + '</p>' +
+                    '<div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i><p style="margin-top:0.5rem;font-weight:600">' + tEarn('ads.completed') + '</p></div>' +
+                    '<button class="btn btn-disabled" disabled><i class="fas fa-check"></i> ' + tEarn('ads.finished') + '</button></div>';
+            }
+            return '<div class="earn-card" id="card-' + ad.name.replace(/\s/g,'') + '">' +
+                '<div class="card-header"><div class="card-icon">' + cfg.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
+                '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + desc + '</p>' +
+                '<button class="btn btn-primary" onclick="startAd(' + actualIndex + ')"><i class="fas fa-play"></i> ' + tEarn('ads.start') + '</button></div>';
+        }).join('');
+    } catch (e) {
+        console.error('Load ads error:', e);
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p style="color:var(--danger)">' + tEarn('ads.loading_error') + '</p></div>';
+    }
+}
+
+function loadAdScript(container, htmlCode) {
+    const fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;min-height:100vh}</style></head><body>' + htmlCode + '</body></html>';
+    const blob = new Blob([fullHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.style.width = '100%';
+    iframe.style.height = '270px';
+    iframe.style.border = 'none';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    container.appendChild(iframe);
+    iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };
+}
+
+// ✅ startAd avec i18n
+function startAd(adIndex) {
+    const ad = adsData[adIndex];
+    const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
+    const btn = card.querySelector('.btn');
+    const hasCode = ad.code && ad.code.length > 0;
+    const isSmartlink = isURL(ad.code);
+
+    adClicked = false;
+
+    if (isSmartlink) {
+        window.open(ad.code, '_blank', 'noopener,noreferrer');
+        adClicked = true;
+        const smartlinkInfo = document.createElement('div');        smartlinkInfo.className = 'smartlink-info';
+        smartlinkInfo.innerHTML = '<i class="fas fa-external-link-alt"></i><p><strong>' + tEarn('ads.window_opened') + '</strong></p><p>' + tEarn('ads.visit_partner') + '</p>';
+        card.insertBefore(smartlinkInfo, btn);
+    } else if (hasCode) {
+        const adContainer = document.createElement('div');
+        adContainer.className = 'ad-container';
+        adContainer.id = 'ad-' + ad.name.replace(/\s/g,'');
+        loadAdScript(adContainer, ad.code);
+        card.insertBefore(adContainer, btn);
+        setTimeout(function() { adClicked = true; }, 3000);
+    }
+
+    btn.disabled = true;
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-disabled');
+    let seconds = 20;
+    btn.innerHTML = '<i class="fas fa-clock"></i> ' + tEarn('ads.wait') + ' ' + seconds + 's...';
+    const timer = setInterval(function() {
+        seconds--;
+        if (seconds > 0) {
+            btn.innerHTML = '<i class="fas fa-clock"></i> ' + tEarn('ads.wait') + ' ' + seconds + 's...';
+        } else {
+            clearInterval(timer);
+            if (adClicked === true) {
+                btn.disabled = false;
+                btn.classList.remove('btn-disabled');
+                btn.classList.add('btn-success');
+                btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('ads.finished_btn');
+                btn.onclick = function() { confirmAd(adIndex); };
+            } else {
+                btn.innerHTML = tEarn('ads.click_first');
+                btn.style.background = 'rgba(239,68,68,0.5)';
+                setTimeout(function() {
                     if (adClicked === true) {
                         btn.disabled = false;
                         btn.classList.remove('btn-disabled');
-                        btn.classList.add('btn-success');                        btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';
+                        btn.classList.add('btn-success');
+                        btn.style.background = '';
+                        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('ads.finished_btn');
                         btn.onclick = function() { confirmAd(adIndex); };
-                    } else {
-                        btn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
-                        btn.style.background = 'rgba(239,68,68,0.5)';
-                        setTimeout(function() {
-                            if (adClicked === true) {
-                                btn.disabled = false;
-                                btn.classList.remove('btn-disabled');
-                                btn.classList.add('btn-success');
-                                btn.style.background = '';
-                                btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';
-                                btn.onclick = function() { confirmAd(adIndex); };
-                            }
-                        }, 10000);
                     }
-                }
-            }, 1000);
-        }
-
-        async function confirmAd(adIndex) {
-            if (adClicked !== true) {
-                alert('⚠️ Vous devez cliquer sur l\'offre avant de réclamer vos points.');
-                return;
+                }, 10000);
             }
-
-            const ad = adsData[adIndex];
-            const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
-            const btn = card.querySelector('.btn');
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...'; }
-            try {
-                const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
-                const { data: userData } = await db.from('user_data').select('points,total_earned').eq('user_id', user.id).single();
-                const adPoints = ad.points || 10;
-                const newPoints = (userData?.points || 0) + adPoints;
-                const newEarned = (userData?.total_earned || 0) + adPoints;
-                await Promise.all([
-                    db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
-                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),
-                    db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
-                ]);
-                document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
-                adClicked = false;
-                await loadAds();
-            } catch (e) { console.error('Confirm ad error:', e); alert('Erreur: ' + e.message); await loadAds(); }
         }
+    }, 1000);
+}
 
-        async function updatePoints() {
-            const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
-            document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();        }
+// ✅ confirmAd avec i18n
+async function confirmAd(adIndex) {
+    if (adClicked !== true) {        alert(tEarn('ads.must_click'));
+        return;
+    }
+    const ad = adsData[adIndex];
+    const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
+    const btn = card.querySelector('.btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + tEarn('ads.validating'); }
+    try {
+        const token = 'tok_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
+        const { data: userData } = await db.from('user_data').select('points,total_earned').eq('user_id', user.id).single();
+        const adPoints = ad.points || 10;
+        const newPoints = (userData?.points || 0) + adPoints;
+        const newEarned = (userData?.total_earned || 0) + adPoints;
+        await Promise.all([
+            db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
+            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),
+            db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
+        ]);
+        document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
+        adClicked = false;
+        await loadAds();
+    } catch (e) { console.error('Confirm ad error:', e); alert(tEarn('referral.error') + e.message); await loadAds(); }
+}
 
-        init();
-    </script>
+// ✅ updatePoints (IDENTIQUE)
+async function updatePoints() {
+    const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+    document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
+}
+
+init();
+</script>
 </body>
 </html>
