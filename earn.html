@@ -187,10 +187,10 @@
 
         <div class="section-title"><i class="fas fa-user-friends"></i> <span data-i18n="sections.referral">Parrainage</span></div>
         <div class="referral-card">
-            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem" data-i18n="referral.title">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem" data-i18n="referral.title_html">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
             <p style="font-size:0.85rem;color:var(--muted)" data-i18n="referral.desc">Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.</p>
             <div class="referral-link-box">
-                <input type="text" class="referral-input" id="referralLink" readonly value="Chargement...">
+                <input type="text" class="referral-input" id="referralLink" readonly value="...">
                 <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> <span data-i18n="referral.copy">Copier</span></button>
             </div>
             <div class="referral-stats">
@@ -220,7 +220,7 @@ var EARN_I18N = {
         bonus:{claim:'Réclamer',claimed:'✅ Bonus Réclamé !',day:'🔥 Jour',come_back:'Revenez demain pour continuer votre série',login_pts:'pts connexion',streak_pts:'pts streak',already_claimed:'Déjà réclamé',error:'Erreur lors de la réclamation du bonus.',impossible:'Impossible de réclamer le bonus.',network_error:'Erreur réseau. Réessayez.'},
         tasks:{no_tasks:'Aucune tâche disponible',today:"aujourd'hui",done:'Terminé',do:'Faire',limit_reached:"Limite atteinte pour aujourd'hui",coming_soon:'Cette tâche sera disponible prochainement.',loading_error:'Erreur chargement tâches',vote_detected:'✅ Vote détecté automatiquement ! +2 points crédités.',comment_detected:'✅ Commentaire détecté automatiquement ! +2 points crédités.',profile_detected:'✅ Profil complété détecté ! +3 points crédités.',vote_validated:'✅ Vote validé ! +2 points crédités.',comment_validated:'✅ Commentaire validé ! +2 points crédités.',profile_validated:'✅ Profil complété ! +3 points crédités.',vote_already:'✅ Vote déjà validé aujourd\'hui.',comment_already:'✅ Commentaire déjà validé aujourd\'hui.',profile_already:'✅ Profil déjà validé aujourd\'hui.'},
         badges:{loading:'Chargement des badges...',locked:'Verrouillé',available:'Disponible !',claimed:'Obtenu',unlock:'Badge débloqué !',error_claim:'Erreur lors de la réclamation du badge.',impossible_claim:'Impossible de réclamer ce badge.',network_error:'Erreur réseau. Réessayez.',loading_error:'Erreur chargement badges',images:'images'},
-        referral:{title:'Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul',desc:'Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.',copy:'Copier',copied:'Copié !',godchildren:'Filleuls',points_earned:'Points gagnés',new_godchild:'Nouveau filleul',registered_via:'Inscrit via votre lien',confirm:'Confirmer',all_confirmed:'Tous vos parrainages sont confirmés !',already_confirmed:'Ce parrainage a déjà été confirmé.',confirmed:'✅ Parrainage confirmé !',error:'Erreur: ',share_confirm:'Lien copié ! Confirmez-vous avoir partagé Pixora ?',share_clipboard:'Lien copié dans le presse-papier ! Partagez-le puis revenez.',share_success:'✅ Partage confirmé !'},
+        referral:{title_html:'Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul',desc:'Partagez votre lien unique. Confirmez vos filleuls ci-dessous pour recevoir vos points.',copy:'Copier',copied:'Copié !',godchildren:'Filleuls',points_earned:'Points gagnés',new_godchild:'Nouveau filleul',registered_via:'Inscrit via votre lien',confirm:'Confirmer',all_confirmed:'Tous vos parrainages sont confirmés !',already_confirmed:'Ce parrainage a déjà été confirmé.',confirmed:'✅ Parrainage confirmé !',error:'Erreur: ',share_confirm:'Lien copié ! Confirmez-vous avoir partagé Pixora ?',share_clipboard:'Lien copié dans le presse-papier ! Partagez-le puis revenez.',share_success:'✅ Partage confirmé !'},
         ads:{no_offers:'Aucune offre disponible pour le moment',come_back_later:'Revenez plus tard !',completed:'Déjà complété',finished:'Terminé',start:'Commencer',loading_error:'Erreur de chargement',window_opened:'Une nouvelle fenêtre s\'est ouverte.',visit_partner:'Visitez le site partenaire, puis revenez ici.',wait:'Patientez',click_first:'⚠️ Cliquez d\'abord sur l\'offre !',finished_btn:"J'ai terminé",must_click:'⚠️ Vous devez cliquer sur l\'offre avant de réclamer vos points.',validating:'Validation...'},
         ad_types:{video:'Regarder une vidéo',video_desc:'Regardez une vidéo complète pour gagner des points',smartlink:'Smartlink',smartlink_desc:'Visitez un site partenaire et confirmez votre visite',banner:'Bannière 300x250',banner_desc:'Visualisez cette publicité puis confirmez',native:'Contenu sponsorisé',native_desc:'Lisez cet article sponsorisé puis confirmez',social_bar:'Notification',social_bar_desc:'Activez les notifications puis confirmez',popunder:'Popunder',popunder_desc:'Ouvrez la fenêtre publicitaire puis confirmez'},
         common:{loading:'Chargement...',loading_badges:'Chargement des badges...',loading_ads:'Chargement des offres...'},
@@ -232,7 +232,7 @@ var EARN_I18N = {
         bonus:{claim:'Claim',claimed:'✅ Bonus Claimed!',day:'🔥 Day',come_back:'Come back tomorrow to continue your streak',login_pts:'login pts',streak_pts:'streak pts',already_claimed:'Already claimed',error:'Error claiming bonus.',impossible:'Unable to claim bonus.',network_error:'Network error. Try again.'},
         tasks:{no_tasks:'No tasks available',today:'today',done:'Done',do:'Do',limit_reached:'Daily limit reached',coming_soon:'This task will be available soon.',loading_error:'Tasks loading error',vote_detected:'✅ Vote detected automatically! +2 points credited.',comment_detected:'✅ Comment detected automatically! +2 points credited.',profile_detected:'✅ Profile completed detected! +3 points credited.',vote_validated:'✅ Vote validated! +2 points credited.',comment_validated:'✅ Comment validated! +2 points credited.',profile_validated:'✅ Profile completed! +3 points credited.',vote_already:'✅ Vote already validated today.',comment_already:'✅ Comment already validated today.',profile_already:'✅ Profile already validated today.'},
         badges:{loading:'Loading badges...',locked:'Locked',available:'Available!',claimed:'Earned',unlock:'Badge unlocked!',error_claim:'Error claiming badge.',impossible_claim:'Unable to claim this badge.',network_error:'Network error. Try again.',loading_error:'Badges loading error',images:'images'},
-        referral:{title:'Invite friends and earn <span style="color:var(--gold)">10 points</span> per referral',desc:'Share your unique link. Confirm your referrals below to receive your points.',copy:'Copy',copied:'Copied!',godchildren:'Referrals',points_earned:'Points earned',new_godchild:'New referral',registered_via:'Registered via your link',confirm:'Confirm',all_confirmed:'All your referrals are confirmed!',already_confirmed:'This referral has already been confirmed.',confirmed:'✅ Referral confirmed!',error:'Error: ',share_confirm:'Link copied! Confirm you shared Pixora?',share_clipboard:'Link copied to clipboard! Share it then come back.',share_success:'✅ Share confirmed!'},
+        referral:{title_html:'Invite friends and earn <span style="color:var(--gold)">10 points</span> per referral',desc:'Share your unique link. Confirm your referrals below to receive your points.',copy:'Copy',copied:'Copied!',godchildren:'Referrals',points_earned:'Points earned',new_godchild:'New referral',registered_via:'Registered via your link',confirm:'Confirm',all_confirmed:'All your referrals are confirmed!',already_confirmed:'This referral has already been confirmed.',confirmed:'✅ Referral confirmed!',error:'Error: ',share_confirm:'Link copied! Confirm you shared Pixora?',share_clipboard:'Link copied to clipboard! Share it then come back.',share_success:'✅ Share confirmed!'},
         ads:{no_offers:'No offers available right now',come_back_later:'Come back later!',completed:'Already completed',finished:'Finished',start:'Start',loading_error:'Loading error',window_opened:'A new window has opened.',visit_partner:'Visit the partner site, then come back here.',wait:'Wait',click_first:'⚠️ Click on the offer first!',finished_btn:"I'm done",must_click:'⚠️ You must click on the offer before claiming your points.',validating:'Validating...'},
         ad_types:{video:'Watch a video',video_desc:'Watch a full video to earn points',smartlink:'Smartlink',smartlink_desc:'Visit a partner site and confirm your visit',banner:'Banner 300x250',banner_desc:'View this ad then confirm',native:'Sponsored content',native_desc:'Read this sponsored article then confirm',social_bar:'Notification',social_bar_desc:'Enable notifications then confirm',popunder:'Popunder',popunder_desc:'Open the ad window then confirm'},
         common:{loading:'Loading...',loading_badges:'Loading badges...',loading_ads:'Loading offers...'},
@@ -266,7 +266,6 @@ function changeEarnLang(lang) {
     var sel = document.getElementById('lang-select');
     if (sel) sel.value = lang;
     applyEarnTranslations();
-    // Recharger les contenus dynamiques avec la bonne langue
     if (user) {
         loadDailyBonus();
         loadTasks();
@@ -292,8 +291,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let user = null;
 let adsData = [];
-let userTier = 1;let remoteConfig = {};
-let adClicked = false;
+let userTier = 1;
+let remoteConfig = {};let adClicked = false;
 
 function getAdConfig(type) {
     var map = {
@@ -330,7 +329,6 @@ async function loadRemoteConfig() {
 }
 
 async function init() {
-    // Détecter la langue AVANT tout
     var lang = detectEarnLang();
     currentEarnLang = lang;
     var sel = document.getElementById('lang-select');
@@ -341,9 +339,9 @@ async function init() {
     const { data: { user: u }, error } = await db.auth.getUser();
     if (error || !u) { window.location.href = '/index.html'; return; }
     user = u;
-    await loadRemoteConfig();    await updatePoints();
-    await detectTier();
-    await autoValidateTasks();
+    await loadRemoteConfig();
+    await updatePoints();
+    await detectTier();    await autoValidateTasks();
     await checkValidationReturn();
     await loadDailyBonus();
     await loadTasks();
@@ -390,9 +388,9 @@ async function autoValidateTasks() {
             }
         }
         const { data: userData } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
-        if (userData?.profile_complete) {            const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
-            if (!alreadyCredited || alreadyCredited.length === 0) {
-                const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
+        if (userData?.profile_complete) {
+            const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Compléter son profil').gte('created_at', today + 'T00:00:00').limit(1);
+            if (!alreadyCredited || alreadyCredited.length === 0) {                const result = await creditTaskPoints('Compléter son profil', 'profile', 3);
                 if (result) showBanner(tEarn('tasks.profile_detected'), 'success');
             }
         }
@@ -439,9 +437,9 @@ async function checkValidationReturn() {
             if (alreadyDone && alreadyDone.length > 0) {
                 message.textContent = tEarn('tasks.comment_already');
                 banner.className = 'validation-banner info show';
-                banner.style.display = 'flex';            } else {
-                const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
+                banner.style.display = 'flex';
+            } else {
+                const { data: existing } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);                if (existing && existing.length > 0 && existing[0].content && existing[0].content.length >= 10) {
                     const result = await creditTaskPoints('Commenter une création', 'comment', 2);
                     if (result) {
                         message.textContent = tEarn('tasks.comment_validated');
@@ -473,7 +471,6 @@ async function checkValidationReturn() {
     } catch(e) { console.error('Validation error:', e); }
 }
 
-// ✅ RPC credit_task_points (IDENTIQUE)
 async function creditTaskPoints(taskName, taskType, points) {
     try {
         const { data, error } = await db.rpc('credit_task_points', {
@@ -488,11 +485,10 @@ async function creditTaskPoints(taskName, taskType, points) {
     } catch(e) { console.error('Credit task error:', e); return false; }
 }
 
-// ✅ loadDailyBonus avec i18nasync function loadDailyBonus() {
+async function loadDailyBonus() {
     try {
         const { data: userData } = await db.from('user_data').select('streak,last_login').eq('user_id', user.id).single();
-        const rc = remoteConfig.retention_config || {};
-        const tierData = rc[userTier] || rc[1] || {};
+        const rc = remoteConfig.retention_config || {};        const tierData = rc[userTier] || rc[1] || {};
         const streak = userData?.streak || 0;
         const lastLogin = userData?.last_login;
         const today = new Date().toISOString().split('T')[0];
@@ -524,7 +520,6 @@ async function creditTaskPoints(taskName, taskType, points) {
     } catch(e) { console.error('Bonus error:', e); }
 }
 
-// ✅ claimDailyBonus avec i18n (RPC IDENTIQUE)
 async function claimDailyBonus() {
     const btn = document.getElementById('btnClaimBonus');
     btn.disabled = true;
@@ -537,12 +532,12 @@ async function claimDailyBonus() {
         const { data: userData } = await db.from('user_data').select('streak').eq('user_id', user.id).single();
         const currentStreak = (userData?.streak || 0) + 1;
         if (currentStreak >= 7) streakPts = tierData.streak_j7 || 10;
-        else if (currentStreak >= 4) streakPts = tierData.streak_j4_6 || 7;        const { data, error } = await db.rpc('claim_daily_bonus', {
+        else if (currentStreak >= 4) streakPts = tierData.streak_j4_6 || 7;
+        const { data, error } = await db.rpc('claim_daily_bonus', {
             p_user_id: user.id,
             p_bonus_points: bonusPts,
             p_streak_points: streakPts
-        });
-        if (error) {
+        });        if (error) {
             console.error('RPC claim_daily_bonus error:', error);
             alert(tEarn('bonus.error'));
             await loadDailyBonus();
@@ -562,7 +557,7 @@ async function claimDailyBonus() {
         await loadDailyBonus();
     }
 }
-// ✅ loadTasks avec i18n
+
 async function loadTasks() {
     const container = document.getElementById('tasksContainer');
     try {
@@ -576,30 +571,22 @@ async function loadTasks() {
         const { data: completed } = await db.from('task_completions').select('task_name').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
         const completedMap = {};
         (completed || []).forEach(function(c) { completedMap[c.task_name] = (completedMap[c.task_name] || 0) + 1; });
-
         const { data: recentVotes } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
         const hasVotedToday = recentVotes && recentVotes.length > 0;
-
         const { data: recentComments } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
         const hasCommentedToday = recentComments && recentComments.length > 0 && recentComments[0].content && recentComments[0].content.length >= 10;
-
         const { data: userDataForProfile } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
         const profileComplete = userDataForProfile?.profile_complete || false;
-
         container.innerHTML = activeTasks.map(function(t) {
             const doneCount = completedMap[t.name] || 0;
             const isMaxed = doneCount >= t.limit;
             const icon = TASK_ICONS[t.type] || 'fa-check';
-
             let effectiveIsMaxed = isMaxed;
             if (t.type === 'vote' && hasVotedToday) effectiveIsMaxed = true;
             if (t.type === 'comment' && hasCommentedToday) effectiveIsMaxed = true;
             if (t.type === 'profile' && profileComplete) effectiveIsMaxed = true;
-
             var btnText = effectiveIsMaxed
-                ? '<i class="fas fa-check"></i> ' + tEarn('tasks.done')
-                : '<i class="fas fa-play"></i> ' + tEarn('tasks.do');
-
+                ? '<i class="fas fa-check"></i> ' + tEarn('tasks.done')                : '<i class="fas fa-play"></i> ' + tEarn('tasks.do');
             return '<div class="task-card ' + (effectiveIsMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
                 '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
                 '<div class="task-name">' + t.name + '</div>' +
@@ -611,28 +598,25 @@ async function loadTasks() {
         }).join('');
     } catch(e) {
         console.error('Tasks error:', e);
-        container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('tasks.loading_error') + '</p></div>';    }
+        container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('tasks.loading_error') + '</p></div>';
+    }
 }
 
-// ✅ loadBadges avec i18n
 async function loadBadges() {
     const container = document.getElementById('badgesContainer');
     try {
         const { data: userData } = await db.from('user_data').select('total_generated,badges_claimed').eq('user_id', user.id).single();
         const genCount = userData?.total_generated || 0;
         const claimedBadges = userData?.badges_claimed || [];
-
         container.innerHTML = BADGES_CONFIG.map(function(badge) {
             const isClaimed = claimedBadges.includes(badge.id);
             const canClaim = genCount >= badge.threshold && !isClaimed;
             const progress = Math.min(genCount, badge.threshold);
             const progressPercent = Math.min((genCount / badge.threshold) * 100, 100);
             const badgeName = tEarn(badge.nameKey);
-
             let statusClass = 'locked';
             let statusText = '🔒 ' + progress + '/' + badge.threshold + ' ' + tEarn('badges.images');
             let btnHtml = '<button class="btn-badge locked" disabled><i class="fas fa-lock"></i> ' + tEarn('badges.locked') + '</button>';
-
             if (isClaimed) {
                 statusClass = 'claimed';
                 statusText = '✅ ' + tEarn('badges.claimed');
@@ -642,7 +626,6 @@ async function loadBadges() {
                 statusText = '🎁 ' + tEarn('badges.available');
                 btnHtml = '<button class="btn-badge claim" onclick="checkBadge(\'' + badge.id + '\',' + badge.points + ')"><i class="fas fa-gift"></i> ' + tEarn('bonus.claim') + ' +' + badge.points + ' pts</button>';
             }
-
             return '<div class="badge-card ' + statusClass + '">' +
                 '<div class="badge-icon">' + badge.icon + '</div>' +
                 '<div class="badge-level">' + badge.id + '</div>' +
@@ -652,15 +635,14 @@ async function loadBadges() {
                 '<div class="badge-status ' + statusClass + '">' + statusText + '</div>' +
                 btnHtml +
                 '</div>';
-        }).join('');
-    } catch(e) {
+        }).join('');    } catch(e) {
         console.error('Badges error:', e);
         container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('badges.loading_error') + '</p></div>';
     }
 }
 
-// ✅ checkBadge avec i18n (RPC IDENTIQUE)
-async function checkBadge(badgeId, points) {    try {
+async function checkBadge(badgeId, points) {
+    try {
         const { data, error } = await db.rpc('claim_badge', {
             p_user_id: user.id,
             p_badge_id: badgeId,
@@ -684,7 +666,6 @@ async function checkBadge(badgeId, points) {    try {
     }
 }
 
-// ✅ doTask avec i18n
 async function doTask(taskName, taskType, points, limit) {
     const today = new Date().toISOString().split('T')[0];
     const { data: completed } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', taskName).gte('created_at', today + 'T00:00:00');
@@ -696,7 +677,6 @@ async function doTask(taskName, taskType, points, limit) {
     else { alert(tEarn('tasks.coming_soon')); }
 }
 
-// ✅ doShareTask avec i18n
 async function doShareTask(taskName, points) {
     const shareUrl = window.location.origin + '/?ref=' + user.id;
     const shareText = currentEarnLang === 'en' ? 'Discover Pixora - Free AI Generator!' : 'Découvrez Pixora - Générateur IA gratuit !';
@@ -704,17 +684,11 @@ async function doShareTask(taskName, points) {
         if (navigator.share) {
             await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
             const result = await creditTaskPoints(taskName, 'share', points);
-            if (result) {
-                alert(tEarn('referral.share_success') + ' +' + points + ' points');
-                await loadTasks();
-            }
-        } else {
-            await navigator.clipboard.writeText(shareUrl);            if (confirm(tEarn('referral.share_confirm'))) {
+            if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }        } else {
+            await navigator.clipboard.writeText(shareUrl);
+            if (confirm(tEarn('referral.share_confirm'))) {
                 const result = await creditTaskPoints(taskName, 'share', points);
-                if (result) {
-                    alert(tEarn('referral.share_success') + ' +' + points + ' points');
-                    await loadTasks();
-                }
+                if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }
             }
         }
     } catch(e) {
@@ -725,7 +699,6 @@ async function doShareTask(taskName, points) {
     }
 }
 
-// ✅ loadReferral avec i18n
 async function loadReferral() {
     try {
         const config = remoteConfig.referral_config || {};
@@ -758,11 +731,10 @@ async function loadReferral() {
                     '</button></div>';
             });
             html += '</div>';
-            pendingContainer.innerHTML = html;        }
-    } catch(e) { console.error('Referral error:', e); }
-}
+            pendingContainer.innerHTML = html;
+        }
+    } catch(e) { console.error('Referral error:', e); }}
 
-// ✅ claimReferral avec i18n
 async function claimReferral(refId, points) {
     const btn = document.getElementById('btn-ref-' + refId);
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...'; }
@@ -783,7 +755,6 @@ async function claimReferral(refId, points) {
     await loadReferral();
 }
 
-// ✅ copyReferralLink avec i18n
 function copyReferralLink() {
     const input = document.getElementById('referralLink');
     input.select();
@@ -794,7 +765,6 @@ function copyReferralLink() {
     });
 }
 
-// ✅ loadAds avec i18n
 async function loadAds() {
     const container = document.getElementById('adsContainer');
     try {
@@ -807,13 +777,12 @@ async function loadAds() {
         const { data: completedData } = await db.from('ad_clicks').select('ad_name').eq('user_id', user.id).eq('status', 'paid');
         const completedNames = new Set(completedData?.map(function(c) { return c.ad_name; }) || []);
         container.innerHTML = activeAds.map(function(ad, index) {
-            const cfg = getAdConfig(ad.type);            const label = tEarn(cfg.labelKey);
+            const cfg = getAdConfig(ad.type);
             const desc = tEarn(cfg.descKey);
             const isCompleted = completedNames.has(ad.name);
             const actualIndex = adsData.findIndex(function(a) { return a.name === ad.name; });
             if (isCompleted) {
-                return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +
-                    '<div class="card-header"><div class="card-icon">' + cfg.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
+                return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +                    '<div class="card-header"><div class="card-icon">' + cfg.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
                     '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + desc + '</p>' +
                     '<div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i><p style="margin-top:0.5rem;font-weight:600">' + tEarn('ads.completed') + '</p></div>' +
                     '<button class="btn btn-disabled" disabled><i class="fas fa-check"></i> ' + tEarn('ads.finished') + '</button></div>';
@@ -843,20 +812,18 @@ function loadAdScript(container, htmlCode) {
     iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };
 }
 
-// ✅ startAd avec i18n
 function startAd(adIndex) {
     const ad = adsData[adIndex];
     const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
     const btn = card.querySelector('.btn');
     const hasCode = ad.code && ad.code.length > 0;
     const isSmartlink = isURL(ad.code);
-
     adClicked = false;
-
     if (isSmartlink) {
         window.open(ad.code, '_blank', 'noopener,noreferrer');
         adClicked = true;
-        const smartlinkInfo = document.createElement('div');        smartlinkInfo.className = 'smartlink-info';
+        const smartlinkInfo = document.createElement('div');
+        smartlinkInfo.className = 'smartlink-info';
         smartlinkInfo.innerHTML = '<i class="fas fa-external-link-alt"></i><p><strong>' + tEarn('ads.window_opened') + '</strong></p><p>' + tEarn('ads.visit_partner') + '</p>';
         card.insertBefore(smartlinkInfo, btn);
     } else if (hasCode) {
@@ -864,10 +831,8 @@ function startAd(adIndex) {
         adContainer.className = 'ad-container';
         adContainer.id = 'ad-' + ad.name.replace(/\s/g,'');
         loadAdScript(adContainer, ad.code);
-        card.insertBefore(adContainer, btn);
-        setTimeout(function() { adClicked = true; }, 3000);
+        card.insertBefore(adContainer, btn);        setTimeout(function() { adClicked = true; }, 3000);
     }
-
     btn.disabled = true;
     btn.classList.remove('btn-primary');
     btn.classList.add('btn-disabled');
@@ -903,11 +868,8 @@ function startAd(adIndex) {
     }, 1000);
 }
 
-// ✅ confirmAd avec i18n
 async function confirmAd(adIndex) {
-    if (adClicked !== true) {        alert(tEarn('ads.must_click'));
-        return;
-    }
+    if (adClicked !== true) { alert(tEarn('ads.must_click')); return; }
     const ad = adsData[adIndex];
     const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
     const btn = card.querySelector('.btn');
@@ -918,8 +880,7 @@ async function confirmAd(adIndex) {
         const adPoints = ad.points || 10;
         const newPoints = (userData?.points || 0) + adPoints;
         const newEarned = (userData?.total_earned || 0) + adPoints;
-        await Promise.all([
-            db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
+        await Promise.all([            db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
             db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),
             db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
         ]);
@@ -929,7 +890,6 @@ async function confirmAd(adIndex) {
     } catch (e) { console.error('Confirm ad error:', e); alert(tEarn('referral.error') + e.message); await loadAds(); }
 }
 
-// ✅ updatePoints (IDENTIQUE)
 async function updatePoints() {
     const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
     document.getElementById('pointsDisplay').innerText = (data?.points || 0).toLocaleString();
