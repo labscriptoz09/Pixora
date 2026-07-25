@@ -48,6 +48,30 @@
         .task-progress{font-size:0.7rem;color:var(--dim);font-family:var(--mono)}
         .btn-task{padding:0.6rem;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:0.3rem}
         .btn-task:hover{background:var(--accent2)}        .btn-task.done{background:var(--border);color:var(--muted);cursor:default}
+        /* ✅ BADGES PROGRESSIFS — Styles ajoutés */
+        .badge-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem;display:flex;flex-direction:column;gap:0.6rem;transition:all 0.3s;position:relative;overflow:hidden}
+        .badge-card.available{border-color:var(--gold);box-shadow:0 0 15px rgba(251,191,36,0.15)}
+        .badge-card.claimed{border-color:var(--success);opacity:0.7}
+        .badge-card.locked{opacity:0.5}
+        .badge-icon{font-size:2rem;margin-bottom:0.3rem}
+        .badge-level{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted)}
+        .badge-name{font-size:0.95rem;font-weight:700;color:var(--text)}
+        .badge-reward{font-family:var(--mono);font-size:0.85rem;font-weight:700;color:var(--gold)}
+        .badge-progress{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:0.3rem}
+        .badge-progress-bar{height:100%;border-radius:3px;transition:width 0.5s ease}
+        .badge-progress-bar.bronze{background:linear-gradient(90deg,#CD7F32,#E8A862)}
+        .badge-progress-bar.silver{background:linear-gradient(90deg,#C0C0C0,#E8E8E8)}
+        .badge-progress-bar.gold{background:linear-gradient(90deg,#FFD700,#FFF4A3)}
+        .badge-progress-bar.diamond{background:linear-gradient(90deg,#B9F2FF,#8B5CF6)}
+        .badge-status{font-size:0.75rem;font-weight:600;margin-top:0.2rem}
+        .badge-status.locked{color:var(--dim)}
+        .badge-status.available{color:var(--gold)}
+        .badge-status.claimed{color:var(--success)}
+        .btn-badge{padding:0.6rem;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;width:100%;display:flex;align-items:center;justify-content:center;gap:0.3rem;transition:all 0.2s}
+        .btn-badge.claim{background:var(--gold);color:#000}
+        .btn-badge.claim:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(251,191,36,0.3)}
+        .btn-badge.locked{background:var(--border);color:var(--dim);cursor:default}
+        .btn-badge.done{background:rgba(16,185,129,0.15);color:var(--success);cursor:default}
         .referral-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2.5rem}
         .referral-link-box{display:flex;gap:0.5rem;margin-top:1rem}
         .referral-input{flex:1;padding:0.7rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--accent);font-family:var(--mono);font-size:0.8rem;outline:none}
@@ -72,8 +96,7 @@
         .earn-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;overflow:hidden;transition:all 0.3s}
         .earn-card.completed{opacity:0.7}
         .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
-        .card-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(236,72,153,0.2));display:flex;align-items:center;justify-content:center;font-size:1.8rem}
-        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}
+        .card-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(236,72,153,0.2));display:flex;align-items:center;justify-content:center;font-size:1.8rem}        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}
         .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
         .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem}
         .ad-container{margin:1rem 0;border-radius:10px;overflow:hidden;background:#fff}
@@ -96,7 +119,8 @@
         .validation-banner.info i{color:var(--accent)}
         @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
         @media(max-width:768px){
-            .earn-grid,.tasks-grid{grid-template-columns:1fr}            .page-title{font-size:1.5rem}
+            .earn-grid,.tasks-grid{grid-template-columns:1fr}
+            .page-title{font-size:1.5rem}
             .streak-card{flex-direction:column;text-align:center}
             .streak-left{flex-direction:column}
             .streak-days{justify-content:center}
@@ -121,8 +145,7 @@
 
     <main>
         <div class="validation-banner" id="validationBanner" style="display:none">
-            <i class="fas fa-check-circle"></i>
-            <span id="validationMessage">Tâche validée ! Points crédités.</span>
+            <i class="fas fa-check-circle"></i>            <span id="validationMessage">Tâche validée ! Points crédités.</span>
         </div>
 
         <div class="page-header">
@@ -145,7 +168,14 @@
         </div>
 
         <div class="section-title"><i class="fas fa-tasks"></i> Tâches Rapides</div>
-        <div class="tasks-grid" id="tasksContainer">            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        <div class="tasks-grid" id="tasksContainer">
+            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+
+        <!-- ✅ NOUVEAU : Section Badges Progressifs -->
+        <div class="section-title"><i class="fas fa-trophy"></i> Badges Créateur</div>
+        <div class="tasks-grid" id="badgesContainer">
+            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p>Chargement des badges...</p></div>
         </div>
 
         <div class="section-title"><i class="fas fa-user-friends"></i> Parrainage</div>
@@ -164,8 +194,7 @@
         </div>
 
         <div class="section-title"><i class="fas fa-ad"></i> Offres Sponsorisées</div>
-        <div class="earn-grid" id="adsContainer">
-            <div class="empty-state">
+        <div class="earn-grid" id="adsContainer">            <div class="empty-state">
                 <i class="fas fa-spinner fa-spin"></i>
                 <p>Chargement des offres...</p>
             </div>
@@ -181,6 +210,8 @@
         let adsData = [];
         let userTier = 1;
         let remoteConfig = {};
+        // ✅ NOUVEAU : Flag pour vérifier le clic sur les pubs earn
+        let adClicked = false;
 
         const AD_CONFIG = {
             video: { icon: '🎬', label: 'Regarder une vidéo', desc: 'Regardez une vidéo complète pour gagner des points' },
@@ -193,8 +224,16 @@
 
         const TASK_ICONS = { vote:'fa-heart', comment:'fa-comment', share:'fa-share-alt', profile:'fa-user-edit', badge:'fa-trophy', daily:'fa-calendar-check', social:'fa-hashtag' };
 
+        // ✅ Configuration des badges progressifs
+        const BADGES_CONFIG = [
+            { id: 'bronze', name: 'Apprenti Créateur', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
+            { id: 'silver', name: 'Créateur Confirmé', icon: '🖌️', threshold: 15, points: 10, colorClass: 'silver' },
+            { id: 'gold', name: 'Maître Créateur', icon: '👑', threshold: 20, points: 20, colorClass: 'gold' },
+            { id: 'diamond', name: 'Légende Pixora', icon: '💎', threshold: 50, points: 50, colorClass: 'diamond' }
+        ];
+
         function isURL(str) { return str && (str.startsWith('http://') || str.startsWith('https://')); }
-        // ✅ NOUVEAU : Charger les configs via le proxy sécurisé /api/config
+
         async function loadRemoteConfig() {
             try {
                 const res = await fetch('/api/config');
@@ -204,14 +243,12 @@
             } catch(e) {
                 console.error('[CONFIG] Proxy error:', e);
                 remoteConfig = {};
-            }
-        }
+            }        }
 
         async function init() {
             const { data: { user: u }, error } = await db.auth.getUser();
             if (error || !u) { window.location.href = '/index.html'; return; }
             user = u;
-            // ✅ Charger config AVANT tout le reste
             await loadRemoteConfig();
             await updatePoints();
             await detectTier();
@@ -219,8 +256,21 @@
             await checkValidationReturn();
             await loadDailyBonus();
             await loadTasks();
+            await loadBadges(); // ✅ NOUVEAU : Charger les badges progressifs
             await loadReferral();
             await loadAds();
+
+            // ✅ NOUVEAU : Écouteur global pour détecter le retour après clic pub
+            window.addEventListener('focus', function() {
+                if (adClicked === true) {
+                    var claimBtns = document.querySelectorAll('.btn.btn-success');
+                    claimBtns.forEach(function(btn) {
+                        if (btn.disabled && btn.textContent.indexOf('Patientez') !== -1) {
+                            // Le timer n'est pas fini, on marque juste que le clic a eu lieu
+                        }
+                    });
+                }
+            });
         }
 
         async function detectTier() {
@@ -230,7 +280,6 @@
             } catch(e) { userTier = 1; }
         }
 
-        // ✅ Auto-détecter les votes/comments/profil récents sans paramètre URL
         async function autoValidateTasks() {
             const today = new Date().toISOString().split('T')[0];
             try {
@@ -345,7 +394,6 @@
         async function loadDailyBonus() {
             try {
                 const { data: userData } = await db.from('user_data').select('streak,last_login').eq('user_id', user.id).single();
-                // ✅ LIRE VIA PROXY au lieu de admin_config direct
                 const rc = remoteConfig.retention_config || {};
                 const tierData = rc[userTier] || rc[1] || {};
                 const streak = userData?.streak || 0;
@@ -390,8 +438,8 @@
                 if (userData?.last_login === today) { alert('Déjà réclamé aujourd\'hui'); await loadDailyBonus(); return; }
                 const streak = (userData?.streak || 0) + 1;
                 let bonusPts = tierData.bonus_login || 5;
-                let streakPts = tierData.streak_j1_3 || 3;                if (streak >= 7) streakPts = tierData.streak_j7 || 10;
-                else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
+                let streakPts = tierData.streak_j1_3 || 3;
+                if (streak >= 7) streakPts = tierData.streak_j7 || 10;                else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
                 const totalDaily = bonusPts + streakPts;
                 const newPoints = (userData?.points || 0) + totalDaily;
                 await Promise.all([
@@ -403,13 +451,13 @@
             } catch(e) { console.error('Claim error:', e); alert('Erreur: ' + e.message); await loadDailyBonus(); }
         }
 
-        // ✅ CORRECTION CRITIQUE : loadTasks() lit via remoteConfig + vérifie votes/comments/profile
+        // ✅ MODIFIÉ : loadTasks() ne gère PLUS les badges (gérés par loadBadges())
         async function loadTasks() {
             const container = document.getElementById('tasksContainer');
             try {
-                // ✅ LIRE VIA PROXY au lieu de admin_config direct
                 const tasks = remoteConfig.internal_tasks || [];
-                const activeTasks = tasks.filter(function(t) { return t.active; });
+                // ✅ Filtrer les tâches de type 'badge' — elles sont maintenant dans loadBadges()
+                const activeTasks = tasks.filter(function(t) { return t.active && t.type !== 'badge'; });
                 if (activeTasks.length === 0) { container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Aucune tâche disponible</p></div>'; return; }
                 const today = new Date().toISOString().split('T')[0];
                 const { data: completed } = await db.from('task_completions').select('task_name').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
@@ -422,12 +470,8 @@
                 const { data: recentComments } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
                 const hasCommentedToday = recentComments && recentComments.length > 0 && recentComments[0].content && recentComments[0].content.length >= 10;
 
-                const { data: userDataForProfile } = await db.from('user_data').select('profile_complete,total_generated').eq('user_id', user.id).single();
+                const { data: userDataForProfile } = await db.from('user_data').select('profile_complete').eq('user_id', user.id).single();
                 const profileComplete = userDataForProfile?.profile_complete || false;
-                const genCount = userDataForProfile?.total_generated || 0;
-
-                const { data: badgeCompleted } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Badge Créateur Actif').eq('task_type', 'badge').limit(1);
-                const badgeAlreadyClaimed = badgeCompleted && badgeCompleted.length > 0;
 
                 container.innerHTML = activeTasks.map(function(t) {
                     const doneCount = completedMap[t.name] || 0;
@@ -439,38 +483,86 @@
                     if (t.type === 'comment' && hasCommentedToday) effectiveIsMaxed = true;
                     if (t.type === 'profile' && profileComplete) effectiveIsMaxed = true;
 
-                    if (t.type === 'badge') {                        const canClaim = genCount >= 5 && !badgeAlreadyClaimed;
-                        const isClaimed = badgeAlreadyClaimed;
-                        let btnClass = 'btn-task';
-                        let btnDisabled = false;
-                        let btnContent = '';
-                        if (isClaimed) {
-                            btnClass += ' done';
-                            btnDisabled = true;
-                            btnContent = '<i class="fas fa-check"></i> Débloqué';
-                        } else if (canClaim) {
-                            btnContent = '<i class="fas fa-gift"></i> Réclamer';
-                        } else {
-                            btnDisabled = true;
-                            btnContent = '<i class="fas fa-lock"></i> ' + genCount + '/5 générations';
-                        }
-                        return '<div class="task-card ' + (isClaimed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
-                            '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
-                            '<div class="task-name">' + t.name + '</div>' +
-                            '<div class="task-desc">' + (t.desc || '') + '</div>' +
-                            '<div class="task-progress">' + genCount + '/5 générations</div>' +
-                            '<button class="' + btnClass + '" onclick="checkBadge()" ' + (btnDisabled ? 'disabled' : '') + '>' + btnContent + '</button></div>';
-                    }
                     return '<div class="task-card ' + (effectiveIsMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
                         '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
                         '<div class="task-name">' + t.name + '</div>' +
                         '<div class="task-desc">' + (t.desc || '') + '</div>' +
                         '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' aujourd\'hui</div>' +
-                        '<button class="btn-task ' + (effectiveIsMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (effectiveIsMaxed ? 'disabled' : '') + '>' +
-                        (effectiveIsMaxed ? '<i class="fas fa-check"></i> Terminé' : '<i class="fas fa-play"></i> Faire') +
+                        '<button class="btn-task ' + (effectiveIsMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (effectiveIsMaxed ? 'disabled' : '') + '>' +                        (effectiveIsMaxed ? '<i class="fas fa-check"></i> Terminé' : '<i class="fas fa-play"></i> Faire') +
                         '</button></div>';
                 }).join('');
             } catch(e) { console.error('Tasks error:', e); container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement tâches</p></div>'; }
+        }
+
+        // ✅ NOUVEAU : Fonction dédiée aux badges progressifs
+        async function loadBadges() {
+            const container = document.getElementById('badgesContainer');
+            try {
+                const { data: userData } = await db.from('user_data').select('total_generated,badges_claimed').eq('user_id', user.id).single();
+                const genCount = userData?.total_generated || 0;
+                const claimedBadges = userData?.badges_claimed || [];
+
+                container.innerHTML = BADGES_CONFIG.map(function(badge) {
+                    const isClaimed = claimedBadges.includes(badge.id);
+                    const canClaim = genCount >= badge.threshold && !isClaimed;
+                    const progress = Math.min(genCount, badge.threshold);
+                    const progressPercent = Math.min((genCount / badge.threshold) * 100, 100);
+
+                    let statusClass = 'locked';
+                    let statusText = '🔒 ' + progress + '/' + badge.threshold + ' images';
+                    let btnHtml = '<button class="btn-badge locked" disabled><i class="fas fa-lock"></i> Verrouillé</button>';
+
+                    if (isClaimed) {
+                        statusClass = 'claimed';
+                        statusText = '✅ Débloqué';
+                        btnHtml = '<button class="btn-badge done" disabled><i class="fas fa-check"></i> Obtenu</button>';
+                    } else if (canClaim) {
+                        statusClass = 'available';
+                        statusText = '🎁 Disponible !';
+                        btnHtml = '<button class="btn-badge claim" onclick="checkBadge(\'' + badge.id + '\',' + badge.points + ')"><i class="fas fa-gift"></i> Réclamer +' + badge.points + ' pts</button>';
+                    }
+
+                    return '<div class="badge-card ' + statusClass + '">' +
+                        '<div class="badge-icon">' + badge.icon + '</div>' +
+                        '<div class="badge-level">' + badge.id + '</div>' +
+                        '<div class="badge-name">' + badge.name + '</div>' +
+                        '<div class="badge-reward">+' + badge.points + ' points</div>' +
+                        '<div class="badge-progress"><div class="badge-progress-bar ' + badge.colorClass + '" style="width:' + progressPercent + '%"></div></div>' +
+                        '<div class="badge-status ' + statusClass + '">' + statusText + '</div>' +
+                        btnHtml +
+                        '</div>';
+                }).join('');
+            } catch(e) {
+                console.error('Badges error:', e);
+                container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>Erreur chargement badges</p></div>';
+            }
+        }
+        // ✅ REFAIT : checkBadge() utilise maintenant la RPC claim_badge()
+        async function checkBadge(badgeId, points) {
+            try {
+                const { data, error } = await db.rpc('claim_badge', {
+                    p_user_id: user.id,
+                    p_badge_id: badgeId,
+                    p_points: points
+                });
+
+                if (error) {
+                    console.error('RPC claim_badge error:', error);
+                    alert('Erreur lors de la réclamation du badge.');
+                    return;
+                }
+
+                if (data && data.success) {
+                    showBanner('🏆 Badge débloqué ! +' + data.points_earned + ' points', 'success');
+                    await updatePoints();
+                    await loadBadges();
+                } else {
+                    alert(data?.error || 'Impossible de réclamer ce badge.');
+                }
+            } catch(e) {
+                console.error('Check badge error:', e);
+                alert('Erreur réseau. Réessayez.');
+            }
         }
 
         async function doTask(taskName, taskType, points, limit) {
@@ -488,13 +580,13 @@
             const shareUrl = window.location.origin + '/?ref=' + user.id;
             const shareText = 'Découvrez Pixora - Générateur IA gratuit !';
             try {
-                if (navigator.share) {                    await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
+                if (navigator.share) {
+                    await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
                     await creditTaskPoints(taskName, 'share', points);
                     alert('✅ Partage confirmé ! +' + points + ' points');
                     await loadTasks();
                 } else {
-                    await navigator.clipboard.writeText(shareUrl);
-                    if (confirm('Lien copié ! Confirmez-vous avoir partagé Pixora ?')) {
+                    await navigator.clipboard.writeText(shareUrl);                    if (confirm('Lien copié ! Confirmez-vous avoir partagé Pixora ?')) {
                         await creditTaskPoints(taskName, 'share', points);
                         alert('✅ Partage confirmé ! +' + points + ' points');
                         await loadTasks();
@@ -508,21 +600,8 @@
             }
         }
 
-        async function checkBadge() {
-            const { data: userData } = await db.from('user_data').select('total_generated').eq('user_id', user.id).single();
-            const genCount = userData?.total_generated || 0;
-            if (genCount >= 5) {
-                await creditTaskPoints('Badge Créateur Actif', 'badge', 5);
-                alert('🏆 Badge débloqué ! +5 points');
-                await loadTasks();
-            } else {
-                alert('Il vous faut encore ' + (5 - genCount) + ' génération(s) pour débloquer ce badge.');
-            }
-        }
-
         async function loadReferral() {
             try {
-                // ✅ LIRE VIA PROXY au lieu de admin_config direct
                 const config = remoteConfig.referral_config || {};
                 if (!config.enabled) { document.querySelector('.referral-card').style.display = 'none'; return; }
                 const link = window.location.origin + '/?ref=' + user.id;
@@ -537,7 +616,8 @@
                 const pendingContainer = document.getElementById('pendingReferralsContainer');
                 const pendingRefs = validated.filter(function(r) { return r.claimed !== true; });
                 if (pendingRefs.length === 0) {
-                    pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> Tous vos parrainages sont confirmés !</div>';                } else {
+                    pendingContainer.innerHTML = '<div class="pending-ref-empty"><i class="fas fa-check-circle" style="color:var(--success);margin-right:0.3rem"></i> Tous vos parrainages sont confirmés !</div>';
+                } else {
                     let html = '<div class="pending-ref-list">';
                     pendingRefs.forEach(function(ref) {
                         html += '<div class="pending-ref-card" id="ref-card-' + ref.id + '">' +
@@ -556,7 +636,6 @@
                 }
             } catch(e) { console.error('Referral error:', e); }
         }
-
         async function claimReferral(refId, points) {
             const btn = document.getElementById('btn-ref-' + refId);
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...'; }
@@ -586,10 +665,10 @@
                 setTimeout(function() { btn.innerHTML = '<i class="fas fa-copy"></i> Copier'; }, 2000);
             });
         }
+
         async function loadAds() {
             const container = document.getElementById('adsContainer');
             try {
-                // ✅ LIRE VIA PROXY au lieu de admin_config direct
                 adsData = remoteConfig.ad_networks || [];
                 const activeAds = adsData.filter(function(ad) { return ad.active && ad.page === 'earn'; });
                 if (activeAds.length === 0) {
@@ -605,8 +684,7 @@
                     if (isCompleted) {
                         return '<div class="earn-card completed" id="card-' + ad.name.replace(/\s/g,'') + '">' +
                             '<div class="card-header"><div class="card-icon">' + config.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
-                            '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + config.desc + '</p>' +
-                            '<div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i><p style="margin-top:0.5rem;font-weight:600">Déjà complété</p></div>' +
+                            '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + config.desc + '</p>' +                            '<div style="background:rgba(16,185,129,0.1);padding:1rem;border-radius:10px;margin:1rem 0;text-align:center"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem"></i><p style="margin-top:0.5rem;font-weight:600">Déjà complété</p></div>' +
                             '<button class="btn btn-disabled" disabled><i class="fas fa-check"></i> Terminé</button></div>';
                     }
                     return '<div class="earn-card" id="card-' + ad.name.replace(/\s/g,'') + '">' +
@@ -634,24 +712,34 @@
             iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };
         }
 
+        // ✅ MODIFIÉ : startAd() avec flag adClicked + détection retour
         function startAd(adIndex) {
-            const ad = adsData[adIndex];            const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
+            const ad = adsData[adIndex];
+            const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
             const btn = card.querySelector('.btn');
             const hasCode = ad.code && ad.code.length > 0;
             const isSmartlink = isURL(ad.code);
+
+            // ✅ Reset du flag à chaque nouvelle pub
+            adClicked = false;
+
             if (isSmartlink) {
                 window.open(ad.code, '_blank', 'noopener,noreferrer');
+                // ✅ Marquer que l'utilisateur a cliqué (smartlink = clic immédiat)
+                adClicked = true;
                 const smartlinkInfo = document.createElement('div');
                 smartlinkInfo.className = 'smartlink-info';
                 smartlinkInfo.innerHTML = '<i class="fas fa-external-link-alt"></i><p><strong>Une nouvelle fenêtre s\'est ouverte.</strong></p><p>Visitez le site partenaire, puis revenez ici.</p>';
                 card.insertBefore(smartlinkInfo, btn);
             } else if (hasCode) {
                 const adContainer = document.createElement('div');
-                adContainer.className = 'ad-container';
-                adContainer.id = 'ad-' + ad.name.replace(/\s/g,'');
+                adContainer.className = 'ad-container';                adContainer.id = 'ad-' + ad.name.replace(/\s/g,'');
                 loadAdScript(adContainer, ad.code);
                 card.insertBefore(adContainer, btn);
+                // ✅ Pour les iframes, on marque le clic après un délai raisonnable
+                setTimeout(function() { adClicked = true; }, 3000);
             }
+
             btn.disabled = true;
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-disabled');
@@ -659,19 +747,43 @@
             btn.innerHTML = '<i class="fas fa-clock"></i> Patientez ' + seconds + 's...';
             const timer = setInterval(function() {
                 seconds--;
-                if (seconds > 0) { btn.innerHTML = '<i class="fas fa-clock"></i> Patientez ' + seconds + 's...'; }
-                else {
+                if (seconds > 0) {
+                    btn.innerHTML = '<i class="fas fa-clock"></i> Patientez ' + seconds + 's...';
+                } else {
                     clearInterval(timer);
-                    btn.disabled = false;
-                    btn.classList.remove('btn-disabled');
-                    btn.classList.add('btn-success');
-                    btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';
-                    btn.onclick = function() { confirmAd(adIndex); };
+                    // ✅ VÉRIFICATION CLIC OBLIGATOIRE
+                    if (adClicked === true) {
+                        btn.disabled = false;
+                        btn.classList.remove('btn-disabled');
+                        btn.classList.add('btn-success');
+                        btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';
+                        btn.onclick = function() { confirmAd(adIndex); };
+                    } else {
+                        btn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
+                        btn.style.background = 'rgba(239,68,68,0.5)';
+                        // Délai de grâce 10s
+                        setTimeout(function() {
+                            if (adClicked === true) {
+                                btn.disabled = false;
+                                btn.classList.remove('btn-disabled');
+                                btn.classList.add('btn-success');
+                                btn.style.background = '';
+                                btn.innerHTML = '<i class="fas fa-check"></i> J\'ai terminé';
+                                btn.onclick = function() { confirmAd(adIndex); };
+                            }
+                        }, 10000);
+                    }
                 }
             }, 1000);
         }
 
+        // ✅ MODIFIÉ : confirmAd() vérifie adClicked avant de créditer
         async function confirmAd(adIndex) {
+            // ✅ Double vérification de sécurité
+            if (adClicked !== true) {
+                alert('⚠️ Vous devez cliquer sur l\'offre avant de réclamer vos points.');
+                return;            }
+
             const ad = adsData[adIndex];
             const card = document.getElementById('card-' + ad.name.replace(/\s/g,''));
             const btn = card.querySelector('.btn');
@@ -684,9 +796,12 @@
                 const newEarned = (userData?.total_earned || 0) + adPoints;
                 await Promise.all([
                     db.from('user_data').update({ points: newPoints, total_earned: newEarned }).eq('user_id', user.id),
-                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),                    db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
+                    db.from('transactions').insert({ user_id: user.id, type: 'earned', title: ad.name, amount: adPoints }),
+                    db.from('ad_clicks').insert({ user_id: user.id, ad_name: ad.name, token: token, status: 'paid' })
                 ]);
                 document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
+                // ✅ Reset du flag après confirmation réussie
+                adClicked = false;
                 await loadAds();
             } catch (e) { console.error('Confirm ad error:', e); alert('Erreur: ' + e.message); await loadAds(); }
         }
