@@ -192,11 +192,9 @@
         .pxr-soft-benefit i{color:var(--success);font-size:0.8rem;width:16px;text-align:center}
         .pxr-soft-cta{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;text-decoration:none;border-radius:12px;font-weight:700;font-size:0.95rem;margin-bottom:0.8rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
         .pxr-soft-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
-        .pxr-soft-skip{background:none;border:none;color:var(--dim);cursor:pointer;font-size:0.8rem;padding:0.5rem;transition:color 0.2s}
-        .pxr-soft-skip:hover{color:var(--muted)}
-    </style></head>
-<body>
-<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
+    </style>
+</head>
+<body><div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
 <div class="lightbox" id="lightbox">
     <div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div>
@@ -243,9 +241,9 @@
     <a href="index.html" class="header-logo">
         <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
         <span class="logo-text">Pixora</span>
-    </a>    <div class="header-right">
-        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
-            <option value="fr">🇫🇷 FR</option>
+    </a>
+    <div class="header-right">
+        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">            <option value="fr">🇫🇷 FR</option>
             <option value="en">🇬🇧 EN</option>
         </select>
         <div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div>
@@ -292,9 +290,9 @@
             <span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span>
             <span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span>
         </div>
-        <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>    </div>
-    <div class="section-label"><span data-i18n="results.title">Vos Créations</span><span data-i18n="results.auto_delete">Auto-effacement après 1h</span></div>
-    <div class="results-grid" id="results-grid"></div>
+        <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
+    </div>
+    <div class="section-label"><span data-i18n="results.title">Vos Créations</span><span data-i18n="results.auto_delete">Auto-effacement après 1h</span></div>    <div class="results-grid" id="results-grid"></div>
     <footer class="site-footer">
         <div class="footer-links">
             <a href="earn.html" data-i18n="footer.earn_points">Gagner des Points</a>
@@ -310,7 +308,7 @@
 <script src="ads-loader.js"></script>
 <script>
 // =============================================
-// ✅ FREEMIUM DOUX
+// ✅ FREEMIUM DOUX CORRIGÉ
 // =============================================
 var PX_ANON_KEY = 'pxr_anon_gen_count';
 var PX_FREE_LIMIT = 3;
@@ -325,32 +323,52 @@ function incrementAnonCount() {
     return count;
 }
 
+// ✅ MODIFIÉ : Plus de bouton "Continuer en anonyme"
+// La modale est OBLIGATOIRE après 3 images
 function showSoftSignupPrompt() {
-    if (sessionStorage.getItem('pxr_signup_shown')) return;
-    sessionStorage.setItem('pxr_signup_shown', '1');
+    // Supprimer toute modale existante
+    var existing = document.getElementById('pxr-soft-signup');
+    if (existing) existing.remove();
+
     var overlay = document.createElement('div');
     overlay.id = 'pxr-soft-signup';
     overlay.className = 'pxr-soft-signup';
     overlay.innerHTML = '<div class="pxr-soft-modal">' +
         '<div class="pxr-soft-icon">🎁</div>' +
-        '<div class="pxr-soft-title">Vous aimez Pixora ?</div>' +
-        '<div class="pxr-soft-desc">Inscrivez-vous gratuitement pour débloquer :</div>' +
+        '<div class="pxr-soft-title">Vous avez adoré Pixora ?</div>' +
+        '<div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div>' +
         '<div class="pxr-soft-benefits">' +
             '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts immédiatement</div>' +
-            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées sans compteur</div>' +
+            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div>' +
             '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div>' +
-            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle</div>' +
-        '</div>' +
-        '<button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button>' +        '<button class="pxr-soft-skip" onclick="document.getElementById(\'pxr-soft-signup\').remove()">Non merci, continuer en anonyme</button>' +
+            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div>' +        '</div>' +
+        '<button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button>' +
     '</div>';
     document.body.appendChild(overlay);
 }
 
-function checkFreemiumAfterGeneration() {
-    db.auth.getUser().then(function(result) {
+// ✅ MODIFIÉ : Bloque la génération si limite atteinte
+function checkFreemiumBlock() {
+    return db.auth.getUser().then(function(result) {
+        if (!result.data.user) {
+            var count = getAnonCount();
+            if (count >= PX_FREE_LIMIT) {
+                showSoftSignupPrompt();
+                return false; // BLOQUÉ
+            }
+        } else {
+            // Connecté → reset compteur anonyme
+            localStorage.removeItem(PX_ANON_KEY);
+        }
+        return true; // Autorisé
+    });
+}
+
+function incrementAndCheckFreemium() {
+    return db.auth.getUser().then(function(result) {
         if (!result.data.user) {
             var count = incrementAnonCount();
-            if (count === PX_FREE_LIMIT) {
+            if (count >= PX_FREE_LIMIT) {
                 showSoftSignupPrompt();
             }
         } else {
@@ -372,8 +390,7 @@ var FR_TRANSLATIONS = {
     stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},
     auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'🎉 Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},
     menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},
-    notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%'},
-    footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 Pixora. Tous droits réservés.'},
+    notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.'},    footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 Pixora. Tous droits réservés.'},
     language:{label:'Language',fr:'Français',en:'English'}
 };
 
@@ -390,7 +407,8 @@ function t(key) {
 async function loadLang(lang) {
     currentLang = lang;
     I18N = JSON.parse(JSON.stringify(FR_TRANSLATIONS));
-    if (lang !== 'fr') {        try {
+    if (lang !== 'fr') {
+        try {
             var res = await fetch('/lang/' + lang + '.json');
             if (res.ok) {
                 var data = await res.json();
@@ -421,8 +439,7 @@ function applyTranslations() {
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
         var key = el.getAttribute('data-i18n-placeholder');
         var val = t(key);
-        if (val !== key) el.placeholder = val;
-    });
+        if (val !== key) el.placeholder = val;    });
 }
 
 function changeLang(lang) { loadLang(lang); }
@@ -439,7 +456,8 @@ var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var BUCKET = 'pixora-gallery';
-var curType = 'image';var lbUrl = '';
+var curType = 'image';
+var lbUrl = '';
 var lbType = 'image';
 var DEFAULT_TIERS = {
     1: { costs:{image:4,video:18}, rewards:{video:8,survey:20,sponsor:2,streak:3,share:5}, limits:{video:3,sponsor:5,share:1} },
@@ -471,7 +489,6 @@ async function generateWithFallback(prompt,type){
 }
 
 async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value}catch(err){console.error('Config error:',err)}updateCostUI()}
-
 function updateCostUI(){
     var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];var isDiscounted=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date();var imgCost=c.costs.image;var imgEl=document.getElementById('cost-image');var banner=document.getElementById('discount-banner');var timerEl=document.getElementById('discount-timer');
     if(isDiscounted){var discImg=Math.ceil(imgCost/2);imgEl.innerHTML='<span class="cost-original">'+imgCost+'</span>'+discImg+' '+t('generator.cost_pts');banner.style.display='block';if(!discountTimerInterval){discountTimerInterval=setInterval(function(){var remaining=new Date(currentDiscountUntil)-new Date();if(remaining<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return}var hours=Math.floor(remaining/3600000);var mins=Math.floor((remaining%3600000)/60000);var secs=Math.floor((remaining%60000)/1000);timerEl.textContent=t('generator.expires_in')+' '+hours+'h '+mins+'min '+secs+'s'},1000)}}
@@ -488,7 +505,8 @@ async function grantSignupBonus(userId){try{var bonusR=await db.from('admin_conf
 async function loadUserTier(){try{var u=await getUser();if(!u){currentTier=1;currentDiscountUntil=null;updateCostUI();return}var d=await getUserData();currentTier=d.tier||1;currentDiscountUntil=d.discount_until||null}catch(e){currentTier=1;currentDiscountUntil=null}updateCostUI()}
 function notify(m,t_type){t_type=t_type||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t_type;setTimeout(function(){n.classList.remove('show')},3000)}
 async function getUser(){var r=await db.auth.getUser();return r.data.user}
-async function isLogged(){return!!await getUser()}function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
+async function isLogged(){return!!await getUser()}
+function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeAuth(){document.getElementById('auth-modal').classList.remove('active');document.body.style.overflow=''}
 document.getElementById('auth-modal').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(tab,i){tab.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
@@ -510,7 +528,7 @@ function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(f
 async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.storage.from(BUCKET).list('',{limit:20,sortBy:{column:'created_at',order:'desc'}});if(!result.data||result.data.length===0)return;var now=Date.now();grid.innerHTML='';result.data.forEach(function(file){var createdAt=new Date(file.created_at).getTime();if((now-createdAt)<3600000){var urlData=db.storage.from(BUCKET).getPublicUrl(file.name);var url=urlData.data.publicUrl;var isVideo=file.name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button></div>';var vid=card.querySelector('video');vid.onmouseenter=function(){vid.play()};vid.onmouseleave=function(){vid.pause();vid.currentTime=0}}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=function(){openLB(url,isVideo?'video':'image')};grid.appendChild(card);setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000-(now-createdAt))}})}catch(err){console.error('Studio load error:',err)}}
 async function uploadToStorage(mediaUrl,type){try{var response=await fetch(mediaUrl);var blob=await response.blob();var prefix=type==='video'?'_video_':'_img_';var fileName=Date.now()+prefix+Math.floor(Math.random()*100000)+(type==='video'?'.mp4':'.jpg');var contentType=type==='video'?'video/mp4':'image/jpeg';await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false});loadStudio()}catch(err){console.error('Upload failed:',err)}}
 
-// ✅ GENERATE CORRIGÉ : Libre pour anonymes, coût uniquement si connecté
+// ✅ GENERATE CORRIGÉ : Blocage anonyme après 3 images + Pas d'upload pour anonymes
 async function generate(){
     if(curType==='video'){notifyVideoSoon();return}
     var p=document.getElementById('prompt').value.trim();
@@ -519,6 +537,14 @@ async function generate(){
     var logged=await isLogged();
     var cost=0;
     var isDiscounted=false;
+    // ✅ BLOCAGE ANONYME : Vérifier AVANT de générer
+    if(!logged){
+        var allowed=await checkFreemiumBlock();
+        if(!allowed){
+            notify(t('notifications.freemium_limit'),'error');
+            return; // BLOQUÉ
+        }
+    }
 
     // ✅ Coût en points UNIQUEMENT si connecté
     if(logged){
@@ -537,7 +563,8 @@ async function generate(){
     card.className='result-card';
     var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);
     card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();
-    grid.insertBefore(card,grid.firstChild);    var st=Date.now();
+    grid.insertBefore(card,grid.firstChild);
+    var st=Date.now();
     var tmr=document.getElementById(tmrId);
     var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);
     var media=card.querySelector('img');
@@ -560,7 +587,11 @@ async function generate(){
             if(to)to.remove();
             media.style.opacity='1';
             card.onclick=function(){openLB(url,'image')};
-            uploadToStorage(url,'image');
+            // ✅ Upload storage UNIQUEMENT si connecté
+            // Anonyme = DOM seulement, disparaît au refresh (comportement voulu)
+            if(logged){
+                uploadToStorage(url,'image');
+            }
 
             // ✅ Déduire points + incrémenter total_generated UNIQUEMENT si connecté
             if(logged&&currentUser&&currentUser.id){
@@ -576,8 +607,10 @@ async function generate(){
             var costDisplay=logged?(' (-'+cost+' '+t('generator.cost_pts')+discountMsg+')'):'';
             notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+costDisplay,'success');
 
-            // ✅ FREEMIUM DOUX : Vérifier après génération
-            checkFreemiumAfterGeneration();
+            // ✅ Incrémenter compteur anonyme APRÈS génération réussie
+            if(!logged){
+                incrementAndCheckFreemium();
+            }
 
             setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000);
         }
@@ -586,11 +619,15 @@ async function generate(){
     }catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}
 }
 
-var authNotified=false;db.auth.onAuthStateChange(async function(event){
+var authNotified=false;
+db.auth.onAuthStateChange(async function(event){
     if(event==='SIGNED_IN'){
         await loadUserTier();updateUI();closeAuth();
         // ✅ Reset compteur anonyme à la connexion
         localStorage.removeItem(PX_ANON_KEY);
+        // ✅ Supprimer modale freemium si ouverte
+        var softSignup=document.getElementById('pxr-soft-signup');
+        if(softSignup)softSignup.remove();
         if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}
     }else if(event==='SIGNED_OUT'){
         currentTier=1;currentDiscountUntil=null;
@@ -598,7 +635,6 @@ var authNotified=false;db.auth.onAuthStateChange(async function(event){
         updateCostUI();updateUI();authNotified=false
     }else if(event==='TOKEN_REFRESHED'){updateUI()}
 });
-document.addEventListener('DOMContentLoaded',async function(){await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await loadStudio()});
-</script>
+document.addEventListener('DOMContentLoaded',async function(){await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await loadStudio()});</script>
 </body>
 </html>
