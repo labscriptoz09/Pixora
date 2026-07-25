@@ -24,6 +24,8 @@
         .header-logo svg{width:28px;height:28px}
         .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
+        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}
+        .lang-select option{background:var(--bg);color:var(--text)}
         .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
         .user-stats.show{display:flex}
         .stat-icon{color:var(--gold);font-size:0.75rem}
@@ -45,9 +47,9 @@
         .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
         .menu-points-bar i{color:var(--gold);font-size:0.75rem}
         .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
-        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
-        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
-        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}        .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
+        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
+        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
+        .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
         .menu-item:hover i{color:var(--prim)}
         .menu-item.danger{color:var(--danger)}
         .menu-item.danger i{color:var(--danger)}
@@ -90,13 +92,30 @@
         .stat-card:nth-child(4) .stat-card-icon{color:var(--success);background:rgba(16,185,129,0.1)}
         .stat-val{font-family:var(--mono);font-size:1.2rem;font-weight:700;margin-bottom:0.15rem}
         .stat-lbl{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
-        .badges-section{margin-bottom:1.5rem}
-        .badges-title{font-size:0.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;display:flex;align-items:center;gap:0.5rem}
-        .badges-title i{color:var(--gold)}
-        .badges-grid{display:flex;flex-wrap:wrap;gap:0.5rem}
-        .badge-item{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:10px;font-size:0.75rem;font-weight:600;color:var(--gold)}
-        .badge-item i{font-size:0.8rem}
-        .referral-section{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.5rem}        .referral-title{font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
+        /* ✅ VITRINE BADGES PROGRESSIFS */
+        .badges-showcase{margin-bottom:1.5rem}
+        .badges-showcase-title{font-size:0.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;display:flex;align-items:center;gap:0.5rem}
+        .badges-showcase-title i{color:var(--gold)}
+        .badges-showcase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}        @media(min-width:640px){.badges-showcase-grid{grid-template-columns:repeat(4,1fr)}}
+        .badge-showcase-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:1rem;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
+        .badge-showcase-card.claimed{border-color:var(--gold);background:rgba(251,191,36,0.06)}
+        .badge-showcase-card.available{border-color:var(--success);box-shadow:0 0 15px rgba(16,185,129,0.15)}
+        .badge-showcase-card.locked{opacity:0.5}
+        .badge-showcase-icon{font-size:2rem;margin-bottom:0.4rem}
+        .badge-showcase-name{font-size:0.75rem;font-weight:700;color:var(--text);margin-bottom:0.2rem}
+        .badge-showcase-reward{font-family:var(--mono);font-size:0.65rem;color:var(--gold);margin-bottom:0.4rem}
+        .badge-showcase-progress{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:0.3rem}
+        .badge-showcase-bar{height:100%;border-radius:3px;transition:width 0.5s ease}
+        .badge-showcase-bar.bronze{background:linear-gradient(90deg,#CD7F32,#E8A862)}
+        .badge-showcase-bar.silver{background:linear-gradient(90deg,#C0C0C0,#E8E8E8)}
+        .badge-showcase-bar.gold{background:linear-gradient(90deg,#FFD700,#FFF4A3)}
+        .badge-showcase-bar.diamond{background:linear-gradient(90deg,#B9F2FF,#8B5CF6)}
+        .badge-showcase-status{font-size:0.6rem;font-weight:600}
+        .badge-showcase-status.locked{color:var(--dim)}
+        .badge-showcase-status.available{color:var(--success)}
+        .badge-showcase-status.claimed{color:var(--gold)}
+        .referral-section{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.5rem}
+        .referral-title{font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
         .referral-title i{color:var(--sec)}
         .referral-desc{font-size:0.78rem;color:var(--muted);margin-bottom:0.8rem}
         .referral-link-box{display:flex;gap:0.5rem;align-items:center}
@@ -126,8 +145,7 @@
         .empty-state{text-align:center;padding:2.5rem 1rem;color:var(--muted)}
         .empty-state i{font-size:2.5rem;opacity:0.3;margin-bottom:0.8rem}
         .settings-list{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-        .settings-item{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1rem;border-bottom:1px solid var(--border)}
-        .settings-item:last-child{border-bottom:none}
+        .settings-item{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1rem;border-bottom:1px solid var(--border)}        .settings-item:last-child{border-bottom:none}
         .settings-left{display:flex;align-items:center;gap:0.8rem}
         .settings-icon{width:32px;height:32px;background:var(--elev);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--prim);font-size:0.9rem}
         .settings-label{font-size:0.85rem;font-weight:500}
@@ -145,7 +163,8 @@
         .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}
         .auth-overlay{position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
         .auth-overlay.active{display:flex}
-        .auth-modal{background:var(--surf);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:24px;padding:2rem 1.5rem;width:100%;max-width:400px;text-align:center;position:relative;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}        @keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+        .auth-modal{background:var(--surf);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:24px;padding:2rem 1.5rem;width:100%;max-width:400px;text-align:center;position:relative;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
+        @keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
         .auth-close{position:absolute;top:0.8rem;right:0.8rem;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1rem;background:rgba(255,255,255,0.05);transition:all 0.2s}
         .auth-close:hover{background:rgba(255,255,255,0.1);color:var(--text)}
         .auth-logo{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.4rem}
@@ -175,8 +194,7 @@
         .edit-name-modal{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
         .edit-name-modal.active{display:flex}
         .edit-name-box{background:var(--surf);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:380px;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
-        .edit-name-box h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
-        .edit-name-box h3 i{color:var(--prim)}
+        .edit-name-box h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}        .edit-name-box h3 i{color:var(--prim)}
         .edit-name-actions{display:flex;gap:0.6rem;margin-top:1rem}
         .edit-name-actions button{flex:1;padding:0.6rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.4rem;border:none}
         .edit-name-actions .btn-cancel{background:rgba(255,255,255,0.08);color:var(--muted)}
@@ -190,18 +208,17 @@
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
 
-<!-- EDIT NAME MODAL -->
 <div class="edit-name-modal" id="edit-name-modal">
     <div class="edit-name-box">
-        <h3><i class="fas fa-pen"></i> Modifier le pseudo</h3>
-        <input type="text" class="form-input" id="edit-name-input" placeholder="Nouveau pseudo" maxlength="30">        <div class="edit-name-actions">
-            <button class="btn-cancel" onclick="closeEditName()">Annuler</button>
-            <button class="btn-save" onclick="saveName()"><i class="fas fa-save"></i> Sauvegarder</button>
+        <h3><i class="fas fa-pen"></i> <span data-i18n="edit_name.title">Modifier le pseudo</span></h3>
+        <input type="text" class="form-input" id="edit-name-input" placeholder="Nouveau pseudo" maxlength="30">
+        <div class="edit-name-actions">
+            <button class="btn-cancel" onclick="closeEditName()" data-i18n="edit_name.cancel">Annuler</button>
+            <button class="btn-save" onclick="saveName()"><i class="fas fa-save"></i> <span data-i18n="edit_name.save">Sauvegarder</span></button>
         </div>
     </div>
 </div>
 
-<!-- AUTH MODAL -->
 <div class="auth-overlay" id="auth-modal">
     <div class="auth-modal">
         <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
@@ -209,30 +226,29 @@
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
             <span>Pixora</span>
         </div>
-        <p class="auth-sub">Connectez-vous pour accéder à votre profil</p>
+        <p class="auth-sub" data-i18n="auth.subtitle">Connectez-vous pour accéder à votre profil</p>
         <div class="auth-tabs">
-            <button class="auth-tab active" onclick="switchTab('login')">Connexion</button>
-            <button class="auth-tab" onclick="switchTab('register')">Inscription</button>
+            <button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login">Connexion</button>
+            <button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register">Inscription</button>
         </div>
         <div class="form-section active" id="sec-login">
             <form onsubmit="doLogin(event)">
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
-                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
-                <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
+                <div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
+                <div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
+                <button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.login_btn">Se connecter</span></button>
             </form>
         </div>
         <div class="form-section" id="sec-register">
             <form onsubmit="doRegister(event)">
-                <div class="form-group"><label class="form-label">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div>
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div>
-                <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div>
-                <button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> Créer mon compte</button>
-            </form>
+                <div class="form-group"><label class="form-label" data-i18n="auth.username">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div>
+                <div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div>
+                <div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div>
+                <button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button>            </form>
         </div>
-        <div class="auth-divider">ou continuer avec</div>
+        <div class="auth-divider" data-i18n="auth.or_continue">ou continuer avec</div>
         <button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> Google</button>
         <button class="social-btn github" onclick="notify('⏳ GitHub bientôt disponible...','success')"><i class="fab fa-github"></i> GitHub</button>
-        <div class="auth-footer">En continuant, vous acceptez nos <a href="privacy.html">conditions</a>.</div>
+        <div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div>
     </div>
 </div>
 
@@ -242,110 +258,199 @@
         <span class="logo-text">Pixora</span>
     </a>
     <div class="header-right">
+        <select class="lang-select" id="lang-select" onchange="changeProfileLang(this.value)">
+            <option value="fr">🇫🇷 FR</option>
+            <option value="en">🇬🇧 EN</option>
+        </select>
         <div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div>
-        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div>        <button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div>
+        <button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button>
         <div class="user-menu" id="user-menu">
             <div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
-            <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small>points</small></div>
-            <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span>Mon profil</span></a>
-            <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span>Gagner des points</span></a>
-            <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span>Mes achats</span></a>
+            <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div>
+            <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a>
+            <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a>
+            <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a>
             <div class="menu-divider"></div>
-            <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></button>
+            <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
         </div>
     </div>
 </header>
 
-<!-- MODIFICATION #6 : Nav mobile profil = lien direct profile.html -->
 <nav class="nav-mobile">
-    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Studio</span></a>
-    <a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
+    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
+    <a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>
     <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
-    <a href="profile.html" class="nav-item active" data-nav="profile"><i class="fas fa-user"></i><span>Profil</span></a>
+    <a href="profile.html" class="nav-item active" data-nav="profile"><i class="fas fa-user"></i><span data-i18n="nav.profile">Profil</span></a>
 </nav>
 
 <main class="profile-content">
-    <!-- MODIFICATION #3 : Bouton éditer pseudo + MODIFICATION #5 : Lien gallery -->
     <div class="user-card">
         <div class="profile-avatar" id="profile-avatar"><i class="fas fa-user"></i></div>
         <div class="profile-name-row">
             <div class="profile-name" id="profile-name">Utilisateur Pixora</div>
             <button class="edit-name-btn" onclick="openEditName()" title="Modifier le pseudo"><i class="fas fa-pen"></i></button>
         </div>
-        <div class="profile-email" id="profile-email">Membre depuis 2026</div>
-        <div class="profile-tier"><i class="fas fa-star"></i> Créateur</div>
-        <div class="profile-links">
-            <a href="gallery.html" class="profile-link"><i class="fas fa-images"></i> Mes créations</a>
-            <a href="earn.html" class="profile-link"><i class="fas fa-coins"></i> Gagner des points</a>
+        <div class="profile-email" id="profile-email" data-i18n="profile.member_since">Membre depuis 2026</div>
+        <div class="profile-tier"><i class="fas fa-star"></i> <span data-i18n="profile.tier">Créateur</span></div>        <div class="profile-links">
+            <a href="gallery.html" class="profile-link"><i class="fas fa-images"></i> <span data-i18n="profile.my_creations">Mes créations</span></a>
+            <a href="earn.html" class="profile-link"><i class="fas fa-coins"></i> <span data-i18n="profile.earn_points">Gagner des points</span></a>
         </div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl">Points Actuels</div></div>
-        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl">Jours Streak</div></div>
-        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-image"></i></div><div class="stat-val" id="stat-generated">0</div><div class="stat-lbl">Créations</div></div>
-        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-coins"></i></div><div class="stat-val" id="stat-earned">0</div><div class="stat-lbl">Total Gagné</div></div>
+        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl" data-i18n="stats.points">Points Actuels</div></div>
+        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl" data-i18n="stats.streak">Jours Streak</div></div>
+        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-image"></i></div><div class="stat-val" id="stat-generated">0</div><div class="stat-lbl" data-i18n="stats.creations">Créations</div></div>
+        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-coins"></i></div><div class="stat-val" id="stat-earned">0</div><div class="stat-lbl" data-i18n="stats.total_earned">Total Gagné</div></div>
     </div>
 
-    <!-- MODIFICATION #2 : Badges obtenus -->
-    <div class="badges-section" id="badges-section" style="display:none">
-        <div class="badges-title"><i class="fas fa-medal"></i> Badges Obtenus</div>
-        <div class="badges-grid" id="badges-grid"></div>
+    <!-- ✅ VITRINE BADGES PROGRESSIFS -->
+    <div class="badges-showcase" id="badges-showcase">
+        <div class="badges-showcase-title"><i class="fas fa-trophy"></i> <span data-i18n="badges.title">Badges Créateur</span></div>
+        <div class="badges-showcase-grid" id="badges-showcase-grid">
+            <div class="empty-state" style="padding:1rem;grid-column:1/-1"><i class="fas fa-spinner fa-spin"></i></div>
+        </div>
     </div>
-    <!-- MODIFICATION #1 : Lien parrainage -->
+
     <div class="referral-section" id="referral-section" style="display:none">
-        <div class="referral-title"><i class="fas fa-user-friends"></i> Ton lien de parrainage</div>
-        <div class="referral-desc">Partage ce lien et gagne 10 points par filleul validé !</div>
+        <div class="referral-title"><i class="fas fa-user-friends"></i> <span data-i18n="referral.title">Ton lien de parrainage</span></div>
+        <div class="referral-desc" data-i18n="referral.desc">Partage ce lien et gagne 10 points par filleul validé !</div>
         <div class="referral-link-box">
             <input type="text" class="referral-link-input" id="referral-link" readonly>
-            <button class="referral-copy-btn" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copier</button>
+            <button class="referral-copy-btn" onclick="copyReferralLink()"><i class="fas fa-copy"></i> <span data-i18n="referral.copy">Copier</span></button>
         </div>
     </div>
 
     <div class="tabs-container">
         <div class="tabs">
-            <button class="tab active" onclick="switchProfileTab('history', this)"><i class="fas fa-history"></i> Historique</button>
-            <button class="tab" onclick="switchProfileTab('purchases', this)"><i class="fas fa-shopping-bag"></i> Achats</button>
-            <button class="tab" onclick="switchProfileTab('settings', this)"><i class="fas fa-cog"></i> Paramètres</button>
+            <button class="tab active" onclick="switchProfileTab('history', this)"><i class="fas fa-history"></i> <span data-i18n="tabs.history">Historique</span></button>
+            <button class="tab" onclick="switchProfileTab('purchases', this)"><i class="fas fa-shopping-bag"></i> <span data-i18n="tabs.purchases">Achats</span></button>
+            <button class="tab" onclick="switchProfileTab('settings', this)"><i class="fas fa-cog"></i> <span data-i18n="tabs.settings">Paramètres</span></button>
         </div>
     </div>
 
-    <!-- MODIFICATION #4 : CTA earn.html dans historique vide -->
     <div class="tab-content active" id="tab-history">
         <div class="transaction-list" id="transaction-list">
-            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p data-i18n="common.loading">Chargement...</p></div>
         </div>
     </div>
 
     <div class="tab-content" id="tab-purchases">
         <div id="purchases-list">
-            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p data-i18n="common.loading">Chargement...</p></div>
         </div>
     </div>
-
     <div class="tab-content" id="tab-settings">
         <div class="settings-list">
-            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-bell"></i></div><div class="settings-label">Notifications</div></div><div class="settings-right">Activées <i class="fas fa-chevron-right"></i></div></div>
-            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-language"></i></div><div class="settings-label">Langue</div></div><div class="settings-right">Français <i class="fas fa-chevron-right"></i></div></div>
-            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-label">Confidentialité</div></div><div class="settings-right"><i class="fas fa-chevron-right"></i></div></div>
-            <!-- MODIFICATION #7 : Version v2.0 -->
-            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-info-circle"></i></div><div class="settings-label">À propos</div></div><div class="settings-right">Pixora v2.0</div></div>
+            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-bell"></i></div><div class="settings-label" data-i18n="settings.notifications">Notifications</div></div><div class="settings-right"><span data-i18n="settings.enabled">Activées</span> <i class="fas fa-chevron-right"></i></div></div>
+            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-language"></i></div><div class="settings-label" data-i18n="settings.language">Langue</div></div><div class="settings-right"><span data-i18n="settings.french">Français</span> <i class="fas fa-chevron-right"></i></div></div>
+            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-label" data-i18n="settings.privacy">Confidentialité</div></div><div class="settings-right"><i class="fas fa-chevron-right"></i></div></div>
+            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-info-circle"></i></div><div class="settings-label" data-i18n="settings.about">À propos</div></div><div class="settings-right">Pixora v2.0</div></div>
         </div>
-        <button class="cta-button danger" onclick="clearData()"><i class="fas fa-trash"></i> Réinitialiser mes données</button>
+        <button class="cta-button danger" onclick="clearData()"><i class="fas fa-trash"></i> <span data-i18n="settings.reset_data">Réinitialiser mes données</span></button>
     </div>
 
     <footer class="site-footer">
-        <div class="footer-links"><a href="index.html">Studio</a><a href="earn.html">Points</a><a href="gallery.html">Galerie</a><a href="shop.html">Boutique</a><a href="privacy.html">Confidentialité</a></div>
-        <div>© 2026 Pixora. Tous droits réservés.</div>
+        <div class="footer-links">
+            <a href="index.html" data-i18n="footer.studio">Studio</a>
+            <a href="earn.html" data-i18n="footer.points">Points</a>
+            <a href="gallery.html" data-i18n="footer.gallery">Galerie</a>
+            <a href="shop.html" data-i18n="footer.shop">Boutique</a>
+            <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
+        </div>
+        <div data-i18n="footer.copyright">© 2026 Pixora. Tous droits réservés.</div>
     </footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="ads-loader.js"></script><script>
+<script src="ads-loader.js"></script>
+<script>
+// =============================================
+// I18N PROFIL
+// =============================================
+var PROFILE_I18N = {
+    fr: {
+        header:{login:'Connexion',points:'points'},
+        menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
+        nav:{studio:'Studio',gallery:'Galerie',profile:'Profil'},
+        auth:{subtitle:'Connectez-vous pour accéder à votre profil',login:'Connexion',register:'Inscription',email:'Email',password:'Mot de passe',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',footer:'En continuant, vous acceptez nos',conditions:'conditions'},
+        profile:{member_since:'Membre depuis 2026',tier:'Créateur',my_creations:'Mes créations',earn_points:'Gagner des points'},
+        stats:{points:'Points Actuels',streak:'Jours Streak',creations:'Créations',total_earned:'Total Gagné'},
+        badges:{title:'Badges Créateur',locked:'Verrouillé',available:'Disponible !',claimed:'Obtenu',img:'img'},
+        referral:{title:'Ton lien de parrainage',desc:'Partage ce lien et gagne 10 points par filleul validé !',copy:'Copier'},
+        tabs:{history:'Historique',purchases:'Achats',settings:'Paramètres'},
+        settings:{notifications:'Notifications',enabled:'Activées',language:'Langue',french:'Français',privacy:'Confidentialité',about:'À propos',reset_data:'Réinitialiser mes données'},
+        edit_name:{title:'Modifier le pseudo',cancel:'Annuler',save:'Sauvegarder'},
+        common:{loading:'Chargement...'},
+        footer:{studio:'Studio',points:'Points',gallery:'Galerie',shop:'Boutique',privacy:'Confidentialité',copyright:'© 2026 Pixora. Tous droits réservés.'},
+        notify:{welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'🎉 Compte créé !',wrong_credentials:'❌ Identifiants incorrects',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',name_updated:'✅ Pseudo modifié !',name_too_short:'❌ Pseudo trop court (min. 2)',name_error:'❌ Erreur : ',link_copied:'✅ Lien copié !',data_reset:'✅ Données réinitialisées',github_soon:'⏳ GitHub bientôt disponible...'}
+    },
+    en: {
+        header:{login:'Login',points:'points'},
+        menu:{profile:'My Profile',earn:'Earn Points',shop:'My Purchases',logout:'Logout'},
+        nav:{studio:'Studio',gallery:'Gallery',profile:'Profile'},
+        auth:{subtitle:'Log in to access your profile',login:'Login',register:'Sign Up',email:'Email',password:'Password',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',footer:'By continuing, you accept our',conditions:'terms'},        profile:{member_since:'Member since 2026',tier:'Creator',my_creations:'My Creations',earn_points:'Earn Points'},
+        stats:{points:'Current Points',streak:'Day Streak',creations:'Creations',total_earned:'Total Earned'},
+        badges:{title:'Creator Badges',locked:'Locked',available:'Available!',claimed:'Earned',img:'img'},
+        referral:{title:'Your Referral Link',desc:'Share this link and earn 10 points per validated referral!',copy:'Copy'},
+        tabs:{history:'History',purchases:'Purchases',settings:'Settings'},
+        settings:{notifications:'Notifications',enabled:'Enabled',language:'Language',french:'English',privacy:'Privacy',about:'About',reset_data:'Reset My Data'},
+        edit_name:{title:'Edit Username',cancel:'Cancel',save:'Save'},
+        common:{loading:'Loading...'},
+        footer:{studio:'Studio',points:'Points',gallery:'Gallery',shop:'Shop',privacy:'Privacy',copyright:'© 2026 Pixora. All rights reserved.'},
+        notify:{welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'🎉 Account created!',wrong_credentials:'❌ Wrong credentials',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:'👋 Logged out',name_updated:'✅ Username updated!',name_too_short:'❌ Username too short (min. 2)',name_error:'❌ Error: ',link_copied:'✅ Link copied!',data_reset:'✅ Data reset',github_soon:'⏳ GitHub coming soon...'}
+    }
+};
+
+var currentProfileLang = 'fr';
+
+function tProfile(key) {
+    var keys = key.split('.');
+    var val = PROFILE_I18N[currentProfileLang];
+    for (var i = 0; i < keys.length; i++) {
+        if (val && typeof val === 'object') val = val[keys[i]];
+        else return key;
+    }
+    return val || key;
+}
+
+function applyProfileTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        var val = tProfile(key);
+        if (val !== key) el.textContent = val;
+    });
+}
+
+function changeProfileLang(lang) {
+    currentProfileLang = lang;
+    localStorage.setItem('pixora_lang', lang);
+    document.documentElement.lang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    applyProfileTranslations();
+    // Recharger la vitrine badges avec la bonne langue
+    loadBadgeShowcase();
+}
+
+function detectProfileLang() {
+    var saved = localStorage.getItem('pixora_lang');
+    if (saved && (saved === 'fr' || saved === 'en')) return saved;
+    var nav = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
+    if (nav.indexOf('en') !== -1) return 'en';
+    return 'fr';}
+
+// =============================================
+// SUPABASE
+// =============================================
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// =============================================
+// NOTIFICATIONS
+// =============================================
 function notify(m, t) {
     t = t || 'success';
     var n = document.getElementById('notif');
@@ -354,118 +459,186 @@ function notify(m, t) {
     setTimeout(function() { n.classList.remove('show'); }, 3000);
 }
 
+// =============================================
+// AUTH
+// =============================================
 async function getUser() { var r = await db.auth.getUser(); return r.data.user; }
 async function isLogged() { return !!await getUser(); }
 function openAuth() { document.getElementById('auth-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
 function closeAuth() { document.getElementById('auth-modal').classList.remove('active'); document.body.style.overflow = ''; }
 document.getElementById('auth-modal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });
+
 function switchTab(m) {
     document.querySelectorAll('.auth-tab').forEach(function(t, i) { t.classList.toggle('active', i === (m === 'login' ? 0 : 1)); });
     document.getElementById('sec-login').classList.toggle('active', m === 'login');
     document.getElementById('sec-register').classList.toggle('active', m !== 'login');
 }
+
 async function doLogin(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-login');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
     try {
         var r = await db.auth.signInWithPassword({ email: document.getElementById('l-email').value.trim(), password: document.getElementById('l-pw').value });
         if (r.error) throw r.error;
-        closeAuth(); updateUI(); notify('✅ Bienvenue !', 'success');
-    } catch (err) { notify('❌ Identifiants incorrects', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter'; }
+        closeAuth(); updateUI(); notify(tProfile('notify.welcome'), 'success');
+    } catch (err) { notify(tProfile('notify.wrong_credentials'), 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>' + tProfile('auth.login_btn') + '</span>'; }
 }
+
 async function doRegister(e) {
     e.preventDefault();
     var btn = document.getElementById('btn-reg');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';
-    try {
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';    try {
         var r = await db.auth.signUp({ email: document.getElementById('r-email').value.trim(), password: document.getElementById('r-pw').value, options: { data: { name: document.getElementById('r-name').value.trim() } } });
         if (r.error) throw r.error;
-        closeAuth(); updateUI(); notify('🎉 Compte créé !', 'success');
-    } catch (err) { notify('❌ Erreur inscription', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte'; }
-}
-async function loginWithGoogle() {
-    try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/profile.html' } }); }
-    catch (err) { notify('❌ Erreur Google Login', 'error'); }
+        closeAuth(); updateUI(); notify(tProfile('notify.account_created'), 'success');
+    } catch (err) { notify(tProfile('notify.signup_error'), 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> <span>' + tProfile('auth.register_btn') + '</span>'; }
 }
 
+async function loginWithGoogle() {
+    try { await db.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/profile.html' } }); }
+    catch (err) { notify(tProfile('notify.google_error'), 'error'); }
+}
+
+// =============================================
+// USER MENU
+// =============================================
 function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
-function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }document.addEventListener('click', function(e) {
+function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
+document.addEventListener('click', function(e) {
     var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar');
     if (!menu.contains(e.target) && !avatar.contains(e.target)) closeUserMenu();
 });
-async function doLogout() { await db.auth.signOut(); closeUserMenu(); updateUI(); notify('👋 Déconnecté', 'success'); setTimeout(function() { location.reload(); }, 800); }
 
-async function getUserData() {
-    var u = await getUser(); if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
-    var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
-    return r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0 };
+async function doLogout() {
+    await db.auth.signOut(); closeUserMenu(); updateUI();
+    notify(tProfile('notify.logout'), 'success');
+    setTimeout(function() { location.reload(); }, 800);
 }
 
+// =============================================
+// USER DATA (avec badges_claimed)
+// =============================================
+async function getUserData() {
+    var u = await getUser();
+    if (!u) return { points: 0, streak: 1, total_generated: 0, total_earned: 0, badges_claimed: [] };
+    var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
+    var d = r.data || { points: 0, streak: 1, total_generated: 0, total_earned: 0, badges_claimed: [] };
+    d.badges_claimed = d.badges_claimed || [];
+    return d;
+}
+
+// =============================================
+// TABS PROFIL
+// =============================================
 function switchProfileTab(tabName, btn) {
     document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
     btn.classList.add('active');
     document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
     document.getElementById('tab-' + tabName).classList.add('active');
 }
-
-// MODIFICATION #3 : Éditer pseudo
+// =============================================
+// EDIT NAME
+// =============================================
 function openEditName() {
     var currentName = document.getElementById('profile-name').textContent;
     document.getElementById('edit-name-input').value = currentName;
     document.getElementById('edit-name-modal').classList.add('active');
     document.getElementById('edit-name-input').focus();
 }
+
 function closeEditName() { document.getElementById('edit-name-modal').classList.remove('active'); }
 document.getElementById('edit-name-modal').addEventListener('click', function(e) { if (e.target === this) closeEditName(); });
+
 async function saveName() {
     var newName = document.getElementById('edit-name-input').value.trim();
-    if (!newName || newName.length < 2) { notify('❌ Pseudo trop court (min. 2)', 'error'); return; }
+    if (!newName || newName.length < 2) { notify(tProfile('notify.name_too_short'), 'error'); return; }
     try {
         await db.auth.updateUser({ data: { name: newName } });
         await db.from('user_data').update({ name: newName }).eq('user_id', (await getUser()).id);
-        closeEditName();
-        updateUI();
-        notify('✅ Pseudo modifié !', 'success');
-    } catch(e) { notify('❌ Erreur : ' + e.message, 'error'); }
+        closeEditName(); updateUI();
+        notify(tProfile('notify.name_updated'), 'success');
+    } catch(e) { notify(tProfile('notify.name_error') + e.message, 'error'); }
 }
 
-// MODIFICATION #1 : Copier lien parrainage
+// =============================================
+// REFERRAL
+// =============================================
 function copyReferralLink() {
     var input = document.getElementById('referral-link');
     input.select();
     navigator.clipboard.writeText(input.value).then(function() {
-        notify('✅ Lien copié !', 'success');
+        notify(tProfile('notify.link_copied'), 'success');
     }).catch(function() {
         document.execCommand('copy');
-        notify('✅ Lien copié !', 'success');
-    });}
-
-// MODIFICATION #2 : Charger badges
-async function loadBadges(userId) {
-    try {
-        var result = await db.from('task_completions').select('task_name').eq('user_id', userId).eq('task_type', 'badge');
-        var badges = result.data || [];
-        var section = document.getElementById('badges-section');
-        var grid = document.getElementById('badges-grid');
-        if (badges.length > 0) {
-            var badgeIcons = { 'Badge Créateur Actif': 'fa-star', 'Badge Explorateur': 'fa-compass', 'Badge Social': 'fa-share-nodes' };
-            grid.innerHTML = badges.map(function(b) {
-                var icon = badgeIcons[b.task_name] || 'fa-medal';
-                return '<div class="badge-item"><i class="fas ' + icon + '"></i> ' + b.task_name + '</div>';
-            }).join('');
-            section.style.display = 'block';
-        } else {
-            section.style.display = 'none';
-        }
-    } catch(e) { console.error('Badges error:', e); }
+        notify(tProfile('notify.link_copied'), 'success');
+    });
 }
 
-function loadTransactions(transactions) {
+// =============================================
+// ✅ VITRINE BADGES PROGRESSIFS (remplace loadBadges)
+// =============================================
+var BADGES_SHOWCASE_CONFIG = [
+    { id: 'bronze', nameFr: 'Apprenti Créateur', nameEn: 'Apprentice Creator', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
+    { id: 'silver', nameFr: 'Créateur Confirmé', nameEn: 'Confirmed Creator', icon: '🖌️', threshold: 15, points: 10, colorClass: 'silver' },
+    { id: 'gold', nameFr: 'Maître Créateur', nameEn: 'Master Creator', icon: '👑', threshold: 20, points: 20, colorClass: 'gold' },
+    { id: 'diamond', nameFr: 'Légende Pixora', nameEn: 'Pixora Legend', icon: '💎', threshold: 50, points: 50, colorClass: 'diamond' }
+];
+
+async function loadBadgeShowcase() {
+    var grid = document.getElementById('badges-showcase-grid');    var logged = await isLogged();
+
+    if (!logged) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
+        return;
+    }
+
+    try {
+        var userData = await getUserData();
+        var genCount = userData.total_generated || 0;
+        var claimedBadges = userData.badges_claimed || [];
+
+        grid.innerHTML = BADGES_SHOWCASE_CONFIG.map(function(badge) {
+            var isClaimed = claimedBadges.indexOf(badge.id) !== -1;
+            var canClaim = genCount >= badge.threshold && !isClaimed;
+            var progress = Math.min(genCount, badge.threshold);
+            var progressPercent = Math.min((genCount / badge.threshold) * 100, 100);
+            var badgeName = currentProfileLang === 'en' ? badge.nameEn : badge.nameFr;
+
+            var statusClass = 'locked';
+            var statusText = '🔒 ' + progress + '/' + badge.threshold + ' ' + tProfile('badges.img');
+            var cardClass = 'badge-showcase-card locked';
+
+            if (isClaimed) {
+                statusClass = 'claimed';
+                statusText = '✅ ' + tProfile('badges.claimed');
+                cardClass = 'badge-showcase-card claimed';
+            } else if (canClaim) {
+                statusClass = 'available';
+                statusText = '🎁 ' + tProfile('badges.available');
+                cardClass = 'badge-showcase-card available';
+            }
+
+            return '<div class="' + cardClass + '">' +
+                '<div class="badge-showcase-icon">' + badge.icon + '</div>' +
+                '<div class="badge-showcase-name">' + badgeName + '</div>' +
+                '<div class="badge-showcase-reward">+' + badge.points + ' pts</div>' +
+                '<div class="badge-showcase-progress"><div class="badge-showcase-bar ' + badge.colorClass + '" style="width:' + progressPercent + '%"></div></div>' +
+                '<div class="badge-showcase-status ' + statusClass + '">' + statusText + '</div>' +
+            '</div>';
+        }).join('');
+    } catch(e) {
+        console.error('Badge showcase error:', e);
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i></div>';
+    }
+}
+
+// =============================================
+// TRANSACTIONS
+// =============================================function loadTransactions(transactions) {
     var list = document.getElementById('transaction-list');
-    // MODIFICATION #4 : CTA earn.html si vide
     if (!transactions || !transactions.length) {
-        list.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>Aucune transaction.</p><a href="earn.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1rem;"><i class="fas fa-coins"></i> Gagner des points</a></div>';
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>Aucune transaction.</p><a href="earn.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1rem;"><i class="fas fa-coins"></i> ' + tProfile('profile.earn_points') + '</a></div>';
         return;
     }
     var html = '';
@@ -473,7 +646,7 @@ function loadTransactions(transactions) {
         var t = transactions[i];
         var icons = { earned: 'fa-plus', spent: 'fa-minus', purchased: 'fa-shopping-bag' };
         var iconClass = icons[t.type] || 'fa-circle';
-        var dateStr = new Date(t.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+        var dateStr = new Date(t.created_at).toLocaleDateString(currentProfileLang === 'en' ? 'en-US' : 'fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
         var amountClass = t.amount > 0 ? 'positive' : 'negative';
         var amountPrefix = t.amount > 0 ? '+' : '';
         html += '<div class="transaction-item"><div class="transaction-icon ' + t.type + '"><i class="fas ' + iconClass + '"></i></div><div class="transaction-info"><div class="transaction-title">' + t.title + '</div><div class="transaction-date">' + dateStr + '</div></div><div class="transaction-amount ' + amountClass + '">' + amountPrefix + t.amount + ' pts</div></div>';
@@ -481,52 +654,62 @@ function loadTransactions(transactions) {
     list.innerHTML = html;
 }
 
+// =============================================
+// PURCHASES
+// =============================================
 async function loadPurchases(userId) {
     var list = document.getElementById('purchases-list');
     try {
         var purResult = await db.from('purchases').select('*').eq('user_id', userId).order('created_at', { ascending: false });
         var purchases = purResult.data || [];
         if (!purchases.length) {
-            list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat.</p><a href="shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">Visiter la boutique</a></div>';
-            return;        }
+            list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat.</p><a href="shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">' + tProfile('footer.shop') + '</a></div>';
+            return;
+        }
         var html = '';
         for (var i = 0; i < purchases.length; i++) {
             var p = purchases[i];
-            var dateStr = p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : '';
+            var dateStr = p.created_at ? new Date(p.created_at).toLocaleDateString(currentProfileLang === 'en' ? 'en-US' : 'fr-FR') : '';
             var icon = p.type === 'subscription' ? 'fa-crown' : 'fa-bolt';
             html += '<div class="transaction-item"><div class="transaction-icon purchased"><i class="fas ' + icon + '"></i></div><div class="transaction-info"><div class="transaction-title">' + p.name + '</div><div class="transaction-date">' + p.details + ' • ' + dateStr + '</div></div><div class="transaction-amount positive">' + p.price + '€</div></div>';
         }
         list.innerHTML = html;
     } catch (err) {
-        list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat enregistré.</p><a href="shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">Visiter la boutique</a></div>';
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat enregistré.</p><a href="shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">' + tProfile('footer.shop') + '</a></div>';
     }
 }
 
+// =============================================
+// CLEAR DATA
+// =============================================
 async function clearData() {
-    if (!confirm('⚠️ Réinitialiser toutes vos données ? Cette action est irréversible.')) return;
-    var user = await getUser(); if (!user) return;
-    try { await db.from('transactions').delete().eq('user_id', user.id); } catch(e) {}
+    if (!confirm('⚠️ ' + tProfile('settings.reset_data') + ' ?')) return;
+    var user = await getUser(); if (!user) return;    try { await db.from('transactions').delete().eq('user_id', user.id); } catch(e) {}
     try { await db.from('purchases').delete().eq('user_id', user.id); } catch(e) {}
     try { await db.from('daily_usage').delete().eq('user_id', user.id); } catch(e) {}
     try { await db.from('cooldowns').delete().eq('user_id', user.id); } catch(e) {}
     await db.from('user_data').update({ points: 0, streak: 1, total_generated: 0, total_earned: 0 }).eq('user_id', user.id);
-    notify('✅ Données réinitialisées', 'success');
+    notify(tProfile('notify.data_reset'), 'success');
     setTimeout(function() { location.reload(); }, 1000);
 }
 
+// =============================================
+// UPDATE UI
+// =============================================
 async function updateUI() {
     var logged = await isLogged();
     var user = await getUser();
     document.getElementById('user-stats').classList.toggle('show', logged);
     document.getElementById('user-avatar').classList.toggle('show', logged);
     document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
+
     if (logged) {
         var d = await getUserData();
         document.getElementById('header-points').textContent = d.points || 0;
         document.getElementById('nav-points-badge').textContent = d.points || 0;
         document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';
         document.getElementById('menu-points').textContent = d.points || 0;
-        var name = user.user_metadata?.name || 'Utilisateur';
+        var name = user.user_metadata && user.user_metadata.name ? user.user_metadata.name : 'Utilisateur';
         var initial = name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent = initial;
         document.getElementById('menu-avatar').textContent = initial;
@@ -537,38 +720,58 @@ async function updateUI() {
         document.getElementById('profile-avatar').textContent = initial;
         document.getElementById('stat-points').textContent = d.points || 0;
         document.getElementById('stat-streak').textContent = d.streak || 1;
-        document.getElementById('stat-generated').textContent = d.total_generated || 0;        document.getElementById('stat-earned').textContent = d.total_earned || 0;
-        // MODIFICATION #1 : Lien parrainage
+        document.getElementById('stat-generated').textContent = d.total_generated || 0;
+        document.getElementById('stat-earned').textContent = d.total_earned || 0;
+
         var refLink = window.location.origin + '/?ref=' + user.id;
         document.getElementById('referral-link').value = refLink;
         document.getElementById('referral-section').style.display = 'block';
-        // MODIFICATION #2 : Badges
-        await loadBadges(user.id);
+
+        // ✅ Charger vitrine badges
+        await loadBadgeShowcase();
+
         var txResult = await db.from('transactions').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
         loadTransactions(txResult.data || []);
         await loadPurchases(user.id);
-    } else {
-        document.getElementById('profile-name').textContent = 'Utilisateur Pixora';
-        document.getElementById('profile-email').textContent = 'Connectez-vous pour voir votre profil';
+    } else {        document.getElementById('profile-name').textContent = 'Utilisateur Pixora';
+        document.getElementById('profile-email').textContent = tProfile('auth.subtitle');
         document.getElementById('stat-points').textContent = '0';
         document.getElementById('stat-streak').textContent = '0';
         document.getElementById('stat-generated').textContent = '0';
         document.getElementById('stat-earned').textContent = '0';
         document.getElementById('referral-section').style.display = 'none';
-        document.getElementById('badges-section').style.display = 'none';
-        document.getElementById('transaction-list').innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Connectez-vous pour voir votre historique.</p></div>';
-        document.getElementById('purchases-list').innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Connectez-vous pour voir vos achats.</p></div>';
+        document.getElementById('transaction-list').innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
+        document.getElementById('purchases-list').innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
+        // Charger vitrine badges même si non connecté (affiche état verrouillé)
+        await loadBadgeShowcase();
     }
+
+    applyProfileTranslations();
 }
 
+// =============================================
+// AUTH STATE CHANGE + INIT
+// =============================================
 var authNotified = false;
 db.auth.onAuthStateChange(function(event) {
-    if (event === 'SIGNED_IN') { updateUI(); closeAuth(); if (!authNotified) { notify('✅ Connecté !', 'success'); authNotified = true; setTimeout(function() { authNotified = false; }, 3000); } }
-    else if (event === 'SIGNED_OUT') { updateUI(); authNotified = false; }
-    else if (event === 'TOKEN_REFRESHED') { updateUI(); }
+    if (event === 'SIGNED_IN') {
+        updateUI(); closeAuth();
+        if (!authNotified) { notify(tProfile('notify.connected'), 'success'); authNotified = true; setTimeout(function() { authNotified = false; }, 3000); }
+    } else if (event === 'SIGNED_OUT') {
+        updateUI(); authNotified = false;
+    } else if (event === 'TOKEN_REFRESHED') {
+        updateUI();
+    }
 });
 
-document.addEventListener('DOMContentLoaded', updateUI);
+document.addEventListener('DOMContentLoaded', function() {
+    var lang = detectProfileLang();
+    currentProfileLang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    document.documentElement.lang = lang;
+    updateUI();
+});
 </script>
 </body>
 </html>
