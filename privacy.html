@@ -3,218 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Politique de Confidentialité - Pixora</title>
-    
+    <title>Confidentialité | Pixora</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        :root {
-            --bg-base: #050507;
-            --bg-surface: rgba(24, 24, 27, 0.6);
-            --border-subtle: rgba(63, 63, 70, 0.5);
-            --accent-primary: #8B5CF6;
-            --accent-secondary: #EC4899;
-            --text-main: #FAFAFA;
-            --text-muted: #A1A1AA;
-            --text-dim: #71717A;
-            --font-ui: 'Inter', -apple-system, sans-serif;
-            --radius-lg: 24px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background: var(--bg-base);
-            color: var(--text-main);
-            font-family: var(--font-ui);
-            line-height: 1.8;
-            min-height: 100dvh;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 20s infinite ease-in-out; }
-        .orb-1 { width: 400px; height: 400px; background: var(--accent-primary); top: -100px; left: -100px; }
-        .orb-2 { width: 300px; height: 300px; background: var(--accent-secondary); bottom: 10%; right: -50px; animation-delay: -5s; }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-
-        a { text-decoration: none; color: inherit; }
-
-        .header {
-            background: rgba(9, 9, 11, 0.85);            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 1rem 1.5rem;
-            display: flex; align-items: center; gap: 1rem;
-            position: sticky; top: 0; z-index: 100;
-        }
-        .back-btn {
-            display: flex; align-items: center; gap: 0.5rem;
-            color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s;
-        }
-        .back-btn:hover { color: var(--text-main); }
-        .header-title { font-size: 1.1rem; font-weight: 700; }
-
-        .content {
-            max-width: 800px; margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        h1 {
-            font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 50%, var(--accent-secondary) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .last-updated { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 2.5rem; }
-
-        .card {
-            background: var(--bg-surface);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        h2 {
-            font-size: 1.15rem; font-weight: 700; margin-bottom: 0.75rem;
-            color: var(--accent-primary);
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        h2 i { font-size: 1rem; }
-
-        p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
-        p:last-child { margin-bottom: 0; }
-
-        ul { list-style: none; padding-left: 0; margin-bottom: 0.75rem; }
-        ul li {
-            color: var(--text-muted); font-size: 0.9rem;
-            padding: 0.3rem 0; padding-left: 1.2rem; position: relative;        }
-        ul li::before {
-            content: ''; position: absolute; left: 0; top: 0.65rem;
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--accent-primary);
-        }
-
-        .contact-box {
-            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(236,72,153,0.05));
-            border: 1px solid rgba(139,92,246,0.2);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem 2rem; text-align: center;
-        }
-        .contact-box p { color: var(--text-main); font-weight: 500; }
-        .contact-email {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            color: var(--accent-primary); font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem; margin-top: 0.5rem;
-        }
-
-        .footer {
-            text-align: center; padding: 2rem 1rem;
-            color: var(--text-dim); font-size: 0.75rem;
-            border-top: 1px solid var(--border-subtle); margin-top: 2rem;
-        }
-        .footer a { color: var(--text-muted); transition: color 0.2s; }
-        .footer a:hover { color: var(--accent-primary); }
-        .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 1.5rem; }
-            .card { padding: 1.25rem 1.5rem; }
-            .content { padding: 1.5rem 1rem 3rem; }
-        }
+        :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
+        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
+        .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}
+        .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}
+        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
+        a{text-decoration:none;color:inherit}
+        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);flex-shrink:0}
+        .header-logo svg{width:28px;height:28px}
+        .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-right{display:flex;align-items:center;gap:0.5rem;position:relative;flex-shrink:0}
+        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}
+        .lang-select option{background:var(--bg);color:var(--text)}
+        @media(max-width:767px){.site-header{padding:0 0.8rem}.logo-text{font-size:1.05rem}}
+        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
+        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}
+        .nav-item i{font-size:1.2rem;transition:all 0.3s}
+        .nav-item span{font-size:0.58rem;font-weight:600}
+        .nav-item[data-nav="studio"].active{color:var(--prim)}
+        .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,0.6))}
+        .nav-item[data-nav="gallery"].active{color:#3B82F6}
+        .nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 8px rgba(59,130,246,0.6))}
+        .nav-item[data-nav="points"].active{color:var(--gold)}
+        .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
+        .nav-item[data-nav="profile"].active{color:var(--sec)}
+        .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
+        .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
+        @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}
+        .page-title{font-size:2rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.03em}
+        .page-updated{font-size:0.8rem;color:var(--dim);margin-bottom:2rem;font-family:var(--mono)}
+        .policy-section{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.2rem}
+        .policy-section h2{font-size:1.1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;color:var(--text)}
+        .policy-section h2 i{color:var(--prim);font-size:1rem;width:24px;text-align:center}
+        .policy-section p{font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:0.8rem}
+        .policy-section p:last-child{margin-bottom:0}        .policy-table{width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:0.5rem}
+        .policy-table th{text-align:left;padding:0.7rem 0.8rem;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border)}
+        .policy-table td{padding:0.7rem 0.8rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+        .policy-table tr:last-child td{border-bottom:none}
+        .no-collect-list{list-style:none;padding:0;margin-top:0.5rem}
+        .no-collect-list li{font-size:0.85rem;color:var(--muted);padding:0.3rem 0;display:flex;align-items:center;gap:0.5rem}
+        .no-collect-list li i{color:var(--danger);font-size:0.75rem;width:18px;text-align:center}
+        .contact-box{background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:12px;padding:1.2rem;text-align:center;margin-top:0.5rem}
+        .contact-box i{font-size:1.5rem;color:var(--prim);margin-bottom:0.5rem}
+        .contact-box a{color:var(--prim);font-weight:600;font-size:0.95rem}
+        .contact-box a:hover{text-decoration:underline}
+        .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
+        .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}
+        .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
+        .site-footer a:hover{color:var(--prim)}
     </style>
 </head>
 <body>
+<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 
-<div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-</div>
-
-<header class="header">
-    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i><span>Retour</span></a>
-    <div class="header-title">Confidentialité</div>
+<header class="site-header">
+    <a href="/index.html" class="header-logo">
+        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
+        <span class="logo-text">Pixora</span>
+    </a>
+    <div class="header-right">
+        <select class="lang-select" id="lang-select" onchange="changePrivacyLang(this.value)">
+            <option value="fr">🇫🇷 FR</option>
+            <option value="en">🇬🇧 EN</option>
+        </select>
+    </div>
 </header>
 
-<main class="content">
-    <h1>Politique de Confidentialité</h1>    <p class="last-updated">Dernière mise à jour : Juillet 2026</p>
+<nav class="nav-mobile">
+    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
+    <a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>
+    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span>Earn</span></a>
+    <a href="profile.html" class="nav-item" data-nav="profile"><i class="fas fa-user"></i><span data-i18n="nav.profile">Profil</span></a>
+</nav>
 
-    <div class="card">
-        <h2><i class="fas fa-shield-alt"></i> Introduction</h2>
-        <p>Bienvenue sur Pixora. Nous nous engageons à protéger la vie privée de nos utilisateurs. Cette politique explique comment nous collectons, utilisons et protégeons vos données lorsque vous utilisez notre plateforme de génération d'images et vidéos par intelligence artificielle.</p>
+<main class="main-content">
+    <h1 class="page-title" data-i18n="page.title">Politique de Confidentialité</h1>
+    <p class="page-updated" data-i18n="page.updated">Dernière mise à jour : 25 juillet 2026</p>
+
+    <!-- Section 1 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-file-contract"></i> <span data-i18n="s1.title">1. Introduction</span></h2>
+        <p data-i18n="s1.p1">Bienvenue sur Pixora. Nous respectons votre vie privée et nous engageons à protéger vos données personnelles. Cette politique explique quelles données nous collectons, pourquoi, et comment nous les utilisons.</p>
+        <p data-i18n="s1.p2">En utilisant Pixora, vous acceptez cette politique. Si vous n'êtes pas d'accord, veuillez ne pas utiliser le site.</p>
     </div>
-
-    <div class="card">
-        <h2><i class="fas fa-database"></i> Données collectées</h2>
-        <p>Nous collectons un minimum de données pour assurer le fonctionnement du service :</p>
-        <ul>
-            <li>Adresse IP (pour la détection automatique de région et l'adaptation des tarifs)</li>
-            <li>Données de navigation locales (points, historique, préférences — stockées uniquement dans votre navigateur via LocalStorage)</li>
-            <li>Adresse email (uniquement si vous créez un compte ou contactez le support)</li>
-            <li>Prompts de génération (traités temporairement par nos fournisseurs d'API IA, non stockés sur nos serveurs)</li>
+    <!-- Section 2 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-database"></i> <span data-i18n="s2.title">2. Données collectées</span></h2>
+        <table class="policy-table">
+            <thead><tr><th data-i18n="s2.th_type">Type</th><th data-i18n="s2.th_detail">Détail</th><th data-i18n="s2.th_reason">Pourquoi</th></tr></thead>
+            <tbody>
+                <tr><td data-i18n="s2.email">Email</td><td data-i18n="s2.email_d">Fourni lors de l'inscription</td><td data-i18n="s2.email_r">Authentification, récupération de compte</td></tr>
+                <tr><td data-i18n="s2.pseudo">Pseudo</td><td data-i18n="s2.pseudo_d">Fourni lors de l'inscription</td><td data-i18n="s2.pseudo_r">Affichage public sur le profil</td></tr>
+                <tr><td data-i18n="s2.images">Images générées</td><td data-i18n="s2.images_d">Créées via l'outil IA</td><td data-i18n="s2.images_r">Stockage temporaire (1h) puis suppression automatique</td></tr>
+                <tr><td data-i18n="s2.points">Points & transactions</td><td data-i18n="s2.points_d">Générés par vos actions</td><td data-i18n="s2.points_r">Fonctionnement du système de gamification</td></tr>
+                <tr><td data-i18n="s2.ip">Adresse IP</td><td data-i18n="s2.ip_d">Collectée automatiquement</td><td data-i18n="s2.ip_r">Sécurité, prévention fraude</td></tr>
+                <tr><td data-i18n="s2.lang">Langue préférée</td><td data-i18n="s2.lang_d">Sauvegardée localement</td><td data-i18n="s2.lang_r">Expérience utilisateur personnalisée</td></tr>
+                <tr><td data-i18n="s2.referral">Données de parrainage</td><td data-i18n="s2.referral_d">Lien partagé + inscriptions filleuls</td><td data-i18n="s2.referral_r">Système de récompenses parrainage</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top:1rem;font-weight:600;font-size:0.85rem;" data-i18n="s2.no_collect_title">Ce que nous NE collectons PAS :</p>
+        <ul class="no-collect-list">
+            <li><i class="fas fa-times-circle"></i> <span data-i18n="s2.no_phone">Pas de numéro de téléphone</span></li>
+            <li><i class="fas fa-times-circle"></i> <span data-i18n="s2.no_card">Pas de carte bancaire</span></li>
+            <li><i class="fas fa-times-circle"></i> <span data-i18n="s2.no_gps">Pas de localisation GPS</span></li>
+            <li><i class="fas fa-times-circle"></i> <span data-i18n="s2.no_cookies">Pas de cookies tiers de tracking</span></li>
+            <li><i class="fas fa-times-circle"></i> <span data-i18n="s2.no_resale">Pas de revente de données à des tiers</span></li>
         </ul>
     </div>
 
-    <div class="card">
-        <h2><i class="fas fa-ad"></i> Publicité et partenaires tiers</h2>
-        <p>Pixora est gratuit grâce à la publicité. Nous travaillons avec les partenaires suivants qui peuvent utiliser des cookies et des technologies de suivi :</p>
-        <ul>
-            <li><strong>Adsterra</strong> — Liens directs, popunders et bannières natives</li>
-            <li><strong>Monetag</strong> — MultiTag et publicités vidéo récompensées</li>
-            <li><strong>PopAds</strong> — Popunders de backup</li>
-            <li><strong>AdscendMedia</strong> — Offres CPA et offerwall</li>
+    <!-- Section 3 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-cogs"></i> <span data-i18n="s3.title">3. Utilisation des données</span></h2>
+        <p data-i18n="s3.intro">Vos données sont utilisées uniquement pour :</p>
+        <ul class="no-collect-list">
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s3.u1">Fournir le service de génération d'images IA</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s3.u2">Gérer votre compte et vos points</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s3.u3">Faire fonctionner le système de badges, streak et parrainage</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s3.u4">Afficher du contenu sponsorisé pour financer le service gratuit</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s3.u5">Prévenir la fraude et les abus</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s3.u6">Améliorer le service</span></li>
         </ul>
-        <p>Ces partenaires peuvent collecter des données anonymisées pour personnaliser les annonces. Vous pouvez désactiver les cookies publicitaires dans les paramètres de votre navigateur à tout moment.</p>
     </div>
 
-    <div class="card">
-        <h2><i class="fas fa-coins"></i> Système de points et paiements</h2>
-        <p>Les points gagnés via les publicités, offres et actions quotidiennes sont stockés localement dans votre navigateur. Les achats de packs de points sont traités par des processeurs de paiement sécurisés (Stripe, PayPal). Nous ne stockons jamais vos informations bancaires.</p>
-    </div>
-
-    <div class="card">
-        <h2><i class="fas fa-lock"></i> Sécurité des données</h2>
-        <p>Vos données locales (points, historique) restent dans votre navigateur et ne sont jamais envoyées à nos serveurs. Les transactions de paiement sont chiffrées via SSL/TLS. Nous ne vendons ni ne partageons vos données personnelles avec des tiers non autorisés.</p>
-    </div>
-
-    <div class="card">
-        <h2><i class="fas fa-user-cog"></i> Vos droits</h2>
-        <p>Vous disposez des droits suivants :</p>
-        <ul>
-            <li>Accéder à vos données personnelles</li>
-            <li>Demander la suppression de vos données</li>
-            <li>Désactiver les cookies publicitaires</li>
-            <li>Réinitialiser vos données locales via la page Profil</li>
-            <li>Retirer votre consentement à tout moment</li>
+    <!-- Section 4 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-shield-alt"></i> <span data-i18n="s4.title">4. Stockage & Sécurité</span></h2>
+        <ul class="no-collect-list">
+            <li><i class="fas fa-lock" style="color:var(--prim)"></i> <span data-i18n="s4.s1">Toutes les données sont stockées sur une infrastructure cloud sécurisée</span></li>
+            <li><i class="fas fa-lock" style="color:var(--prim)"></i> <span data-i18n="s4.s2">Les mots de passe sont hashés (jamais stockés en clair)</span></li>
+            <li><i class="fas fa-lock" style="color:var(--prim)"></i> <span data-i18n="s4.s3">Les images générées sont supprimées automatiquement après 1 heure</span></li>
+            <li><i class="fas fa-lock" style="color:var(--prim)"></i> <span data-i18n="s4.s4">L'accès aux données est protégé par des règles de sécurité strictes</span></li>
+            <li><i class="fas fa-lock" style="color:var(--prim)"></i> <span data-i18n="s4.s5">Aucun employé n'a accès à vos données sans raison technique justifiée</span></li>
         </ul>    </div>
 
-    <div class="card">
-        <h2><i class="fas fa-child"></i> Protection des mineurs</h2>
-        <p>Pixora n'est pas destiné aux personnes de moins de 13 ans. Nous ne collectons sciemment aucune donnée auprès de mineurs. Si vous êtes parent ou tuteur et pensez que votre enfant nous a fourni des données, contactez-nous immédiatement.</p>
+    <!-- Section 5 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-ad"></i> <span data-i18n="s5.title">5. Contenu sponsorisé</span></h2>
+        <p data-i18n="s5.p1">Pixora affiche occasionnellement du contenu sponsorisé pour maintenir le service gratuit.</p>
+        <ul class="no-collect-list">
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s5.c1">Ce contenu est intégré de manière discrète dans l'interface</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s5.c2">Nous n'utilisons pas de cookies de tracking tiers</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s5.c3">Aucune donnée personnelle identifiable n'est transmise à des partenaires externes</span></li>
+            <li><i class="fas fa-check" style="color:var(--success)"></i> <span data-i18n="s5.c4">Vous pouvez continuer à utiliser le service normalement avec ou sans interaction avec ce contenu</span></li>
+        </ul>
     </div>
 
-    <div class="contact-box">
-        <p><i class="fas fa-envelope" style="margin-right:0.5rem;"></i> Une question ? Contactez-nous</p>
-        <div class="contact-email"><i class="fas fa-at"></i> support@pixoraia.netlify.app</div>
+    <!-- Section 6 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-share-alt"></i> <span data-i18n="s6.title">6. Partage de données</span></h2>
+        <p data-i18n="s6.intro">Nous ne vendons, louons ni partageons vos données avec des tiers, sauf dans ces cas limités :</p>
+        <table class="policy-table">
+            <thead><tr><th data-i18n="s6.th_case">Cas</th><th data-i18n="s6.th_detail">Détail</th></tr></thead>
+            <tbody>
+                <tr><td data-i18n="s6.legal">Obligation légale</td><td data-i18n="s6.legal_d">Si requis par la loi ou une autorité compétente</td></tr>
+                <tr><td data-i18n="s6.security">Sécurité</td><td data-i18n="s6.security_d">Pour prévenir la fraude ou protéger nos utilisateurs</td></tr>
+                <tr><td data-i18n="s6.providers">Prestataires techniques</td><td data-i18n="s6.providers_d">Hébergement et déploiement — ils ne peuvent pas utiliser vos données</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Section 7 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-user-shield"></i> <span data-i18n="s7.title">7. Vos droits</span></h2>
+        <p data-i18n="s7.intro">Conformément au RGPD et à la législation applicable, vous avez le droit de :</p>
+        <table class="policy-table">
+            <thead><tr><th data-i18n="s7.th_right">Droit</th><th data-i18n="s7.th_how">Comment l'exercer</th></tr></thead>
+            <tbody>
+                <tr><td data-i18n="s7.access">Accéder à vos données</td><td data-i18n="s7.access_d">Contactez-nous par email</td></tr>
+                <tr><td data-i18n="s7.rectify">Rectifier vos données</td><td data-i18n="s7.rectify_d">Modifiez votre pseudo directement dans Profil</td></tr>
+                <tr><td data-i18n="s7.delete">Supprimer votre compte</td><td data-i18n="s7.delete_d">Bouton "Réinitialiser mes données" dans Profil + contactez-nous pour suppression complète</td></tr>
+                <tr><td data-i18n="s7.withdraw">Retirer votre consentement</td><td data-i18n="s7.withdraw_d">Cessez d'utiliser le site</td></tr>
+                <tr><td data-i18n="s7.export">Exporter vos données</td><td data-i18n="s7.export_d">Contactez-nous par email</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Section 8 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-clock"></i> <span data-i18n="s8.title">8. Conservation des données</span></h2>
+        <table class="policy-table">
+            <thead><tr><th data-i18n="s8.th_data">Donnée</th><th data-i18n="s8.th_duration">Durée de conservation</th></tr></thead>
+            <tbody>                <tr><td data-i18n="s8.images">Images générées</td><td data-i18n="s8.images_d">1 heure (suppression automatique)</td></tr>
+                <tr><td data-i18n="s8.account">Compte utilisateur</td><td data-i18n="s8.account_d">Jusqu'à suppression demandée</td></tr>
+                <tr><td data-i18n="s8.transactions">Transactions/points</td><td data-i18n="s8.transactions_d">Tant que le compte est actif</td></tr>
+                <tr><td data-i18n="s8.logs">Logs de sécurité</td><td data-i18n="s8.logs_d">90 jours maximum</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Section 9 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-child"></i> <span data-i18n="s9.title">9. Mineurs</span></h2>
+        <p data-i18n="s9.p1">Pixora n'est pas destiné aux personnes de moins de 13 ans. Si vous êtes parent/tuteur et pensez que votre enfant a créé un compte, contactez-nous pour sa suppression immédiate.</p>
+    </div>
+
+    <!-- Section 10 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-sync-alt"></i> <span data-i18n="s10.title">10. Modifications</span></h2>
+        <p data-i18n="s10.p1">Nous pouvons modifier cette politique à tout moment. La date de dernière mise à jour sera indiquée en haut de page. Les modifications prennent effet immédiatement.</p>
+    </div>
+
+    <!-- Section 11 -->
+    <div class="policy-section">
+        <h2><i class="fas fa-envelope"></i> <span data-i18n="s11.title">11. Contact</span></h2>
+        <p data-i18n="s11.p1">Pour toute question concernant cette politique ou vos données :</p>
+        <div class="contact-box">
+            <i class="fas fa-envelope-open-text"></i>
+            <br>
+            <a href="mailto:leonard@pixora.com">leonard@pixora.com</a>
+        </div>
     </div>
 </main>
 
-<footer class="footer">
+<footer class="site-footer">
     <div class="footer-links">
-        <a href="index.html">Studio</a>
-        <a href="shop.html">Boutique</a>
-        <a href="profile.html">Profil</a>
+        <a href="index.html" data-i18n="footer.studio">Studio</a>
+        <a href="earn.html" data-i18n="footer.points">Points</a>
+        <a href="gallery.html" data-i18n="footer.gallery">Galerie</a>
+        <a href="shop.html" data-i18n="footer.shop">Boutique</a>
+        <a href="profile.html" data-i18n="footer.profile">Profil</a>
     </div>
-    <div>© 2026 Pixora. Tous droits réservés.</div>
+    <div data-i18n="footer.copyright">© 2026 Pixora. Tous droits réservés.</div>
 </footer>
 
+<script>
+// =============================================
+// I18N PRIVACY
+// =============================================
+var PRIVACY_I18N = {
+    fr: {
+        nav:{studio:'Studio',gallery:'Galerie',profile:'Profil'},        page:{title:'Politique de Confidentialité',updated:'Dernière mise à jour : 25 juillet 2026'},
+        s1:{title:'1. Introduction',p1:'Bienvenue sur Pixora. Nous respectons votre vie privée et nous engageons à protéger vos données personnelles. Cette politique explique quelles données nous collectons, pourquoi, et comment nous les utilisons.',p2:"En utilisant Pixora, vous acceptez cette politique. Si vous n'êtes pas d'accord, veuillez ne pas utiliser le site."},
+        s2:{title:'2. Données collectées',th_type:'Type',th_detail:'Détail',th_reason:'Pourquoi',email:'Email',email_d:"Fourni lors de l'inscription",email_r:'Authentification, récupération de compte',pseudo:'Pseudo',pseudo_d:"Fourni lors de l'inscription",pseudo_r:'Affichage public sur le profil',images:'Images générées',images_d:"Créées via l'outil IA",images_r:'Stockage temporaire (1h) puis suppression automatique',points:'Points & transactions',points_d:'Générés par vos actions',points_r:'Fonctionnement du système de gamification',ip:'Adresse IP',ip_d:'Collectée automatiquement',ip_r:'Sécurité, prévention fraude',lang:'Langue préférée',lang_d:'Sauvegardée localement',lang_r:'Expérience utilisateur personnalisée',referral:'Données de parrainage',referral_d:'Lien partagé + inscriptions filleuls',referral_r:'Système de récompenses parrainage',no_collect_title:'Ce que nous NE collectons PAS :',no_phone:'Pas de numéro de téléphone',no_card:'Pas de carte bancaire',no_gps:'Pas de localisation GPS',no_cookies:'Pas de cookies tiers de tracking',no_resale:'Pas de revente de données à des tiers'},
+        s3:{title:"3. Utilisation des données",intro:'Vos données sont utilisées uniquement pour :',u1:"Fournir le service de génération d'images IA",u2:'Gérer votre compte et vos points',u3:'Faire fonctionner le système de badges, streak et parrainage',u4:'Afficher du contenu sponsorisé pour financer le service gratuit',u5:'Prévenir la fraude et les abus',u6:'Améliorer le service'},
+        s4:{title:'4. Stockage & Sécurité',s1:"Toutes les données sont stockées sur une infrastructure cloud sécurisée",s2:'Les mots de passe sont hashés (jamais stockés en clair)',s3:'Les images générées sont supprimées automatiquement après 1 heure',s4:"L'accès aux données est protégé par des règles de sécurité strictes",s5:"Aucun employé n'a accès à vos données sans raison technique justifiée"},
+        s5:{title:'5. Contenu sponsorisé',p1:'Pixora affiche occasionnellement du contenu sponsorisé pour maintenir le service gratuit.',c1:"Ce contenu est intégré de manière discrète dans l'interface",c2:"Nous n'utilisons pas de cookies de tracking tiers",c3:"Aucune donnée personnelle identifiable n'est transmise à des partenaires externes",c4:'Vous pouvez continuer à utiliser le service normalement avec ou sans interaction avec ce contenu'},
+        s6:{title:'6. Partage de données',intro:'Nous ne vendons, louons ni partageons vos données avec des tiers, sauf dans ces cas limités :',th_case:'Cas',th_detail:'Détail',legal:'Obligation légale',legal_d:'Si requis par la loi ou une autorité compétente',security:'Sécurité',security_d:'Pour prévenir la fraude ou protéger nos utilisateurs',providers:'Prestataires techniques',providers_d:"Hébergement et déploiement — ils ne peuvent pas utiliser vos données"},
+        s7:{title:'7. Vos droits',intro:'Conformément au RGPD et à la législation applicable, vous avez le droit de :',th_right:'Droit',th_how:"Comment l'exercer",access:'Accéder à vos données',access_d:'Contactez-nous par email',rectify:'Rectifier vos données',rectify_d:'Modifiez votre pseudo directement dans Profil',delete:'Supprimer votre compte',delete_d:'Bouton "Réinitialiser mes données" dans Profil + contactez-nous pour suppression complète',withdraw:'Retirer votre consentement',withdraw_d:"Cessez d'utiliser le site",export:'Exporter vos données',export_d:'Contactez-nous par email'},
+        s8:{title:'8. Conservation des données',th_data:'Donnée',th_duration:'Durée de conservation',images:'Images générées',images_d:'1 heure (suppression automatique)',account:'Compte utilisateur',account_d:"Jusqu'à suppression demandée",transactions:'Transactions/points',transactions_d:'Tant que le compte est actif',logs:'Logs de sécurité',logs_d:'90 jours maximum'},
+        s9:{title:'9. Mineurs',p1:"Pixora n'est pas destiné aux personnes de moins de 13 ans. Si vous êtes parent/tuteur et pensez que votre enfant a créé un compte, contactez-nous pour sa suppression immédiate."},
+        s10:{title:'10. Modifications',p1:'Nous pouvons modifier cette politique à tout moment. La date de dernière mise à jour sera indiquée en haut de page. Les modifications prennent effet immédiatement.'},
+        s11:{title:'11. Contact',p1:'Pour toute question concernant cette politique ou vos données :'},
+        footer:{studio:'Studio',points:'Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',copyright:'© 2026 Pixora. Tous droits réservés.'}
+    },
+    en: {
+        nav:{studio:'Studio',gallery:'Gallery',profile:'Profile'},
+        page:{title:'Privacy Policy',updated:'Last updated: July 25, 2026'},
+        s1:{title:'1. Introduction',p1:'Welcome to Pixora. We respect your privacy and are committed to protecting your personal data. This policy explains what data we collect, why, and how we use it.',p2:'By using Pixora, you accept this policy. If you do not agree, please do not use the site.'},
+        s2:{title:'2. Data Collected',th_type:'Type',th_detail:'Detail',th_reason:'Purpose',email:'Email',email_d:'Provided during registration',email_r:'Authentication, account recovery',pseudo:'Username',pseudo_d:'Provided during registration',pseudo_r:'Public display on profile',images:'Generated images',images_d:'Created via AI tool',images_r:'Temporary storage (1h) then automatic deletion',points:'Points & transactions',points_d:'Generated by your actions',points_r:'Gamification system operation',ip:'IP Address',ip_d:'Collected automatically',ip_r:'Security, fraud prevention',lang:'Preferred language',lang_d:'Saved locally',lang_r:'Personalized user experience',referral:'Referral data',referral_d:'Shared link + referral signups',referral_r:'Referral rewards system',no_collect_title:'What we DO NOT collect:',no_phone:'No phone number',no_card:'No credit card',no_gps:'No GPS location',no_cookies:'No third-party tracking cookies',no_resale:'No data resale to third parties'},
+        s3:{title:'3. Data Usage',intro:'Your data is used only for:',u1:'Providing the AI image generation service',u2:'Managing your account and points',u3:'Operating the badges, streak and referral system',u4:'Displaying sponsored content to fund the free service',u5:'Preventing fraud and abuse',u6:'Improving the service'},
+        s4:{title:'4. Storage & Security',s1:'All data is stored on secure cloud infrastructure',s2:'Passwords are hashed (never stored in plain text)',s3:'Generated images are automatically deleted after 1 hour',s4:'Data access is protected by strict security rules',s5:'No employee has access to your data without justified technical reason'},
+        s5:{title:'5. Sponsored Content',p1:'Pixora occasionally displays sponsored content to maintain the free service.',c1:'This content is discreetly integrated into the interface',c2:'We do not use third-party tracking cookies',c3:'No personally identifiable data is transmitted to external partners',c4:'You can continue using the service normally with or without interacting with this content'},
+        s6:{title:'6. Data Sharing',intro:'We do not sell, rent or share your data with third parties, except in these limited cases:',th_case:'Case',th_detail:'Detail',legal:'Legal obligation',legal_d:'If required by law or competent authority',security:'Security',security_d:'To prevent fraud or protect our users',providers:'Technical providers',providers_d:'Hosting and deployment — they cannot use your data'},
+        s7:{title:'7. Your Rights',intro:'Under GDPR and applicable legislation, you have the right to:',th_right:'Right',th_how:'How to exercise',access:'Access your data',access_d:'Contact us by email',rectify:'Rectify your data',rectify_d:'Change your username directly in Profile',delete:'Delete your account',delete_d:'"Reset my data" button in Profile + contact us for complete deletion',withdraw:'Withdraw consent',withdraw_d:'Stop using the site',export:'Export your data',export_d:'Contact us by email'},
+        s8:{title:'8. Data Retention',th_data:'Data',th_duration:'Retention period',images:'Generated images',images_d:'1 hour (automatic deletion)',account:'User account',account_d:'Until deletion requested',transactions:'Transactions/points',transactions_d:'While account is active',logs:'Security logs',logs_d:'90 days maximum'},
+        s9:{title:'9. Minors',p1:'Pixora is not intended for persons under 13 years of age. If you are a parent/guardian and believe your child has created an account, contact us for immediate deletion.'},
+        s10:{title:'10. Changes',p1:'We may modify this policy at any time. The last update date will be indicated at the top of the page. Changes take effect immediately.'},
+        s11:{title:'11. Contact',p1:'For any questions regarding this policy or your data:'},
+        footer:{studio:'Studio',points:'Points',gallery:'Gallery',shop:'Shop',profile:'Profile',copyright:'© 2026 Pixora. All rights reserved.'}
+    }
+};
+
+var currentPrivacyLang = 'fr';
+
+function tPrivacy(key) {
+    var keys = key.split('.');
+    var val = PRIVACY_I18N[currentPrivacyLang];
+    for (var i = 0; i < keys.length; i++) {
+        if (val && typeof val === 'object') val = val[keys[i]];
+        else return key;
+    }
+    return val || key;
+}
+
+function applyPrivacyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        var val = tPrivacy(key);
+        if (val !== key) el.textContent = val;
+    });}
+
+function changePrivacyLang(lang) {
+    currentPrivacyLang = lang;
+    localStorage.setItem('pixora_lang', lang);
+    document.documentElement.lang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    applyPrivacyTranslations();
+}
+
+function detectPrivacyLang() {
+    var saved = localStorage.getItem('pixora_lang');
+    if (saved && (saved === 'fr' || saved === 'en')) return saved;
+    return 'fr';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var lang = detectPrivacyLang();
+    currentPrivacyLang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    document.documentElement.lang = lang;
+    applyPrivacyTranslations();
+});
+</script>
 </body>
 </html>
