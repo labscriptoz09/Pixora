@@ -15,6 +15,9 @@
         .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none}
         .logo svg{width:28px;height:28px}
         .logo span{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#fff 20%,var(--accent) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-right{display:flex;align-items:center;gap:0.5rem}
+        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}
+        .lang-select option{background:var(--bg);color:var(--text)}
         .balance-pill{display:flex;align-items:center;gap:0.5rem;background:var(--surface);padding:0.5rem 1rem;border-radius:100px;border:1px solid var(--border);font-weight:600;font-size:0.9rem}
         .balance-pill i{color:var(--gold)}
         .balance-pill span{font-family:var(--mono)}
@@ -44,10 +47,10 @@
         .shop-item:hover{border-color:var(--accent)}
         .shop-item-header{display:flex;justify-content:space-between;align-items:flex-start}
         .shop-item-icon{width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--accent)}
-        .shop-item-type{font-family:var(--mono);font-size:0.7rem;padding:0.3rem 0.6rem;border-radius:6px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}
-        .shop-item-name{font-size:1rem;font-weight:600}
+        .shop-item-type{font-family:var(--mono);font-size:0.7rem;padding:0.3rem 0.6rem;border-radius:6px;background:rgba(255,255,255,0.05);color:var(--muted);text-transform:uppercase}        .shop-item-name{font-size:1rem;font-weight:600}
         .shop-item-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}
-        .shop-item-cost{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);margin-top:0.5rem}        .btn-buy{width:100%;padding:0.8rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;margin-top:auto}
+        .shop-item-cost{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);margin-top:0.5rem}
+        .btn-buy{width:100%;padding:0.8rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;margin-top:auto}
         .btn-buy:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,92,246,0.3)}
         .btn-buy:disabled{background:var(--border);color:var(--dim);cursor:not-allowed;transform:none;box-shadow:none}
         .btn-buy.purchased{background:var(--success);color:white}
@@ -72,260 +75,333 @@
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
             <span>Pixora</span>
         </a>
-        <div class="balance-pill">
-            <i class="fas fa-coins"></i>
-            <span id="pointsDisplay">---</span>
+        <div class="header-right">
+            <select class="lang-select" id="lang-select" onchange="changeShopLang(this.value)">
+                <option value="fr">🇫🇷 FR</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
+            <div class="balance-pill">
+                <i class="fas fa-coins"></i>
+                <span id="pointsDisplay">---</span>
+            </div>
         </div>
     </header>
 
     <main>
         <div class="page-header">
-            <h1 class="page-title">Boutique</h1>
-            <p class="page-subtitle">Échange tes points contre des avantages réels</p>
+            <h1 class="page-title" data-i18n="page.title">Boutique</h1>
+            <p class="page-subtitle" data-i18n="page.subtitle">Échange tes points contre des avantages réels</p>
         </div>
 
         <div class="balance-card">
             <div class="balance-left">
                 <div class="balance-icon"><i class="fas fa-wallet"></i></div>
-                <div class="balance-info">
-                    <h3>Ton Solde</h3>
-                    <p>Points disponibles</p>
+                <div class="balance-info">                    <h3 data-i18n="balance.title">Ton Solde</h3>
+                    <p data-i18n="balance.desc">Points disponibles</p>
                 </div>
             </div>
             <div class="balance-amount" id="balanceAmount">---</div>
-            <a href="/earn.html" class="btn-earn"><i class="fas fa-plus"></i> Gagner plus</a>
+            <a href="/earn.html" class="btn-earn"><i class="fas fa-plus"></i> <span data-i18n="balance.earn_more">Gagner plus</span></a>
         </div>
 
-        <div class="discount-status" id="discountStatus">            <div class="discount-left">
+        <div class="discount-status" id="discountStatus">
+            <div class="discount-left">
                 <div class="discount-icon"><i class="fas fa-fire"></i></div>
                 <div class="discount-info">
-                    <h4>🔥 -50% ACTIF sur les images</h4>
-                    <p>Pack Économie en cours</p>
+                    <h4 data-i18n="discount.title">🔥 -50% ACTIF sur les images</h4>
+                    <p data-i18n="discount.desc">Pack Économie en cours</p>
                 </div>
             </div>
             <div class="discount-timer" id="discountTimer">--:--:--</div>
         </div>
 
-        <div class="section-title"><i class="fas fa-store"></i> Items Disponibles</div>
+        <div class="section-title"><i class="fas fa-store"></i> <span data-i18n="sections.items">Items Disponibles</span></div>
         <div class="shop-grid" id="shopGrid">
-            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p data-i18n="common.loading">Chargement...</p></div>
         </div>
 
-        <div class="section-title"><i class="fas fa-history"></i> Historique des Achats</div>
+        <div class="section-title"><i class="fas fa-history"></i> <span data-i18n="sections.history">Historique des Achats</span></div>
         <div class="history-card">
             <table class="history-table">
-                <thead><tr><th>Item</th><th>Points</th><th>Date</th></tr></thead>
-                <tbody id="historyTable"><tr><td colspan="3" style="text-align:center;color:var(--dim)">Chargement...</td></tr></tbody>
+                <thead><tr><th data-i18n="history.item">Item</th><th data-i18n="history.points">Points</th><th data-i18n="history.date">Date</th></tr></thead>
+                <tbody id="historyTable"><tr><td colspan="3" style="text-align:center;color:var(--dim)" data-i18n="common.loading">Chargement...</td></tr></tbody>
             </table>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let user = null;
-        let shopItems = [];
-        let discountUntil = null;
-        let timerInterval = null;
-        let currentUserPoints = 0; // Variable globale pour stocker les points
+// =============================================
+// I18N SHOP
+// =============================================
+var SHOP_I18N = {
+    fr: {
+        page:{title:'Boutique',subtitle:'Échange tes points contre des avantages réels'},
+        balance:{title:'Ton Solde',desc:'Points disponibles',earn_more:'Gagner plus'},
+        discount:{title:'🔥 -50% ACTIF sur les images',desc:'Pack Économie en cours'},
+        sections:{items:'Items Disponibles',history:'Historique des Achats'},
+        shop:{no_items:'Aucun item disponible',come_back:'Reviens plus tard !',loading_error:'Erreur de chargement',buy:'Acheter',already_bought:'Déjà acheté',insufficient:'Points insuffisants',exclusive:'Récompense exclusive'},
+        purchase:{confirm:'Confirmer l\'achat de',for_price:'pour',points_word:'points ?',activated:'activé !',insufficient:'Points insuffisants',error:'Erreur lors de l\'achat'},
+        history:{item:'Item',points:'Points',date:'Date',empty:'Aucun achat pour le moment',error:'Erreur de chargement'},
+        common:{loading:'Chargement...'}
+    },
+    en: {        page:{title:'Shop',subtitle:'Exchange your points for real benefits'},
+        balance:{title:'Your Balance',desc:'Available points',earn_more:'Earn more'},
+        discount:{title:'🔥 -50% ACTIVE on images',desc:'Economy Pack active'},
+        sections:{items:'Available Items',history:'Purchase History'},
+        shop:{no_items:'No items available',come_back:'Come back later!',loading_error:'Loading error',buy:'Buy',already_bought:'Already bought',insufficient:'Insufficient points',exclusive:'Exclusive reward'},
+        purchase:{confirm:'Confirm purchase of',for_price:'for',points_word:'points?',activated:'activated!',insufficient:'Insufficient points',error:'Purchase error'},
+        history:{item:'Item',points:'Points',date:'Date',empty:'No purchases yet',error:'Loading error'},
+        common:{loading:'Loading...'}
+    }
+};
 
-        async function init() {
-            const { data: { user: u }, error } = await db.auth.getUser();
-            if (error || !u) { window.location.href = '/index.html'; return; }
-            user = u;
-            await updateBalance();
-            await loadDiscountStatus();
-            await loadShopItems();
-            await loadHistory();
+var currentShopLang = 'fr';
+
+function tShop(key) {
+    var keys = key.split('.');
+    var val = SHOP_I18N[currentShopLang];
+    for (var i = 0; i < keys.length; i++) {
+        if (val && typeof val === 'object') val = val[keys[i]];
+        else return key;
+    }
+    return val || key;
+}
+
+function applyShopTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        var val = tShop(key);
+        if (val !== key) el.textContent = val;
+    });
+}
+
+function changeShopLang(lang) {
+    currentShopLang = lang;
+    localStorage.setItem('pixora_lang', lang);
+    document.documentElement.lang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    applyShopTranslations();
+    if (user) {
+        loadShopItems();
+        loadHistory();
+    }
+}
+
+function detectShopLang() {
+    var saved = localStorage.getItem('pixora_lang');
+    if (saved && (saved === 'fr' || saved === 'en')) return saved;
+    var nav = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
+    if (nav.indexOf('en') !== -1) return 'en';
+    return 'fr';}
+
+// =============================================
+// SUPABASE + CONFIG
+// =============================================
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let user = null;
+let shopItems = [];
+let discountUntil = null;
+let timerInterval = null;
+let currentUserPoints = 0;
+
+async function init() {
+    var lang = detectShopLang();
+    currentShopLang = lang;
+    var sel = document.getElementById('lang-select');
+    if (sel) sel.value = lang;
+    document.documentElement.lang = lang;
+    applyShopTranslations();
+
+    const { data: { user: u }, error } = await db.auth.getUser();
+    if (error || !u) { window.location.href = '/index.html'; return; }
+    user = u;
+    await updateBalance();
+    await loadDiscountStatus();
+    await loadShopItems();
+    await loadHistory();
+}
+
+async function updateBalance() {
+    const { data, error } = await db.from('user_data').select('points').eq('user_id', user.id).single();
+    if (error) { console.error('Error fetching points:', error); return; }
+    const points = data?.points || 0;
+    currentUserPoints = points;
+    document.getElementById('pointsDisplay').innerText = points.toLocaleString();
+    document.getElementById('balanceAmount').innerText = points.toLocaleString();
+}
+
+async function loadDiscountStatus() {
+    try {
+        const { data } = await db.from('user_data').select('discount_until').eq('user_id', user.id).single();
+        discountUntil = data?.discount_until || null;
+        updateDiscountUI();
+        if (timerInterval) clearInterval(timerInterval);
+        if (discountUntil && new Date(discountUntil) > new Date()) {
+            timerInterval = setInterval(updateDiscountUI, 1000);
+        }
+    } catch(e) { console.error('Load discount error:', e); }}
+
+function updateDiscountUI() {
+    const statusEl = document.getElementById('discountStatus');
+    const timerEl = document.getElementById('discountTimer');
+    if (!discountUntil || new Date(discountUntil) <= new Date()) {
+        statusEl.classList.remove('active');
+        if (timerInterval) clearInterval(timerInterval);
+        return;
+    }
+    statusEl.classList.add('active');
+    const remaining = new Date(discountUntil) - new Date();
+    const hours = Math.floor(remaining / 3600000);
+    const mins = Math.floor((remaining % 3600000) / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    timerEl.textContent = String(hours).padStart(2,'0') + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+}
+
+async function loadShopItems() {
+    const grid = document.getElementById('shopGrid');
+    try {
+        const { data: config } = await db.from('admin_config').select('value').eq('key', 'shop_items').single();
+        shopItems = config?.value || [];
+        const activeItems = shopItems.filter(item => item.active !== false);
+
+        if (activeItems.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>' + tShop('shop.no_items') + '</p><p style="font-size:0.85rem;margin-top:0.5rem">' + tShop('shop.come_back') + '</p></div>';
+            return;
         }
 
-        async function updateBalance() {
-            const { data, error } = await db.from('user_data').select('points').eq('user_id', user.id).single();
-            if (error) {
-                console.error('Error fetching points:', error);
-                return;            }
-            const points = data?.points || 0;
-            currentUserPoints = points; // Stocker dans la variable globale
-            document.getElementById('pointsDisplay').innerText = points.toLocaleString();
-            document.getElementById('balanceAmount').innerText = points.toLocaleString();
-        }
+        const { data: purchases } = await db.from('purchases').select('name').eq('user_id', user.id);
+        const purchasedNames = new Set((purchases || []).map(p => p.name));
+        const userPoints = currentUserPoints;
 
-        async function loadDiscountStatus() {
-            try {
-                const { data } = await db.from('user_data').select('discount_until').eq('user_id', user.id).single();
-                discountUntil = data?.discount_until || null;
-                updateDiscountUI();
-                if (timerInterval) clearInterval(timerInterval);
-                if (discountUntil && new Date(discountUntil) > new Date()) {
-                    timerInterval = setInterval(updateDiscountUI, 1000);
-                }
-            } catch(e) {
-                console.error('Load discount error:', e);
+        grid.innerHTML = activeItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => {
+            const isPurchased = purchasedNames.has(item.name);
+            const canAfford = userPoints >= (item.cost || 0);
+            const typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' };
+            const typeColor = typeColors[item.type] || 'var(--muted)';
+
+            let btnText = tShop('shop.buy');
+            let btnClass = 'btn-buy';
+            let btnDisabled = false;
+
+            if (isPurchased && item.type !== 'pack') {
+                btnText = tShop('shop.already_bought');
+                btnClass += ' purchased';
+                btnDisabled = true;
+            } else if (!canAfford) {
+                btnText = tShop('shop.insufficient');                btnDisabled = true;
             }
+
+            return '<div class="shop-item">' +
+                '<div class="shop-item-header">' +
+                '<div class="shop-item-icon"><i class="fas ' + (item.icon || 'fa-gift') + '"></i></div>' +
+                '<span class="shop-item-type" style="color:' + typeColor + '">' + (item.type || 'pack') + '</span>' +
+                '</div>' +
+                '<div class="shop-item-name">' + item.name + '</div>' +
+                '<div class="shop-item-desc">' + (item.desc || tShop('shop.exclusive')) + '</div>' +
+                '<div class="shop-item-cost">' + (item.cost || 0) + ' pts</div>' +
+                '<button class="' + btnClass + '" onclick="purchaseItem(' + shopItems.indexOf(item) + ')" ' + (btnDisabled ? 'disabled' : '') + '>' + btnText + '</button>' +
+                '</div>';
+        }).join('');
+    } catch(e) {
+        console.error('Load shop error:', e);
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p style="color:var(--danger)">' + tShop('shop.loading_error') + '</p></div>';
+    }
+}
+
+async function purchaseItem(index) {
+    const item = shopItems[index];
+    if (!item) return;
+
+    const confirmMsg = tShop('purchase.confirm') + ' "' + item.name + '" ' + tShop('purchase.for_price') + ' ' + item.cost + ' ' + tShop('purchase.points_word');
+    if (!confirm(confirmMsg)) return;
+
+    try {
+        const { data: userData } = await db.from('user_data').select('points,discount_until').eq('user_id', user.id).single();
+        const currentPoints = userData?.points || 0;
+
+        if (currentPoints < item.cost) {
+            showToast(tShop('purchase.insufficient'), true);
+            return;
         }
 
-        function updateDiscountUI() {
-            const statusEl = document.getElementById('discountStatus');
-            const timerEl = document.getElementById('discountTimer');
-            if (!discountUntil || new Date(discountUntil) <= new Date()) {
-                statusEl.classList.remove('active');
-                if (timerInterval) clearInterval(timerInterval);
-                return;
-            }
-            statusEl.classList.add('active');
-            const remaining = new Date(discountUntil) - new Date();
-            const hours = Math.floor(remaining / 3600000);
-            const mins = Math.floor((remaining % 3600000) / 60000);
-            const secs = Math.floor((remaining % 60000) / 1000);
-            timerEl.textContent = String(hours).padStart(2,'0') + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+        const newPoints = currentPoints - item.cost;
+        const itemName = item.name.trim();
+
+        let userUpdate = { points: newPoints };
+        if (itemName === 'Pack Économie') {
+            const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+            userUpdate.discount_until = expiresAt;
         }
 
-        async function loadShopItems() {
-            const grid = document.getElementById('shopGrid');
-            try {
-                const { data: config } = await db.from('admin_config').select('value').eq('key', 'shop_items').single();
-                shopItems = config?.value || [];
-                const activeItems = shopItems.filter(item => item.active !== false);
+        await Promise.all([
+            db.from('user_data').update(userUpdate).eq('user_id', user.id),
+            db.from('purchases').insert({
+                user_id: user.id,
+                name: itemName,                type: item.type || 'pack',
+                points_spent: item.cost,
+                details: item.desc || ''
+            }),
+            db.from('transactions').insert({
+                user_id: user.id,
+                type: 'spent',
+                title: 'Achat: ' + itemName,
+                amount: -item.cost
+            })
+        ]);
 
-                if (activeItems.length === 0) {
-                    grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucun item disponible</p><p style="font-size:0.85rem;margin-top:0.5rem">Reviens plus tard !</p></div>';
-                    return;
-                }
+        showToast('✅ ' + itemName + ' ' + tShop('purchase.activated') + ' -' + item.cost + ' pts');
+        await updateBalance();
+        await loadDiscountStatus();
+        await loadShopItems();
+        await loadHistory();
+    } catch(e) {
+        console.error('Purchase error:', e);
+        showToast(tShop('purchase.error'), true);
+    }
+}
 
-                const { data: purchases } = await db.from('purchases').select('name').eq('user_id', user.id);                const purchasedNames = new Set((purchases || []).map(p => p.name));
-
-                // CORRECTION : Utiliser currentUserPoints (déjà mis à jour par updateBalance)
-                // PAS de lecture depuis le DOM
-                const userPoints = currentUserPoints;
-
-                grid.innerHTML = activeItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => {
-                    const isPurchased = purchasedNames.has(item.name);
-                    const canAfford = userPoints >= (item.cost || 0);
-                    const typeColors = { badge:'var(--gold)', tier:'var(--accent)', pack:'var(--success)', cosmetic:'var(--accent2)' };
-                    const typeColor = typeColors[item.type] || 'var(--muted)';
-
-                    let btnText = 'Acheter';
-                    let btnClass = 'btn-buy';
-                    let btnDisabled = false;
-
-                    if (isPurchased && item.type !== 'pack') {
-                        btnText = 'Déjà acheté';
-                        btnClass += ' purchased';
-                        btnDisabled = true;
-                    } else if (!canAfford) {
-                        btnText = 'Points insuffisants';
-                        btnDisabled = true;
-                    }
-
-                    return `<div class="shop-item">
-                        <div class="shop-item-header">
-                            <div class="shop-item-icon"><i class="fas ${item.icon || 'fa-gift'}"></i></div>
-                            <span class="shop-item-type" style="color:${typeColor}">${item.type || 'pack'}</span>
-                        </div>
-                        <div class="shop-item-name">${item.name}</div>
-                        <div class="shop-item-desc">${item.desc || 'Récompense exclusive'}</div>
-                        <div class="shop-item-cost">${item.cost || 0} pts</div>
-                        <button class="${btnClass}" onclick="purchaseItem(${shopItems.indexOf(item)})" ${btnDisabled ? 'disabled' : ''}>${btnText}</button>
-                    </div>`;
-                }).join('');
-            } catch(e) {
-                console.error('Load shop error:', e);
-                grid.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p style="color:var(--danger)">Erreur de chargement</p></div>';
-            }
+async function loadHistory() {
+    const tbody = document.getElementById('historyTable');
+    try {
+        const { data: purchases } = await db.from('purchases').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20);
+        if (!purchases || purchases.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">' + tShop('history.empty') + '</td></tr>';
+            return;
         }
+        var locale = currentShopLang === 'en' ? 'en-US' : 'fr-FR';
+        tbody.innerHTML = purchases.map(function(p) {
+            return '<tr>' +
+                '<td style="font-weight:600">' + (p.name || '-') + '</td>' +
+                '<td style="font-family:var(--mono);color:var(--gold)">-' + (p.points_spent || 0) + '</td>' +
+                '<td style="font-size:0.75rem;color:var(--dim)">' + new Date(p.created_at).toLocaleString(locale) + '</td>' +
+                '</tr>';
+        }).join('');
+    } catch(e) {
+        console.error('Load history error:', e);
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">' + tShop('history.error') + '</td></tr>';
+    }
+}
 
-        async function purchaseItem(index) {
-            const item = shopItems[index];
-            if (!item) return;
+function showToast(message, isError) {
+    isError = isError || false;
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + (isError ? 'error' : '');
+    toast.innerHTML = '<i class="fas ' + (isError ? 'fa-exclamation-circle' : 'fa-check-circle') + '"></i><span>' + message + '</span>';
+    document.body.appendChild(toast);
 
-            const confirmMsg = `Confirmer l'achat de "${item.name}" pour ${item.cost} points ?`;
-            if (!confirm(confirmMsg)) return;
+    setTimeout(function() {
+        toast.style.animation = 'slideIn 0.3s reverse';
+        setTimeout(function() { toast.remove(); }, 300);
+    }, 3000);
+}
 
-            try {                const { data: userData } = await db.from('user_data').select('points,discount_until').eq('user_id', user.id).single();
-                const currentPoints = userData?.points || 0;
-
-                if (currentPoints < item.cost) {
-                    showToast('Points insuffisants', true);
-                    return;
-                }
-
-                const newPoints = currentPoints - item.cost;
-                const itemName = item.name.trim();
-
-                let userUpdate = { points: newPoints };
-                if (itemName === 'Pack Économie') {
-                    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-                    userUpdate.discount_until = expiresAt;
-                }
-
-                await Promise.all([
-                    db.from('user_data').update(userUpdate).eq('user_id', user.id),
-                    db.from('purchases').insert({
-                        user_id: user.id,
-                        name: itemName,
-                        type: item.type || 'pack',
-                        points_spent: item.cost,
-                        details: item.desc || ''
-                    }),
-                    db.from('transactions').insert({
-                        user_id: user.id,
-                        type: 'spent',
-                        title: 'Achat: ' + itemName,
-                        amount: -item.cost
-                    })
-                ]);
-
-                showToast('✅ ' + itemName + ' activé ! -' + item.cost + ' pts');
-                await updateBalance();
-                await loadDiscountStatus();
-                await loadShopItems();
-                await loadHistory();
-            } catch(e) {
-                console.error('Purchase error:', e);
-                showToast('Erreur lors de l\'achat', true);
-            }
-        }
-
-        async function loadHistory() {
-            const tbody = document.getElementById('historyTable');
-            try {
-                const { data: purchases } = await db.from('purchases').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20);
-                if (!purchases || purchases.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">Aucun achat pour le moment</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = purchases.map(p => `
-                    <tr>
-                        <td style="font-weight:600">${p.name || '-'}</td>
-                        <td style="font-family:var(--mono);color:var(--gold)">-${p.points_spent || 0}</td>
-                        <td style="font-size:0.75rem;color:var(--dim)">${new Date(p.created_at).toLocaleString('fr-FR')}</td>
-                    </tr>
-                `).join('');
-            } catch(e) {
-                console.error('Load history error:', e);
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--dim)">Erreur de chargement</td></tr>';
-            }
-        }
-
-        function showToast(message, isError = false) {
-            const existing = document.querySelector('.toast');
-            if (existing) existing.remove();
-
-            const toast = document.createElement('div');
-            toast.className = `toast ${isError ? 'error' : ''}`;
-            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i><span>${message}</span>`;
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.animation = 'slideIn 0.3s reverse';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        init();
-    </script>
+init();
+</script>
 </body>
 </html>
