@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gagner des Points | Pixora</title>
+    
+    <!-- SEO & TRAFFIC OPTIMIZATION -->
+    <title>Gagner des Points | IA Pixora - Studio IA Gratuit</title>
+    <meta name="description" content="Gagnez des points gratuits sur IA Pixora en complétant des tâches simples, en parrainant des amis et en débloquant des badges créateur.">
+    <link rel="canonical" href="https://iapixora.com/earn.html">
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iapixora.com/earn.html">
+    <meta property="og:title" content="Gagner des Points | IA Pixora">
+    <meta property="og:description" content="Gagnez des points gratuits sur IA Pixora en complétant des tâches simples et en parrainant des amis.">
+    <meta property="og:image" content="https://iapixora.com/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://iapixora.com/earn.html">
+    <meta property="twitter:title" content="Gagner des Points | IA Pixora">
+    <meta property="twitter:description" content="Gagnez des points gratuits sur IA Pixora en complétant des tâches simples.">
+    <meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
+    
+    <!-- Robots -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="IA Pixora">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,8 +47,7 @@
         main{flex:1;padding:2rem 1.5rem;max-width:900px;margin:0 auto;width:100%}
         .page-header{text-align:center;margin-bottom:2.5rem}
         .page-title{font-size:2rem;font-weight:700;margin-bottom:0.5rem}
-        .page-subtitle{color:var(--muted);font-size:1rem}
-        .streak-card{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(139,92,246,0.08));border:1px solid rgba(251,191,36,0.3);border-radius:16px;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+        .page-subtitle{color:var(--muted);font-size:1rem}        .streak-card{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(139,92,246,0.08));border:1px solid rgba(251,191,36,0.3);border-radius:16px;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
         .streak-left{display:flex;align-items:center;gap:1rem}
         .streak-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#F59E0B);display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#000}
         .streak-info h3{font-size:1.1rem;font-weight:700;margin-bottom:0.2rem}
@@ -47,7 +69,8 @@
         .task-icon{width:40px;height:40px;border-radius:10px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--accent)}
         .task-points{font-family:var(--mono);font-size:0.9rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.3rem 0.6rem;border-radius:6px}
         .task-name{font-size:0.95rem;font-weight:600}
-        .task-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}        .task-progress{font-size:0.7rem;color:var(--dim);font-family:var(--mono)}
+        .task-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}        
+        .task-progress{font-size:0.7rem;color:var(--dim);font-family:var(--mono)}
         .btn-task{padding:0.6rem;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:0.3rem}
         .btn-task:hover{background:var(--accent2)}
         .btn-task.done{background:var(--border);color:var(--muted);cursor:default}
@@ -73,8 +96,7 @@
         .btn-badge.claim{background:var(--gold);color:#000}
         .btn-badge.claim:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(251,191,36,0.3)}
         .btn-badge.locked{background:var(--border);color:var(--dim);cursor:default}
-        .btn-badge.done{background:rgba(16,185,129,0.15);color:var(--success);cursor:default}
-        .referral-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2.5rem}
+        .btn-badge.done{background:rgba(16,185,129,0.15);color:var(--success);cursor:default}        .referral-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2.5rem}
         .referral-link-box{display:flex;gap:0.5rem;margin-top:1rem}
         .referral-input{flex:1;padding:0.7rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--accent);font-family:var(--mono);font-size:0.8rem;outline:none}
         .btn-copy{padding:0.7rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;background:var(--accent);color:white;transition:all 0.2s;white-space:nowrap}
@@ -96,7 +118,8 @@
         .earn-card.completed{opacity:0.7}
         .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
         .card-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(236,72,153,0.2));display:flex;align-items:center;justify-content:center;font-size:1.8rem}
-        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
+        .card-badge{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--gold);background:rgba(251,191,36,0.1);padding:0.5rem 1rem;border-radius:8px}        
+        .card-title{font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
         .card-desc{color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem}
         .ad-container{margin:1rem 0;border-radius:10px;overflow:hidden;background:#fff}
         .ad-container iframe{width:100%;height:270px;border:none;display:block}
@@ -122,17 +145,16 @@
             .page-title{font-size:1.5rem}
             .streak-card{flex-direction:column;text-align:center}
             .streak-left{flex-direction:column}
-            .streak-days{justify-content:center}
-            .referral-link-box{flex-direction:column}
+            .streak-days{justify-content:center}            .referral-link-box{flex-direction:column}
             .referral-stats{justify-content:center}
         }
     </style>
 </head>
 <body>
     <header>
-        <a href="/index.html" class="logo">
+        <a href="https://iapixora.com/index.html" class="logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#lg)"/></svg>
-            <span>Pixora</span>
+            <span>IA Pixora</span>
         </a>
         <div class="header-right">
             <select class="lang-select" id="lang-select" onchange="changeEarnLang(this.value)">
@@ -153,7 +175,7 @@
 
         <div class="page-header">
             <h1 class="page-title" data-i18n="page.title">Gagnez des Points</h1>
-            <p class="page-subtitle" data-i18n="page.subtitle">Complétez des actions pour alimenter votre compte. Chaque action est unique.</p>
+            <p class="page-subtitle" data-i18n="page.subtitle">Complétez des actions pour alimenter votre compte IA Pixora. Chaque action est unique.</p>
         </div>
 
         <div class="streak-card" id="streakCard">
@@ -172,8 +194,7 @@
 
         <div class="section-title"><i class="fas fa-tasks"></i> <span data-i18n="sections.tasks">Tâches Rapides</span></div>
         <div class="tasks-grid" id="tasksContainer">
-            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p data-i18n="common.loading">Chargement...</p></div>
-        </div>
+            <div class="empty-state" style="padding:1.5rem"><i class="fas fa-spinner fa-spin"></i><p data-i18n="common.loading">Chargement...</p></div>        </div>
 
         <div class="section-title"><i class="fas fa-trophy"></i> <span data-i18n="sections.badges">Badges Créateur</span></div>
         <div class="tasks-grid" id="badgesContainer">
@@ -183,7 +204,7 @@
         <div class="section-title"><i class="fas fa-user-friends"></i> <span data-i18n="sections.referral">Parrainage</span></div>
         <div class="referral-card">
             <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem" data-i18n="referral.title_html">Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul</h3>
-            <p style="font-size:0.85rem;color:var(--muted)" data-i18n="referral.desc_auto">Partagez votre lien unique. Les points sont crédités automatiquement quand vos amis s'inscrivent.</p>
+            <p style="font-size:0.85rem;color:var(--muted)" data-i18n="referral.desc_auto">Partagez votre lien unique. Les points sont crédités automatiquement quand vos amis s'inscrivent sur IA Pixora.</p>
             <div class="referral-link-box">
                 <input type="text" class="referral-input" id="referralLink" readonly value="...">
                 <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> <span data-i18n="referral.copy">Copier</span></button>
@@ -210,28 +231,27 @@
 // =============================================
 var EARN_I18N = {
     fr: {
-        page:{title:'Gagnez des Points',subtitle:'Complétez des actions pour alimenter votre compte. Chaque action est unique.'},
+        page:{title:'Gagnez des Points',subtitle:'Complétez des actions pour alimenter votre compte IA Pixora. Chaque action est unique.'},
         sections:{tasks:'Tâches Rapides',badges:'Badges Créateur',referral:'Parrainage',ads:'Offres Sponsorisées'},
         bonus:{claim:'Réclamer',claimed:'✅ Bonus Réclamé !',day:'🔥 Jour',come_back:'Revenez demain pour continuer votre série',login_pts:'pts connexion',streak_pts:'pts streak',already_claimed:'Déjà réclamé',error:'Erreur lors de la réclamation du bonus.',impossible:'Impossible de réclamer le bonus.',network_error:'Erreur réseau. Réessayez.'},
         tasks:{no_tasks:'Aucune tâche disponible',today:"aujourd'hui",done:'Terminé',do:'Faire',limit_reached:"Limite atteinte pour aujourd'hui",coming_soon:'Cette tâche sera disponible prochainement.',loading_error:'Erreur chargement tâches',vote_detected:'✅ Vote détecté automatiquement ! +2 points crédités.',comment_detected:'✅ Commentaire détecté automatiquement ! +2 points crédités.',profile_detected:'✅ Profil complété détecté ! +3 points crédités.',vote_validated:'✅ Vote validé ! +2 points crédités.',comment_validated:'✅ Commentaire validé ! +2 points crédités.',profile_validated:'✅ Profil complété ! +3 points crédités.',vote_already:'✅ Vote déjà validé aujourd\'hui.',comment_already:'✅ Commentaire déjà validé aujourd\'hui.',profile_already:'✅ Profil déjà validé aujourd\'hui.'},
         badges:{loading:'Chargement des badges...',locked:'Verrouillé',available:'Disponible !',claimed:'Obtenu',unlock:'Badge débloqué !',error_claim:'Erreur lors de la réclamation du badge.',impossible_claim:'Impossible de réclamer ce badge.',network_error:'Erreur réseau. Réessayez.',loading_error:'Erreur chargement badges',images:'images'},
-        referral:{title_html:'Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul',desc_auto:'Partagez votre lien unique. Les points sont crédités automatiquement quand vos amis s\'inscrivent.',copy:'Copier',copied:'Copié !',godchildren:'Filleuls',points_earned:'Points gagnés',new_godchild:'Nouveau filleul',registered_via:'Inscrit via votre lien',all_confirmed:'Aucun nouveau filleul pour le moment.',auto_validated:'✅ Parrainages auto-validés !',share_confirm:'Lien copié ! Confirmez-vous avoir partagé Pixora ?',share_clipboard:'Lien copié dans le presse-papier ! Partagez-le puis revenez.',share_success:'✅ Partage confirmé !',history_title:'Historique des parrainages'},
+        referral:{title_html:'Invitez vos amis et gagnez <span style="color:var(--gold)">10 points</span> par filleul',desc_auto:'Partagez votre lien unique. Les points sont crédités automatiquement quand vos amis s\'inscrivent sur IA Pixora.',copy:'Copier',copied:'Copié !',godchildren:'Filleuls',points_earned:'Points gagnés',new_godchild:'Nouveau filleul',registered_via:'Inscrit via votre lien',all_confirmed:'Aucun nouveau filleul pour le moment.',auto_validated:'✅ Parrainages auto-validés !',share_confirm:'Lien copié ! Confirmez-vous avoir partagé IA Pixora ?',share_clipboard:'Lien copié dans le presse-papier ! Partagez-le puis revenez.',share_success:'✅ Partage confirmé !',history_title:'Historique des parrainages'},
         ads:{no_offers:'Aucune offre disponible pour le moment',come_back_later:'Revenez plus tard !',completed:'Déjà complété',finished:'Terminé',start:'Commencer',loading_error:'Erreur de chargement',window_opened:'Une nouvelle fenêtre s\'est ouverte.',visit_partner:'Visitez le site partenaire, puis revenez ici.',wait:'Patientez',click_first:'⚠️ Cliquez d\'abord sur l\'offre !',finished_btn:"J'ai terminé",must_click:'⚠️ Vous devez cliquer sur l\'offre avant de réclamer vos points.',validating:'Validation...'},
         ad_types:{video:'Regarder une vidéo',video_desc:'Regardez une vidéo complète pour gagner des points',smartlink:'Smartlink',smartlink_desc:'Visitez un site partenaire et confirmez votre visite',banner:'Bannière 300x250',banner_desc:'Visualisez cette publicité puis confirmez',native:'Contenu sponsorisé',native_desc:'Lisez cet article sponsorisé puis confirmez',social_bar:'Notification',social_bar_desc:'Activez les notifications puis confirmez',popunder:'Popunder',popunder_desc:'Ouvrez la fenêtre publicitaire puis confirmez'},
         common:{loading:'Chargement...',loading_badges:'Chargement des badges...',loading_ads:'Chargement des offres...'},
-        badge_names:{bronze:'Apprenti Créateur',silver:'Créateur Confirmé',gold:'Maître Créateur',diamond:'Légende Pixora'}
+        badge_names:{bronze:'Apprenti Créateur',silver:'Créateur Confirmé',gold:'Maître Créateur',diamond:'Légende IA Pixora'}
     },
     en: {
-        page:{title:'Earn Points',subtitle:'Complete actions to fund your account. Each action is unique.'},
-        sections:{tasks:'Quick Tasks',badges:'Creator Badges',referral:'Referral',ads:'Sponsored Offers'},
+        page:{title:'Earn Points',subtitle:'Complete actions to fund your IA Pixora account. Each action is unique.'},        sections:{tasks:'Quick Tasks',badges:'Creator Badges',referral:'Referral',ads:'Sponsored Offers'},
         bonus:{claim:'Claim',claimed:'✅ Bonus Claimed!',day:'🔥 Day',come_back:'Come back tomorrow to continue your streak',login_pts:'login pts',streak_pts:'streak pts',already_claimed:'Already claimed',error:'Error claiming bonus.',impossible:'Unable to claim bonus.',network_error:'Network error. Try again.'},
         tasks:{no_tasks:'No tasks available',today:'today',done:'Done',do:'Do',limit_reached:'Daily limit reached',coming_soon:'This task will be available soon.',loading_error:'Tasks loading error',vote_detected:'✅ Vote detected automatically! +2 points credited.',comment_detected:'✅ Comment detected automatically! +2 points credited.',profile_detected:'✅ Profile completed detected! +3 points credited.',vote_validated:'✅ Vote validated! +2 points credited.',comment_validated:'✅ Comment validated! +2 points credited.',profile_validated:'✅ Profile completed! +3 points credited.',vote_already:'✅ Vote already validated today.',comment_already:'✅ Comment already validated today.',profile_already:'✅ Profile already validated today.'},
         badges:{loading:'Loading badges...',locked:'Locked',available:'Available!',claimed:'Earned',unlock:'Badge unlocked!',error_claim:'Error claiming badge.',impossible_claim:'Unable to claim this badge.',network_error:'Network error. Try again.',loading_error:'Badges loading error',images:'images'},
-        referral:{title_html:'Invite friends and earn <span style="color:var(--gold)">10 points</span> per referral',desc_auto:'Share your unique link. Points are credited automatically when your friends sign up.',copy:'Copy',copied:'Copied!',godchildren:'Referrals',points_earned:'Points earned',new_godchild:'New referral',registered_via:'Registered via your link',all_confirmed:'No new referrals at the moment.',auto_validated:'✅ Referrals auto-validated!',share_confirm:'Link copied! Confirm you shared Pixora?',share_clipboard:'Link copied to clipboard! Share it then come back.',share_success:'✅ Share confirmed!',history_title:'Referral history'},
+        referral:{title_html:'Invite friends and earn <span style="color:var(--gold)">10 points</span> per referral',desc_auto:'Share your unique link. Points are credited automatically when your friends sign up on IA Pixora.',copy:'Copy',copied:'Copied!',godchildren:'Referrals',points_earned:'Points earned',new_godchild:'New referral',registered_via:'Registered via your link',all_confirmed:'No new referrals at the moment.',auto_validated:'✅ Referrals auto-validated!',share_confirm:'Link copied! Confirm you shared IA Pixora?',share_clipboard:'Link copied to clipboard! Share it then come back.',share_success:'✅ Share confirmed!',history_title:'Referral history'},
         ads:{no_offers:'No offers available right now',come_back_later:'Come back later!',completed:'Already completed',finished:'Finished',start:'Start',loading_error:'Loading error',window_opened:'A new window has opened.',visit_partner:'Visit the partner site, then come back here.',wait:'Wait',click_first:'⚠️ Click on the offer first!',finished_btn:"I'm done",must_click:'⚠️ You must click on the offer before claiming your points.',validating:'Validating...'},
         ad_types:{video:'Watch a video',video_desc:'Watch a full video to earn points',smartlink:'Smartlink',smartlink_desc:'Visit a partner site and confirm your visit',banner:'Banner 300x250',banner_desc:'View this ad then confirm',native:'Sponsored content',native_desc:'Read this sponsored article then confirm',social_bar:'Notification',social_bar_desc:'Enable notifications then confirm',popunder:'Popunder',popunder_desc:'Open the ad window then confirm'},
         common:{loading:'Loading...',loading_badges:'Loading badges...',loading_ads:'Loading offers...'},
-        badge_names:{bronze:'Apprentice Creator',silver:'Confirmed Creator',gold:'Master Creator',diamond:'Pixora Legend'}
+        badge_names:{bronze:'Apprentice Creator',silver:'Confirmed Creator',gold:'Master Creator',diamond:'IA Pixora Legend'}
     }
 };
 
@@ -243,7 +263,8 @@ function tEarn(key) {
     for (var i = 0; i < keys.length; i++) {
         if (val && typeof val === 'object') val = val[keys[i]];
         else return key;
-    }    return val || key;
+    }    
+    return val || key;
 }
 
 function applyEarnTranslations() {
@@ -271,8 +292,7 @@ function changeEarnLang(lang) {
 }
 
 function detectEarnLang() {
-    var saved = localStorage.getItem('pixora_lang');
-    if (saved && (saved === 'fr' || saved === 'en')) return saved;
+    var saved = localStorage.getItem('pixora_lang');    if (saved && (saved === 'fr' || saved === 'en')) return saved;
     var nav = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
     if (nav.indexOf('en') !== -1) return 'en';
     return 'fr';
@@ -292,7 +312,8 @@ let adClicked = false;
 
 function getAdConfig(type) {
     var map = {
-        video: { icon: '🎬', labelKey: 'ad_types.video', descKey: 'ad_types.video_desc' },        smartlink: { icon: '🔗', labelKey: 'ad_types.smartlink', descKey: 'ad_types.smartlink_desc' },
+        video: { icon: '🎬', labelKey: 'ad_types.video', descKey: 'ad_types.video_desc' },        
+        smartlink: { icon: '🔗', labelKey: 'ad_types.smartlink', descKey: 'ad_types.smartlink_desc' },
         banner: { icon: '🖼️', labelKey: 'ad_types.banner', descKey: 'ad_types.banner_desc' },
         native: { icon: '📰', labelKey: 'ad_types.native', descKey: 'ad_types.native_desc' },
         social_bar: { icon: '🔔', labelKey: 'ad_types.social_bar', descKey: 'ad_types.social_bar_desc' },
@@ -320,8 +341,7 @@ async function loadRemoteConfig() {
     } catch(e) {
         console.error('[CONFIG] Proxy error:', e);
         remoteConfig = {};
-    }
-}
+    }}
 
 async function init() {
     var lang = detectEarnLang();
@@ -332,7 +352,7 @@ async function init() {
     applyEarnTranslations();
 
     const { data: { user: u }, error } = await db.auth.getUser();
-    if (error || !u) { window.location.href = '/index.html'; return; }
+    if (error || !u) { window.location.href = 'https://iapixora.com/index.html'; return; }
     user = u;
     await loadRemoteConfig();
     await updatePoints();
@@ -341,7 +361,8 @@ async function init() {
     await checkValidationReturn();
     await loadDailyBonus();
     await loadTasks();
-    await loadBadges();    await loadReferral();
+    await loadBadges();    
+    await loadReferral();
     await loadAds();
 
     window.addEventListener('focus', function() {
@@ -369,8 +390,7 @@ async function autoValidateTasks() {
         const { data: existingVote } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
         if (existingVote && existingVote.length > 0) {
             const { data: alreadyCredited } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', 'Voter pour une création').gte('created_at', today + 'T00:00:00').limit(1);
-            if (!alreadyCredited || alreadyCredited.length === 0) {
-                const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
+            if (!alreadyCredited || alreadyCredited.length === 0) {                const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
                 if (result) showBanner(tEarn('tasks.vote_detected'), 'success');
             }
         }
@@ -390,7 +410,8 @@ async function autoValidateTasks() {
                 if (result) showBanner(tEarn('tasks.profile_detected'), 'success');
             }
         }
-    } catch(e) { console.error('Auto-validate error:', e); }}
+    } catch(e) { console.error('Auto-validate error:', e); }
+}
 
 function showBanner(message, type) {
     const banner = document.getElementById('validationBanner');
@@ -418,8 +439,7 @@ async function checkValidationReturn() {
                 banner.style.display = 'flex';
             } else {
                 const { data: existing } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
-                if (existing && existing.length > 0) {
-                    const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
+                if (existing && existing.length > 0) {                    const result = await creditTaskPoints('Voter pour une création', 'vote', 2);
                     if (result) {
                         message.textContent = tEarn('tasks.vote_validated');
                         banner.className = 'validation-banner show';
@@ -439,7 +459,8 @@ async function checkValidationReturn() {
                     const result = await creditTaskPoints('Commenter une création', 'comment', 2);
                     if (result) {
                         message.textContent = tEarn('tasks.comment_validated');
-                        banner.className = 'validation-banner show';                        banner.style.display = 'flex';
+                        banner.className = 'validation-banner show';                        
+                        banner.style.display = 'flex';
                     }
                 }
             }
@@ -467,8 +488,7 @@ async function checkValidationReturn() {
 }
 
 async function creditTaskPoints(taskName, taskType, points) {
-    try {
-        const { data, error } = await db.rpc('credit_task_points', {
+    try {        const { data, error } = await db.rpc('credit_task_points', {
             p_user_id: user.id,
             p_task_name: taskName,
             p_task_type: taskType,
@@ -488,7 +508,8 @@ async function loadDailyBonus() {
         const streak = userData?.streak || 0;
         const lastLogin = userData?.last_login;
         const today = new Date().toISOString().split('T')[0];
-        const alreadyClaimed = lastLogin === today;        let bonusPts = tierData.bonus_login || 5;
+        const alreadyClaimed = lastLogin === today;        
+        let bonusPts = tierData.bonus_login || 5;
         let streakPts = tierData.streak_j1_3 || 3;
         if (streak >= 7) streakPts = tierData.streak_j7 || 10;
         else if (streak >= 4) streakPts = tierData.streak_j4_6 || 7;
@@ -516,8 +537,7 @@ async function loadDailyBonus() {
 }
 
 async function claimDailyBonus() {
-    const btn = document.getElementById('btnClaimBonus');
-    btn.disabled = true;
+    const btn = document.getElementById('btnClaimBonus');    btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
     try {
         const rc = remoteConfig.retention_config || {};
@@ -537,7 +557,8 @@ async function claimDailyBonus() {
             console.error('RPC claim_daily_bonus error:', error);
             alert(tEarn('bonus.error'));
             await loadDailyBonus();
-            return;        }
+            return;        
+        }
         if (data && data.success) {
             showBanner('🔥 ' + tEarn('bonus.day') + ' ' + data.new_streak + ' ! +' + data.points_earned + ' points', 'success');
             await updatePoints();
@@ -565,8 +586,7 @@ async function loadTasks() {
         const today = new Date().toISOString().split('T')[0];
         const { data: completed } = await db.from('task_completions').select('task_name').eq('user_id', user.id).gte('created_at', today + 'T00:00:00');
         const completedMap = {};
-        (completed || []).forEach(function(c) { completedMap[c.task_name] = (completedMap[c.task_name] || 0) + 1; });
-        const { data: recentVotes } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
+        (completed || []).forEach(function(c) { completedMap[c.task_name] = (completedMap[c.task_name] || 0) + 1; });        const { data: recentVotes } = await db.from('votes').select('id').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
         const hasVotedToday = recentVotes && recentVotes.length > 0;
         const { data: recentComments } = await db.from('comments').select('id,content').eq('user_id', user.id).gte('created_at', today + 'T00:00:00').limit(1);
         const hasCommentedToday = recentComments && recentComments.length > 0 && recentComments[0].content && recentComments[0].content.length >= 10;
@@ -586,7 +606,8 @@ async function loadTasks() {
             return '<div class="task-card ' + (effectiveIsMaxed ? 'done' : '') + '" id="task-' + t.name.replace(/\s/g,'') + '">' +
                 '<div class="task-top"><div class="task-icon"><i class="fas ' + icon + '"></i></div><div class="task-points">+' + t.points + '</div></div>' +
                 '<div class="task-name">' + t.name + '</div>' +
-                '<div class="task-desc">' + (t.desc || '') + '</div>' +                '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' ' + tEarn('tasks.today') + '</div>' +
+                '<div class="task-desc">' + (t.desc || '') + '</div>' +                
+                '<div class="task-progress">' + (effectiveIsMaxed ? '1' : doneCount) + '/' + t.limit + ' ' + tEarn('tasks.today') + '</div>' +
                 '<button class="btn-task ' + (effectiveIsMaxed ? 'done' : '') + '" onclick="doTask(\'' + t.name + '\',\'' + t.type + '\',' + t.points + ',' + t.limit + ')" ' + (effectiveIsMaxed ? 'disabled' : '') + '>' +
                 btnText +
                 '</button></div>';
@@ -614,8 +635,7 @@ async function loadBadges() {
             let btnHtml = '<button class="btn-badge locked" disabled><i class="fas fa-lock"></i> ' + tEarn('badges.locked') + '</button>';
             if (isClaimed) {
                 statusClass = 'claimed';
-                statusText = '✅ ' + tEarn('badges.claimed');
-                btnHtml = '<button class="btn-badge done" disabled><i class="fas fa-check"></i> ' + tEarn('badges.claimed') + '</button>';
+                statusText = '✅ ' + tEarn('badges.claimed');                btnHtml = '<button class="btn-badge done" disabled><i class="fas fa-check"></i> ' + tEarn('badges.claimed') + '</button>';
             } else if (canClaim) {
                 statusClass = 'available';
                 statusText = '🎁 ' + tEarn('badges.available');
@@ -636,6 +656,7 @@ async function loadBadges() {
         container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><p>' + tEarn('badges.loading_error') + '</p></div>';
     }
 }
+
 async function checkBadge(badgeId, points) {
     try {
         const { data, error } = await db.rpc('claim_badge', {
@@ -663,28 +684,28 @@ async function checkBadge(badgeId, points) {
 
 async function doTask(taskName, taskType, points, limit) {
     const today = new Date().toISOString().split('T')[0];
-    const { data: completed } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', taskName).gte('created_at', today + 'T00:00:00');
-    if ((completed?.length || 0) >= limit) { alert(tEarn('tasks.limit_reached')); await loadTasks(); return; }
-    if (taskType === 'vote') { window.location.href = '/gallery.html?task=vote&return=earn'; }
-    else if (taskType === 'comment') { window.location.href = '/gallery.html?task=comment&return=earn'; }
-    else if (taskType === 'profile') { window.location.href = '/profile.html?task=profile&return=earn'; }
+    const { data: completed } = await db.from('task_completions').select('id').eq('user_id', user.id).eq('task_name', taskName).gte('created_at', today + 'T00:00:00');    if ((completed?.length || 0) >= limit) { alert(tEarn('tasks.limit_reached')); await loadTasks(); return; }
+    if (taskType === 'vote') { window.location.href = 'https://iapixora.com/gallery.html?task=vote&return=earn'; }
+    else if (taskType === 'comment') { window.location.href = 'https://iapixora.com/gallery.html?task=comment&return=earn'; }
+    else if (taskType === 'profile') { window.location.href = 'https://iapixora.com/profile.html?task=profile&return=earn'; }
     else if (taskType === 'share') { await doShareTask(taskName, points); }
     else { alert(tEarn('tasks.coming_soon')); }
 }
 
 async function doShareTask(taskName, points) {
-    const shareUrl = window.location.origin + '/?ref=' + user.id;
-    const shareText = currentEarnLang === 'en' ? 'Discover Pixora - Free AI Generator!' : 'Découvrez Pixora - Générateur IA gratuit !';
+    const shareUrl = 'https://iapixora.com/?ref=' + user.id;
+    const shareText = currentEarnLang === 'en' ? 'Discover IA Pixora - Free AI Generator!' : 'Découvrez IA Pixora - Générateur IA gratuit !';
     try {
         if (navigator.share) {
-            await navigator.share({ title: 'Pixora', text: shareText, url: shareUrl });
+            await navigator.share({ title: 'IA Pixora', text: shareText, url: shareUrl });
             const result = await creditTaskPoints(taskName, 'share', points);
             if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }
         } else {
             await navigator.clipboard.writeText(shareUrl);
             if (confirm(tEarn('referral.share_confirm'))) {
                 const result = await creditTaskPoints(taskName, 'share', points);
-                if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }            }
+                if (result) { alert(tEarn('referral.share_success') + ' +' + points + ' points'); await loadTasks(); }            
+            }
         }
     } catch(e) {
         if (e.name !== 'AbortError') {
@@ -700,7 +721,7 @@ async function loadReferral() {
         const config = remoteConfig.referral_config || {};
         if (!config.enabled) { document.querySelector('.referral-card').style.display = 'none'; return; }
 
-        const link = window.location.origin + '/?ref=' + user.id;
+        const link = 'https://iapixora.com/?ref=' + user.id;
         document.getElementById('referralLink').value = link;
 
         // Récupérer TOUS les filleuls (validés ET non validés)
@@ -712,8 +733,7 @@ async function loadReferral() {
 
         // ✅ AUTO-VALIDER les filleuls non validés et créditer les points
         var newlyValidated = 0;
-        for (var i = 0; i < refs.length; i++) {
-            var ref = refs[i];
+        for (var i = 0; i < refs.length; i++) {            var ref = refs[i];
             if (!ref.validated) {
                 // Valider le filleul
                 await db.from('referrals').update({ validated: true, claimed: true }).eq('id', ref.id);
@@ -762,8 +782,7 @@ async function loadReferral() {
             var html = '<div class="referral-history">';
             validatedRefs.forEach(function(ref) {
                 var dateStr = ref.created_at ? new Date(ref.created_at).toLocaleDateString(locale) : '';
-                html += '<div class="referral-history-item">' +
-                    '<div class="referral-history-icon"><i class="fas fa-check"></i></div>' +
+                html += '<div class="referral-history-item">' +                    '<div class="referral-history-icon"><i class="fas fa-check"></i></div>' +
                     '<div class="referral-history-details">' +
                     '<h4>' + tEarn('referral.new_godchild') + '</h4>' +
                     '<p>' + tEarn('referral.registered_via') + ' • ' + dateStr + '</p>' +
@@ -782,7 +801,8 @@ function copyReferralLink() {
     input.select();
     navigator.clipboard.writeText(input.value).then(function() {
         const btn = document.querySelector('.btn-copy');
-        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('referral.copied');        setTimeout(function() { btn.innerHTML = '<i class="fas fa-copy"></i> ' + tEarn('referral.copy'); }, 2000);
+        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('referral.copied');        
+        setTimeout(function() { btn.innerHTML = '<i class="fas fa-copy"></i> ' + tEarn('referral.copy'); }, 2000);
     });
 }
 
@@ -811,8 +831,7 @@ async function loadAds() {
             }
             return '<div class="earn-card" id="card-' + ad.name.replace(/\s/g,'') + '">' +
                 '<div class="card-header"><div class="card-icon">' + cfg.icon + '</div><div class="card-badge">+' + (ad.points || 10) + '</div></div>' +
-                '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + desc + '</p>' +
-                '<button class="btn btn-primary" onclick="startAd(' + actualIndex + ')"><i class="fas fa-play"></i> ' + tEarn('ads.start') + '</button></div>';
+                '<h3 class="card-title">' + ad.name + '</h3><p class="card-desc">' + desc + '</p>' +                '<button class="btn btn-primary" onclick="startAd(' + actualIndex + ')"><i class="fas fa-play"></i> ' + tEarn('ads.start') + '</button></div>';
         }).join('');
     } catch (e) {
         console.error('Load ads error:', e);
@@ -831,7 +850,8 @@ function loadAdScript(container, htmlCode) {
     iframe.style.border = 'none';
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
     container.appendChild(iframe);
-    iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };}
+    iframe.onload = function() { setTimeout(function() { URL.revokeObjectURL(url); }, 1000); };
+}
 
 function startAd(adIndex) {
     const ad = adsData[adIndex];
@@ -860,8 +880,7 @@ function startAd(adIndex) {
     btn.classList.add('btn-disabled');
     let seconds = 20;
     btn.innerHTML = '<i class="fas fa-clock"></i> ' + tEarn('ads.wait') + ' ' + seconds + 's...';
-    const timer = setInterval(function() {
-        seconds--;
+    const timer = setInterval(function() {        seconds--;
         if (seconds > 0) {
             btn.innerHTML = '<i class="fas fa-clock"></i> ' + tEarn('ads.wait') + ' ' + seconds + 's...';
         } else {
@@ -880,7 +899,8 @@ function startAd(adIndex) {
                         btn.disabled = false;
                         btn.classList.remove('btn-disabled');
                         btn.classList.add('btn-success');
-                        btn.style.background = '';                        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('ads.finished_btn');
+                        btn.style.background = '';                        
+                        btn.innerHTML = '<i class="fas fa-check"></i> ' + tEarn('ads.finished_btn');
                         btn.onclick = function() { confirmAd(adIndex); };
                     }
                 }, 10000);
@@ -909,8 +929,7 @@ async function confirmAd(adIndex) {
         document.getElementById('pointsDisplay').innerText = newPoints.toLocaleString();
         adClicked = false;
         await loadAds();
-    } catch (e) { console.error('Confirm ad error:', e); alert(tEarn('referral.error') + e.message); await loadAds(); }
-}
+    } catch (e) { console.error('Confirm ad error:', e); alert(tEarn('referral.error') + e.message); await loadAds(); }}
 
 async function updatePoints() {
     const { data } = await db.from('user_data').select('points').eq('user_id', user.id).single();
