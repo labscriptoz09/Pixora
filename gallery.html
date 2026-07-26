@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pixora - Galerie Publique</title>
+    
+    <!-- SEO & TRAFFIC OPTIMIZATION -->
+    <title>Galerie Publique IA Pixora | Créations Communauté</title>
+    <meta name="description" content="Découvrez les dernières créations générées par la communauté IA Pixora. Votez, commentez et inspirez-vous gratuitement.">
+    <link rel="canonical" href="https://iapixora.com/gallery.html">
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iapixora.com/gallery.html">
+    <meta property="og:title" content="Galerie Publique IA Pixora | Créations Communauté">
+    <meta property="og:description" content="Découvrez les dernières créations générées par la communauté IA Pixora. Votez, commentez et inspirez-vous gratuitement.">
+    <meta property="og:image" content="https://iapixora.com/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://iapixora.com/gallery.html">
+    <meta property="twitter:title" content="Galerie Publique IA Pixora | Créations Communauté">
+    <meta property="twitter:description" content="Découvrez les dernières créations générées par la communauté IA Pixora.">
+    <meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
+    
+    <!-- Robots -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="IA Pixora">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,8 +47,7 @@
         .toast-notification.success{border-color:var(--success)}.toast-notification.success i{color:var(--success)}
         .toast-notification.error{border-color:var(--danger);background:rgba(239,68,68,0.15)}.toast-notification.error i{color:var(--danger)}
         .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
-        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
-        .header-logo svg{width:28px;height:28px}
+        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}        .header-logo svg{width:28px;height:28px}
         .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
         .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}
@@ -47,7 +69,8 @@
         .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;flex-shrink:0}
         .menu-info{flex:1;min-width:0}
         .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}        .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
+        .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}        
+        .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
         .menu-points-bar i{color:var(--gold);font-size:0.75rem}
         .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
         .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
@@ -73,8 +96,7 @@
         .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
         .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:6px;min-width:16px;text-align:center;font-family:var(--mono)}
         .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
-        @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}
-        .page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.03em}
+        @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}        .page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.03em}
         .page-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem}
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
         @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem}}
@@ -96,7 +118,8 @@
         .comment-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:450px;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
         @keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
         .comment-box h3{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}
-        .comment-box h3 i{color:var(--prim)}        .comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}
+        .comment-box h3 i{color:var(--prim)}        
+        .comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}
         .comment-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,0.12)}
         .comment-input::placeholder{color:rgba(255,255,255,0.35)}
         .comment-actions{display:flex;gap:0.6rem;justify-content:flex-end}
@@ -123,7 +146,6 @@
 <body>
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="toast-notification" id="toast"><i class="fas fa-check-circle"></i><span id="toast-text"></span></div>
-
 <div class="comment-modal" id="comment-modal">
     <div class="comment-box">
         <h3><i class="fas fa-comment-dots"></i> <span data-i18n="comment.title">Laisser un commentaire</span></h3>
@@ -145,9 +167,10 @@
     </div>
 </div>
 
-<header class="site-header">    <a href="index.html" class="header-logo">
+<header class="site-header">    
+    <a href="index.html" class="header-logo">
         <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-        <span class="logo-text">Pixora</span>
+        <span class="logo-text">IA Pixora</span>
     </a>
     <div class="header-right">
         <select class="lang-select" id="lang-select" onchange="changeGalleryLang(this.value)">
@@ -171,14 +194,13 @@
 
 <nav class="nav-mobile">
     <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
-    <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>
-    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
+    <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
     <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
 </nav>
 
 <main class="main-content">
     <h1 class="page-title" data-i18n="gallery.title">Galerie Publique</h1>
-    <p class="page-sub" data-i18n="gallery.subtitle">Les dernières créations de la communauté Pixora</p>
+    <p class="page-sub" data-i18n="gallery.subtitle">Les dernières créations de la communauté IA Pixora</p>
     <div class="results-grid" id="gallery-grid">
         <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p data-i18n="common.loading">Chargement...</p></div>
     </div>
@@ -190,7 +212,7 @@
             <a href="profile.html" data-i18n="footer.profile">Profil</a>
             <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
         </div>
-        <div data-i18n="footer.copyright">© 2026 Pixora. Tous droits réservés.</div>
+        <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
     </footer>
 </main>
 
@@ -204,25 +226,24 @@ var GALLERY_I18N = {
         header:{login:'Connexion',points:'points'},
         menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
         nav:{studio:'Studio',gallery:'Galerie'},
-        gallery:{title:'Galerie Publique',subtitle:'Les dernières créations de la communauté Pixora',empty:'Aucune création récente.',empty_cta:'Soyez le premier à générer !',error:'Erreur chargement galerie'},
+        gallery:{title:'Galerie Publique',subtitle:'Les dernières créations de la communauté IA Pixora',empty:'Aucune création récente.',empty_cta:'Soyez le premier à générer !',error:'Erreur chargement galerie'},
         comment:{title:'Laisser un commentaire',placeholder:'Votre commentaire (min. 10 caractères)...',cancel:'Annuler',send:'Envoyer',too_short:'Commentaire trop court (min. 10 caractères)',success:'+2 points pour votre commentaire !',already_today:'Vous avez déjà commenté aujourd\'hui',login_required:'Connectez-vous pour commenter'},
         vote:{success:'+2 points pour votre vote !',already_today:'Vous avez déjà voté aujourd\'hui',already_voted:'Vous avez déjà voté cette création',login_required:'Connectez-vous pour voter'},
         lightbox:{download:'Télécharger',close:'Fermer'},
         common:{loading:'Chargement...'},
-        footer:{studio:'Studio',points:'Points',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 Pixora. Tous droits réservés.'},
+        footer:{studio:'Studio',points:'Points',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
         toast:{vote_error:'ERREUR VOTE: ',comment_error:'ERREUR COMMENT: ',gallery_error:'ERREUR GALERIE: '}
     },
     en: {
         header:{login:'Login',points:'points'},
         menu:{profile:'My Profile',earn:'Earn Points',shop:'My Purchases',logout:'Logout'},
         nav:{studio:'Studio',gallery:'Gallery'},
-        gallery:{title:'Public Gallery',subtitle:'Latest creations from the Pixora community',empty:'No recent creations.',empty_cta:'Be the first to generate!',error:'Gallery loading error'},
+        gallery:{title:'Public Gallery',subtitle:'Latest creations from the IA Pixora community',empty:'No recent creations.',empty_cta:'Be the first to generate!',error:'Gallery loading error'},
         comment:{title:'Leave a comment',placeholder:'Your comment (min. 10 characters)...',cancel:'Cancel',send:'Send',too_short:'Comment too short (min. 10 characters)',success:'+2 points for your comment!',already_today:'You already commented today',login_required:'Log in to comment'},
         vote:{success:'+2 points for your vote!',already_today:'You already voted today',already_voted:'You already voted this creation',login_required:'Log in to vote'},
         lightbox:{download:'Download',close:'Close'},
         common:{loading:'Loading...'},
-        footer:{studio:'Studio',points:'Points',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 Pixora. All rights reserved.'},
-        toast:{vote_error:'VOTE ERROR: ',comment_error:'COMMENT ERROR: ',gallery_error:'GALLERY ERROR: '}
+        footer:{studio:'Studio',points:'Points',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},        toast:{vote_error:'VOTE ERROR: ',comment_error:'COMMENT ERROR: ',gallery_error:'GALLERY ERROR: '}
     }
 };
 
@@ -243,7 +264,8 @@ function applyGalleryTranslations() {
         var key = el.getAttribute('data-i18n');
         var val = tGallery(key);
         if (val !== key) el.textContent = val;
-    });    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+    });    
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
         var key = el.getAttribute('data-i18n-placeholder');
         var val = tGallery(key);
         if (val !== key) el.placeholder = val;
@@ -270,8 +292,7 @@ function detectGalleryLang() {
 // =============================================
 // SUPABASE
 // =============================================
-var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var BUCKET = 'pixora-gallery';
 var lbUrl = '';
@@ -292,7 +313,8 @@ async function loadTaskLimits() {
                 if (tasks[i].type === 'vote' && tasks[i].active) {
                     VOTE_LIMIT = tasks[i].limit || 1;
                 }
-                if (tasks[i].type === 'comment' && tasks[i].active) {                    COMMENT_LIMIT = tasks[i].limit || 1;
+                if (tasks[i].type === 'comment' && tasks[i].active) {                    
+                    COMMENT_LIMIT = tasks[i].limit || 1;
                 }
             }
         }
@@ -319,8 +341,7 @@ function showToast(message, type) {
 function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
 document.addEventListener('click', function(e) {
-    var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar'); var mob = document.getElementById('mob-profile');
-    if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu();
+    var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar'); var mob = document.getElementById('mob-profile');    if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu();
 });
 
 async function doLogout() { await db.auth.signOut(); closeUserMenu(); updateUI(); setTimeout(function() { location.reload(); }, 800); }
@@ -341,7 +362,8 @@ async function updateUI() {
         document.getElementById('header-points').textContent = d.points || 0;
         document.getElementById('nav-points-badge').textContent = d.points || 0;
         document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';
-        document.getElementById('menu-points').textContent = d.points || 0;        var name = logged.user_metadata && logged.user_metadata.name ? logged.user_metadata.name : 'Utilisateur';
+        document.getElementById('menu-points').textContent = d.points || 0;        
+        var name = logged.user_metadata && logged.user_metadata.name ? logged.user_metadata.name : 'Utilisateur';
         var initial = name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent = initial;
         document.getElementById('menu-avatar').textContent = initial;
@@ -368,13 +390,12 @@ document.getElementById('lightbox').addEventListener('click', function(e) { if (
 
 async function dlLB() {
     if (!lbUrl) return;
-    try { var r = await fetch(lbUrl); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(lbUrl, '_blank'); }
-}
+    try { var r = await fetch(lbUrl); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'ia-pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(lbUrl, '_blank'); }}
 
 async function dlDirect(btn) {
     var card = btn.closest('.result-card'); var img = card.querySelector('img');
     if (!img || !img.src) return;
-    try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }
+    try { var r = await fetch(img.src); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'ia-pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(img.src, '_blank'); }
 }
 
 // =============================================
@@ -390,7 +411,8 @@ async function doVote(fileName, btnElement) {
         if (todayVotes.error) throw new Error(todayVotes.error.message);
         if (todayVotes.count >= VOTE_LIMIT) {
             showToast(tGallery('vote.already_today') + ' (' + VOTE_LIMIT + '/jour)', 'error');
-            return;        }
+            return;        
+        }
         var existing = await db.from('votes').select('id').eq('user_id', user.id).eq('creation_id', fileName).limit(1);
         if (existing.error) throw new Error(existing.error.message);
         if (existing.data && existing.data.length > 0) {
@@ -417,8 +439,7 @@ async function doVote(fileName, btnElement) {
         }
         showToast(tGallery('vote.success'), 'success');
         setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);
-    } catch(e) {
-        console.error('Vote error:', e);
+    } catch(e) {        console.error('Vote error:', e);
         showToast(tGallery('toast.vote_error') + e.message, 'error');
     }
 }
@@ -439,7 +460,8 @@ function closeCommentModal() {
 }
 document.getElementById('comment-modal').addEventListener('click', function(e) { if (e.target === this) closeCommentModal(); });
 document.getElementById('comment-input').addEventListener('input', function() {
-    var len = this.value.trim().length;    document.getElementById('comment-char').textContent = len + '/10 min';
+    var len = this.value.trim().length;    
+    document.getElementById('comment-char').textContent = len + '/10 min';
     document.getElementById('comment-char').style.color = len >= 10 ? 'var(--success)' : 'var(--dim)';
 });
 
@@ -466,8 +488,7 @@ async function submitComment() {
         var newPts = (ud.points || 0) + 2;
         var newEarned = (ud.total_earned || 0) + 2;
         await Promise.all([
-            db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),
-            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Commenter une création', amount: 2 }),
+            db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Commenter une création', amount: 2 }),
             db.from('task_completions').insert({ user_id: user.id, task_name: 'Commenter une création', task_type: 'comment', points: 2 })
         ]);
         document.getElementById('header-points').textContent = newPts;
@@ -488,7 +509,8 @@ async function submitComment() {
 // =============================================
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
-    try {        var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
+    try {        
+        var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
         if (result.error) throw new Error(result.error.message);
         if (!result.data || result.data.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>' + tGallery('gallery.empty') + '<br>' + tGallery('gallery.empty_cta') + '</p></div>';
@@ -515,8 +537,7 @@ async function loadGallery() {
         var promises = validFiles.map(function(item) {
             var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
             var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
-            var pUserVoted = userId ? db.from('votes').select('id').eq('user_id', userId).eq('creation_id', item.name).limit(1) : Promise.resolve({ data: [] });
-            return Promise.all([pVotes, pComments, pUserVoted]).then(function(results) {
+            var pUserVoted = userId ? db.from('votes').select('id').eq('user_id', userId).eq('creation_id', item.name).limit(1) : Promise.resolve({ data: [] });            return Promise.all([pVotes, pComments, pUserVoted]).then(function(results) {
                 return { name: item.name, url: item.url, voteCount: results[0].count || 0, commentCount: results[1].count || 0, userVoted: results[2].data && results[2].data.length > 0 };
             }).catch(function(err) {
                 console.error('Stats error for ' + item.name + ':', err);
@@ -528,7 +549,7 @@ async function loadGallery() {
         stats.forEach(function(s) {
             var card = document.createElement('div');
             card.className = 'result-card';
-            card.innerHTML = '<img src="' + s.url + '" alt="Création Pixora" loading="lazy">' +
+            card.innerHTML = '<img src="' + s.url + '" alt="Création IA Pixora" loading="lazy">' +
                 '<div class="result-overlay">' +
                 '<div class="card-actions">' +
                 '<button class="action-btn ' + (s.userVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + s.name + '\',this)" title="Voter">' +
@@ -537,7 +558,8 @@ async function loadGallery() {
                 '<i class="fas fa-comment"></i><span class="action-count">' + s.commentCount + '</span></button>' +
                 '</div>' +
                 '<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>' +
-                '</div>';            card.onclick = function() { openLB(s.url); };
+                '</div>';            
+            card.onclick = function() { openLB(s.url); };
             grid.appendChild(card);
         });
     } catch (err) {
