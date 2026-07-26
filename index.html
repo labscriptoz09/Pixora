@@ -3,8 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pixora — Studio IA</title>
-    <meta name="description" content="Générez des images IA de qualité professionnelle. Gratuit. Sans limite.">
+    
+    <!-- SEO & TRAFFIC OPTIMIZATION -->
+    <title>IA Pixora — Studio IA Gratuit | Générateur Images & Vidéos</title>
+    <meta name="description" content="IA Pixora : Créez des images et vidéos IA professionnelles gratuitement. Sans inscription requise pour tester. Alternative Midjourney gratuite.">
+    <meta name="keywords" content="ia pixora, générateur image ia gratuit, ai video generator, alternative midjourney gratuite, créer image ia sans inscription, studio ia">
+    <link rel="canonical" href="https://iapixora.com/">
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iapixora.com/">
+    <meta property="og:title" content="IA Pixora — Studio IA Gratuit">
+    <meta property="og:description" content="Générez des images IA de qualité professionnelle. Gratuit. Sans limite. Essayez maintenant !">
+    <meta property="og:image" content="https://iapixora.com/og-image.jpg"> <!-- Pense à ajouter une image og-image.jpg à la racine -->
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://iapixora.com/">
+    <meta property="twitter:title" content="IA Pixora — Studio IA Gratuit">
+    <meta property="twitter:description" content="Générez des images IA de qualité professionnelle. Gratuit. Sans limite.">
+    <meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
+    
+    <!-- Robots -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="IA Pixora">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,8 +47,7 @@
         .header-right{display:flex;align-items:center;gap:0.5rem;position:relative;flex-shrink:0}
         .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;min-width:auto;max-width:70px;-webkit-appearance:none;appearance:none}
         .lang-select:focus{border-color:var(--prim)}
-        .lang-select option{background:var(--bg);color:var(--text)}
-        .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
+        .lang-select option{background:var(--bg);color:var(--text)}        .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
         .user-stats.show{display:flex}
         .stat-icon{color:var(--gold);font-size:0.75rem}
         .stat-points{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold)}
@@ -47,7 +69,8 @@
             .site-header{padding:0 0.6rem}
             .header-right{gap:0.35rem}
             .btn-auth{padding:0.3rem 0.6rem;font-size:0.68rem}
-            .logo-text{font-size:1rem}            .lang-select{padding:0.25rem 0.3rem;font-size:0.65rem;max-width:60px}
+            .logo-text{font-size:1rem}            
+            .lang-select{padding:0.25rem 0.3rem;font-size:0.65rem;max-width:60px}
         }
         .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
         .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
@@ -73,8 +96,7 @@
         .nav-item i{font-size:1.2rem;transition:all 0.3s}
         .nav-item span{font-size:0.58rem;font-weight:600}
         .nav-item[data-nav="studio"].active{color:var(--prim)}
-        .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,0.6))}
-        .nav-item[data-nav="gallery"].active{color:#3B82F6}
+        .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,0.6))}        .nav-item[data-nav="gallery"].active{color:#3B82F6}
         .nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 8px rgba(59,130,246,0.6))}
         .nav-item[data-nav="points"].active{color:var(--gold)}
         .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
@@ -96,7 +118,8 @@
         .prompt-field:focus ~ .prompt-icon{opacity:1}
         .type-selector{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.8rem}
         .type-btn{padding:0.75rem;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);border-radius:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.25rem;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);cursor:pointer}
-        .type-btn i{font-size:1.15rem;transition:all 0.3s}        .type-btn .type-name{font-weight:700;font-size:0.88rem}
+        .type-btn i{font-size:1.15rem;transition:all 0.3s}        
+        .type-btn .type-name{font-weight:700;font-size:0.88rem}
         .type-btn .type-cost{font-family:var(--mono);font-size:0.68rem;background:rgba(0,0,0,0.25);padding:2px 8px;border-radius:6px;font-weight:600}
         .type-btn:hover{background:rgba(139,92,246,0.06);border-color:rgba(139,92,246,0.3);transform:translateY(-1px)}
         .type-btn.active{border-color:var(--prim);background:rgba(139,92,246,0.1);color:var(--text);box-shadow:0 0 20px rgba(139,92,246,0.15)}
@@ -122,8 +145,7 @@
         .section-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center}
         .section-label span{font-size:0.65rem;color:var(--muted);text-transform:none;letter-spacing:0}
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
-        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
         .result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
         .result-card img,.result-card video{width:100%;height:100%;object-fit:cover;display:block}
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.6rem;gap:0.4rem;opacity:0;transition:opacity 0.3s}
@@ -145,7 +167,8 @@
         .lb-btn.sec{background:rgba(255,255,255,0.1)}
         .notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
         .notification.show{transform:translateX(-50%) translateY(0)}
-        .notification.success{border-color:var(--success)}.notification.success i{color:var(--success)}        .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}
+        .notification.success{border-color:var(--success)}.notification.success i{color:var(--success)}        
+        .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}
         .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
         .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}
         .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
@@ -171,8 +194,7 @@
         .form-input{width:100%;padding:0.85rem 0.9rem;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:var(--text);font-family:var(--font);font-size:0.9rem;outline:none;transition:all 0.3s}
         .form-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.12);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
         .form-input::placeholder{color:rgba(255,255,255,0.4)}
-        .btn-submit{width:100%;padding:1rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
-        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
+        .btn-submit{width:100%;padding:1rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         .btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}
         .auth-divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:var(--dim);font-size:0.72rem}
         .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -194,7 +216,8 @@
         .pxr-soft-title{font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:0.5rem}
         .pxr-soft-desc{font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem}
         .pxr-soft-benefits{text-align:left;margin-bottom:1.5rem;padding:0 0.5rem}
-        .pxr-soft-benefit{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;font-size:0.82rem;color:var(--text)}        .pxr-soft-benefit i{color:var(--success);font-size:0.8rem;width:16px;text-align:center}
+        .pxr-soft-benefit{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;font-size:0.82rem;color:var(--text)}        
+        .pxr-soft-benefit i{color:var(--success);font-size:0.8rem;width:16px;text-align:center}
         .pxr-soft-cta{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;text-decoration:none;border-radius:12px;font-weight:700;font-size:0.95rem;margin-bottom:0.8rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
         .pxr-soft-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
     </style>
@@ -215,13 +238,12 @@
         <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
         <div class="auth-logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-            <span>Pixora</span>
+            <span>IA Pixora</span>
         </div>
         <p class="auth-sub" data-i18n="auth.connect_to_generate">Connectez-vous pour générer et gagner des points</p>
         <div class="auth-tabs">
             <button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_title">Connexion</button>
-            <button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button>
-        </div>
+            <button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button>        </div>
         <div class="form-section active" id="sec-login">
             <form onsubmit="doLogin(event)">
                 <div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
@@ -243,9 +265,10 @@
         <div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div>
     </div>
 </div>
-<header class="site-header">    <a href="index.html" class="header-logo">
+<header class="site-header">    
+    <a href="index.html" class="header-logo">
         <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-        <span class="logo-text">Pixora</span>
+        <span class="logo-text">IA Pixora</span>
     </a>
     <div class="header-right">
         <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
@@ -269,8 +292,7 @@
             <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a>
             <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a>
             <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a>
-            <div class="menu-divider"></div>
-            <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
+            <div class="menu-divider"></div>            <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
         </div>
     </div>
 </header>
@@ -281,7 +303,7 @@
     <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
 </nav>
 <main class="main-content">
-    <div class="hero"><h1 data-i18n="hero.title">Générez l'impossible</h1><p data-i18n="hero.subtitle">Images IA professionnelles. Gratuit. Sans limite.</p></div>
+    <div class="hero"><h1 data-i18n="hero.title">Générez l'impossible avec IA Pixora</h1><p data-i18n="hero.subtitle">Images IA professionnelles. Gratuit. Sans limite.</p></div>
     <div class="quick-stats" id="quick-stats">
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl" data-i18n="stats.points">Points</div></div>
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl" data-i18n="stats.streak">Streak</div></div>
@@ -292,7 +314,8 @@
         <div class="prompt-wrapper">
             <textarea class="prompt-field" id="prompt" data-i18n-placeholder="generator.placeholder" placeholder="Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k"></textarea>
             <i class="fas fa-sparkles prompt-icon"></i>
-        </div>        <div class="type-selector">
+        </div>        
+        <div class="type-selector">
             <button class="type-btn active" onclick="selType('image')"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
             <button class="type-btn disabled" onclick="notifyVideoSoon()"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
         </div>
@@ -312,14 +335,13 @@
             <a href="profile.html" data-i18n="footer.profile">Profil</a>
             <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
         </div>
-        <div data-i18n="footer.copyright">© 2026 Pixora. Tous droits réservés.</div>
+        <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
     </footer>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
 <script>
-// =============================================
-// FREEMIUM DOUX
+// =============================================// FREEMIUM DOUX
 // =============================================
 var PX_ANON_KEY = 'pxr_anon_gen_count';
 var PX_FREE_LIMIT = 3;
@@ -341,7 +363,8 @@ function showSoftSignupPrompt() {
     overlay.id = 'pxr-soft-signup';
     overlay.className = 'pxr-soft-signup';
     overlay.innerHTML = '<div class="pxr-soft-modal">' +
-        '<div class="pxr-soft-icon">🎁</div>' +        '<div class="pxr-soft-title">Vous avez adoré Pixora ?</div>' +
+        '<div class="pxr-soft-icon">🎁</div>' +        
+        '<div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div>' +
         '<div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div>' +
         '<div class="pxr-soft-benefits">' +
             '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts immédiatement</div>' +
@@ -368,7 +391,6 @@ function checkFreemiumBlock() {
         return true;
     });
 }
-
 function incrementAndCheckFreemium() {
     return db.auth.getUser().then(function(result) {
         if (!result.data.user) {
@@ -417,8 +439,7 @@ async function loadMiniBadge() {
         }
 
         var nextBadge = null;
-        for (var j = 0; j < BADGES_CONFIG.length; j++) {
-            if (claimedBadges.indexOf(BADGES_CONFIG[j].id) === -1) {
+        for (var j = 0; j < BADGES_CONFIG.length; j++) {            if (claimedBadges.indexOf(BADGES_CONFIG[j].id) === -1) {
                 nextBadge = BADGES_CONFIG[j];
                 break;
             }
@@ -439,7 +460,8 @@ async function loadMiniBadge() {
         } else if (nextBadge) {
             iconEl.textContent = nextBadge.icon;
             nameEl.textContent = nextBadge.threshold + ' img';
-            var remaining2 = nextBadge.threshold - genCount;            nextEl.textContent = '→ ' + remaining2;
+            var remaining2 = nextBadge.threshold - genCount;            
+            nextEl.textContent = '→ ' + remaining2;
         } else {
             iconEl.textContent = '❓';
             nameEl.textContent = 'Badge';
@@ -457,17 +479,16 @@ async function loadMiniBadge() {
 var I18N = {};
 var currentLang = 'fr';
 var FR_TRANSLATIONS = {
-    meta:{title:'Pixora — Studio IA',description:'Générez des images IA de qualité professionnelle. Gratuit. Sans limite.'},
+    meta:{title:'IA Pixora — Studio IA Gratuit | Générateur Images & Vidéos',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement. Sans inscription requise pour tester.'},
     header:{login:'Connexion',points:'points'},
     nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},
-    hero:{title:'Générez l\'impossible',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},
+    hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},
     generator:{placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},
     results:{title:'Vos Créations',auto_delete:'Auto-effacement après 1h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},
     stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},
     auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'🎉 Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},
     menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},
-    notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.'},
-    footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 Pixora. Tous droits réservés.'},
+    notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.'},    footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
     language:{label:'Language',fr:'Français',en:'English'}
 };
 
@@ -488,7 +509,8 @@ async function loadLang(lang) {
         try {
             var res = await fetch('/lang/' + lang + '.json');
             if (res.ok) {
-                var data = await res.json();                for (var section in data) {
+                var data = await res.json();                
+                for (var section in data) {
                     if (typeof data[section] === 'object' && I18N[section]) {
                         for (var key in data[section]) { I18N[section][key] = data[section][key]; }
                     } else { I18N[section] = data[section]; }
@@ -515,8 +537,7 @@ function applyTranslations() {
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
         var key = el.getAttribute('data-i18n-placeholder');
         var val = t(key);
-        if (val !== key) el.placeholder = val;
-    });
+        if (val !== key) el.placeholder = val;    });
 }
 
 function changeLang(lang) { loadLang(lang); }
@@ -566,7 +587,6 @@ async function generateWithFallback(prompt,type){
     }
     return{url:getPollinationsUrl(prompt,type),provider:'Pollinations'}
 }
-
 async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value}catch(err){console.error('Config error:',err)}updateCostUI()}
 function updateCostUI(){
     var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];var isDiscounted=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date();var imgCost=c.costs.image;var imgEl=document.getElementById('cost-image');var banner=document.getElementById('discount-banner');var timerEl=document.getElementById('discount-timer');
@@ -589,7 +609,7 @@ function closeAuth(){document.getElementById('auth-modal').classList.remove('act
 document.getElementById('auth-modal').addEventListener('click',function(e){if(e.target===this)closeAuth()});function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(tab,i){tab.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
 async function doLogin(e){e.preventDefault();var btn=document.getElementById('btn-login');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
 async function doRegister(e){e.preventDefault();var btn=document.getElementById('btn-reg');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var emailVal=document.getElementById('r-email').value.trim();var pwVal=document.getElementById('r-pw').value;var nameVal=document.getElementById('r-name').value.trim();var r=await db.auth.signUp({email:emailVal,password:pwVal,options:{data:{name:nameVal}}});if(r.error)throw r.error;var signInR=await db.auth.signInWithPassword({email:emailVal,password:pwVal});if(signInR.error)throw signInR.error;var newUserId=signInR.data.user?signInR.data.user.id:null;if(newUserId){await ensureUserData(newUserId);await grantSignupBonus(newUserId);await processReferral(newUserId)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');btn.disabled=false;btn.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
-async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://pixora-gold-eight.vercel.app'}})}catch(err){notify(t('auth.google_error'),'error')}}
+async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(err){notify(t('auth.google_error'),'error')}}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single();var d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
 async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData();var up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}
 function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
@@ -615,8 +635,7 @@ async function updateUI(){
         document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';
         document.getElementById('stat-points').textContent=d.points||0;
         document.getElementById('stat-streak').textContent=d.streak||1;
-        document.getElementById('stat-generated').textContent=d.total_generated||0;
-        document.getElementById('stat-earned').textContent=d.total_earned||0;
+        document.getElementById('stat-generated').textContent=d.total_generated||0;        document.getElementById('stat-earned').textContent=d.total_earned||0;
         var name=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur';
         var initial=name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent=initial;
@@ -633,8 +652,8 @@ async function updateUI(){
 // =============================================
 function openLB(url,type){lbUrl=url;lbType=type||'image';var c=document.getElementById('lb-container');c.innerHTML='';if(lbType==='video'){var v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.loop=true;v.style.cssText='max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';c.appendChild(v)}else{var i=document.createElement('img');i.src=url;i.alt='Zoom';c.appendChild(i)}document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
 function closeLB(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';document.getElementById('lb-container').innerHTML='';lbUrl='';lbType='image'}document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
-async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl);var b=await r.blob();var ext=lbType==='video'?'.mp4':'.jpg';var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(lbUrl,'_blank')}}
-async function dlDirect(btn){var card=btn.closest('.result-card');var media=card.querySelector('img')||card.querySelector('video');if(!media||!media.src)return;try{var r=await fetch(media.src);var b=await r.blob();var isV=media.tagName==='VIDEO';var ext=isV?'.mp4':'.jpg';var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(media.src,'_blank')}}
+async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl);var b=await r.blob();var ext=lbType==='video'?'.mp4':'.jpg';var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(lbUrl,'_blank')}}
+async function dlDirect(btn){var card=btn.closest('.result-card');var media=card.querySelector('img')||card.querySelector('video');if(!media||!media.src)return;try{var r=await fetch(media.src);var b=await r.blob();var isV=media.tagName==='VIDEO';var ext=isV?'.mp4':'.jpg';var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(media.src,'_blank')}}
 function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(function(c,i){c.classList.toggle('active',(tp==='image'&&i===0)||(tp==='video'&&i===1))})}
 // =============================================
 // STUDIO + UPLOAD
@@ -665,8 +684,7 @@ async function generate(){
         cost=isDiscounted?Math.ceil(baseCost/2):baseCost;
         if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}
     }
-    notify(t('notifications.generating'),'success');
-    var grid=document.getElementById('results-grid');
+    notify(t('notifications.generating'),'success');    var grid=document.getElementById('results-grid');
     var card=document.createElement('div');
     card.className='result-card';
     var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);
@@ -684,7 +702,8 @@ async function generate(){
         var providerName=result.provider;
         if(logged&&providerName!=='fal.ai'&&providerName!=='Pollinations'){notify(t('notifications.via_provider')+' '+providerName,'success')}
         media.src=url;
-        function onLoad(){            if(loaded)return;
+        function onLoad(){            
+            if(loaded)return;
             loaded=true;
             clearInterval(iv);
             var elapsed=((Date.now()-st)/1000).toFixed(1);
@@ -714,8 +733,7 @@ async function generate(){
 }
 
 // =============================================
-// AUTH STATE CHANGE + INIT
-// =============================================
+// AUTH STATE CHANGE + INIT// =============================================
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){
     if(event==='SIGNED_IN'){
