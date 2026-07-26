@@ -577,7 +577,7 @@ async function loginWithGoogle() {
     try {
         await db.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: 'https://iapixora.com/profile.html' }
+            options: { redirectTo: 'https://iapixora.com/profile.html' } // ✅ CORRECTED TO profile.html
         });
     } catch(err) {
         notify(tProfile('notify.google_error'), 'error');
