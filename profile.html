@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pixora - Mon Profil</title>
+    
+    <!-- SEO & TRAFFIC OPTIMIZATION -->
+    <title>Mon Profil | IA Pixora - Studio IA Gratuit</title>
+    <meta name="description" content="Gérez votre profil IA Pixora : suivez vos points, badges créateur, historique de transactions et paramètres de compte.">
+    <link rel="canonical" href="https://iapixora.com/profile.html">
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iapixora.com/profile.html">
+    <meta property="og:title" content="Mon Profil | IA Pixora">
+    <meta property="og:description" content="Gérez votre profil IA Pixora : points, badges, historique et paramètres.">
+    <meta property="og:image" content="https://iapixora.com/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://iapixora.com/profile.html">
+    <meta property="twitter:title" content="Mon Profil | IA Pixora">
+    <meta property="twitter:description" content="Gérez votre profil IA Pixora : points, badges, historique et paramètres.">
+    <meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
+    
+    <!-- Robots -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="IA Pixora">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,8 +47,7 @@
         .header-logo svg{width:28px;height:28px}
         .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
-        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}
-        .lang-select option{background:var(--bg);color:var(--text)}
+        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}        .lang-select option{background:var(--bg);color:var(--text)}
         .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
         .user-stats.show{display:flex}
         .stat-icon{color:var(--gold);font-size:0.75rem}
@@ -47,7 +69,8 @@
         .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
         .menu-points-bar i{color:var(--gold);font-size:0.75rem}
         .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
-        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
+        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}        
+        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
         .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
         .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
         .menu-item:hover i{color:var(--prim)}
@@ -73,8 +96,7 @@
         .user-card{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:1.5rem;text-align:center;margin-bottom:1.5rem}
         .profile-avatar{width:72px;height:72px;background:linear-gradient(135deg,var(--prim),var(--sec));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:white;margin:0 auto 0.8rem;box-shadow:0 8px 25px rgba(139,92,246,0.3)}
         .profile-name-row{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.2rem}
-        .profile-name{font-size:1.3rem;font-weight:700;letter-spacing:-0.02em}
-        .edit-name-btn{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:0.75rem;background:rgba(255,255,255,0.05);transition:all 0.2s;cursor:pointer}
+        .profile-name{font-size:1.3rem;font-weight:700;letter-spacing:-0.02em}        .edit-name-btn{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:0.75rem;background:rgba(255,255,255,0.05);transition:all 0.2s;cursor:pointer}
         .edit-name-btn:hover{background:var(--prim);color:white}
         .profile-email{color:var(--muted);font-size:0.85rem;margin-bottom:0.8rem}
         .profile-tier{display:inline-flex;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(139,92,246,0.1);border:1px solid var(--prim);border-radius:20px;font-size:0.7rem;font-weight:600;color:var(--prim)}
@@ -96,7 +118,8 @@
         .badges-showcase-title{font-size:0.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;display:flex;align-items:center;gap:0.5rem}
         .badges-showcase-title i{color:var(--gold)}
         .badges-showcase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
-        @media(min-width:640px){.badges-showcase-grid{grid-template-columns:repeat(4,1fr)}}        .badge-showcase-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:1rem;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
+        @media(min-width:640px){.badges-showcase-grid{grid-template-columns:repeat(4,1fr)}}        
+        .badge-showcase-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:1rem;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
         .badge-showcase-card.claimed{border-color:var(--gold);background:rgba(251,191,36,0.06)}
         .badge-showcase-card.available{border-color:var(--success);box-shadow:0 0 15px rgba(16,185,129,0.15)}
         .badge-showcase-card.locked{opacity:0.5}
@@ -122,8 +145,7 @@
         .referral-copy-btn{padding:0.6rem 1rem;background:var(--prim);color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.3rem;transition:all 0.2s;white-space:nowrap}
         .referral-copy-btn:hover{background:var(--sec);transform:translateY(-1px)}
         .tabs-container{margin-bottom:1.2rem}
-        .tabs{display:flex;gap:0.4rem;background:var(--surf);padding:0.35rem;border-radius:14px;border:1px solid var(--border);overflow-x:auto}
-        .tab{flex:1;padding:0.65rem 0.9rem;background:transparent;border:none;border-radius:10px;color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.4rem}
+        .tabs{display:flex;gap:0.4rem;background:var(--surf);padding:0.35rem;border-radius:14px;border:1px solid var(--border);overflow-x:auto}        .tab{flex:1;padding:0.65rem 0.9rem;background:transparent;border:none;border-radius:10px;color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.4rem}
         .tab.active{background:var(--prim);color:white}
         .tab-content{display:none}
         .tab-content.active{display:block;animation:fadeIn 0.3s}
@@ -145,7 +167,8 @@
         .empty-state i{font-size:2.5rem;opacity:0.3;margin-bottom:0.8rem}
         .settings-list{background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;overflow:hidden}
         .settings-item{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1rem;border-bottom:1px solid var(--border)}
-        .settings-item:last-child{border-bottom:none}        .settings-left{display:flex;align-items:center;gap:0.8rem}
+        .settings-item:last-child{border-bottom:none}        
+        .settings-left{display:flex;align-items:center;gap:0.8rem}
         .settings-icon{width:32px;height:32px;background:var(--elev);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--prim);font-size:0.9rem}
         .settings-label{font-size:0.85rem;font-weight:500}
         .settings-right{color:var(--muted);font-size:0.8rem}
@@ -171,8 +194,7 @@
         .auth-logo span{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .auth-sub{color:var(--muted);font-size:0.82rem;margin-bottom:1.2rem}
         .auth-tabs{display:flex;gap:0.3rem;background:rgba(255,255,255,0.03);border-radius:14px;padding:0.3rem;margin-bottom:1.2rem}
-        .auth-tab{flex:1;padding:0.6rem;border-radius:12px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all 0.2s}
-        .auth-tab.active{background:var(--prim);color:white}
+        .auth-tab{flex:1;padding:0.6rem;border-radius:12px;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all 0.2s}        .auth-tab.active{background:var(--prim);color:white}
         .form-section{display:none}.form-section.active{display:block;animation:fadeIn 0.3s}
         .form-group{margin-bottom:0.85rem;text-align:left}
         .form-label{display:block;font-size:0.68rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.08em}
@@ -194,7 +216,8 @@
         .edit-name-modal.active{display:flex}
         .edit-name-box{background:var(--surf);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:380px;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
         .edit-name-box h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
-        .edit-name-box h3 i{color:var(--prim)}        .edit-name-actions{display:flex;gap:0.6rem;margin-top:1rem}
+        .edit-name-box h3 i{color:var(--prim)}        
+        .edit-name-actions{display:flex;gap:0.6rem;margin-top:1rem}
         .edit-name-actions button{flex:1;padding:0.6rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.4rem;border:none}
         .edit-name-actions .btn-cancel{background:rgba(255,255,255,0.08);color:var(--muted)}
         .edit-name-actions .btn-cancel:hover{background:rgba(255,255,255,0.12);color:var(--text)}
@@ -220,10 +243,9 @@
 
 <div class="auth-overlay" id="auth-modal">
     <div class="auth-modal">
-        <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
-        <div class="auth-logo">
+        <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>        <div class="auth-logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-            <span>Pixora</span>
+            <span>IA Pixora</span>
         </div>
         <p class="auth-sub" data-i18n="auth.subtitle">Connectez-vous pour accéder à votre profil</p>
         <div class="auth-tabs">
@@ -243,18 +265,19 @@
                 <div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div>
                 <div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div>
                 <button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button>
-            </form>        </div>
+            </form>        
+        </div>
         <div class="auth-divider" data-i18n="auth.or_continue">ou continuer avec</div>
         <button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> Google</button>
         <button class="social-btn github" onclick="notify(tProfile('notify.github_soon'),'success')"><i class="fab fa-github"></i> GitHub</button>
-        <div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div>
+        <div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="https://iapixora.com/privacy.html" data-i18n="auth.conditions">conditions</a>.</div>
     </div>
 </div>
 
 <header class="site-header">
-    <a href="index.html" class="header-logo">
+    <a href="https://iapixora.com/index.html" class="header-logo">
         <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-        <span class="logo-text">Pixora</span>
+        <span class="logo-text">IA Pixora</span>
     </a>
     <div class="header-right">
         <select class="lang-select" id="lang-select" onchange="changeProfileLang(this.value)">
@@ -267,33 +290,33 @@
         <div class="user-menu" id="user-menu">
             <div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
             <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div>
-            <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a>
-            <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a>
-            <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a>
-            <div class="menu-divider"></div>
+            <a href="https://iapixora.com/profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a>
+            <a href="https://iapixora.com/earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a>
+            <a href="https://iapixora.com/shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a>            <div class="menu-divider"></div>
             <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
         </div>
     </div>
 </header>
 
 <nav class="nav-mobile">
-    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
-    <a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>
-    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
-    <a href="profile.html" class="nav-item active" data-nav="profile"><i class="fas fa-user"></i><span data-i18n="nav.profile">Profil</span></a>
+    <a href="https://iapixora.com/index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
+    <a href="https://iapixora.com/gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>
+    <a href="https://iapixora.com/earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
+    <a href="https://iapixora.com/profile.html" class="nav-item active" data-nav="profile"><i class="fas fa-user"></i><span data-i18n="nav.profile">Profil</span></a>
 </nav>
 
 <main class="profile-content">
     <div class="user-card">
         <div class="profile-avatar" id="profile-avatar"><i class="fas fa-user"></i></div>
         <div class="profile-name-row">
-            <div class="profile-name" id="profile-name">Utilisateur Pixora</div>
+            <div class="profile-name" id="profile-name">Utilisateur IA Pixora</div>
             <button class="edit-name-btn" onclick="openEditName()" title="Modifier le pseudo"><i class="fas fa-pen"></i></button>
         </div>
         <div class="profile-email" id="profile-email" data-i18n="profile.member_since">Membre depuis 2026</div>
         <div class="profile-tier"><i class="fas fa-star"></i> <span data-i18n="profile.tier">Créateur</span></div>
-        <div class="profile-links">            <a href="gallery.html" class="profile-link"><i class="fas fa-images"></i> <span data-i18n="profile.my_creations">Mes créations</span></a>
-            <a href="earn.html" class="profile-link"><i class="fas fa-coins"></i> <span data-i18n="profile.earn_points">Gagner des points</span></a>
+        <div class="profile-links">            
+            <a href="https://iapixora.com/gallery.html" class="profile-link"><i class="fas fa-images"></i> <span data-i18n="profile.my_creations">Mes créations</span></a>
+            <a href="https://iapixora.com/earn.html" class="profile-link"><i class="fas fa-coins"></i> <span data-i18n="profile.earn_points">Gagner des points</span></a>
         </div>
     </div>
 
@@ -319,7 +342,6 @@
             <button class="referral-copy-btn" onclick="copyReferralLink()"><i class="fas fa-copy"></i> <span data-i18n="referral.copy">Copier</span></button>
         </div>
     </div>
-
     <div class="tabs-container">
         <div class="tabs">
             <button class="tab active" onclick="switchProfileTab('history', this)"><i class="fas fa-history"></i> <span data-i18n="tabs.history">Historique</span></button>
@@ -341,23 +363,24 @@
     </div>
 
     <div class="tab-content" id="tab-settings">
-        <div class="settings-list">            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-bell"></i></div><div class="settings-label" data-i18n="settings.notifications">Notifications</div></div><div class="settings-right"><span data-i18n="settings.enabled">Activées</span> <i class="fas fa-chevron-right"></i></div></div>
+        <div class="settings-list">            
+            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-bell"></i></div><div class="settings-label" data-i18n="settings.notifications">Notifications</div></div><div class="settings-right"><span data-i18n="settings.enabled">Activées</span> <i class="fas fa-chevron-right"></i></div></div>
             <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-language"></i></div><div class="settings-label" data-i18n="settings.language">Langue</div></div><div class="settings-right"><span data-i18n="settings.french">Français</span> <i class="fas fa-chevron-right"></i></div></div>
             <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-shield-alt"></i></div><div class="settings-label" data-i18n="settings.privacy">Confidentialité</div></div><div class="settings-right"><i class="fas fa-chevron-right"></i></div></div>
-            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-info-circle"></i></div><div class="settings-label" data-i18n="settings.about">À propos</div></div><div class="settings-right">Pixora v2.0</div></div>
+            <div class="settings-item"><div class="settings-left"><div class="settings-icon"><i class="fas fa-info-circle"></i></div><div class="settings-label" data-i18n="settings.about">À propos</div></div><div class="settings-right">IA Pixora v2.0</div></div>
         </div>
         <button class="cta-button danger" onclick="clearData()"><i class="fas fa-trash"></i> <span data-i18n="settings.reset_data">Réinitialiser mes données</span></button>
     </div>
 
     <footer class="site-footer">
         <div class="footer-links">
-            <a href="index.html" data-i18n="footer.studio">Studio</a>
-            <a href="earn.html" data-i18n="footer.points">Points</a>
-            <a href="gallery.html" data-i18n="footer.gallery">Galerie</a>
-            <a href="shop.html" data-i18n="footer.shop">Boutique</a>
-            <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
+            <a href="https://iapixora.com/index.html" data-i18n="footer.studio">Studio</a>
+            <a href="https://iapixora.com/earn.html" data-i18n="footer.points">Points</a>
+            <a href="https://iapixora.com/gallery.html" data-i18n="footer.gallery">Galerie</a>
+            <a href="https://iapixora.com/shop.html" data-i18n="footer.shop">Boutique</a>
+            <a href="https://iapixora.com/privacy.html" data-i18n="footer.privacy">Confidentialité</a>
         </div>
-        <div data-i18n="footer.copyright">© 2026 Pixora. Tous droits réservés.</div>
+        <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
     </footer>
 </main>
 
@@ -367,8 +390,7 @@
 // =============================================
 // I18N PROFIL
 // =============================================
-var PROFILE_I18N = {
-    fr: {
+var PROFILE_I18N = {    fr: {
         header:{login:'Connexion',points:'points'},
         menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
         nav:{studio:'Studio',gallery:'Galerie',profile:'Profil'},
@@ -381,7 +403,7 @@ var PROFILE_I18N = {
         settings:{notifications:'Notifications',enabled:'Activées',language:'Langue',french:'Français',privacy:'Confidentialité',about:'À propos',reset_data:'Réinitialiser mes données'},
         edit_name:{title:'Modifier le pseudo',cancel:'Annuler',save:'Sauvegarder'},
         common:{loading:'Chargement...'},
-        footer:{studio:'Studio',points:'Points',gallery:'Galerie',shop:'Boutique',privacy:'Confidentialité',copyright:'© 2026 Pixora. Tous droits réservés.'},
+        footer:{studio:'Studio',points:'Points',gallery:'Galerie',shop:'Boutique',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
         notify:{welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'🎉 Compte créé !',wrong_credentials:'❌ Identifiants incorrects',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',name_updated:'✅ Pseudo modifié !',name_too_short:'❌ Pseudo trop court (min. 2)',name_error:'❌ Erreur : ',link_copied:'✅ Lien copié !',data_reset:'✅ Données réinitialisées',github_soon:'⏳ GitHub bientôt disponible...',profile_error:'❌ Erreur chargement profil'}
     },
     en: {
@@ -390,13 +412,14 @@ var PROFILE_I18N = {
         nav:{studio:'Studio',gallery:'Gallery',profile:'Profile'},
         auth:{subtitle:'Log in to access your profile',login:'Login',register:'Sign Up',email:'Email',password:'Password',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',footer:'By continuing, you accept our',conditions:'terms'},
         profile:{member_since:'Member since 2026',tier:'Creator',my_creations:'My Creations',earn_points:'Earn Points'},
-        stats:{points:'Current Points',streak:'Day Streak',creations:'Creations',total_earned:'Total Earned'},        badges:{title:'Creator Badges',locked:'Locked',available:'Available!',claimed:'Earned',img:'img'},
+        stats:{points:'Current Points',streak:'Day Streak',creations:'Creations',total_earned:'Total Earned'},        
+        badges:{title:'Creator Badges',locked:'Locked',available:'Available!',claimed:'Earned',img:'img'},
         referral:{title:'Your Referral Link',desc:'Share this link and earn 10 points per validated referral!',copy:'Copy'},
         tabs:{history:'History',purchases:'Purchases',settings:'Settings'},
         settings:{notifications:'Notifications',enabled:'Enabled',language:'Language',french:'English',privacy:'Privacy',about:'About',reset_data:'Reset My Data'},
         edit_name:{title:'Edit Username',cancel:'Cancel',save:'Save'},
         common:{loading:'Loading...'},
-        footer:{studio:'Studio',points:'Points',gallery:'Gallery',shop:'Shop',privacy:'Privacy',copyright:'© 2026 Pixora. All rights reserved.'},
+        footer:{studio:'Studio',points:'Points',gallery:'Gallery',shop:'Shop',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},
         notify:{welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'🎉 Account created!',wrong_credentials:'❌ Wrong credentials',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:'👋 Logged out',name_updated:'✅ Username updated!',name_too_short:'❌ Username too short (min. 2)',name_error:'❌ Error: ',link_copied:'✅ Link copied!',data_reset:'✅ Data reset',github_soon:'⏳ GitHub coming soon...',profile_error:'❌ Profile loading error'}
     }
 };
@@ -416,8 +439,7 @@ function tProfile(key) {
 function applyProfileTranslations() {
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var key = el.getAttribute('data-i18n');
-        var val = tProfile(key);
-        if (val !== key) el.textContent = val;
+        var val = tProfile(key);        if (val !== key) el.textContent = val;
     });
 }
 
@@ -439,7 +461,8 @@ function detectProfileLang() {
     return 'fr';
 }
 
-// =============================================// SUPABASE
+// =============================================
+// SUPABASE
 // =============================================
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -465,8 +488,7 @@ async function getUser() {
     try {
         var r = await db.auth.getUser();
         return r.data ? r.data.user : null;
-    } catch(e) {
-        console.error('getUser error:', e);
+    } catch(e) {        console.error('getUser error:', e);
         return null;
     }
 }
@@ -488,7 +510,8 @@ function closeAuth() {
     document.body.style.overflow = '';
 }
 
-document.getElementById('auth-modal').addEventListener('click', function(e) {    if (e.target === this) closeAuth();
+document.getElementById('auth-modal').addEventListener('click', function(e) {    
+    if (e.target === this) closeAuth();
 });
 
 function switchTab(m) {
@@ -514,8 +537,7 @@ async function doLogin(e) {
             email: emailEl ? emailEl.value.trim() : '',
             password: pwEl ? pwEl.value : ''
         });
-        if (r.error) throw r.error;
-        closeAuth();
+        if (r.error) throw r.error;        closeAuth();
         updateUI();
         notify(tProfile('notify.welcome'), 'success');
     } catch(err) {
@@ -537,7 +559,8 @@ async function doRegister(e) {
         var nameEl = document.getElementById('r-name');
         var r = await db.auth.signUp({
             email: emailEl ? emailEl.value.trim() : '',
-            password: pwEl ? pwEl.value : '',            options: { data: { name: nameEl ? nameEl.value.trim() : '' } }
+            password: pwEl ? pwEl.value : '',            
+            options: { data: { name: nameEl ? nameEl.value.trim() : '' } }
         });
         if (r.error) throw r.error;
         closeAuth();
@@ -554,7 +577,7 @@ async function loginWithGoogle() {
     try {
         await db.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: window.location.origin + '/profile.html' }
+            options: { redirectTo: 'https://iapixora.com/profile.html' }
         });
     } catch(err) {
         notify(tProfile('notify.google_error'), 'error');
@@ -563,8 +586,7 @@ async function loginWithGoogle() {
 
 // =============================================
 // USER MENU
-// =============================================
-function toggleUserMenu(e) {
+// =============================================function toggleUserMenu(e) {
     if (e) e.preventDefault();
     var menu = document.getElementById('user-menu');
     if (menu) menu.classList.toggle('show');
@@ -586,7 +608,8 @@ document.addEventListener('click', function(e) {
 async function doLogout() {
     await db.auth.signOut();
     closeUserMenu();
-    updateUI();    notify(tProfile('notify.logout'), 'success');
+    updateUI();    
+    notify(tProfile('notify.logout'), 'success');
     setTimeout(function() { location.reload(); }, 800);
 }
 
@@ -612,8 +635,7 @@ async function getUserData() {
 // =============================================
 function switchProfileTab(tabName, btn) {
     document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-    if (btn) btn.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+    if (btn) btn.classList.add('active');    document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
     var tabEl = document.getElementById('tab-' + tabName);
     if (tabEl) tabEl.classList.add('active');
 }
@@ -635,7 +657,8 @@ function closeEditName() {
     if (editModal) editModal.classList.remove('active');
 }
 
-document.getElementById('edit-name-modal').addEventListener('click', function(e) {    if (e.target === this) closeEditName();
+document.getElementById('edit-name-modal').addEventListener('click', function(e) {    
+    if (e.target === this) closeEditName();
 });
 
 async function saveName() {
@@ -661,8 +684,7 @@ async function saveName() {
 
 // =============================================
 // REFERRAL
-// =============================================
-function copyReferralLink() {
+// =============================================function copyReferralLink() {
     var input = document.getElementById('referral-link');
     if (!input) return;
     input.select();
@@ -681,10 +703,11 @@ var BADGES_SHOWCASE_CONFIG = [
     { id: 'bronze', nameFr: 'Apprenti Créateur', nameEn: 'Apprentice Creator', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
     { id: 'silver', nameFr: 'Créateur Confirmé', nameEn: 'Confirmed Creator', icon: '🖌️', threshold: 15, points: 10, colorClass: 'silver' },
     { id: 'gold', nameFr: 'Maître Créateur', nameEn: 'Master Creator', icon: '👑', threshold: 20, points: 20, colorClass: 'gold' },
-    { id: 'diamond', nameFr: 'Légende Pixora', nameEn: 'Pixora Legend', icon: '💎', threshold: 50, points: 50, colorClass: 'diamond' }
+    { id: 'diamond', nameFr: 'Légende IA Pixora', nameEn: 'IA Pixora Legend', icon: '💎', threshold: 50, points: 50, colorClass: 'diamond' }
 ];
 
-async function loadBadgeShowcase() {    var grid = document.getElementById('badges-showcase-grid');
+async function loadBadgeShowcase() {    
+    var grid = document.getElementById('badges-showcase-grid');
     if (!grid) {
         console.error('badges-showcase-grid element not found');
         return;
@@ -710,7 +733,6 @@ async function loadBadgeShowcase() {    var grid = document.getElementById('badg
             var progress = Math.min(genCount, badge.threshold);
             var progressPercent = Math.min((genCount / badge.threshold) * 100, 100);
             var badgeName = currentProfileLang === 'en' ? badge.nameEn : badge.nameFr;
-
             var statusClass = 'locked';
             var statusText = '🔒 ' + progress + '/' + badge.threshold + ' ' + tProfile('badges.img');
             var cardClass = 'badge-showcase-card locked';
@@ -733,7 +755,8 @@ async function loadBadgeShowcase() {    var grid = document.getElementById('badg
                 '<div class="badge-showcase-status ' + statusClass + '">' + statusText + '</div>' +
             '</div>';
         }
-        grid.innerHTML = html;    } catch(e) {
+        grid.innerHTML = html;    
+    } catch(e) {
         console.error('Badge showcase error:', e);
         grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><p>Erreur chargement badges</p></div>';
     }
@@ -747,7 +770,7 @@ function loadTransactions(transactions) {
     if (!list) return;
 
     if (!transactions || !transactions.length) {
-        list.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>Aucune transaction.</p><a href="earn.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1rem;"><i class="fas fa-coins"></i> ' + tProfile('profile.earn_points') + '</a></div>';
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>Aucune transaction.</p><a href="https://iapixora.com/earn.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1rem;"><i class="fas fa-coins"></i> ' + tProfile('profile.earn_points') + '</a></div>';
         return;
     }
 
@@ -759,8 +782,7 @@ function loadTransactions(transactions) {
         var locale = currentProfileLang === 'en' ? 'en-US' : 'fr-FR';
         var dateStr = new Date(tx.created_at).toLocaleDateString(locale, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
         var amountClass = tx.amount > 0 ? 'positive' : 'negative';
-        var amountPrefix = tx.amount > 0 ? '+' : '';
-        html += '<div class="transaction-item">' +
+        var amountPrefix = tx.amount > 0 ? '+' : '';        html += '<div class="transaction-item">' +
             '<div class="transaction-icon ' + tx.type + '"><i class="fas ' + iconClass + '"></i></div>' +
             '<div class="transaction-info"><div class="transaction-title">' + tx.title + '</div><div class="transaction-date">' + dateStr + '</div></div>' +
             '<div class="transaction-amount ' + amountClass + '">' + amountPrefix + tx.amount + ' pts</div>' +
@@ -781,8 +803,9 @@ async function loadPurchases(userId) {
         var purchases = purResult.data || [];
 
         if (!purchases.length) {
-            list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat.</p><a href="shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">' + tProfile('footer.shop') + '</a></div>';
-            return;        }
+            list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat.</p><a href="https://iapixora.com/shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">' + tProfile('footer.shop') + '</a></div>';
+            return;        
+        }
 
         var html = '';
         var locale = currentProfileLang === 'en' ? 'en-US' : 'fr-FR';
@@ -799,7 +822,7 @@ async function loadPurchases(userId) {
         list.innerHTML = html;
     } catch(err) {
         console.error('loadPurchases error:', err);
-        list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat enregistré.</p><a href="shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">' + tProfile('footer.shop') + '</a></div>';
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat enregistré.</p><a href="https://iapixora.com/shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">' + tProfile('footer.shop') + '</a></div>';
     }
 }
 
@@ -808,8 +831,7 @@ async function loadPurchases(userId) {
 // =============================================
 async function clearData() {
     if (!confirm('⚠️ ' + tProfile('settings.reset_data') + ' ?')) return;
-    var user = await getUser();
-    if (!user) return;
+    var user = await getUser();    if (!user) return;
     try { await db.from('transactions').delete().eq('user_id', user.id); } catch(e) {}
     try { await db.from('purchases').delete().eq('user_id', user.id); } catch(e) {}
     try { await db.from('daily_usage').delete().eq('user_id', user.id); } catch(e) {}
@@ -831,7 +853,8 @@ async function updateUI() {
         var userAvatar = document.getElementById('user-avatar');
         var authBtn = document.getElementById('auth-btn');
 
-        if (userStats) userStats.classList.toggle('show', logged);        if (userAvatar) userAvatar.classList.toggle('show', logged);
+        if (userStats) userStats.classList.toggle('show', logged);        
+        if (userAvatar) userAvatar.classList.toggle('show', logged);
         if (authBtn) authBtn.style.display = logged ? 'none' : 'flex';
 
         if (logged && user) {
@@ -857,8 +880,7 @@ async function updateUI() {
             if (headerPoints) headerPoints.textContent = d.points || 0;
             if (navBadge) {
                 navBadge.textContent = d.points || 0;
-                navBadge.style.display = d.points > 0 ? 'block' : 'none';
-            }
+                navBadge.style.display = d.points > 0 ? 'block' : 'none';            }
             if (menuPoints) menuPoints.textContent = d.points || 0;
 
             var name = (user.user_metadata && user.user_metadata.name) ? user.user_metadata.name : 'Utilisateur';
@@ -876,7 +898,7 @@ async function updateUI() {
             if (statGenerated) statGenerated.textContent = d.total_generated || 0;
             if (statEarned) statEarned.textContent = d.total_earned || 0;
 
-            if (refLink) refLink.value = window.location.origin + '/?ref=' + user.id;
+            if (refLink) refLink.value = 'https://iapixora.com/?ref=' + user.id;
             if (refSection) refSection.style.display = 'block';
 
             await loadBadgeShowcase();
@@ -900,15 +922,14 @@ async function updateUI() {
             var txList = document.getElementById('transaction-list');
             var purchList = document.getElementById('purchases-list');
 
-            if (profileName2) profileName2.textContent = 'Utilisateur Pixora';
+            if (profileName2) profileName2.textContent = 'Utilisateur IA Pixora';
             if (profileEmail2) profileEmail2.textContent = tProfile('auth.subtitle');
             if (statPoints2) statPoints2.textContent = '0';
             if (statStreak2) statStreak2.textContent = '0';
             if (statGenerated2) statGenerated2.textContent = '0';
             if (statEarned2) statEarned2.textContent = '0';
             if (refSection2) refSection2.style.display = 'none';
-            if (txList) txList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
-            if (purchList) purchList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
+            if (txList) txList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';            if (purchList) purchList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
 
             await loadBadgeShowcase();
         }
@@ -929,7 +950,8 @@ db.auth.onAuthStateChange(function(event) {
     if (event === 'SIGNED_IN') {
         updateUI();
         closeAuth();
-        if (!authNotified) {            notify(tProfile('notify.connected'), 'success');
+        if (!authNotified) {            
+            notify(tProfile('notify.connected'), 'success');
             authNotified = true;
             setTimeout(function() { authNotified = false; }, 3000);
         }
