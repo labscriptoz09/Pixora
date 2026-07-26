@@ -462,19 +462,33 @@ function detectProfileLang() {
 }
 
 // =============================================
-// SUPABASE
+// SUPABASE (avec configuration cookies persistante)
 // =============================================
 var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Configuration Supabase avec persistance de session explicite
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage,
+        storageKey: 'sb-cfwzilhetkclpytjsopu-auth-token'
+    }
+});
+
+// DEBUG AUTH (à supprimer après test)
+console.log('[AUTH] Checking session on profile.html');
+console.log('[AUTH] localStorage keys:', Object.keys(localStorage));
+console.log('[AUTH] Has token:', !!localStorage.getItem('sb-cfwzilhetkclpytjsopu-auth-token'));
 
 // =============================================
 // NOTIFICATIONS
 // =============================================
 function notify(m, t) {
     t = t || 'success';
-    var n = document.getElementById('notif');
-    if (!n) return;
+    var n = document.getElementById('notif');    if (!n) return;
     var notifText = document.getElementById('notif-text');
     if (notifText) notifText.textContent = m;
     n.className = 'notification show ' + t;
@@ -482,19 +496,31 @@ function notify(m, t) {
 }
 
 // =============================================
-// AUTH
+// AUTH (corrigé avec logs)
 // =============================================
 async function getUser() {
     try {
+        console.log('[AUTH] getUser() called');
         var r = await db.auth.getUser();
-        return r.data ? r.data.user : null;
-    } catch(e) {        console.error('getUser error:', e);
+        console.log('[AUTH] getUser result:', r);
+        
+        if (r.error) {
+            console.error('[AUTH] getUser error:', r.error);
+            return null;
+        }
+        
+        var user = r.data ? r.data.user : null;
+        console.log('[AUTH] User:', user ? user.email : 'null');
+        return user;
+    } catch(e) {
+        console.error('[AUTH] getUser exception:', e);
         return null;
     }
 }
 
 async function isLogged() {
     var u = await getUser();
+    console.log('[AUTH] isLogged:', !!u);
     return !!u;
 }
 
@@ -511,8 +537,7 @@ function closeAuth() {
 }
 
 document.getElementById('auth-modal').addEventListener('click', function(e) {    
-    if (e.target === this) closeAuth();
-});
+    if (e.target === this) closeAuth();});
 
 function switchTab(m) {
     document.querySelectorAll('.auth-tab').forEach(function(t, i) {
@@ -537,7 +562,8 @@ async function doLogin(e) {
             email: emailEl ? emailEl.value.trim() : '',
             password: pwEl ? pwEl.value : ''
         });
-        if (r.error) throw r.error;        closeAuth();
+        if (r.error) throw r.error;
+        closeAuth();
         updateUI();
         notify(tProfile('notify.welcome'), 'success');
     } catch(err) {
@@ -560,8 +586,7 @@ async function doRegister(e) {
         var r = await db.auth.signUp({
             email: emailEl ? emailEl.value.trim() : '',
             password: pwEl ? pwEl.value : '',            
-            options: { data: { name: nameEl ? nameEl.value.trim() : '' } }
-        });
+            options: { data: { name: nameEl ? nameEl.value.trim() : '' } }        });
         if (r.error) throw r.error;
         closeAuth();
         updateUI();
@@ -577,7 +602,7 @@ async function loginWithGoogle() {
     try {
         await db.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: 'https://iapixora.com/profile.html' } // ✅ CORRECTED TO profile.html
+            options: { redirectTo: 'https://iapixora.com/profile.html' }
         });
     } catch(err) {
         notify(tProfile('notify.google_error'), 'error');
@@ -586,7 +611,8 @@ async function loginWithGoogle() {
 
 // =============================================
 // USER MENU
-// =============================================function toggleUserMenu(e) {
+// =============================================
+function toggleUserMenu(e) {
     if (e) e.preventDefault();
     var menu = document.getElementById('user-menu');
     if (menu) menu.classList.toggle('show');
@@ -609,8 +635,7 @@ async function doLogout() {
     await db.auth.signOut();
     closeUserMenu();
     updateUI();    
-    notify(tProfile('notify.logout'), 'success');
-    setTimeout(function() { location.reload(); }, 800);
+    notify(tProfile('notify.logout'), 'success');    setTimeout(function() { location.reload(); }, 800);
 }
 
 // =============================================
@@ -635,7 +660,8 @@ async function getUserData() {
 // =============================================
 function switchProfileTab(tabName, btn) {
     document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-    if (btn) btn.classList.add('active');    document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
     var tabEl = document.getElementById('tab-' + tabName);
     if (tabEl) tabEl.classList.add('active');
 }
@@ -658,8 +684,7 @@ function closeEditName() {
 }
 
 document.getElementById('edit-name-modal').addEventListener('click', function(e) {    
-    if (e.target === this) closeEditName();
-});
+    if (e.target === this) closeEditName();});
 
 async function saveName() {
     var editInput = document.getElementById('edit-name-input');
@@ -684,7 +709,8 @@ async function saveName() {
 
 // =============================================
 // REFERRAL
-// =============================================function copyReferralLink() {
+// =============================================
+function copyReferralLink() {
     var input = document.getElementById('referral-link');
     if (!input) return;
     input.select();
@@ -707,8 +733,7 @@ var BADGES_SHOWCASE_CONFIG = [
 ];
 
 async function loadBadgeShowcase() {    
-    var grid = document.getElementById('badges-showcase-grid');
-    if (!grid) {
+    var grid = document.getElementById('badges-showcase-grid');    if (!grid) {
         console.error('badges-showcase-grid element not found');
         return;
     }
@@ -733,6 +758,7 @@ async function loadBadgeShowcase() {
             var progress = Math.min(genCount, badge.threshold);
             var progressPercent = Math.min((genCount / badge.threshold) * 100, 100);
             var badgeName = currentProfileLang === 'en' ? badge.nameEn : badge.nameFr;
+
             var statusClass = 'locked';
             var statusText = '🔒 ' + progress + '/' + badge.threshold + ' ' + tProfile('badges.img');
             var cardClass = 'badge-showcase-card locked';
@@ -756,8 +782,7 @@ async function loadBadgeShowcase() {
             '</div>';
         }
         grid.innerHTML = html;    
-    } catch(e) {
-        console.error('Badge showcase error:', e);
+    } catch(e) {        console.error('Badge showcase error:', e);
         grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><p>Erreur chargement badges</p></div>';
     }
 }
@@ -782,7 +807,8 @@ function loadTransactions(transactions) {
         var locale = currentProfileLang === 'en' ? 'en-US' : 'fr-FR';
         var dateStr = new Date(tx.created_at).toLocaleDateString(locale, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
         var amountClass = tx.amount > 0 ? 'positive' : 'negative';
-        var amountPrefix = tx.amount > 0 ? '+' : '';        html += '<div class="transaction-item">' +
+        var amountPrefix = tx.amount > 0 ? '+' : '';
+        html += '<div class="transaction-item">' +
             '<div class="transaction-icon ' + tx.type + '"><i class="fas ' + iconClass + '"></i></div>' +
             '<div class="transaction-info"><div class="transaction-title">' + tx.title + '</div><div class="transaction-date">' + dateStr + '</div></div>' +
             '<div class="transaction-amount ' + amountClass + '">' + amountPrefix + tx.amount + ' pts</div>' +
@@ -806,7 +832,6 @@ async function loadPurchases(userId) {
             list.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Aucun achat.</p><a href="https://iapixora.com/shop.html" class="cta-button" style="display:inline-flex;width:auto;margin-top:1.5rem;">' + tProfile('footer.shop') + '</a></div>';
             return;        
         }
-
         var html = '';
         var locale = currentProfileLang === 'en' ? 'en-US' : 'fr-FR';
         for (var i = 0; i < purchases.length; i++) {
@@ -831,7 +856,8 @@ async function loadPurchases(userId) {
 // =============================================
 async function clearData() {
     if (!confirm('⚠️ ' + tProfile('settings.reset_data') + ' ?')) return;
-    var user = await getUser();    if (!user) return;
+    var user = await getUser();
+    if (!user) return;
     try { await db.from('transactions').delete().eq('user_id', user.id); } catch(e) {}
     try { await db.from('purchases').delete().eq('user_id', user.id); } catch(e) {}
     try { await db.from('daily_usage').delete().eq('user_id', user.id); } catch(e) {}
@@ -854,8 +880,7 @@ async function updateUI() {
         var authBtn = document.getElementById('auth-btn');
 
         if (userStats) userStats.classList.toggle('show', logged);        
-        if (userAvatar) userAvatar.classList.toggle('show', logged);
-        if (authBtn) authBtn.style.display = logged ? 'none' : 'flex';
+        if (userAvatar) userAvatar.classList.toggle('show', logged);        if (authBtn) authBtn.style.display = logged ? 'none' : 'flex';
 
         if (logged && user) {
             var d = await getUserData();
@@ -880,7 +905,8 @@ async function updateUI() {
             if (headerPoints) headerPoints.textContent = d.points || 0;
             if (navBadge) {
                 navBadge.textContent = d.points || 0;
-                navBadge.style.display = d.points > 0 ? 'block' : 'none';            }
+                navBadge.style.display = d.points > 0 ? 'block' : 'none';
+            }
             if (menuPoints) menuPoints.textContent = d.points || 0;
 
             var name = (user.user_metadata && user.user_metadata.name) ? user.user_metadata.name : 'Utilisateur';
@@ -903,8 +929,7 @@ async function updateUI() {
 
             await loadBadgeShowcase();
             try {
-                var txResult = await db.from('transactions').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-                loadTransactions(txResult.data || []);
+                var txResult = await db.from('transactions').select('*').eq('user_id', user.id).order('created_at', { ascending: false });                loadTransactions(txResult.data || []);
             } catch(txErr) {
                 console.error('Transactions error:', txErr);
                 loadTransactions([]);
@@ -929,7 +954,8 @@ async function updateUI() {
             if (statGenerated2) statGenerated2.textContent = '0';
             if (statEarned2) statEarned2.textContent = '0';
             if (refSection2) refSection2.style.display = 'none';
-            if (txList) txList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';            if (purchList) purchList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
+            if (txList) txList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
+            if (purchList) purchList.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>' + tProfile('auth.subtitle') + '</p></div>';
 
             await loadBadgeShowcase();
         }
@@ -947,12 +973,12 @@ async function updateUI() {
 var authNotified = false;
 
 db.auth.onAuthStateChange(function(event) {
+    console.log('[AUTH] onAuthStateChange:', event);
     if (event === 'SIGNED_IN') {
         updateUI();
         closeAuth();
         if (!authNotified) {            
-            notify(tProfile('notify.connected'), 'success');
-            authNotified = true;
+            notify(tProfile('notify.connected'), 'success');            authNotified = true;
             setTimeout(function() { authNotified = false; }, 3000);
         }
     } else if (event === 'SIGNED_OUT') {
