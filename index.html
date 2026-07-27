@@ -230,10 +230,20 @@
         .pxr-soft-benefit i{color:var(--success);font-size:0.8rem;width:16px;text-align:center}
         .pxr-soft-cta{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;text-decoration:none;border-radius:12px;font-weight:700;font-size:0.95rem;margin-bottom:0.8rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
         .pxr-soft-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
+
+        /* FAQ SECTION */
+        .faq-section{margin-top:2.5rem;padding:1.5rem;background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px}
+        .faq-title{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1.2rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+        .faq-title i{color:var(--prim);font-size:1rem}
+        .faq-list{display:flex;flex-direction:column;gap:0.6rem}
+        .faq-item{padding:1rem 1.2rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;transition:all 0.2s}
+        .faq-item:hover{background:rgba(139,92,246,0.06);border-color:rgba(139,92,246,0.2);transform:translateY(-1px)}
+        .faq-question{font-size:0.92rem;font-weight:600;color:var(--text);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem}
+        .faq-question i{color:var(--prim);font-size:0.75rem;flex-shrink:0}
+        .faq-answer{font-size:0.82rem;color:var(--muted);line-height:1.6;padding-left:1.25rem}
     </style>
 </head>
-<body>
-<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
+<body><div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
 <div class="lightbox" id="lightbox">
     <div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div>
@@ -243,7 +253,8 @@
         <button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="results.close">Fermer</span></button>
     </div>
 </div>
-<div class="auth-overlay" id="auth-modal">    <div class="auth-modal">
+<div class="auth-overlay" id="auth-modal">
+    <div class="auth-modal">
         <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
         <div class="auth-logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
@@ -281,8 +292,7 @@
         <span class="logo-text">IA Pixora</span>
     </a>
     <div class="header-right">
-        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
-            <option value="fr">🇫🇷 FR</option>
+        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">            <option value="fr">🇫🇷 FR</option>
             <option value="en">🇬🇧 EN</option>
         </select>
         <div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div>
@@ -292,7 +302,8 @@
             <span class="mini-badge-next" id="mini-badge-next"></span>
         </a>
         <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div>
-        <button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button>        <div class="user-menu" id="user-menu">
+        <button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button>
+        <div class="user-menu" id="user-menu">
             <div class="menu-header">
                 <div class="menu-avatar" id="menu-avatar">U</div>
                 <div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div>
@@ -330,18 +341,87 @@
             <button class="type-btn disabled" onclick="notifyVideoSoon()"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
         </div>
         <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem">
-            <span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span>
-            <span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span>
+            <span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span>            <span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span>
         </div>
         <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
     </div>
     <div class="section-label"><span data-i18n="results.title">Vos Créations</span><span data-i18n="results.auto_delete">Auto-effacement après 1h</span></div>
     <div class="results-grid" id="results-grid"></div>
+
+    <!-- FAQ SEO - IA Pixora -->
+    <section class="faq-section">
+        <h2 class="faq-title"><i class="fas fa-circle-question"></i> Questions Fréquentes</h2>
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [{
+                "@type": "Question",
+                "name": "Est-ce que IA Pixora est vraiment gratuit ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Oui, IA Pixora est 100% gratuit pour générer des images et vidéos IA. Vous pouvez utiliser 3 générations sans inscription. Après cela, une inscription gratuite vous donne accès illimité + 15 points bonus."
+                }
+            },{
+                "@type": "Question",
+                "name": "Comment générer une image sans inscription ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Vous pouvez générer jusqu'à 3 images gratuitement sans créer de compte. Il suffit d'entrer un prompt dans le studio et de cliquer sur Générer. Après 3 générations, un pop-up vous propose de vous inscrire pour continuer."
+                }
+            },{
+                "@type": "Question",
+                "name": "Quelle est la différence entre IA Pixora et Midjourney ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "IA Pixora est entièrement gratuit, sans abonnement ni carte bancaire. Midjourney nécessite un abonnement payant. IA Pixora offre aussi des badges, un système de parrainage et des points pour récompenser l'engagement."
+                }
+            },{
+                "@type": "Question",
+                "name": "Puis-je utiliser les images générées commercialement ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Oui, les images générées avec IA Pixora sont libres de droits pour un usage personnel ou commercial, tant que vous respectez les conditions d'utilisation."
+                }
+            },{
+                "@type": "Question",
+                "name": "Combien de générations gratuites par jour ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Vous avez 3 générations gratuites sans inscription. Une fois inscrit, vous recevez +15 points bonus et pouvez générer autant d'images que vous le souhaitez. Les points peuvent être gagnés via le vote, les commentaires, le parrainage et les streaks."
+                }
+            }]        }
+        </script>
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-question"><i class="fas fa-chevron-right"></i> Est-ce que IA Pixora est vraiment gratuit ?</div>
+                <div class="faq-answer">Oui, IA Pixora est 100% gratuit pour générer des images et vidéos IA. Vous pouvez utiliser 3 générations sans inscription. Après cela, une inscription gratuite vous donne accès illimité + 15 points bonus.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question"><i class="fas fa-chevron-right"></i> Comment générer une image sans inscription ?</div>
+                <div class="faq-answer">Vous pouvez générer jusqu'à 3 images gratuitement sans créer de compte. Il suffit d'entrer un prompt dans le studio et de cliquer sur Générer. Après 3 générations, un pop-up vous propose de vous inscrire pour continuer.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question"><i class="fas fa-chevron-right"></i> Quelle est la différence entre IA Pixora et Midjourney ?</div>
+                <div class="faq-answer">IA Pixora est entièrement gratuit, sans abonnement ni carte bancaire. Midjourney nécessite un abonnement payant. IA Pixora offre aussi des badges, un système de parrainage et des points pour récompenser l'engagement.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question"><i class="fas fa-chevron-right"></i> Puis-je utiliser les images générées commercialement ?</div>
+                <div class="faq-answer">Oui, les images générées avec IA Pixora sont libres de droits pour un usage personnel ou commercial, tant que vous respectez les conditions d'utilisation.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question"><i class="fas fa-chevron-right"></i> Combien de générations gratuites par jour ?</div>
+                <div class="faq-answer">Vous avez 3 générations gratuites sans inscription. Une fois inscrit, vous recevez +15 points bonus et pouvez générer autant d'images que vous le souhaitez. Les points peuvent être gagnés via le vote, les commentaires, le parrainage et les streaks.</div>
+            </div>
+        </div>
+    </section>
+
     <footer class="site-footer">
         <div class="footer-links">
             <a href="earn.html" data-i18n="footer.earn_points">Gagner des Points</a>
             <a href="gallery.html" data-i18n="footer.gallery">Galerie</a>
-            <a href="shop.html" data-i18n="footer.shop">Boutique</a>            <a href="profile.html" data-i18n="footer.profile">Profil</a>
+            <a href="shop.html" data-i18n="footer.shop">Boutique</a>
+            <a href="profile.html" data-i18n="footer.profile">Profil</a>
             <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
         </div>
         <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
@@ -359,7 +439,6 @@ var PX_FREE_LIMIT = 3;
 function getAnonCount() {
     return parseInt(localStorage.getItem(PX_ANON_KEY) || '0');
 }
-
 function incrementAnonCount() {
     var count = getAnonCount() + 1;
     localStorage.setItem(PX_ANON_KEY, count.toString());
@@ -390,7 +469,8 @@ function showSoftSignupPrompt() {
 function checkFreemiumBlock() {
     return db.auth.getUser().then(function(result) {
         if (!result.data.user) {
-            var count = getAnonCount();            if (count >= PX_FREE_LIMIT) {
+            var count = getAnonCount();
+            if (count >= PX_FREE_LIMIT) {
                 showSoftSignupPrompt();
                 return false;
             }
@@ -408,8 +488,7 @@ function incrementAndCheckFreemium() {
             if (count >= PX_FREE_LIMIT) {
                 showSoftSignupPrompt();
             }
-        } else {
-            localStorage.removeItem(PX_ANON_KEY);
+        } else {            localStorage.removeItem(PX_ANON_KEY);
         }
     });
 }
@@ -439,6 +518,7 @@ async function loadMiniBadge() {
         var userData = await getUserData();
         var genCount = userData.total_generated || 0;
         var claimedBadges = userData.badges_claimed || [];
+
         var currentBadge = null;
         for (var i = BADGES_CONFIG.length - 1; i >= 0; i--) {
             if (claimedBadges.indexOf(BADGES_CONFIG[i].id) !== -1) {
@@ -457,8 +537,7 @@ async function loadMiniBadge() {
 
         el.classList.add('show');
 
-        if (currentBadge) {
-            iconEl.textContent = currentBadge.icon;
+        if (currentBadge) {            iconEl.textContent = currentBadge.icon;
             nameEl.textContent = currentBadge.name;
             if (nextBadge) {
                 var remaining = nextBadge.threshold - genCount;
@@ -488,7 +567,8 @@ async function loadMiniBadge() {
 var I18N = {};
 var currentLang = 'fr';
 var FR_TRANSLATIONS = {
-    meta:{title:'IA Pixora — Studio IA Gratuit | Générateur Images & Vidéos',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement. Sans inscription requise pour tester.'},    header:{login:'Connexion',points:'points'},
+    meta:{title:'IA Pixora — Studio IA Gratuit | Générateur Images & Vidéos',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement. Sans inscription requise pour tester.'},
+    header:{login:'Connexion',points:'points'},
     nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},
     hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},
     generator:{placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},
@@ -506,8 +586,7 @@ function t(key) {
     var val = I18N;
     for (var i = 0; i < keys.length; i++) {
         if (val && typeof val === 'object') val = val[keys[i]];
-        else return key;
-    }
+        else return key;    }
     return val || key;
 }
 
@@ -537,7 +616,8 @@ async function loadLang(lang) {
     localStorage.setItem('pixora_lang', lang);
 }
 
-function applyTranslations() {    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var key = el.getAttribute('data-i18n');
         var val = t(key);
         if (val !== key) el.textContent = val;
@@ -555,8 +635,7 @@ function detectLang() {
     var saved = localStorage.getItem('pixora_lang');
     if (saved && (saved === 'fr' || saved === 'en')) return saved;
     var nav = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
-    if (nav.indexOf('en') !== -1) return 'en';
-    return 'fr';
+    if (nav.indexOf('en') !== -1) return 'en';    return 'fr';
 }
 
 // =============================================
@@ -586,7 +665,8 @@ var API_PROVIDERS = [
     { id:'tensor',name:'Tensor.Art',types:['image'],endpoint:'https://api.tensor.art/v1/generate',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{prompt:p,width:512,height:512}},parseUrl:function(data){if(data.images&&data.images[0]&&data.images[0].url)return data.images[0].url;return null}}
 ];
 
-async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}function getPollinationsUrl(prompt,type){var seed=Math.floor(Math.random()*100000);var url='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=512&height=512&nologo=true&seed='+seed;if(type==='video')url+='&type=video';return url}
+async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
+function getPollinationsUrl(prompt,type){var seed=Math.floor(Math.random()*100000);var url='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=512&height=512&nologo=true&seed='+seed;if(type==='video')url+='&type=video';return url}
 
 async function generateWithFallback(prompt,type){
     for(var i=0;i<API_PROVIDERS.length;i++){
@@ -604,8 +684,7 @@ function updateCostUI(){
 }
 function notifyVideoSoon(){notify('🎥 '+t('generator.video_soon'),'success')}
 function buildImageOverlay(){return'<div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)" title="'+t('results.download')+'"><i class="fas fa-download"></i></button></div>'}
-function detectReferral(){var params=new URLSearchParams(window.location.search);var ref=params.get('ref');if(ref&&ref.length>10){pendingReferrer=ref;localStorage.setItem('pixora_ref',ref)}else{pendingReferrer=localStorage.getItem('pixora_ref')}}
-async function processReferral(newUserId){var referrerId=pendingReferrer||localStorage.getItem('pixora_ref');if(!referrerId||referrerId===newUserId)return;try{var refConfigR=await db.from('admin_config').select('value').eq('key','referral_config').single();var config=(refConfigR.data&&refConfigR.data.value)?refConfigR.data.value:{enabled:true,points:10};if(!config.enabled)return;var existR=await db.from('referrals').select('id').eq('sponsor_id',referrerId).eq('referred_id',newUserId).single();if(existR.data)return;await db.from('referrals').insert({sponsor_id:referrerId,referred_id:newUserId,points:config.points||10,validated:false});localStorage.removeItem('pixora_ref');pendingReferrer=null}catch(e){console.error('Referral error:',e)}}
+function detectReferral(){var params=new URLSearchParams(window.location.search);var ref=params.get('ref');if(ref&&ref.length>10){pendingReferrer=ref;localStorage.setItem('pixora_ref',ref)}else{pendingReferrer=localStorage.getItem('pixora_ref')}}async function processReferral(newUserId){var referrerId=pendingReferrer||localStorage.getItem('pixora_ref');if(!referrerId||referrerId===newUserId)return;try{var refConfigR=await db.from('admin_config').select('value').eq('key','referral_config').single();var config=(refConfigR.data&&refConfigR.data.value)?refConfigR.data.value:{enabled:true,points:10};if(!config.enabled)return;var existR=await db.from('referrals').select('id').eq('sponsor_id',referrerId).eq('referred_id',newUserId).single();if(existR.data)return;await db.from('referrals').insert({sponsor_id:referrerId,referred_id:newUserId,points:config.points||10,validated:false});localStorage.removeItem('pixora_ref');pendingReferrer=null}catch(e){console.error('Referral error:',e)}}
 async function validatePendingReferral(userId){try{var refsR=await db.from('referrals').select('id').eq('referred_id',userId).eq('validated',false);var refs=refsR.data||[];for(var i=0;i<refs.length;i++){await db.from('referrals').update({validated:true}).eq('id',refs[i].id)}}catch(e){console.error('Validate referral error:',e)}}
 async function ensureUserData(userId){try{var existing=await db.from('user_data').select('user_id').eq('user_id',userId).single();if(!existing.data){await db.from('user_data').insert({user_id:userId,points:0,streak:0,last_login:null,total_generated:0,total_earned:0,tier:1,badges_claimed:[]})}}catch(e){console.error('Ensure user_data error:',e)}}
 async function grantSignupBonus(userId){try{var bonusR=await db.from('admin_config').select('value').eq('key','signup_bonus').single();var bonus=(bonusR.data&&bonusR.data.value!==undefined)?bonusR.data.value:15;if(bonus<=0)return;var existR=await db.from('transactions').select('id').eq('user_id',userId).eq('title','Bonus inscription').single();if(existR.data)return;var ud=await db.from('user_data').select('points,total_earned').eq('user_id',userId).single();var curPts=(ud.data&&ud.data.points)||0;var curEarned=(ud.data&&ud.data.total_earned)||0;await db.from('user_data').update({points:curPts+bonus,total_earned:curEarned+bonus}).eq('user_id',userId);await db.from('transactions').insert({user_id:userId,type:'earned',title:'Bonus inscription',amount:bonus})}catch(e){console.error('Signup bonus error:',e)}}
@@ -635,7 +714,8 @@ async function updateUI(){
     document.getElementById('user-stats').classList.toggle('show',logged);
     document.getElementById('user-avatar').classList.toggle('show',logged);
     document.getElementById('auth-btn').style.display=logged?'none':'flex';
-    var qs=document.getElementById('quick-stats');    if(logged){qs.classList.add('show')}else{qs.classList.remove('show')}
+    var qs=document.getElementById('quick-stats');
+    if(logged){qs.classList.add('show')}else{qs.classList.remove('show')}
     if(logged){
         var d=await getUserData();
         document.getElementById('header-points').textContent=d.points||0;
@@ -653,8 +733,7 @@ async function updateUI(){
         document.getElementById('menu-email').textContent=user.email;
         document.getElementById('menu-points').textContent=d.points||0;
     }
-    await loadMiniBadge();
-}
+    await loadMiniBadge();}
 
 // =============================================
 // LIGHTBOX + DOWNLOAD
@@ -684,7 +763,8 @@ async function generate(){
     if(!logged){
         var allowed=await checkFreemiumBlock();
         if(!allowed){notify(t('notifications.freemium_limit'),'error');return}
-    }    if(logged){
+    }
+    if(logged){
         await loadUserTier();
         var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];
         var userData=await getUserData();
@@ -702,8 +782,7 @@ async function generate(){
     grid.insertBefore(card,grid.firstChild);
     var st=Date.now();
     var tmr=document.getElementById(tmrId);
-    var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);
-    var media=card.querySelector('img');
+    var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);    var media=card.querySelector('img');
     var loaded=false;
     var currentUser=await getUser();
     try{
@@ -733,7 +812,8 @@ async function generate(){
             var discountMsg=isDiscounted?t('notifications.discount_tag'):'';
             var costDisplay=logged?(' (-'+cost+' '+t('generator.cost_pts')+discountMsg+')'):'';
             notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+costDisplay,'success');
-            if(!logged){incrementAndCheckFreemium()}            if(logged){loadMiniBadge()}
+            if(!logged){incrementAndCheckFreemium()}
+            if(logged){loadMiniBadge()}
             setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000);
         }
         media.onload=onLoad;
@@ -751,8 +831,7 @@ db.auth.onAuthStateChange(async function(event){
         localStorage.removeItem(PX_ANON_KEY);
         var softSignup=document.getElementById('pxr-soft-signup');
         if(softSignup)softSignup.remove();
-        if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}
-    }else if(event==='SIGNED_OUT'){
+        if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}    }else if(event==='SIGNED_OUT'){
         currentTier=1;currentDiscountUntil=null;
         if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}
         updateCostUI();updateUI();authNotified=false
