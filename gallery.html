@@ -207,8 +207,13 @@
     <h1 class="page-title" data-i18n="gallery.title">Galerie Publique</h1>
     <p class="page-sub" data-i18n="gallery.subtitle">Les dernières créations de la communauté IA Pixora</p>
     
-    <!-- 🔷 GALERIE PERMANENTE — VITRINE FIXE (16 IMAGES ACTUELLES) -->
-    <div id="permanent-gallery" style="margin-bottom:24px;">
+    <!-- 🔷 EN HAUT : IMAGES UTILISATEUR (dynamiques, effacées après 1h) -->
+    <div class="results-grid" id="gallery-grid">
+        <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p data-i18n="common.loading">Chargement...</p></div>
+    </div>
+
+    <!-- 🔷 EN BAS : IMAGES FIXES PERMANENTES (vitrine, ne s'effacent jamais) -->
+    <div id="permanent-gallery" style="margin-top:32px;">
       <h2 style="font-size:1.25rem;font-weight:700;margin:0 0 16px 0;color:var(--text);display:flex;align-items:center;gap:0.5rem;">
         <i class="fas fa-star" style="color:#F59E0B;"></i>
         <span data-i18n="gallery.permanent_title">Créations de référence</span>
@@ -233,17 +238,14 @@
       </div>
     </div>
 
-    <div class="results-grid" id="gallery-grid">
-        <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p data-i18n="common.loading">Chargement...</p></div>
-    </div>
     <footer class="site-footer">
         <div class="footer-links">
             <a href="index.html" data-i18n="footer.studio">Studio</a>
             <a href="earn.html" data-i18n="footer.points">Points</a>
             <a href="shop.html" data-i18n="footer.shop">Boutique</a>
-            <a href="profile.html" data-i18n="footer.profile">Profil</a>
-            <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
-        </div>        <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
+            <a href="profile.html" data-i18n="footer.profile">Profil</a>            <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
+        </div>
+        <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
     </footer>
 </main>
 
@@ -290,9 +292,9 @@ function tGallery(key) {
     return val || key;
 }
 
-function applyGalleryTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n');        var val = tGallery(key);
+function applyGalleryTranslations() {    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        var val = tGallery(key);
         if (val !== key) el.textContent = val;
     });    
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
@@ -339,9 +341,9 @@ async function loadTaskLimits() {
         var result = await db.from('admin_config').select('value').eq('key', 'internal_tasks').single();
         if (result.data && result.data.value) {
             var tasks = result.data.value;
-            for (var i = 0; i < tasks.length; i++) {
-                if (tasks[i].type === 'vote' && tasks[i].active) {
-                    VOTE_LIMIT = tasks[i].limit || 1;                }
+            for (var i = 0; i < tasks.length; i++) {                if (tasks[i].type === 'vote' && tasks[i].active) {
+                    VOTE_LIMIT = tasks[i].limit || 1;
+                }
                 if (tasks[i].type === 'comment' && tasks[i].active) {                    
                     COMMENT_LIMIT = tasks[i].limit || 1;
                 }
@@ -388,419 +390,7 @@ async function updateUI() {
     document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
     if (logged) {
         var d = await getUserData();
-        document.getElementById('header-points').textContent = d.points || 0;
-        document.getElementById('nav-points-badge').textContent = d.points || 0;
-        document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';        document.getElementById('menu-points').textContent = d.points || 0;        
-        var name = logged.user_metadata && logged.user_metadata.name ? logged.user_metadata.name : 'Utilisateur';
-        var initial = name.charAt(0).toUpperCase();
-        document.getElementById('avatar-initial').textContent = initial;
-        document.getElementById('menu-avatar').textContent = initial;
-        document.getElementById('menu-name').textContent = name;
-        document.getElementById('menu-email').textContent = logged.email;
-    }
-}
-
-// =============================================
-// LIGHTBOX
-// =============================================
-function openLB(url) {
-    lbUrl = url;
-    document.getElementById('lb-img').src = urlChef, **compris**. Voici le code source **COMPLET** de `gallery.html`, intégrant la galerie permanente au-dessus de la galerie dynamique, sans aucune perte de fonctionnalité existante.
-
-Copie-colle ce bloc **en entier** pour remplacer ton fichier actuel sur GitHub.
-
-```html
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <!-- Google Analytics 4 - IA Pixora -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZXXYQRBQ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-TDZXXYQRBQ');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <!-- SEO & TRAFFIC OPTIMIZATION -->
-    <title>Galerie Publique IA Pixora | Créations Communauté</title>
-    <meta name="description" content="Découvrez les dernières créations générées par la communauté IA Pixora. Votez, commentez et inspirez-vous gratuitement.">
-    <link rel="canonical" href="https://iapixora.com/gallery.html">
-    
-    <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="IA Pixora">
-    <meta property="og:url" content="https://iapixora.com/gallery.html">
-    <meta property="og:title" content="Galerie Publique IA Pixora | Créations Communauté">
-    <meta property="og:description" content="Découvrez les dernières créations générées par la communauté IA Pixora. Votez, commentez et inspirez-vous gratuitement.">
-    <meta property="og:image" content="https://iapixora.com/og-image.jpg">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://iapixora.com/gallery.html">    <meta property="twitter:title" content="Galerie Publique IA Pixora | Créations Communauté">
-    <meta property="twitter:description" content="Découvrez les dernières créations générées par la communauté IA Pixora.">
-    <meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
-    
-    <!-- Robots -->
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="IA Pixora">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
-        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
-        .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}
-        .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}
-        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}
-        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
-        a{color:inherit;text-decoration:none}
-        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-        .toast-notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5);white-space:nowrap;max-width:90vw;text-align:center;justify-content:center}
-        .toast-notification.show{transform:translateX(-50%) translateY(0)}
-        .toast-notification.success{border-color:var(--success)}.toast-notification.success i{color:var(--success)}
-        .toast-notification.error{border-color:var(--danger);background:rgba(239,68,68,0.15)}.toast-notification.error i{color:var(--danger)}
-        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
-        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}        .header-logo svg{width:28px;height:28px}
-        .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .header-right{display:flex;align-items:center;gap:0.7rem;position:relative}
-        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;max-width:70px;-webkit-appearance:none;appearance:none}
-        .lang-select option{background:var(--bg);color:var(--text)}
-        .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
-        .user-stats.show{display:flex}
-        .stat-icon{color:var(--gold);font-size:0.75rem}
-        .stat-points{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold)}
-        .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;color:white;position:relative;flex-shrink:0}
-        .user-avatar:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(139,92,246,0.5)}
-        .user-avatar.show{display:flex}
-        .avatar-hamburger{position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.45rem;color:var(--muted);border:1.5px solid var(--border)}
-        .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);white-space:nowrap}
-        .btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
-        @media(max-width:767px){.user-stats{display:none!important}.site-header{padding:0 0.8rem}.btn-auth{padding:0.35rem 0.75rem;font-size:0.72rem}.logo-text{font-size:1.05rem}}
-        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
-        .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
-        .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}
-        .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;flex-shrink:0}
-        .menu-info{flex:1;min-width:0}
-        .menu-name{font-size:0.85rem;font-weight:700;margin-bottom:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}        .menu-email{font-size:0.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}        
-        .menu-points-bar{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;margin:0.5rem 0}
-        .menu-points-bar i{color:var(--gold);font-size:0.75rem}
-        .menu-points-bar span{font-family:var(--mono);font-size:0.8rem;font-weight:700;color:var(--gold);flex:1}
-        .menu-points-bar small{font-size:0.6rem;color:var(--muted)}
-        .menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.5rem;border-radius:10px;color:var(--text);font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:pointer;text-decoration:none}
-        .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
-        .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
-        .menu-item:hover i{color:var(--prim)}
-        .menu-item.danger{color:var(--danger)}
-        .menu-item.danger i{color:var(--danger)}
-        .menu-item.danger:hover{background:rgba(239,68,68,0.08)}
-        .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}
-        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
-        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}
-        .nav-item i{font-size:1.2rem;transition:all 0.3s}
-        .nav-item span{font-size:0.58rem;font-weight:600}
-        .nav-item[data-nav="studio"].active{color:var(--prim)}
-        .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,0.6))}
-        .nav-item[data-nav="gallery"].active{color:#3B82F6}
-        .nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 8px rgba(59,130,246,0.6))}
-        .nav-item[data-nav="points"].active{color:var(--gold)}
-        .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
-        .nav-item[data-nav="profile"].active{color:var(--sec)}
-        .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
-        .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:6px;min-width:16px;text-align:center;font-family:var(--mono)}
-        .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
-        @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}        .page-title{font-size:1.5rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.03em}
-        .page-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem}
-        .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
-        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem}}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
-        .result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-        .result-card img{width:100%;height:100%;object-fit:cover;display:block}
-        .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);display:flex;align-items:flex-end;justify-content:space-between;padding:0.6rem;opacity:0;transition:opacity 0.3s}
-        .result-card:hover .result-overlay{opacity:1}
-        @media(hover:none){.result-overlay{opacity:1}}
-        .card-actions{display:flex;gap:0.4rem;align-items:center}
-        .action-btn{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:var(--text);font-size:0.75rem;font-weight:600;transition:all 0.2s;cursor:pointer}
-        .action-btn:hover{background:var(--prim);border-color:var(--prim);transform:scale(1.05)}
-        .action-btn.voted{background:rgba(239,68,68,0.3);border-color:var(--danger);color:#FCA5A5}
-        .action-btn i{font-size:0.8rem}
-        .action-count{font-family:var(--mono);font-size:0.7rem}
-        .dl-btn{width:34px;height:34px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:0.8rem;transition:all 0.2s;cursor:pointer}
-        .dl-btn:hover{background:var(--prim);border-color:var(--prim);transform:scale(1.1)}
-        .comment-modal{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
-        .comment-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:450px;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}
-        @keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
-        .comment-box h3{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}
-        .comment-box h3 i{color:var(--prim)}                .comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}
-        .comment-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,0.12)}
-        .comment-input::placeholder{color:rgba(255,255,255,0.35)}
-        .comment-actions{display:flex;gap:0.6rem;justify-content:flex-end}
-        .comment-btn{padding:0.6rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;border:none}
-        .comment-btn.primary{background:var(--prim);color:white}
-        .comment-btn.primary:hover{background:var(--sec);transform:translateY(-1px)}
-        .comment-btn.secondary{background:rgba(255,255,255,0.08);color:var(--muted)}
-        .comment-btn.secondary:hover{background:rgba(255,255,255,0.12);color:var(--text)}
-        .comment-char{font-size:0.7rem;color:var(--dim);margin-bottom:0.5rem;text-align:right;font-family:var(--mono)}
-        .lightbox{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.95);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;flex-direction:column;padding:1rem}
-        .lightbox img{max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
-        .lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;cursor:pointer;transition:all 0.2s}
-        .lightbox-close:hover{background:var(--danger);transform:rotate(90deg)}
-        .lightbox-actions{display:flex;gap:1rem;margin-top:1.5rem}
-        .lb-btn{padding:0.7rem 1.3rem;background:var(--prim);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s}
-        .lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
-        .lb-btn.sec{background:rgba(255,255,255,0.1)}
-        .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
-        .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}
-        .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
-        .site-footer a:hover{color:var(--prim)}
-    </style>
-</head>
-<body>
-<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
-<div class="toast-notification" id="toast"><i class="fas fa-check-circle"></i><span id="toast-text"></span></div>
-<div class="comment-modal" id="comment-modal">
-    <div class="comment-box">
-        <h3><i class="fas fa-comment-dots"></i> <span data-i18n="comment.title">Laisser un commentaire</span></h3>
-        <textarea class="comment-input" id="comment-input" data-i18n-placeholder="comment.placeholder" placeholder="Votre commentaire (min. 10 caractères)..."></textarea>
-        <div class="comment-char" id="comment-char">0/10 min</div>
-        <div class="comment-actions">
-            <button class="comment-btn secondary" onclick="closeCommentModal()" data-i18n="comment.cancel">Annuler</button>
-            <button class="comment-btn primary" id="btn-submit-comment" onclick="submitComment()"><i class="fas fa-paper-plane"></i> <span data-i18n="comment.send">Envoyer</span></button>
-        </div>
-    </div>
-</div>
-
-<div class="lightbox" id="lightbox">
-    <div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div>
-    <img id="lb-img" src="" alt="Zoom">
-    <div class="lightbox-actions">
-        <button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="lightbox.download">Télécharger</span></button>
-        <button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="lightbox.close">Fermer</span></button>
-    </div>
-</div>
-
-<header class="site-header">    
-    <a href="index.html" class="header-logo">        <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
-        <span class="logo-text">IA Pixora</span>
-    </a>
-    <div class="header-right">
-        <select class="lang-select" id="lang-select" onchange="changeGalleryLang(this.value)">
-            <option value="fr">🇫🇷 FR</option>
-            <option value="en">🇬🇧 EN</option>
-        </select>
-        <div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div>
-        <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div>
-        <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button>
-        <div class="user-menu" id="user-menu">
-            <div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
-            <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div>
-            <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a>
-            <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a>
-            <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a>
-            <div class="menu-divider"></div>
-            <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
-        </div>
-    </div>
-</header>
-
-<nav class="nav-mobile">
-    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
-    <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
-    <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
-</nav>
-
-<main class="main-content">
-    <h1 class="page-title" data-i18n="gallery.title">Galerie Publique</h1>
-    <p class="page-sub" data-i18n="gallery.subtitle">Les dernières créations de la communauté IA Pixora</p>
-    
-    <!-- 🔷 GALERIE PERMANENTE — VITRINE FIXE (16 IMAGES ACTUELLES) -->
-    <div id="permanent-gallery" style="margin-bottom:24px;">
-      <h2 style="font-size:1.25rem;font-weight:700;margin:0 0 16px 0;color:var(--text);display:flex;align-items:center;gap:0.5rem;">
-        <i class="fas fa-star" style="color:#F59E0B;"></i>
-        <span data-i18n="gallery.permanent_title">Créations de référence</span>
-      </h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem;">
-        <img src="/assets/gallery/sample-01.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-01.jpg')">
-        <img src="/assets/gallery/sample-02.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-02.jpg')">
-        <img src="/assets/gallery/sample-03.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-03.jpg')">
-        <img src="/assets/gallery/sample-04.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-04.jpg')">
-        <img src="/assets/gallery/sample-05.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-05.jpg')">
-        <img src="/assets/gallery/sample-06.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-06.jpg')">
-        <img src="/assets/gallery/sample-07.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-07.jpg')">
-        <img src="/assets/gallery/sample-08.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-08.jpg')">
-        <img src="/assets/gallery/sample-09.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-09.jpg')">
-        <img src="/assets/gallery/sample-10.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-10.jpg')">        <img src="/assets/gallery/sample-11.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-11.jpg')">
-        <img src="/assets/gallery/sample-12.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-12.jpg')">
-        <img src="/assets/gallery/sample-13.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-13.jpg')">
-        <img src="/assets/gallery/sample-14.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-14.jpg')">
-        <img src="/assets/gallery/sample-15.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-15.jpg')">
-        <img src="/assets/gallery/sample-16.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('https://iapixora.com/assets/gallery/sample-16.jpg')">
-      </div>
-    </div>
-
-    <div class="results-grid" id="gallery-grid">
-        <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p data-i18n="common.loading">Chargement...</p></div>
-    </div>
-    <footer class="site-footer">
-        <div class="footer-links">
-            <a href="index.html" data-i18n="footer.studio">Studio</a>
-            <a href="earn.html" data-i18n="footer.points">Points</a>
-            <a href="shop.html" data-i18n="footer.shop">Boutique</a>
-            <a href="profile.html" data-i18n="footer.profile">Profil</a>
-            <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
-        </div>
-        <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
-    </footer>
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="ads-loader.js"></script>
-<script>
-// =============================================
-// I18N GALERIE
-// =============================================
-var GALLERY_I18N = {
-    fr: {
-        header:{login:'Connexion',points:'points'},
-        menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
-        nav:{studio:'Studio',gallery:'Galerie'},
-        gallery:{title:'Galerie Publique',subtitle:'Les dernières créations de la communauté IA Pixora',empty:'Aucune création récente.',empty_cta:'Soyez le premier à générer !',error:'Erreur chargement galerie',permanent_title:'Créations de référence'},
-        comment:{title:'Laisser un commentaire',placeholder:'Votre commentaire (min. 10 caractères)...',cancel:'Annuler',send:'Envoyer',too_short:'Commentaire trop court (min. 10 caractères)',success:'+2 points pour votre commentaire !',already_today:'Vous avez déjà commenté aujourd\'hui',login_required:'Connectez-vous pour commenter'},
-        vote:{success:'+2 points pour votre vote !',already_today:'Vous avez déjà voté aujourd\'hui',already_voted:'Vous avez déjà voté cette création',login_required:'Connectez-vous pour voter'},
-        lightbox:{download:'Télécharger',close:'Fermer'},
-        common:{loading:'Chargement...'},
-        footer:{studio:'Studio',points:'Points',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
-        toast:{vote_error:'ERREUR VOTE: ',comment_error:'ERREUR COMMENT: ',gallery_error:'ERREUR GALERIE: '}
-    },
-    en: {
-        header:{login:'Login',points:'points'},
-        menu:{profile:'My Profile',earn:'Earn Points',shop:'My Purchases',logout:'Logout'},
-        nav:{studio:'Studio',gallery:'Gallery'},
-        gallery:{title:'Public Gallery',subtitle:'Latest creations from the IA Pixora community',empty:'No recent creations.',empty_cta:'Be the first to generate!',error:'Gallery loading error',permanent_title:'Reference Creations'},
-        comment:{title:'Leave a comment',placeholder:'Your comment (min. 10 characters)...',cancel:'Cancel',send:'Send',too_short:'Comment too short (min. 10 characters)',success:'+2 points for your comment!',already_today:'You already commented today',login_required:'Log in to comment'},
-        vote:{success:'+2 points for your vote!',already_today:'You already voted today',already_voted:'You already voted this creation',login_required:'Log in to vote'},
-        lightbox:{download:'Download',close:'Close'},        common:{loading:'Loading...'},
-        footer:{studio:'Studio',points:'Points',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},        toast:{vote_error:'VOTE ERROR: ',comment_error:'COMMENT ERROR: ',gallery_error:'GALLERY ERROR: '}
-    }
-};
-
-var currentGalleryLang = 'fr';
-
-function tGallery(key) {
-    var keys = key.split('.');
-    var val = GALLERY_I18N[currentGalleryLang];
-    for (var i = 0; i < keys.length; i++) {
-        if (val && typeof val === 'object') val = val[keys[i]];
-        else return key;
-    }
-    return val || key;
-}
-
-function applyGalleryTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n');
-        var val = tGallery(key);
-        if (val !== key) el.textContent = val;
-    });    
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n-placeholder');
-        var val = tGallery(key);
-        if (val !== key) el.placeholder = val;
-    });
-}
-
-function changeGalleryLang(lang) {
-    currentGalleryLang = lang;
-    localStorage.setItem('pixora_lang', lang);
-    document.documentElement.lang = lang;
-    var sel = document.getElementById('lang-select');
-    if (sel) sel.value = lang;
-    applyGalleryTranslations();
-}
-
-function detectGalleryLang() {
-    var saved = localStorage.getItem('pixora_lang');
-    if (saved && (saved === 'fr' || saved === 'en')) return saved;
-    var nav = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
-    if (nav.indexOf('en') !== -1) return 'en';
-    return 'fr';
-}
-
-// =============================================
-// SUPABASE
-// =============================================var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-var BUCKET = 'pixora-gallery';
-var lbUrl = '';
-var currentCommentFile = '';
-
-// =============================================
-// LIMITES DYNAMIQUES DEPUIS ADMIN
-// =============================================
-var VOTE_LIMIT = 1;
-var COMMENT_LIMIT = 1;
-
-async function loadTaskLimits() {
-    try {
-        var result = await db.from('admin_config').select('value').eq('key', 'internal_tasks').single();
-        if (result.data && result.data.value) {
-            var tasks = result.data.value;
-            for (var i = 0; i < tasks.length; i++) {
-                if (tasks[i].type === 'vote' && tasks[i].active) {
-                    VOTE_LIMIT = tasks[i].limit || 1;
-                }
-                if (tasks[i].type === 'comment' && tasks[i].active) {                    
-                    COMMENT_LIMIT = tasks[i].limit || 1;
-                }
-            }
-        }
-    } catch(e) {
-        console.error('Load task limits error:', e);
-    }
-}
-
-// =============================================
-// TOAST
-// =============================================
-function showToast(message, type) {
-    type = type || 'success';
-    var t = document.getElementById('toast');
-    var icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
-    t.innerHTML = '<i class="fas ' + icon + '"></i><span id="toast-text">' + message + '</span>';
-    t.className = 'toast-notification show ' + type;
-    setTimeout(function() { t.classList.remove('show'); }, 5000);
-}
-
-// =============================================
-// USER MENU
-// =============================================
-function toggleUserMenu(e) { if (e) e.preventDefault(); document.getElementById('user-menu').classList.toggle('show'); }
-function closeUserMenu() { document.getElementById('user-menu').classList.remove('show'); }
-document.addEventListener('click', function(e) {
-    var menu = document.getElementById('user-menu'); var avatar = document.getElementById('user-avatar'); var mob = document.getElementById('mob-profile');    if (!menu.contains(e.target) && !avatar.contains(e.target) && !mob.contains(e.target)) closeUserMenu();});
-
-async function doLogout() { await db.auth.signOut(); closeUserMenu(); updateUI(); setTimeout(function() { location.reload(); }, 800); }
-async function getUser() { var r = await db.auth.getUser(); return r.data.user; }
-async function getUserData() {
-    var u = await getUser(); if (!u) return { points: 0, streak: 1, user_id: null };
-    var r = await db.from('user_data').select('*').eq('user_id', u.id).single();
-    var d = r.data || { points: 0, streak: 1 }; d.user_id = u.id; return d;
-}
-
-async function updateUI() {
-    var logged = await getUser();
-    document.getElementById('user-stats').classList.toggle('show', !!logged);
-    document.getElementById('user-avatar').classList.toggle('show', !!logged);
-    document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
-    if (logged) {
-        var d = await getUserData();
-        document.getElementById('header-points').textContent = d.points || 0;
-        document.getElementById('nav-points-badge').textContent = d.points || 0;
+        document.getElementById('header-points').textContent = d.points || 0;        document.getElementById('nav-points-badge').textContent = d.points || 0;
         document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';
         document.getElementById('menu-points').textContent = d.points || 0;        
         var name = logged.user_metadata && logged.user_metadata.name ? logged.user_metadata.name : 'Utilisateur';
@@ -831,6 +421,7 @@ document.getElementById('lightbox').addEventListener('click', function(e) { if (
 async function dlLB() {
     if (!lbUrl) return;
     try { var r = await fetch(lbUrl); var b = await r.blob(); var u = URL.createObjectURL(b); var a = document.createElement('a'); a.href = u; a.download = 'ia-pixora-' + Date.now() + '.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); } catch(e) { window.open(lbUrl, '_blank'); }}
+
 async function dlDirect(btn) {
     var card = btn.closest('.result-card'); var img = card.querySelector('img');
     if (!img || !img.src) return;
@@ -848,8 +439,7 @@ async function doVote(fileName, btnElement) {
         startOfDay.setHours(0, 0, 0, 0);
         var todayVotes = await db.from('votes').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfDay.toISOString());
         if (todayVotes.error) throw new Error(todayVotes.error.message);
-        if (todayVotes.count >= VOTE_LIMIT) {
-            showToast(tGallery('vote.already_today') + ' (' + VOTE_LIMIT + '/jour)', 'error');
+        if (todayVotes.count >= VOTE_LIMIT) {            showToast(tGallery('vote.already_today') + ' (' + VOTE_LIMIT + '/jour)', 'error');
             return;        
         }
         var existing = await db.from('votes').select('id').eq('user_id', user.id).eq('creation_id', fileName).limit(1);
@@ -880,7 +470,8 @@ async function doVote(fileName, btnElement) {
         setTimeout(function() { window.location.href = 'earn.html?validated=vote'; }, 1500);
     } catch(e) {        console.error('Vote error:', e);
         showToast(tGallery('toast.vote_error') + e.message, 'error');
-    }}
+    }
+}
 
 // =============================================
 // COMMENTAIRE (avec i18n)
@@ -897,8 +488,7 @@ function closeCommentModal() {
     currentCommentFile = '';
 }
 document.getElementById('comment-modal').addEventListener('click', function(e) { if (e.target === this) closeCommentModal(); });
-document.getElementById('comment-input').addEventListener('input', function() {
-    var len = this.value.trim().length;    
+document.getElementById('comment-input').addEventListener('input', function() {    var len = this.value.trim().length;    
     document.getElementById('comment-char').textContent = len + '/10 min';
     document.getElementById('comment-char').style.color = len >= 10 ? 'var(--success)' : 'var(--dim)';
 });
@@ -929,7 +519,8 @@ async function submitComment() {
             db.from('user_data').update({ points: newPts, total_earned: newEarned }).eq('user_id', user.id),            db.from('transactions').insert({ user_id: user.id, type: 'earned', title: 'Commenter une création', amount: 2 }),
             db.from('task_completions').insert({ user_id: user.id, task_name: 'Commenter une création', task_type: 'comment', points: 2 })
         ]);
-        document.getElementById('header-points').textContent = newPts;        document.getElementById('menu-points').textContent = newPts;
+        document.getElementById('header-points').textContent = newPts;
+        document.getElementById('menu-points').textContent = newPts;
         document.getElementById('nav-points-badge').textContent = newPts;
         closeCommentModal();
         showToast(tGallery('comment.success'), 'success');
@@ -942,12 +533,11 @@ async function submitComment() {
 }
 
 // =============================================
-// GALERIE (avec i18n)
+// GALERIE DYNAMIQUE (images utilisateur, effacées après 1h)
 // =============================================
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
-    try {        
-        var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
+    try {                var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
         if (result.error) throw new Error(result.error.message);
         if (!result.data || result.data.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>' + tGallery('gallery.empty') + '<br>' + tGallery('gallery.empty_cta') + '</p></div>';
@@ -978,7 +568,8 @@ async function loadGallery() {
                 return { name: item.name, url: item.url, voteCount: results[0].count || 0, commentCount: results[1].count || 0, userVoted: results[2].data && results[2].data.length > 0 };
             }).catch(function(err) {
                 console.error('Stats error for ' + item.name + ':', err);
-                return { name: item.name, url: item.url, voteCount: 0, commentCount: 0, userVoted: false };            });
+                return { name: item.name, url: item.url, voteCount: 0, commentCount: 0, userVoted: false };
+            });
         });
         var stats = await Promise.all(promises);
         grid.innerHTML = '';
@@ -995,8 +586,7 @@ async function loadGallery() {
                 '</div>' +
                 '<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>' +
                 '</div>';            
-            card.onclick = function() { openLB(s.url); };
-            grid.appendChild(card);
+            card.onclick = function() { openLB(s.url); };            grid.appendChild(card);
         });
     } catch (err) {
         console.error('Gallery error:', err);
