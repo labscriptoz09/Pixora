@@ -47,8 +47,7 @@
         "register_title": "Sign Up",
         "email": "Email",
         "password": "Password",
-        "password_min": "Min. 8 characters",
-        "username": "Username",
+        "password_min": "Min. 8 characters",        "username": "Username",
         "login_btn": "Log In",
         "register_btn": "Create Account",
         "or_continue": "or continue with",
@@ -96,5 +95,16 @@
         "es": "Español",
         "pt": "Português",
         "ar": "العربية"
+    },
+    "faq": {        "q1": "Is IA Pixora really free?",
+        "a1": "Yes, IA Pixora is 100% free for generating AI images and videos. You get 3 free generations without signup. After that, a free account gives you unlimited access + 15 bonus points.",
+        "q2": "How to generate an image without signup?",
+        "a2": "You can generate up to 3 images for free without creating an account. Just enter a prompt in the studio and click Generate. After 3 generations, a popup offers you to sign up to continue.",
+        "q3": "What's the difference between IA Pixora and Midjourney?",
+        "a3": "IA Pixora is completely free, no subscription or credit card required. Midjourney requires a paid subscription. IA Pixora also offers badges, a referral system and points to reward engagement.",
+        "q4": "Can I use generated images commercially?",
+        "a4": "Yes, images generated with IA Pixora are royalty-free for personal or commercial use, as long as you comply with the terms of service.",
+        "q5": "How many free generations per day?",
+        "a5": "You get 3 free generations without signup. Once registered, you receive +15 bonus points and can generate as many images as you want. Points can be earned through voting, commenting, referrals and streaks."
     }
 }
