@@ -18,6 +18,7 @@
         "subtitle": "Professional AI images. Free. No limits."
     },
     "generator": {
+        "prompt_title": "Describe your image",
         "placeholder": "Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic lighting 8k",
         "image": "Image",
         "video": "Video",
@@ -46,8 +47,8 @@
         "login_title": "Login",
         "register_title": "Sign Up",
         "email": "Email",
-        "password": "Password",
-        "password_min": "Min. 8 characters",        "username": "Username",
+        "password": "Password",        "password_min": "Min. 8 characters",
+        "username": "Username",
         "login_btn": "Log In",
         "register_btn": "Create Account",
         "or_continue": "or continue with",
@@ -95,8 +96,8 @@
         "es": "Español",
         "pt": "Português",
         "ar": "العربية"
-    },
-    "faq": {        "q1": "Is IA Pixora really free?",
+    },    "faq": {
+        "q1": "Is IA Pixora really free?",
         "a1": "Yes, IA Pixora is 100% free for generating AI images and videos. You get 3 free generations without signup. After that, a free account gives you unlimited access + 15 bonus points.",
         "q2": "How to generate an image without signup?",
         "a2": "You can generate up to 3 images for free without creating an account. Just enter a prompt in the studio and click Generate. After 3 generations, a popup offers you to sign up to continue.",
