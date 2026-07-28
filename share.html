@@ -4,14 +4,12 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZXXYQRBQ"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TDZXXYQRBQ');</script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     
-    <!-- SEO DYNAMIQUE (sera mis à jour par JS) -->
     <title>Regarde cette image IA créée avec IA Pixora 🎨</title>
     <meta name="description" content="Cette image a été générée gratuitement avec IA Pixora. Crée la tienne en quelques secondes, sans inscription !">
     <link rel="canonical" href="https://iapixora.com/share.html">
     
-    <!-- OG / Facebook / WhatsApp / Telegram / LinkedIn -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="IA Pixora">
     <meta property="og:url" content="https://iapixora.com/share.html">
@@ -19,7 +17,6 @@
     <meta property="og:description" content="Créée gratuitement avec IA Pixora. Crée la tienne maintenant !">
     <meta property="og:image" content="https://iapixora.com/og-image.jpg">
     
-    <!-- Twitter / X -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Regarde cette image IA créée avec IA Pixora 🎨">
     <meta property="twitter:description" content="Créée gratuitement avec IA Pixora. Crée la tienne maintenant !">
@@ -34,48 +31,77 @@
     <style>
         :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center;-webkit-font-smoothing:antialiased}
-        .container{max-width:500px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
-        .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);margin-bottom:0.5rem}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem;text-align:center;-webkit-font-smoothing:antialiased}
+        .container{max-width:600px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.2rem}
+        .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);margin-bottom:0.3rem}
         .logo svg{width:32px;height:32px}
         .logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .image-wrapper{width:100%;aspect-ratio:1;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.2);position:relative;background:var(--surf)}
-        .image-wrapper img{width:100%;height:100%;object-fit:cover;display:block}
-        .image-wrapper.error{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.8rem;padding:2rem}
+        .badge-free{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
+        
+        /* IMAGE GRANDE TAILLE */
+        .image-wrapper{width:100%;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.25);position:relative;background:var(--surf);cursor:zoom-in}
+        .image-wrapper img{width:100%;height:auto;display:block;transition:transform 0.3s}
+        .image-wrapper:hover img{transform:scale(1.02)}
+        .image-wrapper.loading{min-height:300px;display:flex;align-items:center;justify-content:center}
+        .image-wrapper.error{min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.8rem;padding:2rem;cursor:default}
         .image-wrapper.error i{font-size:2.5rem;color:var(--muted)}
         .image-wrapper.error p{color:var(--muted);font-size:0.9rem}
+        .zoom-hint{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);padding:4px 10px;border-radius:8px;font-size:0.65rem;color:rgba(255,255,255,0.8);pointer-events:none;display:flex;align-items:center;gap:4px}
+                /* BOUTONS ACTION */
+        .actions{display:flex;gap:0.8rem;width:100%;flex-wrap:wrap;justify-content:center}
+        .btn-create{display:inline-flex;align-items:center;gap:0.6rem;padding:1rem 2rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;text-decoration:none;box-shadow:0 8px 30px rgba(139,92,246,0.4);transition:all 0.3s;border:none;cursor:pointer;flex:1;justify-content:center;min-width:200px}
+        .btn-create:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,0.6)}
+        .btn-download{display:inline-flex;align-items:center;gap:0.5rem;padding:1rem 1.5rem;background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text);border-radius:14px;font-weight:600;font-size:0.9rem;text-decoration:none;transition:all 0.2s;cursor:pointer;flex:1;justify-content:center;min-width:160px}
+        .btn-download:hover{background:rgba(255,255,255,0.15);border-color:var(--prim);transform:translateY(-2px)}
+        .btn-secondary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--muted);border-radius:12px;font-weight:600;font-size:0.8rem;text-decoration:none;transition:all 0.2s}
+        .btn-secondary:hover{background:rgba(255,255,255,0.1);color:var(--text)}
+        
         .cta-title{font-size:1.4rem;font-weight:800;line-height:1.3;letter-spacing:-0.02em}
-        .cta-sub{font-size:0.9rem;color:var(--muted);line-height:1.5;max-width:380px}
-        .btn-create{display:inline-flex;align-items:center;gap:0.6rem;padding:1rem 2rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;text-decoration:none;box-shadow:0 8px 30px rgba(139,92,246,0.4);transition:all 0.3s;border:none;cursor:pointer}
-        .btn-create:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,0.6)}        .btn-secondary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text);border-radius:12px;font-weight:600;font-size:0.85rem;text-decoration:none;transition:all 0.2s;margin-top:0.5rem}
-        .btn-secondary:hover{background:rgba(255,255,255,0.12);border-color:var(--prim)}
-        .badge-free{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:0.5rem}
-        .footer{margin-top:2rem;font-size:0.7rem;color:var(--muted)}
+        .cta-sub{font-size:0.9rem;color:var(--muted);line-height:1.5;max-width:420px}
+        .footer{margin-top:1.5rem;font-size:0.7rem;color:var(--muted)}
         .footer a{color:var(--prim);text-decoration:none}
-        @media(max-width:400px){.cta-title{font-size:1.2rem}.btn-create{padding:0.9rem 1.5rem;font-size:0.9rem}}
+        
+        /* LIGHTBOX ZOOM */
+        .lightbox{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.95);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:1rem;cursor:zoom-out}
+        .lightbox.active{display:flex}
+        .lightbox img{max-width:95vw;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
+        .lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;cursor:pointer;transition:all 0.2s;border:none}
+        .lightbox-close:hover{background:rgba(239,68,68,0.8);transform:rotate(90deg)}
+        
+        @media(max-width:400px){.cta-title{font-size:1.15rem}.btn-create,.btn-download{padding:0.85rem 1rem;font-size:0.85rem;min-width:auto}.actions{gap:0.5rem}}
     </style>
 </head>
 <body>
+    <!-- LIGHTBOX ZOOM -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+        <img id="lb-img" src="" alt="Zoom plein écran">
+    </div>
+
     <div class="container">
         <a href="index.html" class="logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#sg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
             <span>IA Pixora</span>
         </a>
 
-        <div class="badge-free"><i class="fas fa-check-circle"></i> Générée gratuitement</div>
+        <div class="badge-free"><i class="fas fa-check-circle"></i> <span id="badge-text">Générée gratuitement</span></div>
 
-        <div class="image-wrapper" id="img-container">
+        <div class="image-wrapper loading" id="img-container" onclick="openLightbox()">
             <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:var(--muted)"></i>
         </div>
 
         <h1 class="cta-title" id="cta-title">Cette image a été créée avec IA Pixora 🎨</h1>
         <p class="cta-sub" id="cta-sub">Gratuit. Sans inscription. Sans limite.<br>Crée ta propre image IA en quelques secondes.</p>
 
-        <a href="index.html" class="btn-create" id="btn-create">
-            <i class="fas fa-sparkles"></i> Créer mon image gratuitement
-        </a>
-        <a href="gallery.html" class="btn-secondary">
-            <i class="fas fa-images"></i> Voir la galerie
+        <div class="actions">
+            <a href="index.html" class="btn-create" id="btn-create">
+                <i class="fas fa-sparkles"></i> <span id="btn-create-text">Créer mon image gratuitement</span>
+            </a>            <button class="btn-download" id="btn-download" onclick="downloadImage()" style="display:none">
+                <i class="fas fa-download"></i> <span id="btn-dl-text">Télécharger</span>
+            </button>
+        </div>
+        <a href="gallery.html" class="btn-secondary" id="btn-gallery">
+            <i class="fas fa-images"></i> <span id="btn-gallery-text">Voir la galerie</span>
         </a>
 
         <div class="footer">
@@ -90,13 +116,18 @@
         var container = document.getElementById('img-container');
         var ctaTitle = document.getElementById('cta-title');
         var ctaSub = document.getElementById('cta-sub');
-        var btnCreate = document.getElementById('btn-create');
+        var btnCreateText = document.getElementById('btn-create-text');
+        var btnDlText = document.getElementById('btn-dl-text');
+        var btnGalleryText = document.getElementById('btn-gallery-text');
+        var badgeText = document.getElementById('badge-text');
+        var btnDownload = document.getElementById('btn-download');
         var ogImage = document.querySelector('meta[property="og:image"]');
         var twImage = document.querySelector('meta[property="twitter:image"]');
-        var pageTitle = document.title;
+        var loadedImgSrc = '';
 
-        // Détection langue simple
-        var lang = 'fr';        var saved = localStorage.getItem('pixora_lang');
+        // Détection langue
+        var lang = 'fr';
+        var saved = localStorage.getItem('pixora_lang');
         if(saved === 'en') lang = 'en';
         else {
             var nav = (navigator.language || '').toLowerCase();
@@ -108,23 +139,26 @@
                 title: 'Cette image a été créée avec IA Pixora 🎨',
                 sub: 'Gratuit. Sans inscription. Sans limite.<br>Crée ta propre image IA en quelques secondes.',
                 btn: 'Créer mon image gratuitement',
+                download: 'Télécharger',
                 gallery: 'Voir la galerie',
                 badge: 'Générée gratuitement',
                 error_title: 'Image expirée ou introuvable',
                 error_sub: 'Les images partagées expirent après 1 heure.<br>Crée ta propre image maintenant !',
                 meta_title: 'Regarde cette image IA créée avec IA Pixora 🎨',
-                meta_desc: 'Cette image a été générée gratuitement avec IA Pixora. Crée la tienne en quelques secondes, sans inscription !'
+                meta_desc: 'Cette image a été générée gratuitement avec IA Pixora. Crée la tienne en quelques secondes, sans inscription !',                zoom_hint: '🔍 Cliquer pour agrandir'
             },
             en: {
                 title: 'This image was created with IA Pixora 🎨',
                 sub: 'Free. No signup. No limits.<br>Create your own AI image in seconds.',
                 btn: 'Create my image for free',
+                download: 'Download',
                 gallery: 'View gallery',
                 badge: 'Generated for free',
                 error_title: 'Image expired or not found',
                 error_sub: 'Shared images expire after 1 hour.<br>Create your own image now!',
                 meta_title: 'Check out this AI image made with IA Pixora 🎨',
-                meta_desc: 'This image was generated for free with IA Pixora. Create yours in seconds, no signup required!'
+                meta_desc: 'This image was generated for free with IA Pixora. Create yours in seconds, no signup required!',
+                zoom_hint: '🔍 Click to enlarge'
             }
         };
 
@@ -133,9 +167,10 @@
         // Appliquer les textes
         ctaTitle.textContent = t.title;
         ctaSub.innerHTML = t.sub;
-        btnCreate.innerHTML = '<i class="fas fa-sparkles"></i> ' + t.btn;
-        document.querySelector('.btn-secondary').innerHTML = '<i class="fas fa-images"></i> ' + t.gallery;
-        document.querySelector('.badge-free').innerHTML = '<i class="fas fa-check-circle"></i> ' + t.badge;
+        btnCreateText.textContent = t.btn;
+        btnDlText.textContent = t.download;
+        btnGalleryText.textContent = t.gallery;
+        badgeText.textContent = t.badge;
         document.title = t.meta_title;
         document.querySelector('meta[name="description"]').content = t.meta_desc;
         document.querySelector('meta[property="og:title"]').content = t.meta_title;
@@ -145,14 +180,23 @@
         document.documentElement.lang = lang;
 
         if(!imgUrl) {
-            showError(t.error_title, t.error_sub);            return;
+            showError(t.error_title, t.error_sub);
+            return;
         }
 
         // Charger l'image
         var img = new Image();
         img.onload = function() {
+            container.className = 'image-wrapper';
             container.innerHTML = '';
             container.appendChild(img);
+            // Hint zoom
+            var hint = document.createElement('div');
+            hint.className = 'zoom-hint';
+            hint.innerHTML = t.zoom_hint;
+            container.appendChild(hint);            // Afficher bouton download
+            btnDownload.style.display = 'inline-flex';
+            loadedImgSrc = imgUrl;
             // Mettre à jour OG image dynamiquement
             if(ogImage) ogImage.content = imgUrl;
             if(twImage) twImage.content = imgUrl;
@@ -166,9 +210,47 @@
         function showError(title, sub) {
             container.className = 'image-wrapper error';
             container.innerHTML = '<i class="fas fa-clock"></i><p>' + title + '</p>';
+            container.onclick = null;
+            container.style.cursor = 'default';
             ctaTitle.textContent = title;
             ctaSub.innerHTML = sub;
+            btnDownload.style.display = 'none';
         }
+
+        // Lightbox zoom
+        window.openLightbox = function() {
+            if(!loadedImgSrc) return;
+            var lb = document.getElementById('lightbox');
+            document.getElementById('lb-img').src = loadedImgSrc;
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeLightbox = function() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        // Download
+        window.downloadImage = function() {
+            if(!loadedImgSrc) return;
+            fetch(loadedImgSrc).then(function(r){return r.blob()}).then(function(blob){
+                var u = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = u;
+                a.download = 'ia-pixora-' + Date.now() + '.jpg';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(u);
+            }).catch(function(){                window.open(loadedImgSrc, '_blank');
+            });
+        };
+
+        // ESC ferme lightbox
+        document.addEventListener('keydown', function(e) {
+            if(e.key === 'Escape') closeLightbox();
+        });
     })();
     </script>
 </body>
