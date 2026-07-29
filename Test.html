@@ -13,12 +13,18 @@
             padding: 16px;
             min-height: 100vh;
         }
-        .container { max-width: 600px; margin: 0 auto; }
+        .container { max-width: 700px; margin: 0 auto; }
         h1 {
             font-size: 22px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             color: #6c8cff;
+        }
+        .sub {
+            text-align: center;
+            color: #8a9bb5;
+            font-size: 14px;
+            margin-bottom: 20px;
         }
         .card {
             background: #161c26;
@@ -75,44 +81,20 @@
             transition: background 0.2s;
         }
         .btn:active { background: #4a6fd0; }
-        .btn:disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        #loader {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #2a3440;
-            border-top: 4px solid #6c8cff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #1e2836;
-        }
-        .result-item:last-child { border-bottom: none; }
-        .url-input {
+        textarea {
             width: 100%;
-            padding: 12px 16px;
+            height: 250px;
+            padding: 12px;
             border-radius: 12px;
             border: 1px solid #2a3440;
             background: #0f141c;
             color: #e8edf5;
-            font-size: 16px;
+            font-size: 13px;
+            font-family: monospace;
+            resize: vertical;
             margin-bottom: 12px;
         }
-        .url-input:focus {
+        textarea:focus {
             outline: none;
             border-color: #6c8cff;
         }
@@ -122,10 +104,6 @@
             color: #5a6a80;
             margin-top: 20px;
         }
-        .inline-icon { font-size: 18px; margin-right: 6px; }
-        .warning-text { color: #ffd97d; }
-        .error-text { color: #ff7d7d; }
-        .good-text { color: #7ddfa0; }
         .score-box {
             display: flex;
             justify-content: center;
@@ -133,44 +111,97 @@
             flex-wrap: wrap;
             padding: 10px 0;
         }
-        .score-item {
-            text-align: center;
+        .score-item { text-align: center; }
+        .score-number { font-size: 28px; font-weight: 700; }
+        .good-text { color: #7ddfa0; }
+        .warning-text { color: #ffd97d; }
+        .error-text { color: #ff7d7d; }
+        .howto {
+            background: #1a2430;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #8a9bb5;
+            border: 1px solid #2a3a4a;
         }
-        .score-number {
-            font-size: 28px;
+        .howto strong { color: #e8edf5; }
+        .step {
+            display: flex;
+            gap: 10px;
+            margin: 8px 0;
+            align-items: flex-start;
+        }
+        .step-num {
+            background: #6c8cff;
+            color: #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
             font-weight: 700;
+            flex-shrink: 0;
         }
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .tag {
+            background: #1e2836;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+        }
+        .inline-icon { margin-right: 6px; }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>🤖 AuditBot</h1>
+    <div class="sub">Analyse SEO de votre page</div>
 
-    <div class="card">
-        <label class="label" style="margin-top:0;">🌐 URL à analyser</label>
-        <input type="url" id="targetUrl" class="url-input" value="https://iapixora.com" />
-        <button class="btn" id="runBtn">🚀 Lancer l'audit</button>
+    <div class="howto">
+        <div style="color:#e8edf5;font-weight:600;margin-bottom:8px;">📖 Comment faire ?</div>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div>Ouvrez <strong>iapixora.com</strong> dans un autre onglet</div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div>Faites <strong>"Afficher la source"</strong> ou <strong>"View Page Source"</strong> (CTRL+U sur PC, ou tapez <strong>view-source:</strong> devant l'URL)</div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div>Copiez tout le code source et <strong>collez-le</strong> ci-dessous</div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div>Cliquez sur <strong>"🔍 Analyser"</strong></div>
+        </div>
     </div>
 
-    <div id="loader">
-        <div class="spinner"></div>
-        <div style="color:#8a9bb5;">Analyse en cours... ⏳</div>
-        <div style="font-size:13px;color:#5a6a80;margin-top:6px;">(peut prendre 15-20 secondes)</div>
+    <div class="card">
+        <label class="label" style="margin-top:0;">📄 Collez le code HTML source ici</label>
+        <textarea id="htmlInput" placeholder="Collez le code source de votre page ici..."></textarea>
+        <button class="btn" id="runBtn">🔍 Analyser</button>
     </div>
 
     <div id="results"></div>
 
     <div class="footer">
-        AuditBot v2.0 • 100% côté client • Aucune donnée envoyée
+        AuditBot v3.0 • 100% côté client • Aucune donnée envoyée
     </div>
 </div>
 
 <script>
     (function() {
         const runBtn = document.getElementById('runBtn');
-        const loader = document.getElementById('loader');
         const resultsDiv = document.getElementById('results');
-        const urlInput = document.getElementById('targetUrl');
+        const htmlInput = document.getElementById('htmlInput');
 
         function getStatus(status) {
             if (status === 'OK') return '<span class="status ok">✅ OK</span>';
@@ -191,99 +222,66 @@
             `;
         }
 
-        async function fetchViaProxy(url) {
-            // Méthode 1: Utiliser le proxy CORS Anywhere
-            const proxyUrls = [
-                'https://api.allorigins.win/raw?url=',
-                'https://corsproxy.io/?',
-                'https://api.codetabs.com/v1/proxy?quest='
-            ];
-
-            for (const proxy of proxyUrls) {
-                try {
-                    const response = await fetch(proxy + encodeURIComponent(url), {
-                        timeout: 15000
-                    });
-                    if (response.ok) {
-                        const text = await response.text();
-                        if (text && text.length > 100) {
-                            return text;
-                        }
-                    }
-                } catch (e) {
-                    console.log('Proxy failed:', proxy, e);
-                }
-            }
-            throw new Error('Tous les proxies ont échoué. Vérifiez que le site est accessible.');
-        }
-
-        function analyzeHTML(htmlText, baseUrl) {
+        function analyzeHTML(htmlText) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlText, 'text/html');
 
-            // Extraire les données
             const title = doc.querySelector('title')?.textContent?.trim() || '';
             const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
             const h1s = Array.from(doc.querySelectorAll('h1')).map(h => h.textContent.trim()).filter(Boolean);
             const h2s = Array.from(doc.querySelectorAll('h2')).map(h => h.textContent.trim()).filter(Boolean);
+            const h3s = Array.from(doc.querySelectorAll('h3')).map(h => h.textContent.trim()).filter(Boolean);
             const images = doc.querySelectorAll('img');
             const missingAlt = Array.from(images).filter(img => !img.getAttribute('alt') || img.getAttribute('alt') === '').length;
-
-            // Liens internes
-            const domain = new URL(baseUrl).hostname;
-            const allLinks = Array.from(doc.querySelectorAll('a[href]'));
-            const internalLinks = allLinks
+            const links = doc.querySelectorAll('a[href]');
+            const internalLinks = Array.from(links)
                 .map(a => a.getAttribute('href'))
-                .filter(href => {
-                    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return false;
-                    try {
-                        const full = new URL(href, baseUrl).href;
-                        return full.includes(domain) && full !== baseUrl;
-                    } catch { return false; }
-                })
+                .filter(h => h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:') && !h.startsWith('tel:'))
                 .filter((v, i, a) => a.indexOf(v) === i)
-                .slice(0, 50);
+                .slice(0, 30);
 
-            // Mots-clés (contenu)
             const bodyText = doc.body?.textContent || '';
             const words = bodyText.toLowerCase().split(/\s+/).filter(w => w.length > 4 && !/^\d+$/.test(w));
             const freq = {};
             words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
             const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-            const keywords = sorted.slice(0, 10).map(([k]) => k);
+            const keywords = sorted.slice(0, 12).map(([k]) => k);
 
-            const wordCount = words.length;
-
-            // Balises meta robots
             const robots = doc.querySelector('meta[name="robots"]')?.getAttribute('content') || '';
+            const viewport = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
+            const charset = doc.querySelector('meta[charset]')?.getAttribute('charset') || '';
 
             return {
                 title,
                 description: metaDesc,
                 h1s,
                 h2s,
+                h3s,
                 images: images.length,
                 missing_alt: missingAlt,
-                internal_links: internalLinks,
+                links: internalLinks,
                 keywords,
-                word_count: wordCount,
+                word_count: words.length,
                 robots,
-                links_total: allLinks.length
+                viewport,
+                charset,
+                links_total: links.length
             };
         }
 
-        function displayResults(data, url) {
-            // Score global
+        function displayResults(data) {
             let score = 0;
             let total = 0;
 
             const checks = [
-                { name: 'Title', pass: data.title.length >= 30 && data.title.length <= 60 },
-                { name: 'Meta Description', pass: data.description.length >= 120 && data.description.length <= 160 },
-                { name: 'Balises H1', pass: data.h1s.length === 1 },
+                { name: 'Title (30-60 car.)', pass: data.title.length >= 30 && data.title.length <= 60 },
+                { name: 'Meta Desc (120-160 car.)', pass: data.description.length >= 120 && data.description.length <= 160 },
+                { name: '1 seule balise H1', pass: data.h1s.length === 1 },
                 { name: 'Images avec alt', pass: data.missing_alt === 0 },
-                { name: 'Nombre de mots', pass: data.word_count >= 300 },
-                { name: 'Liens internes', pass: data.internal_links.length > 0 }
+                { name: '≥ 300 mots', pass: data.word_count >= 300 },
+                { name: 'Liens internes présents', pass: data.links.length > 0 },
+                { name: 'Viewport présent', pass: data.viewport.length > 0 },
+                { name: 'Charset défini', pass: data.charset.length > 0 }
             ];
 
             checks.forEach(c => {
@@ -296,8 +294,7 @@
 
             let html = `
                 <div class="card" style="background:#1a2430;border-color:#2a3a4a;text-align:center;margin-bottom:16px;">
-                    <div style="font-size:14px;color:#8a9bb5;">📋 Analyse terminée pour</div>
-                    <div style="font-size:18px;font-weight:600;color:#6c8cff;word-break:break-all;">${url}</div>
+                    <div style="font-size:14px;color:#8a9bb5;">📊 Résultat de l'analyse</div>
                     <div class="score-box">
                         <div class="score-item">
                             <div class="score-number ${scoreColor}">${scorePercent}%</div>
@@ -308,127 +305,126 @@
                             <div style="font-size:12px;color:#8a9bb5;">Mots</div>
                         </div>
                         <div class="score-item">
-                            <div class="score-number">${data.internal_links.length}</div>
+                            <div class="score-number">${data.links.length}</div>
                             <div style="font-size:12px;color:#8a9bb5;">Liens internes</div>
                         </div>
+                        <div class="score-item">
+                            <div class="score-number">${data.images}</div>
+                            <div style="font-size:12px;color:#8a9bb5;">Images</div>
+                        </div>
                     </div>
+                    <div style="font-size:12px;color:#5a6a80;margin-top:4px;">${checks.filter(c => c.pass).length}/${checks.length} critères validés</div>
                 </div>
             `;
 
-            // === TITLE ===
+            // Title
             const titleOk = data.title.length >= 30 && data.title.length <= 60;
             html += createCard(
                 '📌 Balise Title',
-                `${data.title || 'Manquant'} <span class="badge">${data.title.length} caractères</span>`,
+                `${data.title || '❌ MANQUANT'} <span class="badge">${data.title.length} caractères</span>`,
                 titleOk ? 'OK' : 'WARNING'
             );
 
-            // === META DESCRIPTION ===
+            // Meta Description
             const descOk = data.description.length >= 120 && data.description.length <= 160;
             html += createCard(
                 '📝 Meta Description',
-                `${data.description || 'Manquante'} <span class="badge">${data.description.length} caractères</span>`,
+                `${data.description || '❌ MANQUANTE'} <span class="badge">${data.description.length} caractères</span>`,
                 descOk ? 'OK' : 'WARNING'
             );
 
-            // === H1 ===
+            // H1
             const h1Ok = data.h1s.length === 1;
             html += createCard(
                 '📰 Balises H1',
-                `${data.h1s.length > 0 ? data.h1s.join(' | ') : 'Aucune balise H1 trouvée'} <span class="badge">${data.h1s.length} trouvée(s)</span>`,
+                data.h1s.length > 0 ? data.h1s.map(h => `« ${h} »`).join(' · ') : '❌ Aucune H1 trouvée',
                 h1Ok ? 'OK' : 'WARNING'
             );
 
-            // === H2 ===
+            // H2
             html += createCard(
                 '📑 Balises H2',
-                data.h2s.length > 0 ? data.h2s.slice(0, 5).join(' | ') + (data.h2s.length > 5 ? ` ... (+${data.h2s.length - 5})` : '') : 'Aucune balise H2',
+                data.h2s.length > 0 ? data.h2s.slice(0, 5).map(h => `« ${h} »`).join(' · ') + (data.h2s.length > 5 ? ` (+${data.h2s.length - 5})` : '') : 'Aucune H2',
                 data.h2s.length > 0 ? 'OK' : 'WARNING'
             );
 
-            // === IMAGES ===
-            const imgOk = data.missing_alt === 0;
+            // Images
             html += createCard(
                 '🖼️ Images',
                 `${data.images} images · ${data.missing_alt} sans attribut "alt"`,
-                imgOk ? 'OK' : 'WARNING'
+                data.missing_alt === 0 ? 'OK' : 'WARNING'
             );
 
-            // === NOMBRE DE MOTS ===
-            const wordOk = data.word_count >= 300;
+            // Mots
             html += createCard(
                 '📊 Nombre de mots',
                 `${data.word_count} mots`,
-                wordOk ? 'OK' : 'WARNING'
+                data.word_count >= 300 ? 'OK' : 'WARNING'
             );
 
-            // === LIENS INTERNES ===
-            const links = data.internal_links || [];
-            const linksDisplay = links.length > 0
-                ? links.slice(0, 8).map(l => `<div style="font-size:13px;color:#8a9bb5;padding:2px 0;word-break:break-all;">→ ${l}</div>`).join('') + (links.length > 8 ? `<div style="font-size:13px;color:#5a6a80;margin-top:4px;">... et ${links.length - 8} autres</div>` : '')
-                : 'Aucun lien interne trouvé';
+            // Liens internes
+            const linksDisplay = data.links.length > 0
+                ? data.links.slice(0, 8).map(l => `<div style="font-size:13px;color:#8a9bb5;padding:2px 0;word-break:break-all;">→ ${l}</div>`).join('') + (data.links.length > 8 ? `<div style="font-size:13px;color:#5a6a80;margin-top:4px;">... et ${data.links.length - 8} autres</div>` : '')
+                : 'Aucun lien interne';
             html += createCard(
                 '🔗 Liens internes',
-                linksDisplay + `<div style="font-size:13px;color:#5a6a80;margin-top:6px;">Total : ${links.length} liens</div>`,
-                links.length > 0 ? 'OK' : 'WARNING'
+                linksDisplay,
+                data.links.length > 0 ? 'OK' : 'WARNING'
             );
 
-            // === MOTS-CLÉS ===
+            // Mots-clés
             html += createCard(
                 '🏷️ Mots-clés principaux',
-                data.keywords.length > 0 ? data.keywords.slice(0, 8).map(k => `<span style="background:#1e2836;padding:2px 8px;border-radius:12px;margin:2px;display:inline-block;">${k}</span>`).join(' ') : 'Aucun mot-clé détecté',
+                data.keywords.length > 0 ? `<div class="tag-cloud">${data.keywords.map(k => `<span class="tag">${k}</span>`).join('')}</div>` : 'Aucun détecté',
                 data.keywords.length > 0 ? 'OK' : 'WARNING'
             );
 
-            // === ROBOTS ===
+            // Viewport + Charset
             html += createCard(
-                '🤖 Meta Robots',
-                data.robots || 'Non spécifié (index, follow par défaut)',
-                data.robots.includes('noindex') ? 'WARNING' : 'OK'
+                '📱 Mobile Friendly',
+                `Viewport: ${data.viewport || '❌ Manquant'}`,
+                data.viewport.length > 0 ? 'OK' : 'ERROR'
+            );
+
+            html += createCard(
+                '🔤 Encodage',
+                data.charset || '❌ Non défini',
+                data.charset.length > 0 ? 'OK' : 'ERROR'
             );
 
             resultsDiv.innerHTML = html;
         }
 
-        async function runAudit() {
-            let url = urlInput.value.trim();
-            if (!url) {
-                alert('Veuillez entrer une URL valide.');
+        function runAudit() {
+            const htmlText = htmlInput.value.trim();
+            if (!htmlText) {
+                alert('Veuillez coller le code source de votre page.');
                 return;
             }
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
+
+            if (!htmlText.includes('<html') && !htmlText.includes('<!DOCTYPE')) {
+                alert('Le texte collé ne ressemble pas à du HTML. Assurez-vous d\'avoir copié le code source complet.');
+                return;
             }
 
-            runBtn.disabled = true;
-            loader.style.display = 'block';
-            resultsDiv.innerHTML = '';
-
             try {
-                const htmlText = await fetchViaProxy(url);
-                const data = analyzeHTML(htmlText, url);
-                displayResults(data, url);
+                const data = analyzeHTML(htmlText);
+                displayResults(data);
             } catch (err) {
                 resultsDiv.innerHTML = `
                     <div class="card" style="border-color:#6b1a1a;">
                         <div style="color:#ff7d7d;font-weight:600;">❌ Erreur</div>
                         <div style="margin-top:8px;color:#8a9bb5;">${err.message}</div>
-                        <div style="margin-top:12px;font-size:13px;color:#5a6a80;">
-                            💡 Vérifiez que le site est accessible et que l'URL est correcte.
-                        </div>
-                        <div style="margin-top:8px;font-size:13px;color:#5a6a80;">
-                            🔧 Essayez avec : <strong>https://iapixora.com</strong>
-                        </div>
+                        <div style="margin-top:12px;font-size:13px;color:#5a6a80;">Vérifiez que vous avez copié tout le code source.</div>
                     </div>
                 `;
-            } finally {
-                runBtn.disabled = false;
-                loader.style.display = 'none';
             }
         }
 
         runBtn.addEventListener('click', runAudit);
-        window.addEventListener('load', runAudit);
+
+        // Exemple pré-rempli pour tester (optionnel)
+        // htmlInput.value = '<!DOCTYPE html><html><head><title>Test</title></head><body><h1>Test</h1></body></html>';
     })();
 </script>
 </body>
