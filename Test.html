@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuditBot - Iapixora</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background: #0b0e14;
+            color: #e8edf5;
+            padding: 16px;
+            min-height: 100vh;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 {
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #6c8cff;
+        }
+        .card {
+            background: #161c26;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2a3440;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .ok { background: #1a6b3c; color: #7ddfa0; }
+        .error { background: #6b1a1a; color: #ff7d7d; }
+        .warning { background: #6b5a1a; color: #ffd97d; }
+        .label {
+            color: #8a9bb5;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 12px;
+            display: block;
+        }
+        .value {
+            font-size: 15px;
+            margin-top: 4px;
+            word-break: break-word;
+            padding: 8px 12px;
+            background: #0f141c;
+            border-radius: 8px;
+            border-left: 3px solid #6c8cff;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 12px;
+            background: #2a3440;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+        .btn {
+            background: #6c8cff;
+            color: #fff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:active { background: #4a6fd0; }
+        .btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        #loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #2a3440;
+            border-top: 4px solid #6c8cff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e2836;
+        }
+        .result-item:last-child { border-bottom: none; }
+        .score-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            background: #1e2836;
+        }
+        .score-good { background: #1a6b3c; color: #7ddfa0; }
+        .score-bad { background: #6b1a1a; color: #ff7d7d; }
+        .score-mid { background: #6b5a1a; color: #ffd97d; }
+        .url-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #2a3440;
+            background: #0f141c;
+            color: #e8edf5;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        .url-input:focus {
+            outline: none;
+            border-color: #6c8cff;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #5a6a80;
+            margin-top: 20px;
+        }
+        .inline-icon { font-size: 18px; margin-right: 6px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🤖 AuditBot</h1>
+
+    <div class="card">
+        <label class="label" style="margin-top:0;">🌐 URL à analyser</label>
+        <input type="url" id="targetUrl" class="url-input" value="https://iapixora.com" />
+        <button class="btn" id="runBtn">🚀 Lancer l'audit</button>
+    </div>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <div style="color:#8a9bb5;">Analyse en cours... ⏳</div>
+        <div style="font-size:13px;color:#5a6a80;margin-top:6px;">(peut prendre 10-15 secondes)</div>
+    </div>
+
+    <div id="results"></div>
+
+    <div class="footer">
+        AuditBot v1.0 • 100% côté client • Aucune donnée envoyée
+    </div>
+</div>
+
+<script>
+    (function() {
+        const runBtn = document.getElementById('runBtn');
+        const loader = document.getElementById('loader');
+        const resultsDiv = document.getElementById('results');
+        const urlInput = document.getElementById('targetUrl');
+
+        function getStatus(status) {
+            if (status === 'OK') return '<span class="status ok">✅ OK</span>';
+            if (status === 'ERROR') return '<span class="status error">❌ Erreur</span>';
+            if (status === 'WARNING') return '<span class="status warning">⚠️ Attention</span>';
+            return '';
+        }
+
+        function createCard(title, content, status = 'OK') {
+            return `
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <strong style="font-size:16px;">${title}</strong>
+                        ${getStatus(status)}
+                    </div>
+                    <div class="value">${content || '—'}</div>
+                </div>
+            `;
+        }
+
+        function analyzePage(data) {
+            let html = '';
+
+            // === TITLE ===
+            const title = data.title || 'Manquant';
+            const titleLen = title.length;
+            const titleOk = titleLen >= 30 && titleLen <= 60;
+            html += createCard(
+                '📌 Balise Title',
+                `${title} <span class="badge">${titleLen} caractères</span>`,
+                titleOk ? 'OK' : 'WARNING'
+            );
+
+            // === META DESCRIPTION ===
+            const desc = data.description || 'Manquante';
+            const descLen = desc.length;
+            const descOk = descLen >= 120 && descLen <= 160;
+            html += createCard(
+                '📝 Meta Description',
+                `${desc} <span class="badge">${descLen} caractères</span>`,
+                descOk ? 'OK' : 'WARNING'
+            );
+
+            // === H1 ===
+            const h1s = data.h1s && data.h1s.length > 0 ? data.h1s.join(' | ') : 'Aucune balise H1 trouvée';
+            const h1Ok = data.h1s && data.h1s.length === 1;
+            html += createCard(
+                '📰 Balises H1',
+                h1s + ` <span class="badge">${data.h1s ? data.h1s.length : 0} trouvée(s)</span>`,
+                h1Ok ? 'OK' : 'WARNING'
+            );
+
+            // === IMAGES ===
+            const imgText = `${data.images || 0} images · ${data.missing_alt || 0} sans attribut "alt"`;
+            const imgOk = data.missing_alt === 0;
+            html += createCard(
+                '🖼️ Images',
+                imgText,
+                imgOk ? 'OK' : 'WARNING'
+            );
+
+            // === NOMBRE DE MOTS ===
+            const wordOk = data.word_count >= 300;
+            html += createCard(
+                '📊 Nombre de mots',
+                `${data.word_count || 0} mots`,
+                wordOk ? 'OK' : 'WARNING'
+            );
+
+            // === LIENS INTERNES ===
+            const links = data.internal_links || [];
+            const linksDisplay = links.length > 0
+                ? links.slice(0, 10).map(l => `<div style="font-size:13px;color:#8a9bb5;padding:2px 0;">→ ${l}</div>`).join('') + (links.length > 10 ? `<div style="font-size:13px;color:#5a6a80;margin-top:4px;">... et ${links.length - 10} autres</div>` : '')
+                : 'Aucun lien interne trouvé';
+            html += createCard(
+                '🔗 Liens internes',
+                linksDisplay + `<div style="font-size:13px;color:#5a6a80;margin-top:6px;">Total : ${links.length} liens</div>`,
+                links.length > 0 ? 'OK' : 'WARNING'
+            );
+
+            // === Mots-clés (basique) ===
+            const keywords = data.keywords || [];
+            html += createCard(
+                '🏷️ Mots-clés détectés',
+                keywords.length > 0 ? keywords.slice(0, 8).join(' · ') : 'Aucun mot-clé détecté',
+                keywords.length > 0 ? 'OK' : 'WARNING'
+            );
+
+            return html;
+        }
+
+        async function runAudit() {
+            let url = urlInput.value.trim();
+            if (!url) {
+                alert('Veuillez entrer une URL valide.');
+                return;
+            }
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            runBtn.disabled = true;
+            loader.style.display = 'block';
+            resultsDiv.innerHTML = '';
+
+            try {
+                // Utilisation de l'API publique AllOrigins pour contourner CORS
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error('Impossible de récupérer la page (HTTP ' + response.status + ')');
+
+                const htmlText = await response.text();
+                if (!htmlText || htmlText.length < 50) throw new Error('La page est vide ou inaccessible');
+
+                // Parser le HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+
+                // Extraire les données
+                const title = doc.querySelector('title')?.textContent?.trim() || '';
+                const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+                const h1s = Array.from(doc.querySelectorAll('h1')).map(h => h.textContent.trim()).filter(Boolean);
+                const images = doc.querySelectorAll('img');
+                const missingAlt = Array.from(images).filter(img => !img.getAttribute('alt')).length;
+
+                // Liens internes
+                const domain = new URL(url).hostname;
+                const allLinks = Array.from(doc.querySelectorAll('a[href]'));
+                const internalLinks = allLinks
+                    .map(a => a.getAttribute('href'))
+                    .filter(href => {
+                        try {
+                            const full = new URL(href, url).href;
+                            return full.includes(domain) && full !== url;
+                        } catch { return false; }
+                    })
+                    .filter((v, i, a) => a.indexOf(v) === i) // uniq
+                    .slice(0, 50);
+
+                // Mots-clés (contenu)
+                const bodyText = doc.body?.textContent || '';
+                const words = bodyText.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+                const freq = {};
+                words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+                const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+                const keywords = sorted.slice(0, 10).map(([k]) => k);
+
+                const wordCount = words.length;
+
+                const data = {
+                    title,
+                    description: metaDesc,
+                    h1s,
+                    images: images.length,
+                    missing_alt: missingAlt,
+                    internal_links: internalLinks,
+                    keywords,
+                    word_count: wordCount
+                };
+
+                // Afficher les résultats
+                resultsDiv.innerHTML = `
+                    <div class="card" style="background:#1a2430;border-color:#2a3a4a;text-align:center;margin-bottom:16px;">
+                        <div style="font-size:14px;color:#8a9bb5;">📋 Analyse terminée pour</div>
+                        <div style="font-size:18px;font-weight:600;color:#6c8cff;">${url}</div>
+                    </div>
+                    ${analyzePage(data)}
+                `;
+
+            } catch (err) {
+                resultsDiv.innerHTML = `
+                    <div class="card" style="border-color:#6b1a1a;">
+                        <div style="color:#ff7d7d;font-weight:600;">❌ Erreur</div>
+                        <div style="margin-top:8px;color:#8a9bb5;">${err.message}</div>
+                        <div style="margin-top:12px;font-size:13px;color:#5a6a80;">
+                            💡 Vérifiez que le site est accessible et que l'URL est correcte.
+                        </div>
+                    </div>
+                `;
+            } finally {
+                runBtn.disabled = false;
+                loader.style.display = 'none';
+            }
+        }
+
+        runBtn.addEventListener('click', runAudit);
+        // Lancer automatiquement au chargement
+        window.addEventListener('load', runAudit);
+    })();
+</script>
+</body>
+</html>
