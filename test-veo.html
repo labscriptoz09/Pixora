@@ -13,7 +13,6 @@
         label{display:block;font-size:0.75rem;font-weight:600;color:#A1A1AA;margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.08em}
         input,textarea{width:100%;padding:0.8rem;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:1rem}
         input:focus,textarea:focus{border-color:#8B5CF6}
-        textarea{min-height:80px;resize:none}
         button{width:100%;padding:0.9rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:white;border:none;border-radius:10px;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.3s}
         button:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         button:disabled{opacity:0.5;cursor:not-allowed;transform:none}
@@ -34,7 +33,7 @@
         <input type="password" id="api-key" placeholder="AIzaSy...">
 
         <label>Prompt</label>
-        <textarea id="prompt" placeholder="A cat walking on a rainbow bridge, cinematic lighting, 720p">A cat walking on a rainbow bridge, cinematic lighting, 720p, 5 seconds</textarea>
+        <textarea id="prompt" placeholder="A cat walking on a rainbow bridge, cinematic lighting, 720p">A cat walking on a rainbow bridge, cinematic lighting, 720p, 8 seconds</textarea>
 
         <button id="btn-gen" onclick="generateVideo()">Générer la vidéo</button>
 
@@ -47,8 +46,8 @@
     <script>
     async function generateVideo() {
         var key = document.getElementById('api-key').value.trim();
-        var prompt = document.getElementById('prompt').value.trim();        var btn = document.getElementById('btn-gen');
-        var status = document.getElementById('status');
+        var prompt = document.getElementById('prompt').value.trim();
+        var btn = document.getElementById('btn-gen');        var status = document.getElementById('status');
         var video = document.getElementById('result-video');
 
         if (!key || !prompt) {
@@ -62,13 +61,16 @@
         showStatus('info', '🔄 Envoi de la requête à Veo 3.1...');
 
         try {
-            // Étape 1 : Lancer la génération asynchrone
+            // Étape 1: Lancer la génération asynchrone
             var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/veo-3.1-generate-preview:predictLongRunning?key=' + key, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     instances: [{ prompt: prompt }],
-                    parameters: { durationSeconds: 5, aspectRatio: '16:9' }
+                    parameters: {
+                        durationSeconds: 8,
+                        personGeneration: 'allow_all'
+                    }
                 })
             });
 
@@ -86,7 +88,7 @@
 
             showStatus('info', '⏳ Génération lancée. Polling en cours... (' + opName + ')');
 
-            // Étape 2 : Polling jusqu'à complétion
+            // Étape 2: Polling jusqu'à complétion
             var maxAttempts = 60;
             var attempt = 0;
             var done = false;
@@ -95,10 +97,10 @@
             while (!done && attempt < maxAttempts) {
                 await new Promise(r => setTimeout(r, 3000));
                 attempt++;
+                var pollRes = await fetch('https://generativelanguage.googleapis.com/v1beta/' + opName + '?key=' + key);
+                var pollData = await pollRes.json();
 
-                var pollRes = await fetch('https://generativelanguage.googleapis.com/v1beta/' + opName + '?key=' + key);                var pollData = await pollRes.json();
-
-                showStatus('info', '⏳ Polling... tentative ' + attempt + '/' + maxAttempts + ' — statut: ' + (pollData.done ? 'DONE' : pollData.metadata?.state || 'RUNNING'));
+                showStatus('info', '⏳ Polling... tentative ' + attempt + '/' + maxAttempts);
 
                 if (pollData.done) {
                     if (pollData.error) {
@@ -114,10 +116,10 @@
             }
 
             if (!videoUrl) {
-                throw new Error('Vidéo générée mais aucune URL trouvée dans la réponse.');
+                throw new Error('Vidéo générée mais aucune URL trouvée.');
             }
 
-            // Étape 3 : Afficher la vidéo
+            // Étape 3: Afficher la vidéo
             video.src = videoUrl;
             video.style.display = 'block';
             video.play();
