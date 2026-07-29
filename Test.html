@@ -102,20 +102,6 @@
             border-bottom: 1px solid #1e2836;
         }
         .result-item:last-child { border-bottom: none; }
-        .score-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            background: #1e2836;
-        }
-        .score-good { background: #1a6b3c; color: #7ddfa0; }
-        .score-bad { background: #6b1a1a; color: #ff7d7d; }
-        .score-mid { background: #6b5a1a; color: #ffd97d; }
         .url-input {
             width: 100%;
             padding: 12px 16px;
@@ -137,6 +123,23 @@
             margin-top: 20px;
         }
         .inline-icon { font-size: 18px; margin-right: 6px; }
+        .warning-text { color: #ffd97d; }
+        .error-text { color: #ff7d7d; }
+        .good-text { color: #7ddfa0; }
+        .score-box {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 10px 0;
+        }
+        .score-item {
+            text-align: center;
+        }
+        .score-number {
+            font-size: 28px;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -152,13 +155,13 @@
     <div id="loader">
         <div class="spinner"></div>
         <div style="color:#8a9bb5;">Analyse en cours... ⏳</div>
-        <div style="font-size:13px;color:#5a6a80;margin-top:6px;">(peut prendre 10-15 secondes)</div>
+        <div style="font-size:13px;color:#5a6a80;margin-top:6px;">(peut prendre 15-20 secondes)</div>
     </div>
 
     <div id="results"></div>
 
     <div class="footer">
-        AuditBot v1.0 • 100% côté client • Aucune donnée envoyée
+        AuditBot v2.0 • 100% côté client • Aucune donnée envoyée
     </div>
 </div>
 
@@ -188,44 +191,166 @@
             `;
         }
 
-        function analyzePage(data) {
-            let html = '';
+        async function fetchViaProxy(url) {
+            // Méthode 1: Utiliser le proxy CORS Anywhere
+            const proxyUrls = [
+                'https://api.allorigins.win/raw?url=',
+                'https://corsproxy.io/?',
+                'https://api.codetabs.com/v1/proxy?quest='
+            ];
+
+            for (const proxy of proxyUrls) {
+                try {
+                    const response = await fetch(proxy + encodeURIComponent(url), {
+                        timeout: 15000
+                    });
+                    if (response.ok) {
+                        const text = await response.text();
+                        if (text && text.length > 100) {
+                            return text;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Proxy failed:', proxy, e);
+                }
+            }
+            throw new Error('Tous les proxies ont échoué. Vérifiez que le site est accessible.');
+        }
+
+        function analyzeHTML(htmlText, baseUrl) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+
+            // Extraire les données
+            const title = doc.querySelector('title')?.textContent?.trim() || '';
+            const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+            const h1s = Array.from(doc.querySelectorAll('h1')).map(h => h.textContent.trim()).filter(Boolean);
+            const h2s = Array.from(doc.querySelectorAll('h2')).map(h => h.textContent.trim()).filter(Boolean);
+            const images = doc.querySelectorAll('img');
+            const missingAlt = Array.from(images).filter(img => !img.getAttribute('alt') || img.getAttribute('alt') === '').length;
+
+            // Liens internes
+            const domain = new URL(baseUrl).hostname;
+            const allLinks = Array.from(doc.querySelectorAll('a[href]'));
+            const internalLinks = allLinks
+                .map(a => a.getAttribute('href'))
+                .filter(href => {
+                    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return false;
+                    try {
+                        const full = new URL(href, baseUrl).href;
+                        return full.includes(domain) && full !== baseUrl;
+                    } catch { return false; }
+                })
+                .filter((v, i, a) => a.indexOf(v) === i)
+                .slice(0, 50);
+
+            // Mots-clés (contenu)
+            const bodyText = doc.body?.textContent || '';
+            const words = bodyText.toLowerCase().split(/\s+/).filter(w => w.length > 4 && !/^\d+$/.test(w));
+            const freq = {};
+            words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+            const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+            const keywords = sorted.slice(0, 10).map(([k]) => k);
+
+            const wordCount = words.length;
+
+            // Balises meta robots
+            const robots = doc.querySelector('meta[name="robots"]')?.getAttribute('content') || '';
+
+            return {
+                title,
+                description: metaDesc,
+                h1s,
+                h2s,
+                images: images.length,
+                missing_alt: missingAlt,
+                internal_links: internalLinks,
+                keywords,
+                word_count: wordCount,
+                robots,
+                links_total: allLinks.length
+            };
+        }
+
+        function displayResults(data, url) {
+            // Score global
+            let score = 0;
+            let total = 0;
+
+            const checks = [
+                { name: 'Title', pass: data.title.length >= 30 && data.title.length <= 60 },
+                { name: 'Meta Description', pass: data.description.length >= 120 && data.description.length <= 160 },
+                { name: 'Balises H1', pass: data.h1s.length === 1 },
+                { name: 'Images avec alt', pass: data.missing_alt === 0 },
+                { name: 'Nombre de mots', pass: data.word_count >= 300 },
+                { name: 'Liens internes', pass: data.internal_links.length > 0 }
+            ];
+
+            checks.forEach(c => {
+                total++;
+                if (c.pass) score++;
+            });
+
+            const scorePercent = Math.round((score / total) * 100);
+            const scoreColor = scorePercent >= 80 ? 'good-text' : (scorePercent >= 50 ? 'warning-text' : 'error-text');
+
+            let html = `
+                <div class="card" style="background:#1a2430;border-color:#2a3a4a;text-align:center;margin-bottom:16px;">
+                    <div style="font-size:14px;color:#8a9bb5;">📋 Analyse terminée pour</div>
+                    <div style="font-size:18px;font-weight:600;color:#6c8cff;word-break:break-all;">${url}</div>
+                    <div class="score-box">
+                        <div class="score-item">
+                            <div class="score-number ${scoreColor}">${scorePercent}%</div>
+                            <div style="font-size:12px;color:#8a9bb5;">Score SEO</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-number">${data.word_count}</div>
+                            <div style="font-size:12px;color:#8a9bb5;">Mots</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-number">${data.internal_links.length}</div>
+                            <div style="font-size:12px;color:#8a9bb5;">Liens internes</div>
+                        </div>
+                    </div>
+                </div>
+            `;
 
             // === TITLE ===
-            const title = data.title || 'Manquant';
-            const titleLen = title.length;
-            const titleOk = titleLen >= 30 && titleLen <= 60;
+            const titleOk = data.title.length >= 30 && data.title.length <= 60;
             html += createCard(
                 '📌 Balise Title',
-                `${title} <span class="badge">${titleLen} caractères</span>`,
+                `${data.title || 'Manquant'} <span class="badge">${data.title.length} caractères</span>`,
                 titleOk ? 'OK' : 'WARNING'
             );
 
             // === META DESCRIPTION ===
-            const desc = data.description || 'Manquante';
-            const descLen = desc.length;
-            const descOk = descLen >= 120 && descLen <= 160;
+            const descOk = data.description.length >= 120 && data.description.length <= 160;
             html += createCard(
                 '📝 Meta Description',
-                `${desc} <span class="badge">${descLen} caractères</span>`,
+                `${data.description || 'Manquante'} <span class="badge">${data.description.length} caractères</span>`,
                 descOk ? 'OK' : 'WARNING'
             );
 
             // === H1 ===
-            const h1s = data.h1s && data.h1s.length > 0 ? data.h1s.join(' | ') : 'Aucune balise H1 trouvée';
-            const h1Ok = data.h1s && data.h1s.length === 1;
+            const h1Ok = data.h1s.length === 1;
             html += createCard(
                 '📰 Balises H1',
-                h1s + ` <span class="badge">${data.h1s ? data.h1s.length : 0} trouvée(s)</span>`,
+                `${data.h1s.length > 0 ? data.h1s.join(' | ') : 'Aucune balise H1 trouvée'} <span class="badge">${data.h1s.length} trouvée(s)</span>`,
                 h1Ok ? 'OK' : 'WARNING'
             );
 
+            // === H2 ===
+            html += createCard(
+                '📑 Balises H2',
+                data.h2s.length > 0 ? data.h2s.slice(0, 5).join(' | ') + (data.h2s.length > 5 ? ` ... (+${data.h2s.length - 5})` : '') : 'Aucune balise H2',
+                data.h2s.length > 0 ? 'OK' : 'WARNING'
+            );
+
             // === IMAGES ===
-            const imgText = `${data.images || 0} images · ${data.missing_alt || 0} sans attribut "alt"`;
             const imgOk = data.missing_alt === 0;
             html += createCard(
                 '🖼️ Images',
-                imgText,
+                `${data.images} images · ${data.missing_alt} sans attribut "alt"`,
                 imgOk ? 'OK' : 'WARNING'
             );
 
@@ -233,14 +358,14 @@
             const wordOk = data.word_count >= 300;
             html += createCard(
                 '📊 Nombre de mots',
-                `${data.word_count || 0} mots`,
+                `${data.word_count} mots`,
                 wordOk ? 'OK' : 'WARNING'
             );
 
             // === LIENS INTERNES ===
             const links = data.internal_links || [];
             const linksDisplay = links.length > 0
-                ? links.slice(0, 10).map(l => `<div style="font-size:13px;color:#8a9bb5;padding:2px 0;">→ ${l}</div>`).join('') + (links.length > 10 ? `<div style="font-size:13px;color:#5a6a80;margin-top:4px;">... et ${links.length - 10} autres</div>` : '')
+                ? links.slice(0, 8).map(l => `<div style="font-size:13px;color:#8a9bb5;padding:2px 0;word-break:break-all;">→ ${l}</div>`).join('') + (links.length > 8 ? `<div style="font-size:13px;color:#5a6a80;margin-top:4px;">... et ${links.length - 8} autres</div>` : '')
                 : 'Aucun lien interne trouvé';
             html += createCard(
                 '🔗 Liens internes',
@@ -248,15 +373,21 @@
                 links.length > 0 ? 'OK' : 'WARNING'
             );
 
-            // === Mots-clés (basique) ===
-            const keywords = data.keywords || [];
+            // === MOTS-CLÉS ===
             html += createCard(
-                '🏷️ Mots-clés détectés',
-                keywords.length > 0 ? keywords.slice(0, 8).join(' · ') : 'Aucun mot-clé détecté',
-                keywords.length > 0 ? 'OK' : 'WARNING'
+                '🏷️ Mots-clés principaux',
+                data.keywords.length > 0 ? data.keywords.slice(0, 8).map(k => `<span style="background:#1e2836;padding:2px 8px;border-radius:12px;margin:2px;display:inline-block;">${k}</span>`).join(' ') : 'Aucun mot-clé détecté',
+                data.keywords.length > 0 ? 'OK' : 'WARNING'
             );
 
-            return html;
+            // === ROBOTS ===
+            html += createCard(
+                '🤖 Meta Robots',
+                data.robots || 'Non spécifié (index, follow par défaut)',
+                data.robots.includes('noindex') ? 'WARNING' : 'OK'
+            );
+
+            resultsDiv.innerHTML = html;
         }
 
         async function runAudit() {
@@ -274,69 +405,9 @@
             resultsDiv.innerHTML = '';
 
             try {
-                // Utilisation de l'API publique AllOrigins pour contourner CORS
-                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error('Impossible de récupérer la page (HTTP ' + response.status + ')');
-
-                const htmlText = await response.text();
-                if (!htmlText || htmlText.length < 50) throw new Error('La page est vide ou inaccessible');
-
-                // Parser le HTML
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlText, 'text/html');
-
-                // Extraire les données
-                const title = doc.querySelector('title')?.textContent?.trim() || '';
-                const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
-                const h1s = Array.from(doc.querySelectorAll('h1')).map(h => h.textContent.trim()).filter(Boolean);
-                const images = doc.querySelectorAll('img');
-                const missingAlt = Array.from(images).filter(img => !img.getAttribute('alt')).length;
-
-                // Liens internes
-                const domain = new URL(url).hostname;
-                const allLinks = Array.from(doc.querySelectorAll('a[href]'));
-                const internalLinks = allLinks
-                    .map(a => a.getAttribute('href'))
-                    .filter(href => {
-                        try {
-                            const full = new URL(href, url).href;
-                            return full.includes(domain) && full !== url;
-                        } catch { return false; }
-                    })
-                    .filter((v, i, a) => a.indexOf(v) === i) // uniq
-                    .slice(0, 50);
-
-                // Mots-clés (contenu)
-                const bodyText = doc.body?.textContent || '';
-                const words = bodyText.toLowerCase().split(/\s+/).filter(w => w.length > 4);
-                const freq = {};
-                words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
-                const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-                const keywords = sorted.slice(0, 10).map(([k]) => k);
-
-                const wordCount = words.length;
-
-                const data = {
-                    title,
-                    description: metaDesc,
-                    h1s,
-                    images: images.length,
-                    missing_alt: missingAlt,
-                    internal_links: internalLinks,
-                    keywords,
-                    word_count: wordCount
-                };
-
-                // Afficher les résultats
-                resultsDiv.innerHTML = `
-                    <div class="card" style="background:#1a2430;border-color:#2a3a4a;text-align:center;margin-bottom:16px;">
-                        <div style="font-size:14px;color:#8a9bb5;">📋 Analyse terminée pour</div>
-                        <div style="font-size:18px;font-weight:600;color:#6c8cff;">${url}</div>
-                    </div>
-                    ${analyzePage(data)}
-                `;
-
+                const htmlText = await fetchViaProxy(url);
+                const data = analyzeHTML(htmlText, url);
+                displayResults(data, url);
             } catch (err) {
                 resultsDiv.innerHTML = `
                     <div class="card" style="border-color:#6b1a1a;">
@@ -344,6 +415,9 @@
                         <div style="margin-top:8px;color:#8a9bb5;">${err.message}</div>
                         <div style="margin-top:12px;font-size:13px;color:#5a6a80;">
                             💡 Vérifiez que le site est accessible et que l'URL est correcte.
+                        </div>
+                        <div style="margin-top:8px;font-size:13px;color:#5a6a80;">
+                            🔧 Essayez avec : <strong>https://iapixora.com</strong>
                         </div>
                     </div>
                 `;
@@ -354,7 +428,6 @@
         }
 
         runBtn.addEventListener('click', runAudit);
-        // Lancer automatiquement au chargement
         window.addEventListener('load', runAudit);
     })();
 </script>
