@@ -1,9 +1,8 @@
-// ads-loader.js v36.4 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR
-// ✅ MODIF v36.4 : Déplacement pub milieu après "Your Creations"
+// ads-loader.js v36.6 — SSA Visible + Modale Rewarded + PUB RAFFINÉE ENTRE IMAGES
 (function() {
     'use strict';
 
-    console.log('[ADS] v36.4 START');
+    console.log('[ADS] v36.6 START');
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -17,10 +16,76 @@
         console.log('[PX] ' + msg);
     }
 
+    // ✅ STYLE RAFFINÉ — PUB ENTRE IMAGES
     var style = document.createElement('style');
-    style.textContent = '.pxr-wrapper{width:100%;margin:1rem 0;border:2px dashed #8B5CF6;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:12px;text-align:center;max-height:400px;overflow:hidden}.pxr-ad-box{max-height:280px;overflow:hidden;margin-bottom:0.5rem}.pxr-ad-box img{max-width:100%;max-height:250px;object-fit:contain}.pxr-label{font-size:0.7rem;color:#8B5CF6;margin-bottom:0.5rem;font-weight:700}.pxr-btn-box{margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(139,92,246,0.2)}.pxr-rw-btn{background:linear-gradient(135deg,#F59E0B,#EF4444);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;display:inline-flex;align-items:center;gap:0.4rem}.pxr-rw-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.4)}' +
-    '.pxr-rw-overlay{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}.pxr-rw-overlay.active{display:flex}.pxr-rw-modal{background:#0f0f14;border:1px solid rgba(139,92,246,0.3);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow:hidden;position:relative;animation:pxrScaleIn 0.3s ease}@keyframes pxrScaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}.pxr-rw-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;border-bottom:1px solid rgba(63,63,70,0.5)}.pxr-rw-title{font-size:0.9rem;font-weight:700;color:#FAFAFA;display:flex;align-items:center;gap:0.5rem}.pxr-rw-close{background:none;border:none;color:#A1A1AA;font-size:1.2rem;cursor:pointer;padding:0.3rem}.pxr-rw-close:hover{color:#EF4444}.pxr-rw-body{padding:1.2rem;text-align:center}.pxr-rw-timer{font-family:"JetBrains Mono",monospace;font-size:2rem;font-weight:700;color:#8B5CF6;margin:1rem 0}.pxr-rw-timer.done{color:#10B981}.pxr-rw-info{font-size:0.8rem;color:#A1A1AA;margin-bottom:1rem;line-height:1.5}.pxr-rw-reward{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:0.4rem 0.8rem;color:#FBBF24;font-weight:700;font-size:0.85rem;margin-bottom:1rem}.pxr-rw-iframe{width:100%;height:250px;border:none;border-radius:12px;background:rgba(255,255,255,0.03);margin-bottom:1rem}.pxr-rw-btn-claim{width:100%;padding:0.9rem;background:linear-gradient(135deg,#10B981,#059669);color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem}.pxr-rw-btn-claim:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.4)}.pxr-rw-btn-claim:disabled{background:rgba(63,63,70,0.5);color:#71717A;cursor:not-allowed}.pxr-rw-limit{font-size:0.7rem;color:#71717A;margin-top:0.8rem}.pxr-rw-error{color:#EF4444;font-size:0.8rem;margin-top:0.5rem}' +
-    '.pxr-rw-status-msg{padding:1.5rem;text-align:center}.pxr-rw-status-msg i{font-size:2.5rem;margin-bottom:1rem;display:block}.pxr-rw-status-msg.limit{color:#F59E0B}.pxr-rw-status-msg.cooldown{color:#8B5CF6}.pxr-rw-status-msg h3{font-size:1.1rem;margin-bottom:0.5rem;color:#FAFAFA}.pxr-rw-status-msg p{font-size:0.85rem;color:#A1A1AA;line-height:1.5}';
+    style.textContent = `
+.pxr-sponsored-banner {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 16px;
+  padding: 1.2rem 1rem;
+  margin: 1.5rem 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+.pxr-sponsored-banner::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, #38bdf8, #8b5cf6, #ec4899);
+}
+.pxr-sponsored-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.pxr-sponsored-label i {  font-size: 0.9rem;
+}
+.pxr-sponsored-content {
+  text-align: center;
+}
+.pxr-sponsored-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #e5e7eb;
+  margin: 0.5rem 0;
+}
+.pxr-sponsored-desc {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+}
+.pxr-sponsored-cta {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #38bdf8, #60a5fa);
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.pxr-sponsored-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(56, 189, 248, 0.4);
+}
+`;
     document.head.appendChild(style);
 
     function createRewardedModal() {
@@ -31,8 +96,7 @@
         overlay.innerHTML = '<div class="pxr-rw-modal"><div class="pxr-rw-header"><div class="pxr-rw-title"><i class="fas fa-gift"></i> Pub Récompensée</div><button class="pxr-rw-close" id="pxr-rw-close-btn"><i class="fas fa-times"></i></button></div><div class="pxr-rw-body" id="pxr-rw-body-content"><div class="pxr-rw-reward"><i class="fas fa-bolt"></i> <span id="pxr-rw-points">1</span> points</div><div class="pxr-rw-info">Cliquez sur l\'offre, attendez la fin du timer, puis réclamez vos points.</div><iframe id="pxr-rw-iframe" class="pxr-rw-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe><div class="pxr-rw-timer" id="pxr-rw-timer-display">20s</div><button id="pxr-rw-claim-btn" class="pxr-rw-btn-claim" disabled><i class="fas fa-clock"></i> Patientez...</button><div class="pxr-rw-limit" id="pxr-rw-limit-info"></div><div class="pxr-rw-error" id="pxr-rw-error" style="display:none"></div></div></div>';
         document.body.appendChild(overlay);
         document.getElementById('pxr-rw-close-btn').addEventListener('click', window.pxrCloseRewarded);
-        overlay.addEventListener('click', function(e) { if (e.target === overlay) window.pxrCloseRewarded(); });
-        document.getElementById('pxr-rw-claim-btn').addEventListener('click', window.pxrClaimRewardedAd);
+        overlay.addEventListener('click', function(e) { if (e.target === overlay) window.pxrCloseRewarded(); });        document.getElementById('pxr-rw-claim-btn').addEventListener('click', window.pxrClaimRewardedAd);
     }
 
     var rwTimerInterval = null;
@@ -47,7 +111,8 @@
         if (!bodyContent) return;
         bodyContent.innerHTML = '<div class="pxr-rw-status-msg ' + type + '"><i class="fas fa-' + (type === 'limit' ? 'lock' : 'hourglass-half') + '"></i><h3>' + title + '</h3><p>' + message + '</p></div>';
         document.getElementById('pxr-rw-overlay').classList.add('active');
-        document.body.style.overflow = 'hidden';    }
+        document.body.style.overflow = 'hidden';
+    }
     function restoreModalContent() {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
@@ -81,7 +146,6 @@
             }
         }
     });
-
     window.pxrOpenRewardedAd = async function() {
         try {
             var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -96,7 +160,8 @@
                 if (data.reason === 'daily_limit_reached') {
                     rwDailyLimit = data.daily_limit || 5;
                     showStatusMessage('limit', 'Limite quotidienne atteinte', 'Vous avez déjà vu ' + data.views_today + '/' + rwDailyLimit + ' pubs récompensées aujourd\'hui.<br><br>Revenez demain pour gagner plus de points !');
-                    return;                }
+                    return;
+                }
                 if (data.reason === 'cooldown_active') {
                     showStatusMessage('cooldown', 'Patientez un moment', 'Vous devez attendre encore ' + data.wait_seconds + ' secondes avant de voir une nouvelle pub récompensée.');
                     return;
@@ -112,7 +177,6 @@
             rwOfferOpened = false;
 
             document.getElementById('pxr-rw-points').textContent = data.points_reward;
-            document.getElementById('pxr-rw-timer-val') && (document.getElementById('pxr-rw-timer-val').textContent = data.timer_seconds);
             document.getElementById('pxr-rw-limit-info').textContent = data.views_today + '/' + rwDailyLimit + ' vues aujourd\'hui';
             document.getElementById('pxr-rw-error').style.display = 'none';
 
@@ -130,7 +194,6 @@
 
             document.getElementById('pxr-rw-overlay').classList.add('active');
             document.body.style.overflow = 'hidden';
-
             var remaining = data.timer_seconds;
             var timerDisplay = document.getElementById('pxr-rw-timer-display');
             timerDisplay.textContent = remaining + 's';
@@ -145,13 +208,14 @@
                     timerDisplay.textContent = '✅ Terminé !';
                     timerDisplay.classList.add('done');
 
-                    if (rwClicked === true) {                        claimBtn.disabled = false;
+                    if (rwClicked) {
+                        claimBtn.disabled = false;
                         claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
                     } else {
                         claimBtn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
                         claimBtn.style.background = 'rgba(239,68,68,0.5)';
-                        setTimeout(function() {
-                            if (rwClicked === true) {
+                        setTimeout(() => {
+                            if (rwClicked) {
                                 claimBtn.disabled = false;
                                 claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
                                 claimBtn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
@@ -179,8 +243,7 @@
             claimBtn.disabled = true;
             claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validation...';
 
-            var res = await fetch('/api/rewarded-ad?action=claim', {
-                method: 'POST',
+            var res = await fetch('/api/rewarded-ad?action=claim', {                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token: rwCurrentToken, user_id: rwCurrentUserId })
             });
@@ -194,7 +257,8 @@
                     var currentViews = parseInt(parts[0]) || 0;
                     limitEl.textContent = (currentViews + 1) + '/' + rwDailyLimit + ' vues aujourd\'hui';
                 }
-                window.pxrCloseRewarded();                if (typeof updateUI === 'function') updateUI();
+                window.pxrCloseRewarded();
+                if (typeof updateUI === 'function') updateUI();
             } else {
                 var errEl = document.getElementById('pxr-rw-error');
                 if (data.error === 'timer_not_complete') {
@@ -228,11 +292,94 @@
         rwOfferOpened = false;
     };
 
-    function getPage() {
-        var p = window.location.pathname.toLowerCase();
+    function getPage() {        var p = window.location.pathname.toLowerCase();
         if (p.indexOf('earn') !== -1) return 'earn';
         if (p.indexOf('galer') !== -1 || p.indexOf('gallery') !== -1) return 'galerie';
         return 'index';
+    }
+
+    // ✅ CREATE SPONSORED BANNER (raffiné)
+    function createSponsoredBanner() {
+        var banner = document.createElement('div');
+        banner.className = 'pxr-sponsored-banner';
+        banner.innerHTML = `
+          <div class="pxr-sponsored-label">
+            <i class="fas fa-star"></i> Sponsorisé
+          </div>
+          <div class="pxr-sponsored-content">
+            <h3 class="pxr-sponsored-title">Découvrez 1win</h3>
+            <p class="pxr-sponsored-desc">Jusqu’à 500% de bonus sur votre premier dépôt — jeux, paris, casino en ligne.</p>
+            <a href="https://1win.com" target="_blank" rel="nofollow sponsored" class="pxr-sponsored-cta">
+              <i class="fas fa-arrow-right"></i> Explorer l'offre
+            </a>
+          </div>
+        `;
+        return banner;
+    }
+
+    async function loadAndInjectAds() {
+        console.log('[ADS] Loading visible ads for page:', getPage());
+        try {
+            var page = getPage();
+            var main = document.querySelector('.main-content') || document.querySelector('main') || document.body;
+
+            var topSlot = createProtectedSlot('pxr-top');
+            var btmSlot = createProtectedSlot('pxr-btm');
+
+            // ✅ TOP : après hero
+            var hero = main.querySelector('.hero');
+            if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
+            else main.insertBefore(topSlot.wrapper, main.firstChild);
+
+            // ✅ MIDDLE : INSÉRER ENTRE LA DERNIÈRE IMAGE GÉNÉRÉE ET LA PREMIÈRE IMAGE FIXE
+            var generatedImages = Array.from(main.querySelectorAll('.result-image, .generated-item, img[src*="result"], .gallery > div:first-child'));
+            var fixedImages = Array.from(main.querySelectorAll('#creations .gallery-item, .gallery img, .user-creations img, .creations img'));
+
+            var insertAfter = null;
+            if (generatedImages.length > 0) {
+                insertAfter = generatedImages[generatedImages.length - 1]; // dernière image générée
+            } else if (main.querySelector('.generator')) {
+                insertAfter = main.querySelector('.generator');
+            }
+            var sponsoredBanner = createSponsoredBanner();
+
+            if (insertAfter && insertAfter.parentNode) {
+                // Insère la pub juste après la dernière image générée
+                insertAfter.parentNode.insertBefore(sponsoredBanner, insertAfter.nextSibling);
+            } else {
+                // Fallback : après le générateur
+                var generator = main.querySelector('.generator');
+                if (generator && generator.parentNode) {
+                    generator.parentNode.insertBefore(sponsoredBanner, generator.nextSibling);
+                } else {
+                    main.appendChild(sponsoredBanner);
+                }
+            }
+
+            // ✅ BOTTOM : avant footer
+            var footer = main.querySelector('.site-footer');
+            if (footer && footer.parentNode) footer.parentNode.insertBefore(btmSlot.wrapper, footer);
+            else main.appendChild(btmSlot.wrapper);
+
+            // Chargement des pubs via API (top/bottom uniquement — la pub milieu est statique/raffinée)
+            var res = await fetch('/api/serve-ad?page=' + page + '&position=top');
+            var data = await res.json();
+            if (data.html && data.html.trim().length > 0) {
+                injectHtmlWithScripts(topSlot.adBox, data.html);
+            } else {
+                topSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
+            }
+
+            var res3 = await fetch('/api/serve-ad?page=' + page + '&position=bottom');
+            var data3 = await res3.json();
+            if (data3.html && data3.html.trim().length > 0) {
+                injectHtmlWithScripts(btmSlot.adBox, data3.html);
+            } else {
+                btmSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
+            }
+
+            console.log('[ADS] v36.6 DONE');
+        } catch (e) { console.error('[ADS] Init error:', e); }
     }
 
     function createProtectedSlot(id) {
@@ -263,66 +410,11 @@
         var scripts = container.querySelectorAll('script');
         scripts.forEach(function(oldScript) {
             var newScript = document.createElement('script');
-            for (var i = 0; i < oldScript.attributes.length; i++) newScript.setAttribute(oldScript.attributes[i].name, oldScript.attributes[i].value);
+            for (var i = 0; i < oldScript.attributes.length; i++) 
+                newScript.setAttribute(oldScript.attributes[i].name, oldScript.attributes[i].value);
             if (oldScript.innerHTML) newScript.innerHTML = oldScript.innerHTML;
             oldScript.parentNode.replaceChild(newScript, oldScript);
         });
-    }
-
-    async function loadAndInjectAds() {
-        console.log('[ADS] Loading visible ads for page:', getPage());
-        try {
-            var page = getPage();
-            var main = document.querySelector('.main-content') || document.querySelector('main') || document.body;
-
-            var topSlot = createProtectedSlot('pxr-top');
-            var midSlot = createProtectedSlot('pxr-mid');
-            var btmSlot = createProtectedSlot('pxr-btm');
-
-            // ✅ TOP : après hero (INCHANGÉ)
-            var hero = main.querySelector('.hero');
-            if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
-            else main.insertBefore(topSlot.wrapper, main.firstChild);
-
-            // ✅ MIDDLE : APRÈS LES CRÉATIONS (MODIFIÉ v36.4)
-            var creations = main.querySelector('#creations') || 
-                            main.querySelector('.creations') || 
-                            main.querySelector('.gallery') || 
-                            main.querySelector('.user-creations') ||
-                            main.querySelector('section:last-of-type');
-            
-            if (creations && creations.parentNode) {
-                creations.parentNode.insertBefore(midSlot.wrapper, creations.nextSibling);            } else {
-                // Fallback sûr : si aucune section créations trouvée, met en bas
-                main.appendChild(midSlot.wrapper);
-            }
-
-            // ✅ BOTTOM : avant footer (INCHANGÉ)
-            var footer = main.querySelector('.site-footer');
-            if (footer && footer.parentNode) footer.parentNode.insertBefore(btmSlot.wrapper, footer);
-            else main.appendChild(btmSlot.wrapper);
-
-            // Chargement des pubs via API (INCHANGÉ)
-            var res = await fetch('/api/serve-ad?page=' + page + '&position=top');
-            var data = await res.json();
-            var htmlTop = '';
-            if (data.html && data.html.trim().length > 0) { htmlTop = data.html; injectHtmlWithScripts(topSlot.adBox, data.html); }
-            else topSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
-
-            var res2 = await fetch('/api/serve-ad?page=' + page + '&position=middle');
-            var data2 = await res2.json();
-            if (data2.html && data2.html.trim().length > 0) injectHtmlWithScripts(midSlot.adBox, data2.html);
-            else if (htmlTop) injectHtmlWithScripts(midSlot.adBox, htmlTop);
-            else midSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
-
-            var res3 = await fetch('/api/serve-ad?page=' + page + '&position=bottom');
-            var data3 = await res3.json();
-            if (data3.html && data3.html.trim().length > 0) injectHtmlWithScripts(btmSlot.adBox, data3.html);
-            else if (htmlTop) injectHtmlWithScripts(btmSlot.adBox, htmlTop);
-            else btmSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
-
-            console.log('[ADS] v36.4 DONE');
-        } catch (e) { console.error('[ADS] Init error:', e); }
     }
 
     async function init() {
