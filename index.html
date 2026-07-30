@@ -38,6 +38,9 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="IA Pixora">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -143,7 +146,9 @@
         .stat-card:nth-child(2) .stat-card-icon{color:#F97316;background:rgba(249,115,22,0.1)}
         .stat-card:nth-child(3) .stat-card-icon{color:var(--prim);background:rgba(139,92,246,0.1)}        .stat-card:nth-child(4) .stat-card-icon{color:var(--success);background:rgba(16,185,129,0.1)}
         .stat-val{font-family:var(--mono);font-size:1.15rem;font-weight:700;margin-bottom:0.1rem}
-        .stat-lbl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}        .section-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center}
+        .stat-lbl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}        
+        .section-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center}
+        .section-label h2{font-size:inherit;font-weight:inherit;color:var(--text);margin:0;text-transform:none;letter-spacing:0}
         .section-label span{font-size:0.65rem;color:var(--muted);text-transform:none;letter-spacing:0}
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}
         .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
@@ -403,36 +408,40 @@
             <i class="fas fa-sparkles prompt-icon"></i>
         </div>
         <div class="type-selector">
-            <button class="type-btn active" onclick="selType('image')"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
-            <button class="type-btn disabled" onclick="notifyVideoSoon()"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
+            <button class="type-btn active" onclick="selType('image')" aria-pressed="true"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
+            <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
         </div>
         <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem">
             <span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span>            <span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span>
         </div>
         <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
     </div>
-    <div class="section-label"><span data-i18n="results.title">Vos Créations</span><span data-i18n="results.auto_delete">Auto-effacement après 1h</span></div>
+
+    <!-- Vos Créations -->
+    <div class="section-label"><h2 data-i18n="results.title">Vos Créations</h2><span data-i18n="results.auto_delete">Auto-effacement après 1h</span></div>
     <div class="results-grid" id="results-grid"></div>
-    <!-- 🔷 GALERIE PERMANENTE — IMAGES FIXES (ne s'effacent jamais) -->
+
+    <!-- Galerie permanente -->
     <div id="permanent-gallery" style="margin-top:32px;">
-      <div class="section-label" style="margin-bottom:12px;"><span style="font-size:0.75rem;color:var(--text);font-weight:700;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-star" style="color:#F59E0B;"></i> Créations de référence</span></div>      <div class="results-grid">
-        <img src="/assets/gallery/sample-01.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-01.jpg','image')">
-        <img src="/assets/gallery/sample-02.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-02.jpg','image')">
-        <img src="/assets/gallery/sample-03.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-03.jpg','image')">
-        <img src="/assets/gallery/sample-04.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-04.jpg','image')">
-        <img src="/assets/gallery/sample-05.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-05.jpg','image')">
-        <img src="/assets/gallery/sample-06.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-06.jpg','image')">
-        <img src="/assets/gallery/sample-07.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-07.jpg','image')">
-        <img src="/assets/gallery/sample-08.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-08.jpg','image')">
-        <img src="/assets/gallery/sample-09.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-09.jpg','image')">
-        <img src="/assets/gallery/sample-10.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-10.jpg','image')">
-        <img src="/assets/gallery/sample-11.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-11.jpg','image')">
-        <img src="/assets/gallery/sample-12.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-12.jpg','image')">
-        <img src="/assets/gallery/sample-13.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-13.jpg','image')">
-        <img src="/assets/gallery/sample-14.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-14.jpg','image')">
-        <img src="/assets/gallery/sample-15.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-15.jpg','image')">
-        <img src="/assets/gallery/sample-16.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-16.jpg','image')">
-      </div>
+        <div class="section-label" style="margin-bottom:12px;"><h2 style="font-size:0.75rem;color:var(--text);font-weight:700;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-star" style="color:#F59E0B;"></i> Créations de référence</h2></div>
+        <div class="results-grid">
+            <img src="/assets/gallery/sample-01.jpg" alt="Exemple de création IA - 1" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-01.jpg','image')">
+            <img src="/assets/gallery/sample-02.jpg" alt="Exemple de création IA - 2" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-02.jpg','image')">
+            <img src="/assets/gallery/sample-03.jpg" alt="Exemple de création IA - 3" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-03.jpg','image')">
+            <img src="/assets/gallery/sample-04.jpg" alt="Exemple de création IA - 4" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-04.jpg','image')">
+            <img src="/assets/gallery/sample-05.jpg" alt="Exemple de création IA - 5" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-05.jpg','image')">
+            <img src="/assets/gallery/sample-06.jpg" alt="Exemple de création IA - 6" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-06.jpg','image')">
+            <img src="/assets/gallery/sample-07.jpg" alt="Exemple de création IA - 7" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-07.jpg','image')">
+            <img src="/assets/gallery/sample-08.jpg" alt="Exemple de création IA - 8" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-08.jpg','image')">
+            <img src="/assets/gallery/sample-09.jpg" alt="Exemple de création IA - 9" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-09.jpg','image')">
+            <img src="/assets/gallery/sample-10.jpg" alt="Exemple de création IA - 10" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-10.jpg','image')">
+            <img src="/assets/gallery/sample-11.jpg" alt="Exemple de création IA - 11" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-11.jpg','image')">
+            <img src="/assets/gallery/sample-12.jpg" alt="Exemple de création IA - 12" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-12.jpg','image')">
+            <img src="/assets/gallery/sample-13.jpg" alt="Exemple de création IA - 13" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-13.jpg','image')">
+            <img src="/assets/gallery/sample-14.jpg" alt="Exemple de création IA - 14" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-14.jpg','image')">
+            <img src="/assets/gallery/sample-15.jpg" alt="Exemple de création IA - 15" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-15.jpg','image')">
+            <img src="/assets/gallery/sample-16.jpg" alt="Exemple de création IA - 16" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;cursor:pointer;border:1px solid var(--border);" onclick="openLB('/assets/gallery/sample-16.jpg','image')">
+        </div>
     </div>
 
     <!-- FAQ SEO - IA Pixora -->
@@ -818,7 +827,7 @@ function openLB(url,type){lbUrl=url;lbType=type||'image';var c=document.getEleme
 function closeLB(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';document.getElementById('lb-container').innerHTML='';lbUrl='';lbType='image'}document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
 async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl);var b=await r.blob();var ext=lbType==='video'?'.mp4':'.jpg';var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(lbUrl,'_blank')}}
 async function dlDirect(btn){var card=btn.closest('.result-card');var media=card.querySelector('img')||card.querySelector('video');if(!media||!media.src)return;try{var r=await fetch(media.src);var b=await r.blob();var isV=media.tagName==='VIDEO';var ext=isV?'.mp4':'.jpg';var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(media.src,'_blank')}}
-function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(function(c,i){c.classList.toggle('active',(tp==='image'&&i===0)||(tp==='video'&&i===1))})}
+function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(function(c,i){var pressed=(tp==='image' && i===0) || (tp==='video' && i===1);c.classList.toggle('active',pressed);c.setAttribute('aria-pressed', pressed ? 'true' : 'false');});}
 
 // =============================================
 // SHARE SYSTEM
@@ -860,7 +869,7 @@ function shareTo(network) {
         facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url),
         instagram: 'https://www.instagram.com/',
         tiktok: 'https://www.tiktok.com/',
-        linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url),
+        linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url) + '&description=' + encodeURIComponent(text),
         pinterest: 'https://pinterest.com/pin/create/button/?url=' + encodeURIComponent(url) + '&description=' + encodeURIComponent(text) + '&media=' + encodeURIComponent(currentShareUrl),
         reddit: 'https://www.reddit.com/submit?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(text),
         discord: 'https://discord.com/',
