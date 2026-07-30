@@ -47,8 +47,7 @@
     <style>
         :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--gold-dim:rgba(251,191,36,0.1);--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
-        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
         .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
         .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}        .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);flex-shrink:0}
         .header-logo svg{width:28px;height:28px}
@@ -97,8 +96,7 @@
         .menu-item:hover{background:rgba(139,92,246,0.08);color:var(--prim)}
         .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
         .menu-item:hover i{color:var(--prim)}        .menu-item.danger{color:var(--danger)}
-        .menu-item.danger i{color:var(--danger)}        .menu-item.danger:hover{background:rgba(239,68,68,0.08)}
-        .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
+        .menu-item.danger i{color:var(--danger)}        .menu-item.danger:hover{background:rgba(239,68,68,0.08)}        .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
         .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}        .nav-item i{font-size:1.2rem;transition:all 0.3s}
         .nav-item span{font-size:0.58rem;font-weight:600}
         .nav-item[data-nav="studio"].active{color:var(--prim)}
@@ -147,8 +145,7 @@
         .stat-card:nth-child(3) .stat-card-icon{color:var(--prim);background:rgba(139,92,246,0.1)}        .stat-card:nth-child(4) .stat-card-icon{color:var(--success);background:rgba(16,185,129,0.1)}
         .stat-val{font-family:var(--mono);font-size:1.15rem;font-weight:700;margin-bottom:0.1rem}
         .stat-lbl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}        
-        .section-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center}
-        .section-label h2{font-size:inherit;font-weight:inherit;color:var(--text);margin:0;text-transform:none;letter-spacing:0}
+        .section-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center}        .section-label h2{font-size:inherit;font-weight:inherit;color:var(--text);margin:0;text-transform:none;letter-spacing:0}
         .section-label span{font-size:0.65rem;color:var(--muted);text-transform:none;letter-spacing:0}
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}
         .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
@@ -197,8 +194,7 @@
         .form-label{display:block;font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.08em}
         .form-input{width:100%;padding:0.85rem 0.9rem;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:var(--text);font-family:var(--font);font-size:0.9rem;outline:none;transition:all 0.3s}
         .form-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.12);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}        .form-input::placeholder{color:rgba(255,255,255,0.4)}
-        .btn-submit{width:100%;padding:1rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
-        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
+        .btn-submit{width:100%;padding:1rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         .btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}        .auth-divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:var(--dim);font-size:0.72rem}
         .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
         .social-btn{width:100%;padding:0.85rem;border-radius:12px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.2s;margin-bottom:0.5rem;cursor:pointer;border:none}
@@ -247,8 +243,7 @@
         .share-category{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin:0.8rem 0 0.4rem;padding-left:0.2rem}
         .share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem}
         .share-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;padding:0.6rem 0.3rem;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:0.6rem;font-weight:600;cursor:pointer;transition:all 0.2s;text-decoration:none}
-        .share-btn:hover{background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.3);transform:translateY(-2px)}
-        .share-btn i{font-size:1.2rem}        .share-btn.whatsapp i{color:#25D366}
+        .share-btn:hover{background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.3);transform:translateY(-2px)}        .share-btn i{font-size:1.2rem}        .share-btn.whatsapp i{color:#25D366}
         .share-btn.telegram i{color:#0088cc}
         .share-btn.twitter i{color:#1DA1F2}
         .share-btn.facebook i{color:#1877F2}
@@ -297,8 +292,7 @@
             <a class="share-btn email" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a>
             <a class="share-btn copy" onclick="copyShareLink()"><i class="fas fa-link"></i><span data-i18n="share.copy">Copier</span></a>
         </div>
-        <div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div>        <div class="share-grid">
-            <a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a>
+        <div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div>        <div class="share-grid">            <a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a>
             <a class="share-btn facebook" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a>
             <a class="share-btn instagram" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a>
             <a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a>
@@ -347,8 +341,7 @@
             <form onsubmit="doRegister(event)">
                 <div class="form-group"><label class="form-label" data-i18n="auth.username">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div>
                 <div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div>                <div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div>
-                <button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button>
-            </form>
+                <button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button>            </form>
         </div>
         <div class="auth-divider" data-i18n="auth.or_continue">ou continuer avec</div>
         <button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> <span data-i18n="auth.google">Continuer avec Google</span></button>
@@ -397,8 +390,7 @@
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl" data-i18n="stats.points">Points</div></div>
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl" data-i18n="stats.streak">Streak</div></div>        <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-image"></i></div><div class="stat-val" id="stat-generated">0</div><div class="stat-lbl" data-i18n="stats.creations">Créations</div></div>
         <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-coins"></i></div><div class="stat-val" id="stat-earned">0</div><div class="stat-lbl" data-i18n="stats.total_earned">Total Gagné</div></div>
-    </div>
-    <div class="generator">
+    </div>    <div class="generator">
         <div style="margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;">
             <i class="fas fa-pen-fancy" style="color:var(--prim);font-size:0.9rem;"></i>
             <span style="font-size:0.85rem;font-weight:700;color:#ffffff;" data-i18n="generator.prompt_title">Décrivez votre image</span>
@@ -418,7 +410,7 @@
     </div>
 
     <!-- Vos Créations -->
-    <div class="section-label"><h2 data-i18n="results.title">Vos Créations</h2><span data-i18n="results.auto_delete">Auto-effacement après 1h</span></div>
+    <div class="section-label"><h2 data-i18n="results.title">Vos Créations</h2><span data-i18n="results.auto_delete">Auto-effacement après 24h</span></div>
     <div class="results-grid" id="results-grid"></div>
 
     <!-- Galerie permanente -->
@@ -447,8 +439,7 @@
     <!-- FAQ SEO - IA Pixora -->
     <section class="faq-section">
         <h2 class="faq-title"><i class="fas fa-circle-question"></i> Questions Fréquentes</h2>
-        <script type="application/ld+json">
-        {            "@context": "https://schema.org",
+        <script type="application/ld+json">        {            "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": [{
                 "@type": "Question",
@@ -497,8 +488,7 @@
             <div class="faq-item">
                 <div class="faq-question"><i class="fas fa-chevron-right"></i> <span data-i18n="faq.q3">Quelle est la différence entre IA Pixora et Midjourney ?</span></div>
                 <div class="faq-answer" data-i18n="faq.a3">IA Pixora est entièrement gratuit, sans abonnement ni carte bancaire. Midjourney nécessite un abonnement payant. IA Pixora offre aussi des badges, un système de parrainage et des points pour récompenser l'engagement.</div>
-            </div>            <div class="faq-item">
-                <div class="faq-question"><i class="fas fa-chevron-right"></i> <span data-i18n="faq.q4">Puis-je utiliser les images générées commercialement ?</span></div>
+            </div>            <div class="faq-item">                <div class="faq-question"><i class="fas fa-chevron-right"></i> <span data-i18n="faq.q4">Puis-je utiliser les images générées commercialement ?</span></div>
                 <div class="faq-answer" data-i18n="faq.a4">Oui, les images générées avec IA Pixora sont libres de droits pour un usage personnel ou commercial, tant que vous respectez les conditions d'utilisation.</div>
             </div>
             <div class="faq-item">
@@ -547,8 +537,7 @@ function showSoftSignupPrompt() {
         '<div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div>' +
         '<div class="pxr-soft-benefits">' +
             '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts immédiatement</div>' +            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div>' +
-            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div>' +
-            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div>' +
+            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div>' +            '<div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div>' +
         '</div>' +
         '<button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button>' +
     '</div>';
@@ -597,8 +586,7 @@ async function loadMiniBadge() {
 
     var logged = await isLogged();    if (!logged) {
         el.classList.remove('show');
-        return;
-    }
+        return;    }
 
     try {
         var userData = await getUserData();
@@ -647,15 +635,14 @@ async function loadMiniBadge() {
 // =============================================
 // I18N
 // =============================================
-var I18N = {};
-var currentLang = 'fr';
+var I18N = {};var currentLang = 'fr';
 var FR_TRANSLATIONS = {
     meta:{title:'IA Pixora — Studio IA Gratuit | Générateur Images & Vidéos',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement. Sans inscription requise pour tester.'},
     header:{login:'Connexion',points:'points'},
     nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},
     hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},
     generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},
-    results:{title:'Vos Créations',auto_delete:'Auto-effacement après 1h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},
+    results:{title:'Vos Créations',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},
     stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},
     auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'🎉 Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},    menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},
     notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'🔗 Lien copié !',share_points:'+5 points pour le partage !'},
@@ -697,8 +684,7 @@ async function loadLang(lang) {
                     } else { I18N[section] = data[section]; }
                 }
             }
-        } catch(e) { console.warn('[i18n] Failed to load /lang/' + lang + '.json:', e); }
-    }
+        } catch(e) { console.warn('[i18n] Failed to load /lang/' + lang + '.json:', e); }    }
     applyTranslations();
     document.documentElement.lang = lang;
     document.title = t('meta.title');
@@ -747,8 +733,7 @@ var currentTier = 1;
 var pendingReferrer = null;
 var API_KEYS = {};
 var currentDiscountUntil = null;
-var discountTimerInterval = null;
-var API_PROVIDERS = [
+var discountTimerInterval = null;var API_PROVIDERS = [
     { id:'huggingface',name:'Hugging Face',types:['video'],endpoint:'https://api-inference.huggingface.co/models/cerspense/zeroscope_v2_576w',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{inputs:p,parameters:{num_frames:24,width:576,height:320,fps:24}}},parseUrl:function(response,contentType){if(contentType&&(contentType.includes('video/')||contentType.includes('octet-stream')))return URL.createObjectURL(response);try{var data=response;if(typeof data==='string'&&data.startsWith('http'))return data;if(data.video&&data.video.url)return data.video.url;if(data.output&&data.output.video&&data.output.video.url)return data.output.video.url;return null}catch(e){return null}}},
     { id:'fal.ai',name:'fal.ai',types:['image'],endpoint:'https://queue.fal.run/fal-ai/flux/schnell',authHeader:function(k){return{'Authorization':'Key '+k}},buildBody:function(p){return{prompt:p,width:512,height:512,num_images:1}},parseUrl:function(data){if(data.images&&data.images[0]&&data.images[0].url)return data.images[0].url;if(data.output&&data.output.images&&data.output.images[0]&&data.output.images[0].url)return data.output.images[0].url;return null}},
     { id:'leonardo',name:'Leonardo.Ai',types:['image'],endpoint:'https://cloud.leonardo.ai/api/rest/v1/generations',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{prompt:p,width:512,height:512,num_images:1}},parseUrl:function(data){if(data.generations&&data.generations[0]&&data.generations[0].generated_images&&data.generations[0].generated_images[0])return data.generations[0].generated_images[0].url;return null}},
@@ -797,8 +782,7 @@ async function doLogout(){await db.auth.signOut();closeUserMenu();currentTier=1;
 // =============================================
 async function updateUI(){
     var logged=await isLogged();
-    var user=await getUser();
-    document.getElementById('user-stats').classList.toggle('show',logged);
+    var user=await getUser();    document.getElementById('user-stats').classList.toggle('show',logged);
     document.getElementById('user-avatar').classList.toggle('show',logged);    document.getElementById('auth-btn').style.display=logged?'none':'flex';
     var qs=document.getElementById('quick-stats');
     if(logged){qs.classList.add('show')}else{qs.classList.remove('show')}
@@ -847,8 +831,7 @@ function closeShareModal() {
     currentShareUrl = '';
 }
 
-document.getElementById('share-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeShareModal();
+document.getElementById('share-modal').addEventListener('click', function(e) {    if (e.target === this) closeShareModal();
 });
 
 function getShareUrl() {
@@ -897,8 +880,7 @@ function copyShareLink() {
             notify(t('notifications.share_success'), 'success');
         }).catch(function() {
             fallbackCopy(url);
-        });
-    } else {
+        });    } else {
         fallbackCopy(url);
     }
 }
@@ -917,7 +899,7 @@ function fallbackCopy(text) {
 // =============================================
 // STUDIO + UPLOAD
 // =============================================
-async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.storage.from(BUCKET).list('',{limit:20,sortBy:{column:'created_at',order:'desc'}});if(!result.data||result.data.length===0)return;var now=Date.now();grid.innerHTML='';result.data.forEach(function(file){var createdAt=new Date(file.created_at).getTime();if((now-createdAt)<3600000){var urlData=db.storage.from(BUCKET).getPublicUrl(file.name);var url=urlData.data.publicUrl;var isVideo=file.name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';var vid=card.querySelector('video');vid.onmouseenter=function(){vid.play()};vid.onmouseleave=function(){vid.pause();vid.currentTime=0}}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=function(){openLB(url,isVideo?'video':'image')};grid.appendChild(card);setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000-(now-createdAt))}})}catch(err){console.error('Studio load error:',err)}}
+async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.storage.from(BUCKET).list('',{limit:20,sortBy:{column:'created_at',order:'desc'}});if(!result.data||result.data.length===0)return;var now=Date.now();grid.innerHTML='';result.data.forEach(function(file){var createdAt=new Date(file.created_at).getTime();if((now-createdAt)<86400000){var urlData=db.storage.from(BUCKET).getPublicUrl(file.name);var url=urlData.data.publicUrl;var isVideo=file.name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';var vid=card.querySelector('video');vid.onmouseenter=function(){vid.play()};vid.onmouseleave=function(){vid.pause();vid.currentTime=0}}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=function(){openLB(url,isVideo?'video':'image')};grid.appendChild(card);setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000-(now-createdAt))}})}catch(err){console.error('Studio load error:',err)}}
 async function uploadToStorage(mediaUrl,type){try{var response=await fetch(mediaUrl);var blob=await response.blob();var prefix=type==='video'?'_video_':'_img_';var fileName=Date.now()+prefix+Math.floor(Math.random()*100000)+(type==='video'?'.mp4':'.jpg');var contentType=type==='video'?'video/mp4':'image/jpeg';await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false});loadStudio()}catch(err){console.error('Upload failed:',err)}}
 
 // =============================================
@@ -947,8 +929,7 @@ async function generate(){
     var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);
     card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();
     grid.insertBefore(card,grid.firstChild);
-    var st=Date.now();
-    var tmr=document.getElementById(tmrId);
+    var st=Date.now();    var tmr=document.getElementById(tmrId);
     var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);    var media=card.querySelector('img');
     var loaded=false;
     var currentUser=await getUser();
@@ -980,7 +961,7 @@ async function generate(){
             var costDisplay=logged?(' (-'+cost+' '+t('generator.cost_pts')+discountMsg+')'):'';
             notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+costDisplay,'success');
             if(!logged){incrementAndCheckFreemium()}            if(logged){loadMiniBadge()}
-            setTimeout(function(){if(card.parentNode===grid)card.remove()},3600000);
+            setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000);
         }
         media.onload=onLoad;
         media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}
@@ -997,8 +978,7 @@ db.auth.onAuthStateChange(async function(event){    if(event==='SIGNED_IN'){
         if(softSignup)softSignup.remove();
         if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}    }else if(event==='SIGNED_OUT'){
         currentTier=1;currentDiscountUntil=null;
-        if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}
-        updateCostUI();updateUI();authNotified=false
+        if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}        updateCostUI();updateUI();authNotified=false
     }else if(event==='TOKEN_REFRESHED'){updateUI()}
 });
 document.addEventListener('DOMContentLoaded',async function(){await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await loadStudio()});
