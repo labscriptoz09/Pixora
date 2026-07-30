@@ -305,16 +305,29 @@ function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 
 // =============================================
-// STUDIO + UPLOAD — VERSION TABLE SQL (source de vérité unique)
+// STUDIO — VERSION FETCH REST (bypass RLS pour anonymes)
 // =============================================
 async function loadStudio(){
     var grid=document.getElementById('results-grid');
     try{
-        var result=await db.from('pixora_creations').select('file_name').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);
-        if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}
+        var res=await fetch('https://cfwzilhetkclpytjsopu.supabase.co/storage/v1/object/list/pixora-gallery?limit=20&order=created_at.desc',{
+            method:'GET',
+            headers:{'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU'}
+        });
+        var data=await res.json();
+        if(!data||!data.objects||data.objects.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}
+        var now=Date.now();
         grid.innerHTML='';
-        for(var i=0;i<result.data.length;i++){
-            var row=result.data[i],urlData=db.storage.from(BUCKET).getPublicUrl(row.file_name),url=urlData.data.publicUrl,isVideo=row.file_name.indexOf('_video_')!==-1,card=document.createElement('div');
+        for(var i=0;i<data.objects.length;i++){
+            var file=data.objects[i];
+            var ts=parseInt(file.name.split('_')[0]);
+            if(isNaN(ts)||ts<=0)continue;
+            if(ts<10000000000)ts*=1000;
+            if((now-ts)>=86400000)continue;
+            var urlData=db.storage.from(BUCKET).getPublicUrl(file.name);
+            var url=urlData.data.publicUrl;
+            var isVideo=file.name.includes('_video_');
+            var card=document.createElement('div');
             card.className='result-card';
             if(isVideo){
                 card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
@@ -327,11 +340,10 @@ async function loadStudio(){
         }
     }catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}
 }
-async function uploadToStorage(mediaUrl,type){
-    try{
+
+async function uploadToStorage(mediaUrl,type){    try{
         var response=await fetch(mediaUrl),blob=await response.blob(),prefix=type==='video'?'_video_':'_img_',fileName=Date.now()+prefix+Math.floor(Math.random()*100000)+(type==='video'?'.mp4':'.jpg'),contentType=type==='video'?'video/mp4':'image/jpeg',currentUser=await getUser(),userId=currentUser?currentUser.id:'anonymous';
         await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false,cacheControl:'public,max-age=86400'});
-        await db.from('pixora_creations').insert({file_name:fileName,user_id:userId});
         loadStudio()
     }catch(err){console.error('Upload failed:',err)}
 }
@@ -341,7 +353,8 @@ async function uploadToStorage(mediaUrl,type){
 // =============================================
 async function generate(){
     if(curType==='video'){notifyVideoSoon();return}
-    var p=document.getElementById('prompt').value.trim();    if(!p){notify(t('notifications.enter_prompt'),'error');return}
+    var p=document.getElementById('prompt').value.trim();
+    if(!p){notify(t('notifications.enter_prompt'),'error');return}
     var logged=await isLogged(),cost=0,isDiscounted=false;
     if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}
     if(logged){await loadUserTier();var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],userData=await getUserData(),baseCost=c.costs.image;isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();cost=isDiscounted?Math.ceil(baseCost/2):baseCost;if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}}
