@@ -324,5 +324,3 @@
     if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(init, 300);
     else document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
 })();
-
-adsloder.js ne pas abîmer le reste ajuster juste le pub milieu ok
