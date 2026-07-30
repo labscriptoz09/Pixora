@@ -19,35 +19,8 @@
     var style = document.createElement('style');
     style.textContent = '.pxr-wrapper{width:100%;margin:1rem 0;border:2px dashed #8B5CF6;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:12px;text-align:center;max-height:400px;overflow:hidden}.pxr-ad-box{max-height:280px;overflow:hidden;margin-bottom:0.5rem}.pxr-ad-box img{max-width:100%;max-height:250px;object-fit:contain}.pxr-label{font-size:0.7rem;color:#8B5CF6;margin-bottom:0.5rem;font-weight:700}.pxr-btn-box{margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(139,92,246,0.2)}.pxr-rw-btn{background:linear-gradient(135deg,#F59E0B,#EF4444);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;display:inline-flex;align-items:center;gap:0.4rem}.pxr-rw-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.4)}' +
     '.pxr-rw-overlay{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}.pxr-rw-overlay.active{display:flex}.pxr-rw-modal{background:#0f0f14;border:1px solid rgba(139,92,246,0.3);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow:hidden;position:relative;animation:pxrScaleIn 0.3s ease}@keyframes pxrScaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}.pxr-rw-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;border-bottom:1px solid rgba(63,63,70,0.5)}.pxr-rw-title{font-size:0.9rem;font-weight:700;color:#FAFAFA;display:flex;align-items:center;gap:0.5rem}.pxr-rw-close{background:none;border:none;color:#A1A1AA;font-size:1.2rem;cursor:pointer;padding:0.3rem}.pxr-rw-close:hover{color:#EF4444}.pxr-rw-body{padding:1.2rem;text-align:center}.pxr-rw-timer{font-family:"JetBrains Mono",monospace;font-size:2rem;font-weight:700;color:#8B5CF6;margin:1rem 0}.pxr-rw-timer.done{color:#10B981}.pxr-rw-info{font-size:0.8rem;color:#A1A1AA;margin-bottom:1rem;line-height:1.5}.pxr-rw-reward{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:0.4rem 0.8rem;color:#FBBF24;font-weight:700;font-size:0.85rem;margin-bottom:1rem}.pxr-rw-iframe{width:100%;height:250px;border:none;border-radius:12px;background:rgba(255,255,255,0.03);margin-bottom:1rem}.pxr-rw-btn-claim{width:100%;padding:0.9rem;background:linear-gradient(135deg,#10B981,#059669);color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem}.pxr-rw-btn-claim:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.4)}.pxr-rw-btn-claim:disabled{background:rgba(63,63,70,0.5);color:#71717A;cursor:not-allowed}.pxr-rw-limit{font-size:0.7rem;color:#71717A;margin-top:0.8rem}.pxr-rw-error{color:#EF4444;font-size:0.8rem;margin-top:0.5rem}' +
-    '.pxr-rw-status-msg{padding:1.5rem;text-align:center}.pxr-rw-status-msg i{font-size:2.5rem;margin-bottom:1rem;display:block}.pxr-rw-status-msg.limit{color:#F59E0B}.pxr-rw-status-msg.cooldown{color:#8B5CF6}.pxr-rw-status-msg h3{font-size:1.1rem;margin-bottom:0.5rem;colorChef, **tu as raison**. Je m'excuse sincèrement. J'ai trop modifié et j'ai perdu le code original qui fonctionnait.
-
-Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **UNE SEULE LIGNE CHANGÉE** pour la position de la pub milieu. Rien d'autre.
-
-### ✅ CODE SOURCE COMPLET — v36.3 ORIGINAL + 1 CORRECTION
-
-```javascript
-// ads-loader.js v36.3 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR
-(function() {
-    'use strict';
-
-    console.log('[ADS] v36.3 START');
-
-    var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-
-    function pxrNotify(msg, type) {
-        try {
-            var n = document.getElementById('notif');
-            var nt = document.getElementById('notif-text');
-            if (n && nt) { nt.textContent = msg; n.className = 'notification show ' + (type || 'success'); setTimeout(function() { n.classList.remove('show'); }, 3000); return; }
-        } catch(e) {}
-        console.log('[PX] ' + msg);
-    }
-
-    var style = document.createElement('style');
-    style.textContent = '.pxr-wrapper{width:100%;margin:1rem 0;border:2px dashed #8B5CF6;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:12px;text-align:center;max-height:400px;overflow:hidden}.pxr-ad-box{max-height:280px;overflow:hidden;margin-bottom:0.5rem}.pxr-ad-box img{max-width:100%;max-height:250px;object-fit:contain}.pxr-label{font-size:0.7rem;color:#8B5CF6;margin-bottom:0.5rem;font-weight:700}.pxr-btn-box{margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(139,92,246,0.2)}.pxr-rw-btn{background:linear-gradient(135deg,#F59E0B,#EF4444);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;display:inline-flex;align-items:center;gap:0.4rem}.pxr-rw-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.4)}' +
-    '.pxr-rw-overlay{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}.pxr-rw-overlay.active{display:flex}.pxr-rw-modal{background:#0f0f14;border:1px solid rgba(139,92,246,0.3);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow:hidden;position:relative;animation:pxrScaleIn 0.3s ease}@keyframes pxrScaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}.pxr-rw-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;border-bottom:1px solid rgba(63,63,70,0.5)}.pxr-rw-title{font-size:0.9rem;font-weight:700;color:#FAFAFA;display:flex;align-items:center;gap:0.5rem}.pxr-rw-close{background:none;border:none;color:#A1A1AA;font-size:1.2rem;cursor:pointer;padding:0.3rem}.pxr-rw-close:hover{color:#EF4444}.pxr-rw-body{padding:1.2rem;text-align:center}.pxr-rw-timer{font-family:"JetBrains Mono",monospace;font-size:2rem;font-weight:700;color:#8B5CF6;margin:1rem 0}.pxr-rw-timer.done{color:#10B981}.pxr-rw-info{font-size:0.8rem;color:#A1A1AA;margin-bottom:1rem;line-height:1.5}.pxr-rw-reward{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:0.4rem 0.8rem;color:#FBBF24;font-weight:700;font-size:0.85rem;margin-bottom:1rem}.pxr-rw-iframe{width:100%;height:250px;border:none;border-radius:12px;background:rgba(255,255,255,0.03);margin-bottom:1rem}.pxr-rw-btn-claim{width:100%;padding:0.9rem;background:linear-gradient(135deg,#10B981,#059669);color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem}.pxr-rw-btn-claim:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.4)}.pxr-rw-btn-claim:disabled{background:rgba(63,63,70,0.5);color:#71717A;cursor:not-allowed}.pxr-rw-limit{font-size:0.7rem;color:#71717A;margin-top:0.8rem}.pxr-rw-error{color:#EF4444;font-size:0.8rem;margin-top:0.5rem}' +
-    '.pxr-rw-status-msg{padding:1.5rem;text-align:center}.pxr-rw-status-msg i{font-size:2.5rem;margin-bottom:1rem;display:block}.pxr-rw-status-msg.limit{color:#F59E0B}.pxr-rw-status-msg.cooldown{color:#8B5CF6}.pxr-rw-status-msg h3{font-size:1.1rem;margin-bottom:0.5rem;color:#FAFAFA}.pxr-rw-status-msg p{font-size:0.85rem;color:#A1A1AA;line-height:1.5}';    document.head.appendChild(style);
+    '.pxr-rw-status-msg{padding:1.5rem;text-align:center}.pxr-rw-status-msg i{font-size:2.5rem;margin-bottom:1rem;display:block}.pxr-rw-status-msg.limit{color:#F59E0B}.pxr-rw-status-msg.cooldown{color:#8B5CF6}.pxr-rw-status-msg h3{font-size:1.1rem;margin-bottom:0.5rem;color:#FAFAFA}.pxr-rw-status-msg p{font-size:0.85rem;color:#A1A1AA;line-height:1.5}';
+    document.head.appendChild(style);
 
     function createRewardedModal() {
         if (document.getElementById('pxr-rw-overlay')) return;
@@ -66,7 +39,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
     var rwCurrentUserId = null;
     var rwDailyLimit = 5;
     var rwClicked = false;
-    var rwOfferOpened = false;
+    var rwOfferOpened = false; // ✅ NOUVEAU : détecte si l'offre a été ouverte
 
     function showStatusMessage(type, title, message) {
         var bodyContent = document.getElementById('pxr-rw-body-content');
@@ -82,6 +55,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
         document.getElementById('pxr-rw-claim-btn').addEventListener('click', window.pxrClaimRewardedAd);
     }
 
+    // ✅ DÉTECTEUR DE RETOUR : quand l'utilisateur revient sur Pixora après avoir cliqué sur l'offre
     window.addEventListener('focus', function() {
         if (rwOfferOpened === true && rwClicked === false) {
             rwClicked = true;
@@ -96,6 +70,8 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
             }
         }
     });
+
+    // ✅ ÉCOUTEUR POSTMESSAGE (backup pour iframes)
     window.addEventListener('message', function(e) {
         if (e.data && e.data === 'rw-click') {
             rwClicked = true;
@@ -120,8 +96,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
 
             if (!data.available) {
                 if (data.reason === 'daily_limit_reached') {
-                    rwDailyLimit = data.daily_limit || 5;
-                    showStatusMessage('limit', 'Limite quotidienne atteinte', 'Vous avez déjà vu ' + data.views_today + '/' + rwDailyLimit + ' pubs récompensées aujourd\'hui.<br><br>Revenez demain pour gagner plus de points !');
+                    rwDailyLimit = data.daily_limit || 5;                    showStatusMessage('limit', 'Limite quotidienne atteinte', 'Vous avez déjà vu ' + data.views_today + '/' + rwDailyLimit + ' pubs récompensées aujourd\'hui.<br><br>Revenez demain pour gagner plus de points !');
                     return;
                 }
                 if (data.reason === 'cooldown_active') {
@@ -145,7 +120,9 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
 
             var iframe = document.getElementById('pxr-rw-iframe');
             if (data.ad_url) {
-                iframe.src = data.ad_url;            } else if (data.ad_html) {
+                iframe.src = data.ad_url;
+            } else if (data.ad_html) {
+                // ✅ MODIFICATION CRITIQUE : injecter le HTML avec détection de clic automatique
                 var htmlWithTracking = data.ad_html.replace(/<a\s/gi, '<a onclick="window.parent.postMessage(\'rw-click\',\'*\')" ');
                 iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + htmlWithTracking + '</body></html>';
             }
@@ -168,8 +145,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
                 if (remaining <= 0) {
                     clearInterval(rwTimerInterval);
                     rwTimerInterval = null;
-                    timerDisplay.textContent = '✅ Terminé !';
-                    timerDisplay.classList.add('done');
+                    timerDisplay.textContent = '✅ Terminé !';                    timerDisplay.classList.add('done');
 
                     if (rwClicked === true) {
                         claimBtn.disabled = false;
@@ -177,6 +153,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
                     } else {
                         claimBtn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
                         claimBtn.style.background = 'rgba(239,68,68,0.5)';
+                        // Délai de grâce 10s
                         setTimeout(function() {
                             if (rwClicked === true) {
                                 claimBtn.disabled = false;
@@ -194,6 +171,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
             pxrNotify('Erreur chargement pub.', 'error');
         }
     };
+
     window.pxrClaimRewardedAd = async function() {
         try {
             if (!rwCurrentToken || !rwCurrentUserId) return;
@@ -216,8 +194,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
                 pxrNotify('+' + data.points_earned + ' points ! Solde : ' + data.new_balance, 'success');
                 var limitEl = document.getElementById('pxr-rw-limit-info');
                 if (limitEl) {
-                    var parts = limitEl.textContent.split('/');
-                    var currentViews = parseInt(parts[0]) || 0;
+                    var parts = limitEl.textContent.split('/');                    var currentViews = parseInt(parts[0]) || 0;
                     limitEl.textContent = (currentViews + 1) + '/' + rwDailyLimit + ' vues aujourd\'hui';
                 }
                 window.pxrCloseRewarded();
@@ -243,6 +220,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
             }
         }
     };
+
     window.pxrCloseRewarded = function() {
         document.getElementById('pxr-rw-overlay').classList.remove('active');
         document.body.style.overflow = '';
@@ -265,8 +243,7 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
         var wrapper = document.createElement('div');
         wrapper.id = id + '-wrapper';
         wrapper.className = 'pxr-wrapper';
-        var label = document.createElement('div');
-        label.className = 'pxr-label';
+        var label = document.createElement('div');        label.className = 'pxr-label';
         label.textContent = '⭐ SPONSORISÉ ⭐';
         wrapper.appendChild(label);
         var adBox = document.createElement('div');
@@ -292,7 +269,8 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
             var newScript = document.createElement('script');
             for (var i = 0; i < oldScript.attributes.length; i++) newScript.setAttribute(oldScript.attributes[i].name, oldScript.attributes[i].value);
             if (oldScript.innerHTML) newScript.innerHTML = oldScript.innerHTML;
-            oldScript.parentNode.replaceChild(newScript, oldScript);        });
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
     }
 
     async function loadAndInjectAds() {
@@ -309,31 +287,12 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
             if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
             else main.insertBefore(topSlot.wrapper, main.firstChild);
 
-            // ✅ SEULE MODIFICATION : Trouver "Créations de référence" par texte exact
-            var refEl = null;
-            var allNodes = main.querySelectorAll('*');
-            for (var i = 0; i < allNodes.length; i++) {
-                var txt = allNodes[i].textContent.trim().toLowerCase();
-                if (txt.indexOf('créations de référence') !== -1 || txt.indexOf('reference creations') !== -1) {
-                    refEl = allNodes[i];
-                    break;
-                }
-            }
-
-            if (refEl && refEl.parentNode) {
-                refEl.parentNode.insertBefore(midSlot.wrapper, refEl);
-            } else {
-                var generator = main.querySelector('.generator');
-                if (generator && generator.parentNode) {
-                    generator.parentNode.insertBefore(midSlot.wrapper, generator.nextSibling);
-                } else {
-                    main.appendChild(midSlot.wrapper);
-                }
-            }
+            var generator = main.querySelector('.generator');
+            if (generator && generator.parentNode) generator.parentNode.insertBefore(midSlot.wrapper, generator.nextSibling);
+            else main.appendChild(midSlot.wrapper);
 
             var footer = main.querySelector('.site-footer');
-            if (footer && footer.parentNode) footer.parentNode.insertBefore(btmSlot.wrapper, footer);
-            else main.appendChild(btmSlot.wrapper);
+            if (footer && footer.parentNode) footer.parentNode.insertBefore(btmSlot.wrapper, footer);            else main.appendChild(btmSlot.wrapper);
 
             var res = await fetch('/api/serve-ad?page=' + page + '&position=top');
             var data = await res.json();
@@ -341,7 +300,8 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
             if (data.html && data.html.trim().length > 0) { htmlTop = data.html; injectHtmlWithScripts(topSlot.adBox, data.html); }
             else topSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
 
-            var res2 = await fetch('/api/serve-ad?page=' + page + '&position=middle');            var data2 = await res2.json();
+            var res2 = await fetch('/api/serve-ad?page=' + page + '&position=middle');
+            var data2 = await res2.json();
             if (data2.html && data2.html.trim().length > 0) injectHtmlWithScripts(midSlot.adBox, data2.html);
             else if (htmlTop) injectHtmlWithScripts(midSlot.adBox, htmlTop);
             else midSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
@@ -364,3 +324,5 @@ Voici **EXACTEMENT** le code que tu m'as envoyé au tout début (v36.3), avec **
     if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(init, 300);
     else document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
 })();
+
+adsloder.js ne pas abîmer le reste ajuster juste le pub milieu ok
