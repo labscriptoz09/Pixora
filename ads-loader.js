@@ -1,4 +1,4 @@
-// ads-loader.js v36.3 — CORRECTED: Pub statique si API échoue
+// ads-loader.js v36.3 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR
 (function() {
     'use strict';
 
@@ -17,10 +17,9 @@
     }
 
     var style = document.createElement('style');
-    style.textContent = '.pxr-wrapper{display:block;width:100%;margin:1rem 0;border:2px dashed #8B5CF6;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:12px;text-align:center;overflow:hidden;clear:both}.pxr-ad-box{max-height:none;overflow:hidden;margin-bottom:0.5rem}.pxr-ad-box img{max-width:100%;max-height:250px;object-fit:contain}.pxr-label{font-size:0.7rem;color:#8B5CF6;margin-bottom:0.5rem;font-weight:700}.pxr-btn-box{margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(139,92,246,0.2)}.pxr-rw-btn{background:linear-gradient(135deg,#F59E0B,#EF4444);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;display:inline-flex;align-items:center;gap:0.4rem}.pxr-rw-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.4)}' +
-    '.pxr-sponsor-static{width:100%;max-width:600px;margin:0 auto;position:relative;overflow:hidden;border-radius:12px;box-shadow:0 8px 24px rgba(139,92,246,0.2)}' +
-    '.pxr-sponsor-static img{width:100%;height:auto;display:block}' +
-    '.pxr-sponsor-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:1rem;color:white}';
+    style.textContent = '.pxr-wrapper{width:100%;margin:1rem 0;border:2px dashed #8B5CF6;padding:0.8rem;background:rgba(139,92,246,0.1);border-radius:12px;text-align:center;max-height:400px;overflow:hidden}.pxr-ad-box{max-height:280px;overflow:hidden;margin-bottom:0.5rem}.pxr-ad-box img{max-width:100%;max-height:250px;object-fit:contain}.pxr-label{font-size:0.7rem;color:#8B5CF6;margin-bottom:0.5rem;font-weight:700}.pxr-btn-box{margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(139,92,246,0.2)}.pxr-rw-btn{background:linear-gradient(135deg,#F59E0B,#EF4444);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;display:inline-flex;align-items:center;gap:0.4rem}.pxr-rw-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.4)}' +
+    '.pxr-rw-overlay{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}.pxr-rw-overlay.active{display:flex}.pxr-rw-modal{background:#0f0f14;border:1px solid rgba(139,92,246,0.3);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow:hidden;position:relative;animation:pxrScaleIn 0.3s ease}@keyframes pxrScaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}.pxr-rw-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;border-bottom:1px solid rgba(63,63,70,0.5)}.pxr-rw-title{font-size:0.9rem;font-weight:700;color:#FAFAFA;display:flex;align-items:center;gap:0.5rem}.pxr-rw-close{background:none;border:none;color:#A1A1AA;font-size:1.2rem;cursor:pointer;padding:0.3rem}.pxr-rw-close:hover{color:#EF4444}.pxr-rw-body{padding:1.2rem;text-align:center}.pxr-rw-timer{font-family:"JetBrains Mono",monospace;font-size:2rem;font-weight:700;color:#8B5CF6;margin:1rem 0}.pxr-rw-timer.done{color:#10B981}.pxr-rw-info{font-size:0.8rem;color:#A1A1AA;margin-bottom:1rem;line-height:1.5}.pxr-rw-reward{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:0.4rem 0.8rem;color:#FBBF24;font-weight:700;font-size:0.85rem;margin-bottom:1rem}.pxr-rw-iframe{width:100%;height:250px;border:none;border-radius:12px;background:rgba(255,255,255,0.03);margin-bottom:1rem}.pxr-rw-btn-claim{width:100%;padding:0.9rem;background:linear-gradient(135deg,#10B981,#059669);color:white;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.5rem}.pxr-rw-btn-claim:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.4)}.pxr-rw-btn-claim:disabled{background:rgba(63,63,70,0.5);color:#71717A;cursor:not-allowed}.pxr-rw-limit{font-size:0.7rem;color:#71717A;margin-top:0.8rem}.pxr-rw-error{color:#EF4444;font-size:0.8rem;margin-top:0.5rem}' +
+    '.pxr-rw-status-msg{padding:1.5rem;text-align:center}.pxr-rw-status-msg i{font-size:2.5rem;margin-bottom:1rem;display:block}.pxr-rw-status-msg.limit{color:#F59E0B}.pxr-rw-status-msg.cooldown{color:#8B5CF6}.pxr-rw-status-msg h3{font-size:1.1rem;margin-bottom:0.5rem;color:#FAFAFA}.pxr-rw-status-msg p{font-size:0.85rem;color:#A1A1AA;line-height:1.5}';
     document.head.appendChild(style);
 
     function createRewardedModal() {
@@ -47,8 +46,8 @@
         if (!bodyContent) return;
         bodyContent.innerHTML = '<div class="pxr-rw-status-msg ' + type + '"><i class="fas fa-' + (type === 'limit' ? 'lock' : 'hourglass-half') + '"></i><h3>' + title + '</h3><p>' + message + '</p></div>';
         document.getElementById('pxr-rw-overlay').classList.add('active');
-        document.body.style.overflow = 'hidden';    }
-    function restoreModalContent() {
+        document.body.style.overflow = 'hidden';
+    }    function restoreModalContent() {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
         bodyContent.innerHTML = '<div class="pxr-rw-reward"><i class="fas fa-bolt"></i> <span id="pxr-rw-points">1</span> points</div><div class="pxr-rw-info">Cliquez sur l\'offre, attendez la fin du timer, puis réclamez vos points.</div><iframe id="pxr-rw-iframe" class="pxr-rw-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe><div class="pxr-rw-timer" id="pxr-rw-timer-display">20s</div><button id="pxr-rw-claim-btn" class="pxr-rw-btn-claim" disabled><i class="fas fa-clock"></i> Patientez...</button><div class="pxr-rw-limit" id="pxr-rw-limit-info"></div><div class="pxr-rw-error" id="pxr-rw-error" style="display:none"></div>';
@@ -96,8 +95,8 @@
                 if (data.reason === 'daily_limit_reached') {
                     rwDailyLimit = data.daily_limit || 5;
                     showStatusMessage('limit', 'Limite quotidienne atteinte', 'Vous avez déjà vu ' + data.views_today + '/' + rwDailyLimit + ' pubs récompensées aujourd\'hui.<br><br>Revenez demain pour gagner plus de points !');
-                    return;                }
-                if (data.reason === 'cooldown_active') {
+                    return;
+                }                if (data.reason === 'cooldown_active') {
                     showStatusMessage('cooldown', 'Patientez un moment', 'Vous devez attendre encore ' + data.wait_seconds + ' secondes avant de voir une nouvelle pub récompensée.');
                     return;
                 }
@@ -145,8 +144,8 @@
                     timerDisplay.textContent = '✅ Terminé !';
                     timerDisplay.classList.add('done');
 
-                    if (rwClicked === true) {                        claimBtn.disabled = false;
-                        claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                    if (rwClicked === true) {
+                        claimBtn.disabled = false;                        claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
                     } else {
                         claimBtn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
                         claimBtn.style.background = 'rgba(239,68,68,0.5)';
@@ -194,8 +193,8 @@
                     var currentViews = parseInt(parts[0]) || 0;
                     limitEl.textContent = (currentViews + 1) + '/' + rwDailyLimit + ' vues aujourd\'hui';
                 }
-                window.pxrCloseRewarded();                if (typeof updateUI === 'function') updateUI();
-            } else {
+                window.pxrCloseRewarded();
+                if (typeof updateUI === 'function') updateUI();            } else {
                 var errEl = document.getElementById('pxr-rw-error');
                 if (data.error === 'timer_not_complete') {
                     errEl.textContent = 'Patientez encore ' + data.remaining_seconds + 's.';
@@ -243,8 +242,8 @@
         label.className = 'pxr-label';
         label.textContent = '⭐ SPONSORISÉ ⭐';
         wrapper.appendChild(label);
-        var adBox = document.createElement('div');        adBox.id = id;
-        adBox.className = 'pxr-ad-box';
+        var adBox = document.createElement('div');
+        adBox.id = id;        adBox.className = 'pxr-ad-box';
         adBox.innerHTML = '<div style="color:#A1A1AA;padding:1rem">Chargement...</div>';
         wrapper.appendChild(adBox);
         var btnBox = document.createElement('div');
@@ -276,46 +275,24 @@
             var main = document.querySelector('.main-content') || document.querySelector('main') || document.body;
 
             var topSlot = createProtectedSlot('pxr-top');
+            var midSlot = createProtectedSlot('pxr-mid');
             var btmSlot = createProtectedSlot('pxr-btm');
 
-            // TOP : après hero (INCHANGÉ)
             var hero = main.querySelector('.hero');
             if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
             else main.insertBefore(topSlot.wrapper, main.firstChild);
 
-            // ✅ MIDDLE : INSÉRER UNE PUB STATIQUE SI L'API ÉCHOUE
-            var midSlot = { wrapper: document.createElement('div'), adBox: null };
-            midSlot.wrapper.id = 'pxr-mid-wrapper';
-            midSlot.wrapper.className = 'pxr-wrapper';
-            midSlot.wrapper.innerHTML = `
-                <div class="pxr-label">⭐ SPONSORISÉ ⭐</div>
-                <div class="pxr-sponsor-static">
-                    <img src="https://iapixora.com/assets/pub-1win.jpg" alt="1win">
-                    <div class="pxr-sponsor-overlay">
-                        <h3 style="font-size:1.2rem;margin:0 0 0.5rem 0">Découvrez 1win</h3>                        <p style="font-size:0.9rem;margin:0">Jusqu’à 500% de bonus sur votre premier dépôt</p>
-                        <a href="https://1win.com" target="_blank" rel="nofollow sponsored" 
-                           style="display:inline-block;margin-top:0.8rem;background:#F59E0B;color:white;padding:0.6rem 1.2rem;border-radius:8px;text-decoration:none;font-weight:600;">
-                           🎁 Explorer l'offre
-                        </a>
-                    </div>
-                </div>
-                <div class="pxr-btn-box">
-                    <button class="pxr-rw-btn" onclick="window.pxrOpenRewardedAd()">🎁 Gagner des points</button>
-                </div>
-            `;
-
-            // Trouve "Créations de référence"
+            // ✅ SEULE MODIFICATION : Insérer midSlot avant "Créations de référence"
             var refCreations = main.querySelector('#ref-creations') || 
                                main.querySelector('.reference-creations') ||
                                main.querySelector('.creations-reference') ||
-                               Array.from(main.querySelectorAll('h2, h3, .section-title')).find(el => 
-                                   el.textContent.toLowerCase().includes('référence') || 
-                                   el.textContent.toLowerCase().includes('reference')
-                               );
+                               Array.from(main.querySelectorAll('h2, h3')).find(function(el) { 
+                                   return el.textContent.toLowerCase().indexOf('référence') !== -1 || 
+                                          el.textContent.toLowerCase().indexOf('reference') !== -1;
+                               });
 
-            if (refCreations && main.contains(refCreations)) {
-                main.insertBefore(midSlot.wrapper, refCreations);
-            } else {
+            if (refCreations && refCreations.parentNode) {
+                refCreations.parentNode.insertBefore(midSlot.wrapper, refCreations);            } else {
                 var generator = main.querySelector('.generator');
                 if (generator && generator.parentNode) {
                     generator.parentNode.insertBefore(midSlot.wrapper, generator.nextSibling);
@@ -324,72 +301,37 @@
                 }
             }
 
-            // BOTTOM : avant footer (INCHANGÉ)
             var footer = main.querySelector('.site-footer');
             if (footer && footer.parentNode) footer.parentNode.insertBefore(btmSlot.wrapper, footer);
             else main.appendChild(btmSlot.wrapper);
 
-            // Chargement API (pour top/bottom seulement)
             var res = await fetch('/api/serve-ad?page=' + page + '&position=top');
             var data = await res.json();
-            if (data.html && data.html.trim().length > 0) {
-                injectHtmlWithScripts(topSlot.adBox, data.html);
-            } else {
-                topSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
-            }
+            var htmlTop = '';
+            if (data.html && data.html.trim().length > 0) { htmlTop = data.html; injectHtmlWithScripts(topSlot.adBox, data.html); }
+            else topSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
+
+            var res2 = await fetch('/api/serve-ad?page=' + page + '&position=middle');
+            var data2 = await res2.json();
+            if (data2.html && data2.html.trim().length > 0) injectHtmlWithScripts(midSlot.adBox, data2.html);
+            else if (htmlTop) injectHtmlWithScripts(midSlot.adBox, htmlTop);
+            else midSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
 
             var res3 = await fetch('/api/serve-ad?page=' + page + '&position=bottom');
             var data3 = await res3.json();
-            if (data3.html && data3.html.trim().length > 0) {
-                injectHtmlWithScripts(btmSlot.adBox, data3.html);            } else {
-                btmSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
-            }
+            if (data3.html && data3.html.trim().length > 0) injectHtmlWithScripts(btmSlot.adBox, data3.html);
+            else if (htmlTop) injectHtmlWithScripts(btmSlot.adBox, htmlTop);
+            else btmSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
 
             console.log('[ADS] v36.3 DONE');
-        } catch (e) {
-            console.error('[ADS] Init error:', e);
-            // En cas d'erreur, assure que la pub statique est là
-            try {
-                var main = document.querySelector('main') || document.body;
-                if (!main.querySelector('#pxr-mid-wrapper')) {
-                    var fallback = document.createElement('div');
-                    fallback.id = 'pxr-mid-wrapper';
-                    fallback.className = 'pxr-wrapper';
-                    fallback.innerHTML = `
-                        <div class="pxr-label">⭐ SPONSORISÉ ⭐</div>
-                        <div class="pxr-sponsor-static">
-                            <img src="https://iapixora.com/assets/pub-1win.jpg" alt="1win">
-                            <div class="pxr-sponsor-overlay">
-                                <h3 style="font-size:1.2rem;margin:0 0 0.5rem 0">Découvrez 1win</h3>
-                                <p style="font-size:0.9rem;margin:0">Jusqu’à 500% de bonus sur votre premier dépôt</p>
-                                <a href="https://1win.com" target="_blank" rel="nofollow sponsored" 
-                                   style="display:inline-block;margin-top:0.8rem;background:#F59E0B;color:white;padding:0.6rem 1.2rem;border-radius:8px;text-decoration:none;font-weight:600;">
-                                   🎁 Explorer l'offre
-                                </a>
-                            </div>
-                        </div>
-                        <div class="pxr-btn-box">
-                            <button class="pxr-rw-btn" onclick="window.pxrOpenRewardedAd()">🎁 Gagner des points</button>
-                        </div>
-                    `;
-                    var refCreations = main.querySelector('#ref-creations') || 
-                                      main.querySelector('.reference-creations') ||
-                                      Array.from(main.querySelectorAll('h2, h3')).find(el => 
-                                          el.textContent.toLowerCase().includes('référence'));
-                    if (refCreations) {
-                        main.insertBefore(fallback, refCreations);
-                    } else {
-                        main.appendChild(fallback);
-                    }
-                }
-            } catch (e2) { console.error('Fallback error:', e2); }
-        }
+        } catch (e) { console.error('[ADS] Init error:', e); }
     }
 
     async function init() {
         createRewardedModal();
         await loadAndInjectAds();
     }
+
     if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(init, 300);
     else document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
 })();
