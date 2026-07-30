@@ -1,5 +1,5 @@
 // ads-loader.js v36.3 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR
-// ✅ CORRECTION : Pub milieu insérée entre images générées et images fixes
+// ✅ CORRECTION : Pub milieu insérée ENTRE "Your Creations" ET "Créations de référence"
 (function() {
     'use strict';
 
@@ -284,25 +284,28 @@
             if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
             else main.insertBefore(topSlot.wrapper, main.firstChild);
 
-            // ✅ MIDDLE : ENTRE IMAGES GÉNÉRÉES ET IMAGES FIXES (CORRIGÉ)
-            // Cherche le conteneur qui contient les deux types d'images
-            var imageContainer = main.querySelector('.gallery') || 
-                                 main.querySelector('#creations') || 
-                                 main.querySelector('.creations') ||
-                                 main.querySelector('.user-creations');
-            
-            if (imageContainer && imageContainer.parentNode) {
-                // Insère la pub AU MILIEU du conteneur d'images                // Entre les images générées (haut) et les images fixes (bas)
-                var children = imageContainer.children;
-                if (children.length > 0) {
-                    // Insère au milieu des enfants du conteneur
-                    var midIndex = Math.floor(children.length / 2);
-                    imageContainer.insertBefore(midSlot.wrapper, children[midIndex]);
-                } else {
-                    imageContainer.appendChild(midSlot.wrapper);
-                }
+            // ✅ MIDDLE : ENTRE "Your Creations" ET "Créations de référence"
+            var yourCreations = main.querySelector('#your-creations') || 
+                                main.querySelector('.your-creations') ||
+                                Array.from(main.querySelectorAll('h2, h3, .section-title')).find(function(el) { 
+                                    return el.textContent.toLowerCase().indexOf('your creation') !== -1;
+                                });
+
+            var refCreations = main.querySelector('#ref-creations') || 
+                               main.querySelector('.reference-creations') ||                               main.querySelector('.creations-reference') ||
+                               Array.from(main.querySelectorAll('h2, h3, .section-title')).find(function(el) { 
+                                   return el.textContent.toLowerCase().indexOf('référence') !== -1 || 
+                                          el.textContent.toLowerCase().indexOf('reference') !== -1;
+                               });
+
+            if (yourCreations && refCreations && refCreations.parentNode) {
+                // Insère la pub JUSTE AVANT "Créations de référence"
+                refCreations.parentNode.insertBefore(midSlot.wrapper, refCreations);
+            } else if (yourCreations && yourCreations.parentNode) {
+                // Fallback : après "Your Creations"
+                yourCreations.parentNode.insertBefore(midSlot.wrapper, yourCreations.nextSibling);
             } else {
-                // Fallback : après le générateur si pas de conteneur trouvé
+                // Fallback ultime : après le générateur
                 var generator = main.querySelector('.generator');
                 if (generator && generator.parentNode) {
                     generator.parentNode.insertBefore(midSlot.wrapper, generator.nextSibling);
@@ -338,10 +341,10 @@
             console.log('[ADS] v36.3 DONE');
         } catch (e) { console.error('[ADS] Init error:', e); }
     }
-
     async function init() {
         createRewardedModal();
-        await loadAndInjectAds();    }
+        await loadAndInjectAds();
+    }
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(init, 300);
     else document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
