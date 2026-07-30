@@ -305,7 +305,7 @@ function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 
 // =============================================
-// STUDIO — VERSION FETCH ANON (bypass RLS pour images anonymes)
+// STUDIO + UPLOAD — VERSION FINALE (nom sans timestamp + created_at fiable)
 // =============================================
 async function loadStudio(){
     var grid=document.getElementById('results-grid');
@@ -320,10 +320,10 @@ async function loadStudio(){
         grid.innerHTML='';
         for(var i=0;i<data.objects.length;i++){
             var file=data.objects[i];
-            var ts=parseInt(file.name.split('_')[0]);
-            if(isNaN(ts)||ts<=0)continue;
-            if(ts<10000000000)ts*=1000;
-            if((now-ts)>=86400000)continue;
+            // ✅ Utilise created_at de Supabase (fiable) au lieu du nom de fichier
+            var createdAt=new Date(file.created_at).getTime();
+            if(isNaN(createdAt))continue;
+            if((now-createdAt)>=86400000)continue;
             var urlData=db.storage.from(BUCKET).getPublicUrl(file.name);
             var url=urlData.data.publicUrl;
             var isVideo=file.name.includes('_video_');
@@ -341,7 +341,11 @@ async function loadStudio(){
     }catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}
 }
 async function uploadToStorage(mediaUrl,type){
-    try{        var response=await fetch(mediaUrl),blob=await response.blob(),prefix=type==='video'?'_video_':'_img_',fileName=Date.now()+prefix+Math.floor(Math.random()*100000)+(type==='video'?'.mp4':'.jpg'),contentType=type==='video'?'video/mp4':'image/jpeg',currentUser=await getUser(),userId=currentUser?currentUser.id:'anonymous';
+    try{        var response=await fetch(mediaUrl),blob=await response.blob(),prefix=type==='video'?'_video_':'_img_';
+        // ✅ Nom de fichier SANS timestamp au début (échappe aux purges automatiques)
+        var rand=Math.random().toString(36).substring(2,10);
+        var fileName='img_'+rand+'_'+prefix+Math.floor(Math.random()*1000)+(type==='video'?'.mp4':'.jpg');
+        var contentType=type==='video'?'video/mp4':'image/jpeg',currentUser=await getUser(),userId=currentUser?currentUser.id:'anonymous';
         await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false,cacheControl:'public,max-age=86400'});
         loadStudio()
     }catch(err){console.error('Upload failed:',err)}
