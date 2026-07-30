@@ -47,8 +47,7 @@
     <style>
         :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--gold-dim:rgba(251,191,36,0.1);--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}        .bg-orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
         .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}        .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}        .site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}        .header-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);flex-shrink:0}
         .header-logo svg{width:28px;height:28px}
         .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -97,8 +96,7 @@
         .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
         .menu-item:hover i{color:var(--prim)}        .menu-item.danger{color:var(--danger)}
         .menu-item.danger i{color:var(--danger)}        .menu-item.danger:hover{background:rgba(239,68,68,0.08)}        .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}        .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
-        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}        .nav-item i{font-size:1.2rem;transition:all 0.3s}
-        .nav-item span{font-size:0.58rem;font-weight:600}
+        .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}        .nav-item i{font-size:1.2rem;transition:all 0.3s}        .nav-item span{font-size:0.58rem;font-weight:600}
         .nav-item[data-nav="studio"].active{color:var(--prim)}
         .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,0.6))}
         .nav-item[data-nav="gallery"].active{color:#3B82F6}
@@ -147,8 +145,7 @@
         .stat-lbl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}        
         .section-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center}        .section-label h2{font-size:inherit;font-weight:inherit;color:var(--text);margin:0;text-transform:none;letter-spacing:0}
         .section-label span{font-size:0.65rem;color:var(--muted);text-transform:none;letter-spacing:0}
-        .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}
-        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+        .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}        @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}        .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
         .result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
         .result-card img,.result-card video{width:100%;height:100%;object-fit:cover;display:block}
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.6rem;gap:0.4rem;opacity:0;transition:opacity 0.3s}
@@ -197,8 +194,7 @@
         .btn-submit{width:100%;padding:1rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:12px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         .btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}        .auth-divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:var(--dim);font-size:0.72rem}
         .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-        .social-btn{width:100%;padding:0.85rem;border-radius:12px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.2s;margin-bottom:0.5rem;cursor:pointer;border:none}
-        .social-btn.google{background:#ffffff;color:#1f1f1f;border:1.5px solid #e0e0e0}
+        .social-btn{width:100%;padding:0.85rem;border-radius:12px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.2s;margin-bottom:0.5rem;cursor:pointer;border:none}        .social-btn.google{background:#ffffff;color:#1f1f1f;border:1.5px solid #e0e0e0}
         .social-btn.google:hover{background:#f5f5f5;border-color:#ccc;transform:translateY(-1px)}
         .social-btn.google i{color:#DB4437;font-size:1.1rem}
         .social-btn.github{background:#24292F;color:#ffffff;border:1.5px solid #444c56}
@@ -247,8 +243,7 @@
         .share-btn.twitter i{color:#1DA1F2}
         .share-btn.facebook i{color:#1877F2}
         .share-btn.instagram i{color:#E4405F}
-        .share-btn.tiktok i{color:#ff0050}
-        .share-btn.linkedin i{color:#0A66C2}
+        .share-btn.tiktok i{color:#ff0050}        .share-btn.linkedin i{color:#0A66C2}
         .share-btn.pinterest i{color:#E60023}
         .share-btn.reddit i{color:#FF4500}
         .share-btn.discord i{color:#5865F2}
@@ -297,8 +292,7 @@
             <a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a>
             <a class="share-btn linkedin" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a>
             <a class="share-btn pinterest" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a>
-            <a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a>
-            <a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a>
+            <a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a>            <a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a>
         </div>
         <div class="share-category" data-i18n="share.cat_community">👥 Communautés</div>
         <div class="share-grid">
@@ -347,8 +341,7 @@
         <button class="social-btn github" onclick="notify(t('auth.github_soon'),'success')"><i class="fab fa-github"></i> <span data-i18n="auth.github">Continuer avec GitHub</span></button>
         <div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div>
     </div>
-</div>
-<header class="site-header">
+</div><header class="site-header">
     <a href="index.html" class="header-logo">
         <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
         <span class="logo-text">IA Pixora</span>
@@ -397,8 +390,7 @@
         <div class="prompt-wrapper">
             <textarea class="prompt-field" id="prompt" data-i18n-placeholder="generator.placeholder" placeholder="Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k"></textarea>
             <i class="fas fa-sparkles prompt-icon"></i>
-        </div>
-        <div class="type-selector">
+        </div>        <div class="type-selector">
             <button class="type-btn active" onclick="selType('image')" aria-pressed="true"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
             <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
         </div>
@@ -447,8 +439,7 @@
                     "@type": "Answer",
                     "text": "Oui, IA Pixora est 100% gratuit pour générer des images et vidéos IA. Vous pouvez utiliser 3 générations sans inscription. Après cela, une inscription gratuite vous donne accès illimité + 15 points bonus."
                 }
-            },{
-                "@type": "Question",
+            },{                "@type": "Question",
                 "name": "Comment générer une image sans inscription ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
@@ -497,8 +488,7 @@
         </div>
     </section>
 
-    <footer class="site-footer">
-        <div class="footer-links">
+    <footer class="site-footer">        <div class="footer-links">
             <a href="earn.html" data-i18n="footer.earn_points">Gagner des Points</a>
             <a href="gallery.html" data-i18n="footer.gallery">Galerie</a>
             <a href="shop.html" data-i18n="footer.shop">Boutique</a>
@@ -547,8 +537,7 @@ function checkFreemiumBlock() {
     return db.auth.getUser().then(function(result) {
         if (!result.data.user) {
             var count = getAnonCount();
-            if (count >= PX_FREE_LIMIT) {
-                showSoftSignupPrompt();
+            if (count >= PX_FREE_LIMIT) {                showSoftSignupPrompt();
                 return false;
             }
         } else {            localStorage.removeItem(PX_ANON_KEY);
@@ -598,7 +587,6 @@ async function loadMiniBadge() {
                 currentBadge = BADGES_CONFIG[i];
                 break;
             }        }
-
         var nextBadge = null;
         for (var j = 0; j < BADGES_CONFIG.length; j++) {
             if (claimedBadges.indexOf(BADGES_CONFIG[j].id) === -1) {
@@ -647,8 +635,7 @@ var currentLang = 'fr';var FR_TRANSLATIONS = {
     notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'🔗 Lien copié !',share_points:'+5 points pour le partage !'},
     footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
     language:{label:'Language',fr:'Français',en:'English'},
-    share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},
-    faq:{
+    share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},    faq:{
         q1:'Est-ce que IA Pixora est vraiment gratuit ?',
         a1:'Oui, IA Pixora est 100% gratuit pour générer des images et vidéos IA. Vous pouvez utiliser 3 générations sans inscription. Après cela, une inscription gratuite vous donne accès illimité + 15 points bonus.',
         q2:'Comment générer une image sans inscription ?',        a2:'Vous pouvez générer jusqu\'à 3 images gratuitement sans créer de compte. Il suffit d\'entrer un prompt dans le studio et de cliquer sur Générer. Après 3 générations, un pop-up vous propose de vous inscrire pour continuer.',
@@ -697,8 +684,7 @@ function applyTranslations() {
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var key = el.getAttribute('data-i18n');
         var val = t(key);
-        if (val !== key) el.textContent = val;
-    });    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+        if (val !== key) el.textContent = val;    });    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
         var key = el.getAttribute('data-i18n-placeholder');
         var val = t(key);
         if (val !== key) el.placeholder = val;
@@ -747,7 +733,6 @@ async function generateWithFallback(prompt,type){
         try{var headers={'Content-Type':'application/json'};var authH=provider.authHeader(key);for(var k in authH){headers[k]=authH[k]}var response=await fetch(provider.endpoint,{method:'POST',headers:headers,body:JSON.stringify(provider.buildBody(prompt))});if(!response.ok)continue;var contentType=response.headers.get('content-type')||'';if(contentType.includes('video/')||contentType.includes('octet-stream')){var blob=await response.blob();return{url:URL.createObjectURL(blob),provider:provider.name}}var data=await response.json();var url=provider.parseUrl(data,contentType);if(url)return{url:url,provider:provider.name}}catch(e){console.warn('API '+provider.id+' failed:',e.message);continue}
     }    return{url:getPollinationsUrl(prompt,type),provider:'Pollinations'}
 }
-
 async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value}catch(err){console.error('Config error:',err)}updateCostUI()}
 function updateCostUI(){
     var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];var isDiscounted=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date();var imgCost=c.costs.image;var imgEl=document.getElementById('cost-image');var banner=document.getElementById('discount-banner');var timerEl=document.getElementById('discount-timer');
@@ -797,8 +782,7 @@ async function updateUI(){
         var initial=name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent=initial;
         document.getElementById('menu-avatar').textContent=initial;
-        document.getElementById('menu-name').textContent=name;
-        document.getElementById('menu-email').textContent=user.email;
+        document.getElementById('menu-name').textContent=name;        document.getElementById('menu-email').textContent=user.email;
         document.getElementById('menu-points').textContent=d.points||0;
     }
     await loadMiniBadge();}
@@ -847,8 +831,7 @@ function shareTo(network) {
     var links = {
         whatsapp: 'https://wa.me/?text=' + encodeURIComponent(text + ' ' + url),
         telegram: 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text),
-        twitter: 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url),
-        facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url),
+        twitter: 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url),        facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url),
         instagram: 'https://www.instagram.com/',
         tiktok: 'https://www.tiktok.com/',
         linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url) + '&description=' + encodeURIComponent(text),
@@ -896,9 +879,66 @@ function fallbackCopy(text) {
 }
 
 // =============================================
-// STUDIO + UPLOAD — CORRECTION CRITIQUE
-// =============================================
-async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.storage.from(BUCKET).list('',{limit:20,sortBy:{column:'created_at',order:'desc'}});if(!result.data||result.data.length===0)return;var now=Date.now();grid.innerHTML='';result.data.forEach(function(file){var createdAt=new Date(file.created_at).getTime();if((now-createdAt)<86400000){var urlData=db.storage.from(BUCKET).getPublicUrl(file.name);var url=urlData.data.publicUrl;var isVideo=file.name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';var vid=card.querySelector('video');vid.onmouseenter=function(){vid.play()};vid.onmouseleave=function(){vid.pause();vid.currentTime=0}}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=function(){openLB(url,isVideo?'video':'image')};grid.appendChild(card);setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000-(now-createdAt))}})}catch(err){console.error('Studio load error:',err)}}
+// STUDIO + UPLOAD — CORRECTION ROBUSTE ANONYMES
+// =============================================async function loadStudio(){
+    var grid = document.getElementById('results-grid');
+    try {
+        var result = await db.storage.from(BUCKET).list('', {
+            limit: 20,
+            sortBy: { column: 'created_at', order: 'desc' }
+        });
+        if (!result.data || result.data.length === 0) return;
+        
+        var now = Date.now();
+        grid.innerHTML = '';
+        
+        for (var i = 0; i < result.data.length; i++) {
+            var file = result.data[i];
+            
+            // ✅ Gestion robuste de created_at pour anonymes sans metadata
+            var createdAtStr;
+            if (typeof file.created_at === 'string' && file.created_at) {
+                createdAtStr = file.created_at;
+            } else {
+                // Fallback : extraire timestamp du nom de fichier "1719843200_img_..."
+                var match = file.name.match(/^(\d+)/);
+                createdAtStr = match ? new Date(parseInt(match[1]) * 1000).toISOString() : new Date().toISOString();
+            }
+            
+            var createdAt = new Date(createdAtStr).getTime();
+            if (isNaN(createdAt)) {
+                // Dernier fallback : considérer comme récent
+                createdAt = now - 1000;
+            }
+
+            if ((now - createdAt) < 86400000) {
+                var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
+                var url = urlData.data.publicUrl;
+                var isVideo = file.name.indexOf('_video_') !== -1;
+                
+                var card = document.createElement('div');
+                card.className = 'result-card';
+                
+                if (isVideo) {
+                    card.innerHTML = '<video src="' + url + '" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
+                    var vid = card.querySelector('video');
+                    vid.onmouseenter = function(){vid.play()};
+                    vid.onmouseleave = function(){vid.pause(); vid.currentTime = 0};
+                } else {
+                    card.innerHTML = '<img src="' + url + '" alt="Creation" loading="lazy">' + buildImageOverlay();
+                }
+                
+                card.onclick = function(){openLB(url, isVideo ? 'video' : 'image')};
+                grid.appendChild(card);                
+                setTimeout(function(){
+                    if (card.parentNode === grid) card.remove();
+                }, 86400000 - (now - createdAt));
+            }
+        }
+    } catch(err) {
+        console.error('Studio load error:', err);
+    }
+}
 async function uploadToStorage(mediaUrl,type){
     try{
         var response=await fetch(mediaUrl);
@@ -920,7 +960,7 @@ async function uploadToStorage(mediaUrl,type){
             contentType: contentType,
             upsert: false,
             metadata: {
-                created_at: new Date().toISOString(),  // ⚠️ C'est ce qui manquait !
+                created_at: new Date().toISOString(),
                 user_id: userId,
                 prompt: promptText,
                 type: type,
@@ -938,8 +978,7 @@ async function uploadToStorage(mediaUrl,type){
 // =============================================
 async function generate(){
     if(curType==='video'){notifyVideoSoon();return}
-    var p=document.getElementById('prompt').value.trim();
-    if(!p){notify(t('notifications.enter_prompt'),'error');return}
+    var p=document.getElementById('prompt').value.trim();    if(!p){notify(t('notifications.enter_prompt'),'error');return}
     var logged=await isLogged();
     var cost=0;
     var isDiscounted=false;
@@ -988,8 +1027,7 @@ async function generate(){
                 });
             }
             var discountMsg=isDiscounted?t('notifications.discount_tag'):'';
-            var costDisplay=logged?(' (-'+cost+' '+t('generator.cost_pts')+discountMsg+')'):'';
-            notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+costDisplay,'success');
+            var costDisplay=logged?(' (-'+cost+' '+t('generator.cost_pts')+discountMsg+')'):'';            notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+costDisplay,'success');
             if(!logged){incrementAndCheckFreemium()}            if(logged){loadMiniBadge()}
             setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000);
         }
