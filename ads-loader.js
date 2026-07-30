@@ -1,8 +1,9 @@
-// ads-loader.js v36.3 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR
+// ads-loader.js v36.4 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR
+// ✅ MODIF v36.4 : Déplacement pub milieu après "Your Creations"
 (function() {
     'use strict';
 
-    console.log('[ADS] v36.3 START');
+    console.log('[ADS] v36.4 START');
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
@@ -39,15 +40,14 @@
     var rwCurrentUserId = null;
     var rwDailyLimit = 5;
     var rwClicked = false;
-    var rwOfferOpened = false; // ✅ NOUVEAU : détecte si l'offre a été ouverte
+    var rwOfferOpened = false;
 
     function showStatusMessage(type, title, message) {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
         bodyContent.innerHTML = '<div class="pxr-rw-status-msg ' + type + '"><i class="fas fa-' + (type === 'limit' ? 'lock' : 'hourglass-half') + '"></i><h3>' + title + '</h3><p>' + message + '</p></div>';
         document.getElementById('pxr-rw-overlay').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+        document.body.style.overflow = 'hidden';    }
     function restoreModalContent() {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
@@ -55,7 +55,6 @@
         document.getElementById('pxr-rw-claim-btn').addEventListener('click', window.pxrClaimRewardedAd);
     }
 
-    // ✅ DÉTECTEUR DE RETOUR : quand l'utilisateur revient sur Pixora après avoir cliqué sur l'offre
     window.addEventListener('focus', function() {
         if (rwOfferOpened === true && rwClicked === false) {
             rwClicked = true;
@@ -71,7 +70,6 @@
         }
     });
 
-    // ✅ ÉCOUTEUR POSTMESSAGE (backup pour iframes)
     window.addEventListener('message', function(e) {
         if (e.data && e.data === 'rw-click') {
             rwClicked = true;
@@ -96,9 +94,9 @@
 
             if (!data.available) {
                 if (data.reason === 'daily_limit_reached') {
-                    rwDailyLimit = data.daily_limit || 5;                    showStatusMessage('limit', 'Limite quotidienne atteinte', 'Vous avez déjà vu ' + data.views_today + '/' + rwDailyLimit + ' pubs récompensées aujourd\'hui.<br><br>Revenez demain pour gagner plus de points !');
-                    return;
-                }
+                    rwDailyLimit = data.daily_limit || 5;
+                    showStatusMessage('limit', 'Limite quotidienne atteinte', 'Vous avez déjà vu ' + data.views_today + '/' + rwDailyLimit + ' pubs récompensées aujourd\'hui.<br><br>Revenez demain pour gagner plus de points !');
+                    return;                }
                 if (data.reason === 'cooldown_active') {
                     showStatusMessage('cooldown', 'Patientez un moment', 'Vous devez attendre encore ' + data.wait_seconds + ' secondes avant de voir une nouvelle pub récompensée.');
                     return;
@@ -122,7 +120,6 @@
             if (data.ad_url) {
                 iframe.src = data.ad_url;
             } else if (data.ad_html) {
-                // ✅ MODIFICATION CRITIQUE : injecter le HTML avec détection de clic automatique
                 var htmlWithTracking = data.ad_html.replace(/<a\s/gi, '<a onclick="window.parent.postMessage(\'rw-click\',\'*\')" ');
                 iframe.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:0;background:#1a1a24;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:sans-serif}</style></head><body>' + htmlWithTracking + '</body></html>';
             }
@@ -145,15 +142,14 @@
                 if (remaining <= 0) {
                     clearInterval(rwTimerInterval);
                     rwTimerInterval = null;
-                    timerDisplay.textContent = '✅ Terminé !';                    timerDisplay.classList.add('done');
+                    timerDisplay.textContent = '✅ Terminé !';
+                    timerDisplay.classList.add('done');
 
-                    if (rwClicked === true) {
-                        claimBtn.disabled = false;
+                    if (rwClicked === true) {                        claimBtn.disabled = false;
                         claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
                     } else {
                         claimBtn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
                         claimBtn.style.background = 'rgba(239,68,68,0.5)';
-                        // Délai de grâce 10s
                         setTimeout(function() {
                             if (rwClicked === true) {
                                 claimBtn.disabled = false;
@@ -194,11 +190,11 @@
                 pxrNotify('+' + data.points_earned + ' points ! Solde : ' + data.new_balance, 'success');
                 var limitEl = document.getElementById('pxr-rw-limit-info');
                 if (limitEl) {
-                    var parts = limitEl.textContent.split('/');                    var currentViews = parseInt(parts[0]) || 0;
+                    var parts = limitEl.textContent.split('/');
+                    var currentViews = parseInt(parts[0]) || 0;
                     limitEl.textContent = (currentViews + 1) + '/' + rwDailyLimit + ' vues aujourd\'hui';
                 }
-                window.pxrCloseRewarded();
-                if (typeof updateUI === 'function') updateUI();
+                window.pxrCloseRewarded();                if (typeof updateUI === 'function') updateUI();
             } else {
                 var errEl = document.getElementById('pxr-rw-error');
                 if (data.error === 'timer_not_complete') {
@@ -243,11 +239,11 @@
         var wrapper = document.createElement('div');
         wrapper.id = id + '-wrapper';
         wrapper.className = 'pxr-wrapper';
-        var label = document.createElement('div');        label.className = 'pxr-label';
+        var label = document.createElement('div');
+        label.className = 'pxr-label';
         label.textContent = '⭐ SPONSORISÉ ⭐';
         wrapper.appendChild(label);
-        var adBox = document.createElement('div');
-        adBox.id = id;
+        var adBox = document.createElement('div');        adBox.id = id;
         adBox.className = 'pxr-ad-box';
         adBox.innerHTML = '<div style="color:#A1A1AA;padding:1rem">Chargement...</div>';
         wrapper.appendChild(adBox);
@@ -283,17 +279,30 @@
             var midSlot = createProtectedSlot('pxr-mid');
             var btmSlot = createProtectedSlot('pxr-btm');
 
+            // ✅ TOP : après hero (INCHANGÉ)
             var hero = main.querySelector('.hero');
             if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
             else main.insertBefore(topSlot.wrapper, main.firstChild);
 
-            var generator = main.querySelector('.generator');
-            if (generator && generator.parentNode) generator.parentNode.insertBefore(midSlot.wrapper, generator.nextSibling);
-            else main.appendChild(midSlot.wrapper);
+            // ✅ MIDDLE : APRÈS LES CRÉATIONS (MODIFIÉ v36.4)
+            var creations = main.querySelector('#creations') || 
+                            main.querySelector('.creations') || 
+                            main.querySelector('.gallery') || 
+                            main.querySelector('.user-creations') ||
+                            main.querySelector('section:last-of-type');
+            
+            if (creations && creations.parentNode) {
+                creations.parentNode.insertBefore(midSlot.wrapper, creations.nextSibling);            } else {
+                // Fallback sûr : si aucune section créations trouvée, met en bas
+                main.appendChild(midSlot.wrapper);
+            }
 
+            // ✅ BOTTOM : avant footer (INCHANGÉ)
             var footer = main.querySelector('.site-footer');
-            if (footer && footer.parentNode) footer.parentNode.insertBefore(btmSlot.wrapper, footer);            else main.appendChild(btmSlot.wrapper);
+            if (footer && footer.parentNode) footer.parentNode.insertBefore(btmSlot.wrapper, footer);
+            else main.appendChild(btmSlot.wrapper);
 
+            // Chargement des pubs via API (INCHANGÉ)
             var res = await fetch('/api/serve-ad?page=' + page + '&position=top');
             var data = await res.json();
             var htmlTop = '';
@@ -312,7 +321,7 @@
             else if (htmlTop) injectHtmlWithScripts(btmSlot.adBox, htmlTop);
             else btmSlot.adBox.innerHTML = '<div style="color:#EF4444">Aucune pub</div>';
 
-            console.log('[ADS] v36.3 DONE');
+            console.log('[ADS] v36.4 DONE');
         } catch (e) { console.error('[ADS] Init error:', e); }
     }
 
