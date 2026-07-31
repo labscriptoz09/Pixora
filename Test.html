@@ -3,43 +3,259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Qualité - iapixora</title>
+<title>Test API - IA Pixora</title>
 <style>
-body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif;text-align:center}
-img{max-width:100%;border-radius:12px;margin:1rem 0;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-button{background:#8B5CF6;color:#fff;border:none;padding:.8rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer}
-button:hover{background:#7C3AED}
-.status{color:#A1A1AA;margin:1rem 0}
+body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;margin-bottom:2rem}
+.test-section{background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem}
+.test-section h2{margin-top:0;color:#8B5CF6;font-size:1.1rem}
+.prompt-area{width:100%;min-height:80px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:0.95rem;resize:none;outline:none;margin-bottom:1rem}
+.prompt-area:focus{border-color:#8B5CF6;background:rgba(255,255,255,0.09)}
+.btn{background:#8B5CF6;color:#fff;border:none;padding:0.8rem 1.5rem;border-radius:8px;font-weight:600;cursor:pointer;margin:0.5rem 0.3rem}
+.btn:hover{background:#7C3AED}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.result{margin-top:1rem;text-align:center}
+.result img{max-width:100%;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.status{color:#A1A1AA;margin:0.5rem 0}
+.provider-info{font-size:0.8rem;color:#71717A;margin-top:0.5rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<h1>🧪 Test Qualité — iapixora</h1>
-<p class="status">Même config que ton site — avec &model=flux</p>
-<div id="result"></div>
-<button onclick="generate()">Générer (1024×1024 + model=flux)</button>
+<div class="container">
+  <h1>🧪 Test API - IA Pixora</h1>
+  
+  <!-- Pollinations (Gratuit - Sans clé) -->
+  <div class="test-section">
+    <h2>🌸 Pollinations (Gratuit - model=flux)</h2>
+    <textarea class="prompt-area" id="poll-prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
+    <button class="btn" onclick="generatePoll()">Générer avec Pollinations</button>
+    <div class="result" id="poll-result"></div>
+  </div>
+
+  <!-- Hugging Face (Gratuit avec token) -->
+  <div class="test-section">
+    <h2>🤗 Hugging Face (Gratuit - nécessite token)</h2>
+    <input type="text" id="hf-token" placeholder="Token Hugging Face (hf_xxx...)" style="width:100%;padding:0.8rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;margin-bottom:1rem">
+    <textarea class="prompt-area" id="hf-prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
+    <button class="btn" onclick="generateHF()">Générer avec Hugging Face</button>
+    <div class="result" id="hf-result"></div>
+  </div>
+
+  <!-- Replicate (Gratuit avec token) -->
+  <div class="test-section">
+    <h2>🔄 Replicate (Gratuit avec token)</h2>
+    <input type="text" id="rep-token" placeholder="Token Replicate (r8_xxx...)" style="width:100%;padding:0.8rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;margin-bottom:1rem">    <textarea class="prompt-area" id="rep-prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
+    <button class="btn" onclick="generateRep()">Générer avec Replicate</button>
+    <div class="result" id="rep-result"></div>
+  </div>
+
+  <!-- Stability AI (Gratuit avec clé) -->
+  <div class="test-section">
+    <h2>🎨 Stability AI (Gratuit avec clé)</h2>
+    <input type="text" id="stab-token" placeholder="Clé Stability AI (sk-xxx...)" style="width:100%;padding:0.8rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;margin-bottom:1rem">
+    <textarea class="prompt-area" id="stab-prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
+    <button class="btn" onclick="generateStab()">Générer avec Stability AI</button>
+    <div class="result" id="stab-result"></div>
+  </div>
+</div>
 
 <script>
-async function generate() {
-  const prompt = "Steampunk woman with goggles and brass armor, intricate details, cinematic lighting, masterpiece, best quality, ultra detailed, 8k";
+const QUALITY_SUFFIX = ', masterpiece, best quality, ultra detailed, 8k, cinematic lighting';
+
+// Pollinations - Gratuit sans clé
+async function generatePoll() {
+  const prompt = document.getElementById('poll-prompt').value;
   const seed = Math.floor(Math.random() * 100000);
-  // ✅ Clé : on ajoute &model=flux ici → ça donne la qualité des images 19/20
-  const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=1024&nologo=true&seed=' + seed + '&model=flux';
-
-  document.getElementById('result').innerHTML = '<p class="status">⏳ Génération...</p>';
-
+  const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt + QUALITY_SUFFIX) + '?width=1024&height=1024&nologo=true&seed=' + seed + '&model=flux';
+  
+  const resultDiv = document.getElementById('poll-result');
+  resultDiv.innerHTML = '<p class="status">⏳ Génération en cours...</p>';
+  
   const img = new Image();
   img.onload = () => {
-    document.getElementById('result').innerHTML = '';
-    document.getElementById('result').appendChild(img);
+    resultDiv.innerHTML = '';
+    resultDiv.appendChild(img);
     const info = document.createElement('p');
-    info.className = 'status';
-    info.textContent = '✅ 1024×1024 — model=flux — Seed: ' + seed;
-    document.getElementById('result').appendChild(info);
+    info.className = 'provider-info';
+    info.textContent = '✅ Pollinations (model=flux) — 1024×1024 — Seed: ' + seed;
+    resultDiv.appendChild(info);
   };
   img.onerror = () => {
-    document.getElementById('result').innerHTML = '<p style="color:#EF4444">❌ Échec — vérifie la connexion</p>';
+    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Échec Pollinations</p>';
   };
   img.src = url;
+}
+
+// Hugging Face - Gratuit avec token
+async function generateHF() {
+  const token = document.getElementById('hf-token').value.trim();
+  const prompt = document.getElementById('hf-prompt').value;
+  
+  if (!token) {
+    document.getElementById('hf-result').innerHTML = '<p style="color:#EF4444">❌ Token requis</p>';
+    return;  }
+  
+  const resultDiv = document.getElementById('hf-result');
+  resultDiv.innerHTML = '<p class="status">⏳ Génération Hugging Face...</p>';
+  
+  try {
+    const res = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputs: prompt + QUALITY_SUFFIX,
+        parameters: {
+          width: 1024,
+          height: 1024,
+          num_inference_steps: 50
+        }
+      })
+    });
+    
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    
+    const blob = await res.blob();
+    const imgUrl = URL.createObjectURL(blob);
+    
+    const img = new Image();
+    img.src = imgUrl;
+    img.style.maxWidth = '100%';
+    img.style.borderRadius = '12px';
+    
+    resultDiv.innerHTML = '';
+    resultDiv.appendChild(img);
+    const info = document.createElement('p');
+    info.className = 'provider-info';
+    info.textContent = '✅ Hugging Face (SDXL) — 1024×1024';
+    resultDiv.appendChild(info);
+    
+  } catch (err) {
+    resultDiv.innerHTML = '<p style="color:#EF4444">❌ HF Error: ' + err.message + '</p>';
+  }
+}
+
+// Replicate - Gratuit avec token
+async function generateRep() {
+  const token = document.getElementById('rep-token').value.trim();
+  const prompt = document.getElementById('rep-prompt').value;
+  
+  if (!token) {    document.getElementById('rep-result').innerHTML = '<p style="color:#EF4444">❌ Token requis</p>';
+    return;
+  }
+  
+  const resultDiv = document.getElementById('rep-result');
+  resultDiv.innerHTML = '<p class="status"> Génération Replicate...</p>';
+  
+  try {
+    const res = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        version: '39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b',
+        input: {
+          prompt: prompt + QUALITY_SUFFIX,
+          width: 1024,
+          height: 1024,
+          num_inference_steps: 50
+        }
+      })
+    });
+    
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    
+    // Polling pour attendre le résultat
+    let imgUrl = null;
+    let attempts = 0;
+    while (!imgUrl && attempts < 30) {
+      await new Promise(r => setTimeout(r, 2000));
+      const statusRes = await fetch(data.urls.get, {
+        headers: {'Authorization': 'Token ' + token}
+      });
+      const statusData = await statusRes.json();
+      if (statusData.output) {
+        imgUrl = statusData.output[0];
+      }
+      attempts++;
+    }
+    
+    if (!imgUrl) throw new Error('Timeout');
+    
+    const img = new Image();
+    img.src = imgUrl;
+    img.style.maxWidth = '100%';
+    img.style.borderRadius = '12px';
+        resultDiv.innerHTML = '';
+    resultDiv.appendChild(img);
+    const info = document.createElement('p');
+    info.className = 'provider-info';
+    info.textContent = '✅ Replicate (SDXL) — 1024×1024';
+    resultDiv.appendChild(info);
+    
+  } catch (err) {
+    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Replicate Error: ' + err.message + '</p>';
+  }
+}
+
+// Stability AI - Gratuit avec clé
+async function generateStab() {
+  const token = document.getElementById('stab-token').value.trim();
+  const prompt = document.getElementById('stab-prompt').value;
+  
+  if (!token) {
+    document.getElementById('stab-result').innerHTML = '<p style="color:#EF4444"> Clé requise</p>';
+    return;
+  }
+  
+  const resultDiv = document.getElementById('stab-result');
+  resultDiv.innerHTML = '<p class="status">⏳ Génération Stability AI...</p>';
+  
+  try {
+    const res = await fetch('https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        text_prompts: [{text: prompt + QUALITY_SUFFIX, weight: 1}],
+        cfg_scale: 7,
+        steps: 50,
+        width: 1024,
+        height: 1024
+      })
+    });
+    
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    
+    if (data.artifacts && data.artifacts[0] && data.artifacts[0].base64) {
+      const img = new Image();
+      img.src = 'data:image/png;base64,' + data.artifacts[0].base64;
+      img.style.maxWidth = '100%';
+      img.style.borderRadius = '12px';
+            resultDiv.innerHTML = '';
+      resultDiv.appendChild(img);
+      const info = document.createElement('p');
+      info.className = 'provider-info';
+      info.textContent = '✅ Stability AI (SDXL) — 1024×1024';
+      resultDiv.appendChild(info);
+    } else {
+      throw new Error('Pas d\'image dans la réponse');
+    }
+    
+  } catch (err) {
+    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Stability Error: ' + err.message + '</p>';
+  }
 }
 </script>
 </body>
