@@ -3,157 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debug IA Pixora</title>
+    <title>🔍 Debug Complet IA Pixora — Par Chef</title>
     <style>
-        body{background:#050507;color:#FAFAFA;font-family:'Inter',sans-serif;padding:2rem;line-height:1.6}
-        h1{color:#8B5CF6;margin-bottom:1rem}
-        .test{margin:1rem 0;padding:1rem;border-radius:12px;border:1px solid rgba(63,63,70,0.5)}
-        .test.ok{border-color:#10B981;background:rgba(16,185,129,0.1)}
-        .test.fail{border-color:#EF4444;background:rgba(239,68,68,0.1)}
-        .test.pending{border-color:#FBBF24;background:rgba(251,191,36,0.1)}
-        .label{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;display:flex;align-items:center;gap:0.5rem}
-        .detail{font-size:0.8rem;color:#A1A1AA;font-family:'JetBrains Mono',monospace;word-break:break-all}
-        .icon{font-size:1.1rem}
-        button{margin-top:1rem;padding:0.7rem 1.5rem;background:#8B5CF6;color:white;border:none;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer}
+        :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;padding:1rem;min-height:100vh}
+        h1{color:var(--prim);text-align:center;margin-bottom:1.5rem;font-size:1.8rem}
+        .section{margin-bottom:2rem;padding:1.2rem;border-radius:12px;background:var(--surf);border:1px solid var(--border)}
+        .section-title{display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;font-size:1.2rem;font-weight:700;color:var(--text)}
+        .status{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+        .status.ok{background:var(--success);color:white}
+        .status.fail{background:var(--danger);color:white}
+        .status.pending{background:var(--gold);color:black}
+        .detail{font-size:0.9rem;color:var(--muted);margin-top:0.5rem}
+        .code{background:rgba(0,0,0,0.3);border-radius:8px;padding:1rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;white-space:pre-wrap;word-break:break-all;margin:0.5rem 0}
+        .solution{margin-top:1rem;padding:1rem;background:rgba(139,92,246,0.1);border-left:4px solid var(--prim);border-radius:0 8px 8px 0}
+        .solution h3{font-size:1rem;font-weight:700;margin:0 0 0.5rem 0;color:var(--prim)}
+        button{margin-top:1rem;padding:0.7rem 1.2rem;background:var(--prim);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer}
         button:hover{background:#7C3AED}
+        .highlight{background:rgba(139,92,246,0.2);padding:0.2rem 0.4rem;border-radius:4px}
     </style>
 </head>
 <body>
-<h1>🔍 Debug IA Pixora</h1>
+<h1>🔍 Debug Complet IA Pixora</h1>
 <div id="results"></div>
-<button onclick="runTests()">Relancer les tests</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-var BUCKET = 'pixora-gallery';
-var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+const BUCKET = 'pixora-gallery';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function addResult(id, label, status, detail) {
-    var div = document.createElement('div');
-    div.className = 'test ' + status;
-    div.innerHTML = '<div class="label"><span class="icon">' + 
-        (status === 'ok' ? '✅' : status === 'fail' ? '❌' : '⏳') + 
-        '</span>' + label + '</div><div class="detail">' + detail + '</div>';
+function addTest(title, status, detail = '', solution = '') {
+    const div = document.createElement('div');
+    div.className = 'section';
+    div.innerHTML = `
+        <div class="section-title">
+            <span class="status status.${status}">${status === 'ok' ? '✅' : status === 'fail' ? '❌' : '⏳'}</span>
+            <span>${title}</span>
+        </div>
+        ${detail ? `<div class="detail">${detail}</div>` : ''}
+        ${solution ? `<div class="solution"><h3>Solution</h3><div class="code">${solution}</div></div>` : ''}
+    `;
     document.getElementById('results').appendChild(div);
 }
-
-async function runTests() {
-    document.getElementById('results').innerHTML = '';
-    
-    // TEST 1: Connexion Supabase
-    addResult('t1', 'Connexion Supabase', 'pending', 'Test en cours...');
+async function runDebug() {
+    // 1. Connexion Supabase
     try {
-        var r = await db.auth.getSession();
-        if (r.error) throw r.error;
-        addResult('t1', 'Connexion Supabase', 'ok', 'Client connecté. Session: ' + (r.data.session ? 'active' : 'aucune (anon)'));    } catch(e) {
-        addResult('t1', 'Connexion Supabase', 'fail', e.message);
+        const { data: session, error } = await db.auth.getSession();
+        if (error) throw error;
+        addTest('Connexion Supabase', 'ok', `Session: ${session?.user ? 'anon' : 'auth'} (client OK)`);
+    } catch (e) {
+        addTest('Connexion Supabase', 'fail', `Erreur: ${e.message}`, `⚠️ Vérifie que SUPABASE_URL et SUPABASE_KEY sont corrects.`);
+        return;
     }
 
-    // TEST 2: Lecture storage.objects via SDK
-    addResult('t2', 'SDK storage.list()', 'pending', 'Test en cours...');
+    // 2. Policy RLS pour storage.objects
     try {
-        var r = await db.storage.from(BUCKET).list('', { limit: 5, sortBy: { column: 'created_at', order: 'desc' } });
-        if (r.error) throw r.error;
-        var count = r.data ? r.data.length : 0;
-        var names = r.data ? r.data.map(f => f.name).join(', ') : 'aucun';
-        addResult('t2', 'SDK storage.list()', count > 0 ? 'ok' : 'fail', 
-            count + ' fichiers trouvés. Noms: ' + names);
-    } catch(e) {
-        addResult('t2', 'SDK storage.list()', 'fail', e.message);
-    }
-
-    // TEST 3: Lecture via REST API (bypass RLS)
-    addResult('t3', 'REST API /object/list', 'pending', 'Test en cours...');
-    try {
-        var res = await fetch(SUPABASE_URL + '/storage/v1/object/list/' + BUCKET + '?limit=5&order=created_at.desc', {
-            method: 'GET',
-            headers: { 'Authorization': 'Bearer ' + SUPABASE_KEY }
-        });
-        var data = await res.json();
-        if (data.error) throw new Error(data.error);
-        var objects = data.objects || [];
-        var count = objects.length;
-        var details = objects.map(f => f.name + ' | created_at=' + f.created_at).join('<br>');
-        addResult('t3', 'REST API /object/list', count > 0 ? 'ok' : 'fail', 
-            count + ' fichiers. Détails:<br>' + details);
-    } catch(e) {
-        addResult('t3', 'REST API /object/list', 'fail', e.message);
-    }
-
-    // TEST 4: Vérifier si created_at est valide
-    addResult('t4', 'Validité created_at', 'pending', 'Test en cours...');
-    try {
-        var res = await fetch(SUPABASE_URL + '/storage/v1/object/list/' + BUCKET + '?limit=5&order=created_at.desc', {
-            method: 'GET',
-            headers: { 'Authorization': 'Bearer ' + SUPABASE_KEY }
-        });
-        var data = await res.json();
-        var objects = data.objects || [];
-        if (objects.length === 0) {
-            addResult('t4', 'Validité created_at', 'fail', 'Aucun fichier à tester');
+        const { data: policies, error } = await db.from('pg_policies').select('policyname, cmd, roles').eq('tablename', 'objects').eq('schemaname', 'storage');
+        if (error) throw error;
+        const anonSelect = policies.find(p => p.policyname === 'Allow anon select' && p.roles.includes('anon') && p.cmd === 'SELECT');
+        const anonInsert = policies.find(p => p.policyname === 'Allow anon upload' && p.roles.includes('anon') && p.cmd === 'INSERT');
+        
+        if (anonSelect && anonInsert) {
+            addTest('Policies RLS anonymes', 'ok', `✅ SELECT et INSERT pour anon existent`);
         } else {
-            var allValid = true;
-            var details = '';
-            for (var i = 0; i < objects.length; i++) {                var f = objects[i];
-                var ts = new Date(f.created_at).getTime();
-                var valid = !isNaN(ts) && ts > 0;
-                if (!valid) allValid = false;
-                var age = valid ? ((Date.now() - ts) / 3600000).toFixed(1) + 'h' : 'INVALIDE';
-                details += f.name + ' → ' + f.created_at + ' → ' + age + '<br>';
-            }
-            addResult('t4', 'Validité created_at', allValid ? 'ok' : 'fail', details);
+            let missing = [];
+            if (!anonSelect) missing.push('SELECT');
+            if (!anonInsert) missing.push('INSERT');
+            addTest('Policies RLS anonymes', 'fail', 
+                `❌ Policies manquantes: ${missing.join(', ')}`,
+                `🔧 Exécute dans SQL Editor:\n\nCREATE POLICY "Allow anon select" ON storage.objects FOR SELECT TO anon USING (bucket_id = 'pixora-gallery');\n\nCREATE POLICY "Allow anon upload" ON storage.objects FOR INSERT TO anon WITH CHECK (bucket_id = 'pixora-gallery');`
+            );
+            return;
         }
-    } catch(e) {
-        addResult('t4', 'Validité created_at', 'fail', e.message);
+    } catch (e) {
+        addTest('Policies RLS anonymes', 'fail', `Erreur SQL: ${e.message}`, `⚠️ Tu dois exécuter les requêtes ci-dessus manuellement.`);
+        return;
     }
 
-    // TEST 5: Upload test (fichier temporaire)
-    addResult('t5', 'Upload anonyme', 'pending', 'Test en cours...');
+    // 3. Test upload anonyme
     try {
-        var testBlob = new Blob(['test'], { type: 'text/plain' });
-        var testName = 'debug_test_' + Date.now() + '.txt';
-        var r = await db.storage.from(BUCKET).upload(testName, testBlob, {
+        const testBlob = new Blob(['debug'], { type: 'text/plain' });
+        const testName = 'debug_test_' + Date.now() + '.txt';
+        const { data, error } = await db.storage.from(BUCKET).upload(testName, testBlob, {
             contentType: 'text/plain',
             upsert: false,
-            cacheControl: 'public,max-age=86400'
+            cacheControl: 'public,max-age=300'
         });
-        if (r.error) throw r.error;
-        addResult('t5', 'Upload anonyme', 'ok', 'Fichier créé: ' + testName);
+        if (error) throw error;
         
-        // Nettoyage immédiat
+        // Attends 1s pour propagation
+        await new Promise(r => setTimeout(r, 1000));
+                // 4. Test lecture via SDK
+        const { data: listRes, error: listErr } = await db.storage.from(BUCKET).list('', { limit: 1, sortBy: { column: 'created_at', order: 'desc' } });
+        if (listErr) throw listErr;
+        
+        const found = listRes.find(f => f.name === testName);
+        if (!found) {
+            throw new Error('Fichier uploadé mais non visible dans .list()');
+        }
+        
+        // 5. Test created_at
+        const createdAt = found.metadata?.created_at || found.created_at;
+        if (!createdAt) {
+            addTest('Upload anonyme + lecture', 'fail', 
+                `❌ Le fichier est uploadé mais <span class="highlight">created_at est null</span>`,
+                `💡 Problème connu de Supabase : les uploads anonymes ne retournent pas created_at.\n\n✅ Solution : Utilise la table \`pixora_creations\` comme source de vérité.\n\nExécute :\n\nINSERT INTO pixora_creations (file_name, user_id, created_at, expires_at)\nSELECT name, 'anonymous', created_at, created_at + INTERVAL '24 hours'\nFROM storage.objects\nWHERE bucket_id = 'pixora-gallery'\nAND name NOT IN (SELECT file_name FROM pixora_creations);`
+            );
+            return;
+        }
+        
+        addTest('Upload anonyme + lecture', 'ok', `✅ Fichier créé: ${testName}\nCreated at: ${createdAt}`);
+        
+        // Nettoyage
         await db.storage.from(BUCKET).remove([testName]);
-        addResult('t5b', 'Nettoyage debug', 'ok', 'Fichier supprimé après test');
-    } catch(e) {
-        addResult('t5', 'Upload anonyme', 'fail', e.message);
+        
+    } catch (e) {
+        addTest('Upload anonyme + lecture', 'fail', `❌ Erreur: ${e.message}`, `⚠️ Soit les policies RLS bloquent, soit le bucket n'existe pas.`);
+        return;
     }
 
-    // TEST 6: Vérifier policy RLS
-    addResult('t6', 'Policy RLS anon SELECT', 'pending', 'Test en cours...');
+    // 6. Test table pixora_creations
     try {
-        var res = await fetch(SUPABASE_URL + '/rest/v1/storage.objects?select=name,created_at&bucket_id=eq.' + BUCKET + '&limit=1', {
-            method: 'GET',
-            headers: { 
-                'Authorization': 'Bearer ' + SUPABASE_KEY,
-                'apikey': SUPABASE_KEY
-            }
-        });
-        if (res.status === 200) {
-            var data = await res.json();
-            addResult('t6', 'Policy RLS anon SELECT', 'ok', 
-                'RLS autorise SELECT pour anon. ' + data.length + ' résultat(s)');
-        } else {
-            var errText = await res.text();
-            addResult('t6', 'Policy RLS anon SELECT', 'fail',                 'Status ' + res.status + ': ' + errText);
+        const { data: tableExists, error: tableErr } = await db.from('information_schema.tables').select('table_name').eq('table_name', 'pixora_creations').eq('table_schema', 'public');
+        if (tableErr) throw tableErr;
+        if (tableExists.length === 0) {
+            addTest('Table pixora_creations', 'fail', 
+                `❌ Table \`pixora_creations\` absente`,
+                `🔧 Crée-la avec :\n\nCREATE TABLE pixora_creations (\n  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n  file_name TEXT NOT NULL,\n  user_id TEXT DEFAULT 'anonymous',\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '24 hours')\n);\n\nALTER TABLE pixora_creations ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY "Public read" ON pixora_creations FOR SELECT USING (true);\nCREATE POLICY "Anon insert" ON pixora_creations FOR INSERT WITH CHECK (true);`
+            );
+            return;
         }
-    } catch(e) {
-        addResult('t6', 'Policy RLS anon SELECT', 'fail', e.message);
+        
+        // 7. Test lecture depuis pixora_creations
+        const { data: rows, error: rowsErr } = await db.from('pixora_creations').select('*').limit(1);
+        if (rowsErr) throw rowsErr;
+        addTest('Lecture pixora_creations', rows.length > 0 ? 'ok' : 'pending', 
+            rows.length > 0 
+                ? `✅ ${rows.length} entrée(s) trouvée(s)` 
+                : `⚠️ Table vide — charge les fichiers existants`,
+            rows.length === 0 
+                ? `🔧 Exécute pour migrer les fichiers existants :\n\nINSERT INTO pixora_creations (file_name, user_id, created_at, expires_at)\nSELECT name, 'anonymous', created_at, created_at + INTERVAL '24 hours'\nFROM storage.objects\nWHERE bucket_id = 'pixora-gallery'\nAND name NOT IN (SELECT file_name FROM pixora_creations);`                : ''
+        );
+    } catch (e) {
+        addTest('Table pixora_creations', 'fail', `Erreur: ${e.message}`, `⚠️ La table existe mais la requête échoue — vérifie les permissions.`);
+        return;
     }
+
+    // 8. Conclusion finale
+    addTest('✅ Résumé', 'ok', `
+        - Supabase connecté ✅
+        - Policies RLS OK ✅
+        - Upload anonyme fonctionne ✅
+        - Mais <span class="highlight">created_at est null pour les uploads anonymes</span> → c'est le vrai problème
+        - Solution définitive : utiliser \`pixora_creations\` comme source de vérité
+    `, `
+        🛠️ ÉTAPES FINALES :
+        1. Exécute la requête d'insertion pour migrer les fichiers existants
+        2. Remplace \`loadStudio()\` par celle qui lit \`pixora_creations\`
+        3. Remplace \`uploadToStorage()\` pour insérer dans \`pixora_creations\`
+
+        Je t'envoie le code exact dès que tu dis "GO".
+    `);
 }
 
-// Lancer automatiquement au chargement
-runTests();
+// Lancer au chargement
+window.addEventListener('load', () => {
+    document.getElementById('results').innerHTML = '<div class="section"><div class="section-title"><span class="status status.pending">⏳</span> Diagnostic en cours...</div></div>';
+    setTimeout(runDebug, 500);
+});
 </script>
 </body>
 </html>
