@@ -1,4 +1,4 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZXXYQRBQ"></script>
@@ -28,7 +28,8 @@ DOCTYPE html>
         .header-logo svg{width:28px;height:28px}
         .logo-text{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .header-right{display:flex;align-items:center;gap:0.5rem;position:relative;flex-shrink:0}
-        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;min-width:auto;max-width:70px;-webkit-appearance:none;appearance:none}        .lang-select:focus{border-color:var(--prim)}
+        .lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font);flex-shrink:0;min-width:auto;max-width:70px;-webkit-appearance:none;appearance:none}
+        .lang-select:focus{border-color:var(--prim)}
         .lang-select option{background:var(--bg);color:var(--text)}
         .user-stats{display:none;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:20px}
         .user-stats.show{display:flex}
@@ -46,8 +47,7 @@ DOCTYPE html>
         .avatar-hamburger{position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.45rem;color:var(--muted);border:1.5px solid var(--border)}
         .btn-auth{padding:0.4rem 0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:10px;font-size:0.78rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);white-space:nowrap;flex-shrink:0}
         .btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
-        @media(max-width:767px){.user-stats{display:none!important}.mini-badge-pill.show{display:flex}.site-header{padding:0 0.6rem}.header-right{gap:0.35rem}.btn-auth{padding:0.3rem 0.6rem;font-size:0.68rem}.logo-text{font-size:1rem}.lang-select{padding:0.25rem 0.3rem;font-size:0.65rem;max-width:60px}}
-        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
+        @media(max-width:767px){.user-stats{display:none!important}.mini-badge-pill.show{display:flex}.site-header{padding:0 0.6rem}.header-right{gap:0.35rem}.btn-auth{padding:0.3rem 0.6rem;font-size:0.68rem}.logo-text{font-size:1rem}.lang-select{padding:0.25rem 0.3rem;font-size:0.65rem;max-width:60px}}        .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:0.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.25s cubic-bezier(0.25,0.8,0.25,1);z-index:1001}
         .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
         .menu-header{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0.3rem 0.7rem;border-bottom:1px solid var(--border)}
         .menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:white;flex-shrink:0}
@@ -77,7 +77,8 @@ DOCTYPE html>
         .nav-item[data-nav="points"].active{color:var(--gold)}
         .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
         .nav-item[data-nav="profile"].active{color:var(--sec)}
-        .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}        .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:6px;min-width:16px;text-align:center;font-family:var(--mono)}
+        .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
+        .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:6px;min-width:16px;text-align:center;font-family:var(--mono)}
         .main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px;padding-bottom:100px}
         @media(min-width:768px){.main-content{margin-top:60px;padding:1.5rem}}
         .hero{text-align:center;padding:0.8rem 0.5rem;margin-bottom:1.2rem}
@@ -95,8 +96,7 @@ DOCTYPE html>
         .type-btn{padding:0.75rem;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);border-radius:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.25rem;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);cursor:pointer}
         .type-btn i{font-size:1.15rem;transition:all 0.3s}
         .type-btn .type-name{font-weight:700;font-size:0.88rem}
-        .type-btn .type-cost{font-family:var(--mono);font-size:0.68rem;background:rgba(0,0,0,0.25);padding:2px 8px;border-radius:6px;font-weight:600}
-        .type-btn:hover{background:rgba(139,92,246,0.06);border-color:rgba(139,92,246,0.3);transform:translateY(-1px)}
+        .type-btn .type-cost{font-family:var(--mono);font-size:0.68rem;background:rgba(0,0,0,0.25);padding:2px 8px;border-radius:6px;font-weight:600}        .type-btn:hover{background:rgba(139,92,246,0.06);border-color:rgba(139,92,246,0.3);transform:translateY(-1px)}
         .type-btn.active{border-color:var(--prim);background:rgba(139,92,246,0.1);color:var(--text);box-shadow:0 0 20px rgba(139,92,246,0.15)}
         .type-btn.active i{color:var(--prim);transform:scale(1.1)}
         .type-btn.active .type-cost{background:rgba(139,92,246,0.2)}
@@ -118,7 +118,7 @@ DOCTYPE html>
         .stat-val{font-family:var(--mono);font-size:1.15rem;font-weight:700;margin-bottom:0.1rem}
         .stat-lbl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
         .section-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center}
-        .section-label h2{font-size:1rem;font-weight:700;color:var(--text);margin:0;text-transform:none;letter-spacing:0}
+        .section-label h2{font-size:inherit;font-weight:inherit;color:var(--text);margin:0;text-transform:none;letter-spacing:0}
         .section-label span{font-size:0.65rem;color:var(--muted);text-transform:none;letter-spacing:0}
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}
         @media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.8rem}}
@@ -126,7 +126,8 @@ DOCTYPE html>
         .result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
         .result-card img,.result-card video{width:100%;height:100%;object-fit:cover;display:block}
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:flex-end;padding:0.6rem;gap:0.4rem;opacity:0;transition:opacity 0.3s}
-        .result-card:hover .result-overlay{opacity:1}        @media(hover:none){.result-overlay{opacity:1}}
+        .result-card:hover .result-overlay{opacity:1}
+        @media(hover:none){.result-overlay{opacity:1}}
         .icon-btn{width:34px;height:34px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:0.8rem;transition:all 0.2s}
         .icon-btn:hover{background:var(--prim);border-color:var(--prim);transform:scale(1.1)}
         .timer-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.75);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(4px)}
@@ -144,8 +145,7 @@ DOCTYPE html>
         .notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
         .notification.show{transform:translateX(-50%) translateY(0)}
         .notification.success{border-color:var(--success)}.notification.success i{color:var(--success)}
-        .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}
-        .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
+        .notification.error{border-color:var(--danger)}.notification.error i{color:var(--danger)}        .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
         .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}
         .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
         .site-footer a:hover{color:var(--prim)}
@@ -175,7 +175,8 @@ DOCTYPE html>
         .btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none}
         .auth-divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:var(--dim);font-size:0.72rem}
         .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-        .social-btn{width:100%;padding:0.85rem;border-radius:12px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.2s;margin-bottom:0.5rem;cursor:pointer;border:none}        .social-btn.google{background:#fff;color:#1f1f1f;border:1.5px solid #e0e0e0}
+        .social-btn{width:100%;padding:0.85rem;border-radius:12px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;transition:all 0.2s;margin-bottom:0.5rem;cursor:pointer;border:none}
+        .social-btn.google{background:#fff;color:#1f1f1f;border:1.5px solid #e0e0e0}
         .social-btn.google:hover{background:#f5f5f5;border-color:#ccc;transform:translateY(-1px)}
         .social-btn.google i{color:#DB4437;font-size:1.1rem}
         .social-btn.github{background:#24292F;color:#fff;border:1.5px solid #444c56}
@@ -193,8 +194,7 @@ DOCTYPE html>
         .pxr-soft-desc{font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem}
         .pxr-soft-benefits{text-align:left;margin-bottom:1.5rem;padding:0 0.5rem}
         .pxr-soft-benefit{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;font-size:0.82rem;color:var(--text)}
-        .pxr-soft-benefit i{color:var(--success);font-size:0.8rem;width:16px;text-align:center}
-        .pxr-soft-cta{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;text-decoration:none;border-radius:12px;font-weight:700;font-size:0.95rem;margin-bottom:0.8rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
+        .pxr-soft-benefit i{color:var(--success);font-size:0.8rem;width:16px;text-align:center}        .pxr-soft-cta{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;text-decoration:none;border-radius:12px;font-weight:700;font-size:0.95rem;margin-bottom:0.8rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(139,92,246,0.3);border:none;cursor:pointer}
         .pxr-soft-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
         .faq-section{margin-top:2.5rem;padding:1.5rem;background:var(--surf);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px}
         .faq-title{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1.2rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:0.5rem}
@@ -224,7 +224,8 @@ DOCTYPE html>
     </style>
 </head>
 <body>
-<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div><div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
+<div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
+<div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div>
 <div class="lightbox" id="lightbox"><div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div><div id="lb-container"></div><div class="lightbox-actions"><button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="results.download">Télécharger</span></button><button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="results.close">Fermer</span></button></div></div>
 <div class="share-modal" id="share-modal"><div class="share-box"><div class="share-header"><h3><i class="fas fa-share-nodes"></i> <span data-i18n="share.title">Partager</span></h3><button class="share-close" onclick="closeShareModal()"><i class="fas fa-times"></i></button></div><div class="share-preview" id="share-preview"></div><div class="share-category" data-i18n="share.cat_messaging">💬 Messagerie</div><div class="share-grid"><a class="share-btn whatsapp" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i>WhatsApp</a><a class="share-btn telegram" onclick="shareTo('telegram')"><i class="fab fa-telegram"></i>Telegram</a><a class="share-btn email" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a><a class="share-btn copy" onclick="copyShareLink()"><i class="fas fa-link"></i><span data-i18n="share.copy">Copier</span></a></div><div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div><div class="share-grid"><a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a><a class="share-btn facebook" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a><a class="share-btn instagram" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a><a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a><a class="share-btn linkedin" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a><a class="share-btn pinterest" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a><a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a><a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a></div><div class="share-category" data-i18n="share.cat_community">👥 Communautés</div><div class="share-grid"><a class="share-btn discord" onclick="shareTo('discord')"><i class="fab fa-discord"></i>Discord</a><a class="share-btn snapchat" onclick="shareTo('snapchat')"><i class="fab fa-snapchat"></i>Snapchat</a><a class="share-btn bluesky" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a><a class="share-btn mastodon" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a></div><div class="share-category" data-i18n="share.cat_regional">🌍 Régionaux</div><div class="share-grid"><a class="share-btn wechat" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a><a class="share-btn line" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a><a class="share-btn kakao" onclick="shareTo('kakao')"><i class="fas fa-comment"></i>Kakao</a><a class="share-btn vk" onclick="shareTo('vk')"><i class="fab fa-vk"></i>VK</a></div></div></div>
 <div class="auth-overlay" id="auth-modal"><div class="auth-modal"><button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button><div class="auth-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span>IA Pixora</span></div><p class="auth-sub" data-i18n="auth.connect_to_generate">Connectez-vous pour générer et gagner des points</p><div class="auth-tabs"><button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_title">Connexion</button><button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button></div><div class="form-section active" id="sec-login"><form onsubmit="doLogin(event)"><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div><button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.login_btn">Se connecter</span></button></form></div><div class="form-section" id="sec-register"><form onsubmit="doRegister(event)"><div class="form-group"><label class="form-label" data-i18n="auth.username">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div><button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button></form></div><div class="auth-divider" data-i18n="auth.or_continue">ou continuer avec</div><button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> <span data-i18n="auth.google">Continuer avec Google</span></button><button class="social-btn github" onclick="notify(t('auth.github_soon'),'success')"><i class="fab fa-github"></i> <span data-i18n="auth.github">Continuer avec GitHub</span></button><div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div></div></div>
@@ -242,8 +243,7 @@ DOCTYPE html>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
-<script>
-var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
+<script>var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
 function getAnonCount(){return parseInt(localStorage.getItem(PX_ANON_KEY)||'0')}
 function incrementAnonCount(){var c=getAnonCount()+1;localStorage.setItem(PX_ANON_KEY,c.toString());return c}
 function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}
@@ -273,14 +273,15 @@ async function ensureUserData(uid){try{var ex=await db.from('user_data').select(
 async function grantSignupBonus(uid){try{var br=await db.from('admin_config').select('value').eq('key','signup_bonus').single(),bonus=(br.data&&br.data.value!==undefined)?br.data.value:15;if(bonus<=0)return;var ex=await db.from('transactions').select('id').eq('user_id',uid).eq('title','Bonus inscription').single();if(ex.data)return;var ud=await db.from('user_data').select('points,total_earned').eq('user_id',uid).single(),cp=(ud.data&&ud.data.points)||0,ce=(ud.data&&ud.data.total_earned)||0;await db.from('user_data').update({points:cp+bonus,total_earned:ce+bonus}).eq('user_id',uid);await db.from('transactions').insert({user_id:uid,type:'earned',title:'Bonus inscription',amount:bonus})}catch(e){console.error('Signup bonus error:',e)}}
 async function loadUserTier(){try{var u=await getUser();if(!u){currentTier=1;currentDiscountUntil=null;updateCostUI();return}var d=await getUserData();currentTier=d.tier||1;currentDiscountUntil=d.discount_until||null}catch(e){currentTier=1;currentDiscountUntil=null}updateCostUI()}
 function notify(m,t){t=t||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t;setTimeout(function(){n.classList.remove('show')},3000)}
-async function getUser(){var r=await db.auth.getUser();return r.data.user}async function isLogged(){return!!await getUser()}
+async function getUser(){var r=await db.auth.getUser();return r.data.user}
+async function isLogged(){return!!await getUser()}
 function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeAuth(){document.getElementById('auth-modal').classList.remove('active');document.body.style.overflow=''}
 document.getElementById('auth-modal').addEventListener('click',function(e){if(e.target===this)closeAuth()});
 function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(t,i){t.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
 async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
 async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim(),pv=document.getElementById('r-pw').value,nv=document.getElementById('r-name').value.trim(),r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;var nid=sr.data.user?sr.data.user.id:null;if(nid){await ensureUserData(nid);await grantSignupBonus(nid);await processReferral(nid)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
-async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}
+async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
 async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}
 function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
@@ -291,8 +292,7 @@ async function updateUI(){var logged=await isLogged(),user=await getUser();docum
 function openLB(url,type){lbUrl=url;lbType=type||'image';var c=document.getElementById('lb-container');c.innerHTML='';if(lbType==='video'){var v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.loop=true;v.style.cssText='max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';c.appendChild(v)}else{var i=document.createElement('img');i.src=url;i.alt='Zoom';c.appendChild(i)}document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
 function closeLB(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';document.getElementById('lb-container').innerHTML='';lbUrl='';lbType='image'}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
-async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl),b=await r.blob(),ext=lbType==='video'?'.mp4':'.jpg',u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(lbUrl,'_blank')}}
-async function dlDirect(btn){var card=btn.closest('.result-card'),media=card.querySelector('img')||card.querySelector('video');if(!media||!media.src)return;try{var r=await fetch(media.src),b=await r.blob(),isV=media.tagName==='VIDEO',ext=isV?'.mp4':'.jpg',u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(media.src,'_blank')}
+async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl),b=await r.blob(),ext=lbType==='video'?'.mp4':'.jpg',u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(lbUrl,'_blank')}}async function dlDirect(btn){var card=btn.closest('.result-card'),media=card.querySelector('img')||card.querySelector('video');if(!media||!media.src)return;try{var r=await fetch(media.src),b=await r.blob(),isV=media.tagName==='VIDEO',ext=isV?'.mp4':'.jpg',u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(media.src,'_blank')}}
 function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(function(c,i){var pressed=(tp==='image'&&i===0)||(tp==='video'&&i===1);c.classList.toggle('active',pressed);c.setAttribute('aria-pressed',pressed?'true':'false')})}
 var currentShareUrl='';
 function openShareModal(imgUrl){currentShareUrl=imgUrl;document.getElementById('share-preview').innerHTML='<img src="'+imgUrl+'" alt="Share preview">';document.getElementById('share-modal').classList.add('active');document.body.style.overflow='hidden'}
@@ -303,83 +303,9 @@ function getShareText(){return t('share.text')}
 function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}
 function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
-
-// =============================================
-// ✅ CORRECTION FINALE : Utilise pixora_creations comme source de vérité
-// =============================================
-async function loadStudio(){
-    var grid=document.getElementById('results-grid');
-    try{
-        var result=await db.from('pixora_creations').select('file_name,created_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);
-        if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}
-        grid.innerHTML='';
-        for(var i=0;i<result.data.length;i++){
-            var row=result.data[i];
-            var urlData=db.storage.from(BUCKET).getPublicUrl(row.file_name);
-            var url=urlData.data.publicUrl;
-            var isVideo=row.file_name.includes('_video_');
-            var card=document.createElement('div');
-            card.className='result-card';
-            if(isVideo){
-                card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
-                var vid=card.querySelector('video');vid.onmouseenter=function(){vid.play()};vid.onmouseleave=function(){vid.pause();vid.currentTime=0}            }else{
-                card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()
-            }
-            card.onclick=function(){openLB(url,isVideo?'video':'image')};
-            grid.appendChild(card)
-        }
-    }catch(err){
-        console.error('Studio load error:',err);
-        grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>';
-    }
-}
-async function uploadToStorage(mediaUrl,type){
-    try{
-        var response=await fetch(mediaUrl),blob=await response.blob(),prefix=type==='video'?'_video_':'_img_';
-        var rand=Math.random().toString(36).substring(2,10);
-        var fileName='img_'+rand+'_'+prefix+Math.floor(Math.random()*1000)+(type==='video'?'.mp4':'.jpg');
-        var contentType=type==='video'?'video/mp4':'image/jpeg',currentUser=await getUser(),userId=currentUser?currentUser.id:'anonymous';
-        await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false,cacheControl:'public,max-age=86400'});
-        await db.from('pixora_creations').insert({file_name:fileName,user_id:userId});
-        loadStudio()
-    }catch(err){
-        console.error('Upload failed:',err);
-    }
-}
-
-// =============================================
-// GENERATE (avec freemium + mini-badge refresh)
-// =============================================
-async function generate(){
-    if(curType==='video'){notifyVideoSoon();return}
-    var p=document.getElementById('prompt').value.trim();
-    if(!p){notify(t('notifications.enter_prompt'),'error');return}
-    var logged=await isLogged(),cost=0,isDiscounted=false;
-    if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}
-    if(logged){await loadUserTier();var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],userData=await getUserData(),baseCost=c.costs.image;isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();cost=isDiscounted?Math.ceil(baseCost/2):baseCost;if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}}
-    notify(t('notifications.generating'),'success');
-    var grid=document.getElementById('results-grid'),card=document.createElement('div');card.className='result-card';
-    var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);
-    card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();
-    grid.insertBefore(card,grid.firstChild);
-    var st=Date.now(),tmr=document.getElementById(tmrId),iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100),media=card.querySelector('img'),loaded=false,currentUser=await getUser();
-    try{
-        var result=await generateWithFallback(p,'image'),url=result.url,providerName=result.provider;
-        if(logged&&providerName!=='fal.ai'&&providerName!=='Pollinations')notify(t('notifications.via_provider')+' '+providerName,'success');
-        media.src=url;
-        function onLoad(){
-            if(loaded)return;loaded=true;clearInterval(iv);
-            var elapsed=((Date.now()-st)/1000).toFixed(1),to=card.querySelector('.timer-overlay');if(to)to.remove();
-            media.style.opacity='1';card.onclick=function(){openLB(url,'image')};
-            if(logged)uploadToStorage(url,'image');            if(logged&&currentUser&&currentUser.id){saveTransaction('spent','Génération image'+(isDiscounted?' (-50%)':''),-cost).then(function(){updateUI()});validatePendingReferral(currentUser.id);getUserData().then(function(fd){var ng=(fd.total_generated||0)+1;db.from('user_data').update({total_generated:ng}).eq('user_id',currentUser.id).catch(function(){})})}
-            var dm=isDiscounted?t('notifications.discount_tag'):'',cd=logged?(' (-'+cost+' '+t('generator.cost_pts')+dm+')'):'';
-            notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+cd,'success');
-            if(!logged)incrementAndCheckFreemium();if(logged)loadMiniBadge();
-            setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000)
-        }
-        media.onload=onLoad;media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}
-    }catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}
-}
+async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.from('pixora_creations').select('file_name,created_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}grid.innerHTML='';for(var i=0;i<result.data.length;i++){var row=result.data[i];var urlData=db.storage.from(BUCKET).getPublicUrl(row.file_name);var url=urlData.data.publicUrl;var isVideo=row.file_name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';(function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);grid.appendChild(card)}}catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}}
+async function uploadToStorage(mediaUrl,type){try{var response=await fetch(mediaUrl),blob=await response.blob(),prefix=type==='video'?'_video_':'_img_';var rand=Math.random().toString(36).substring(2,10);var fileName='img_'+rand+'_'+prefix+Math.floor(Math.random()*1000)+(type==='video'?'.mp4':'.jpg');var contentType=type==='video'?'video/mp4':'image/jpeg',currentUser=await getUser(),userId=currentUser?currentUser.id:'anonymous';await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false,cacheControl:'public,max-age=86400'});await db.from('pixora_creations').insert({file_name:fileName,user_id:userId});loadStudio()}catch(err){console.error('Upload failed:',err)}}
+async function generate(){if(curType==='video'){notifyVideoSoon();return}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');return}var logged=await isLogged(),cost=0,isDiscounted=false;if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}if(logged){await loadUserTier();var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],userData=await getUserData(),baseCost=c.costs.image;isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();cost=isDiscounted?Math.ceil(baseCost/2):baseCost;if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid'),card=document.createElement('div');card.className='result-card';var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now(),tmr=document.getElementById(tmrId),iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100),media=card.querySelector('img'),loaded=false,currentUser=await getUser();try{var result=await generateWithFallback(p,'image'),url=result.url,providerName=result.provider;if(logged&&providerName!=='fal.ai'&&providerName!=='Pollinations')notify(t('notifications.via_provider')+' '+providerName,'success');media.src=url;function onLoad(){if(loaded)return;loaded=true;clearInterval(iv);var elapsed=((Date.now()-st)/1000).toFixed(1),to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image')};if(logged)uploadToStorage(url,'image');if(logged&&currentUser&&currentUser.id){saveTransaction('spent','Génération image'+(isDiscounted?' (-50%)':''),-cost).then(function(){updateUI()});validatePendingReferral(currentUser.id);getUserData().then(function(fd){var ng=(fd.total_generated||0)+1;db.from('user_data').update({total_generated:ng}).eq('user_id',currentUser.id).catch(function(){})})}var dm=isDiscounted?t('notifications.discount_tag'):'',cd=logged?(' (-'+cost+' '+t('generator.cost_pts')+dm+')'):'';notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+cd,'success');if(!logged)incrementAndCheckFreemium();if(logged)loadMiniBadge();setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000)}media.onload=onLoad;media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}}catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}}
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
 document.addEventListener('DOMContentLoaded',async function(){await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await loadStudio()});
