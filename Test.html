@@ -9,31 +9,31 @@ body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif;
 img{max-width:100%;border-radius:12px;margin:1rem 0;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 button{background:#8B5CF6;color:#fff;border:none;padding:.8rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;margin:.5rem}
 button:hover{background:#7C3AED}
-textarea{width:100%;max-width:600px;min-height:80px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:1rem;color:#fff;font-size:1rem;resize:none;margin-bottom:1rem}
 .status{color:#A1A1AA;margin:1rem 0}
+textarea{width:100%;max-width:600px;min-height:80px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;margin-bottom:1rem}
+textarea:focus{border-color:#8B5CF6}
 </style>
 </head>
 <body>
-<h1>🧪 Test Qualité PRO</h1>
-<p class="status">Pollinations + model=flux + 1024×1024</p>
+<h1>🧪 Test Qualité — Pollinations model=flux</h1>
+<p class="status">Gratuit — Sans clé — Qualité PRO confirmée</p>
 
-<textarea id="prompt" placeholder="Décris ton image ici...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k, professional photography</textarea>
+<textarea id="prompt" placeholder="Décris ton image ici...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
 
-<button onclick="generate()">Générer</button>
+<button onclick="generate()">Générer (1024×1024 + model=flux)</button>
+
 <div id="result"></div>
 
 <script>
 function generate() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt) {
-    document.getElementById('result').innerHTML = '<p style="color:#EF4444">❌ Écris un prompt</p>';
+    document.getElementById('result').innerHTML = '<p style="color:#EF4444">❌ Entre un prompt</p>';
     return;
   }
 
   const seed = Math.floor(Math.random() * 100000);
-  const url = 'https://image.pollinations.ai/prompt/' + 
-    encodeURIComponent(prompt + ', masterpiece, best quality, ultra detailed, 8k, cinematic lighting') + 
-    '?width=1024&height=1024&nologo=true&seed=' + seed + '&model=flux';
+  const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=1024&nologo=true&seed=' + seed + '&model=flux';
 
   document.getElementById('result').innerHTML = '<p class="status">⏳ Génération en cours...</p>';
 
@@ -43,11 +43,11 @@ function generate() {
     document.getElementById('result').appendChild(img);
     const info = document.createElement('p');
     info.className = 'status';
-    info.textContent = '✅ Généré — Seed: ' + seed + ' — model=flux';
+    info.textContent = '✅ Pollinations model=flux — 1024×1024 — Seed: ' + seed;
     document.getElementById('result').appendChild(info);
   };
   img.onerror = function() {
-    document.getElementById('result').innerHTML = '<p style="color:#EF4444">❌ Échec — vérifie ta connexion</p>';
+    document.getElementById('result').innerHTML = '<p style="color:#EF4444">❌ Échec — vérifie ta connexion internet</p>';
   };
   img.src = url;
 }
