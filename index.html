@@ -53,6 +53,7 @@ function applyTranslations(){document.querySelectorAll('[data-i18n]').forEach(fu
 function changeLang(l){loadLang(l)}
 function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}
 var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU',db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image',DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}},CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
+var QUALITY_SUFFIX=', masterpiece, best quality, ultra detailed, 8k resolution, cinematic lighting, professional photography';
 var API_PROVIDERS=[
   {
     id:'huggingface',name:'Hugging Face',types:['video'],
@@ -65,26 +66,26 @@ var API_PROVIDERS=[
     id:'fal.ai',name:'fal.ai',types:['image'],
     endpoint:'https://queue.fal.run/fal-ai/flux/schnell',
     authHeader:function(k){return{'Authorization':'Key '+k}},
-    buildBody:function(p){return{prompt:p,width:512,height:512,num_images:1,upscale:true}},
+    buildBody:function(p){return{prompt:p+QUALITY_SUFFIX,width:1024,height:1024,num_images:1,num_inference_steps:50,guidance_scale:7.5}},
     parseUrl:function(d){if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;if(d.output&&d.output.images&&d.output.images[0]&&d.output.images[0].url)return d.output.images[0].url;return null}
   },
   {
     id:'leonardo',name:'Leonardo.Ai',types:['image'],
     endpoint:'https://cloud.leonardo.ai/api/rest/v1/generations',
     authHeader:function(k){return{'Authorization':'Bearer '+k}},
-    buildBody:function(p){return{prompt:p,width:1024,height:1024,num_images:1}},
+    buildBody:function(p){return{prompt:p+QUALITY_SUFFIX,width:1024,height:1024,num_images:1,num_inference_steps:50,guidance_scale:7.5}},
     parseUrl:function(d){if(d.generations&&d.generations[0]&&d.generations[0].generated_images&&d.generations[0].generated_images[0])return d.generations[0].generated_images[0].url;return null}
   },
   {
     id:'tensor',name:'Tensor.Art',types:['image'],
     endpoint:'https://api.tensor.art/v1/generate',
     authHeader:function(k){return{'Authorization':'Bearer '+k}},
-    buildBody:function(p){return{prompt:p,width:1024,height:1024}},
+    buildBody:function(p){return{prompt:p+QUALITY_SUFFIX,width:1024,height:1024,steps:50,cfg_scale:7.5}},
     parseUrl:function(d){if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;return null}
   }
 ];
 async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
-function getPollinationsUrl(p,t){return'https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=1024&height=1024&nologo=true&seed='+Math.floor(Math.random()*100000)+(t==='video'?'&type=video':'')}
+function getPollinationsUrl(p,t){return'https://image.pollinations.ai/prompt/'+encodeURIComponent(p+QUALITY_SUFFIX)+'?width=1024&height=1024&nologo=true&seed='+Math.floor(Math.random()*100000)+(t==='video'?'&type=video':'')}
 async function generateWithFallback(p,t){for(var i=0;i<API_PROVIDERS.length;i++){var pr=API_PROVIDERS[i];if(!pr.types.includes(t))continue;var k=API_KEYS[pr.id];if(!k)continue;try{var h={'Content-Type':'application/json'},ah=pr.authHeader(k);for(var x in ah)h[x]=ah[x];var res=await fetch(pr.endpoint,{method:'POST',headers:h,body:JSON.stringify(pr.buildBody(p))});if(!res.ok)continue;var ct=res.headers.get('content-type')||'';if(ct.includes('video/')||ct.includes('octet-stream')){var b=await res.blob();return{url:URL.createObjectURL(b),provider:pr.name}}var d=await res.json();var u=pr.parseUrl(d,ct);if(u)return{url:u,provider:pr.name}}catch(e){console.warn('API '+pr.id+' failed:',e.message);continue}}return{url:getPollinationsUrl(p,t),provider:'Pollinations'}}
 async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value}catch(e){console.error('Config error:',e)}updateCostUI()}
 function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date(),ic=c.costs.image,ie=document.getElementById('cost-image'),bn=document.getElementById('discount-banner'),te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s'},1000)}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}}}
@@ -95,8 +96,8 @@ async function processReferral(uid){var rid=pendingReferrer||localStorage.getIte
 async function validatePendingReferral(uid){try{var rs=await db.from('referrals').select('id').eq('referred_id',uid).eq('validated',false),refs=rs.data||[];for(var i=0;i<refs.length;i++)await db.from('referrals').update({validated:true}).eq('id',refs[i].id)}catch(e){console.error('Validate referral error:',e)}}
 async function ensureUserData(uid){try{var ex=await db.from('user_data').select('user_id').eq('user_id',uid).single();if(!ex.data)await db.from('user_data').insert({user_id:uid,points:0,streak:0,last_login:null,total_generated:0,total_earned:0,tier:1,badges_claimed:[]})}catch(e){console.error('Ensure user_data error:',e)}}
 async function grantSignupBonus(uid){try{var br=await db.from('admin_config').select('value').eq('key','signup_bonus').single(),bonus=(br.data&&br.data.value!==undefined)?br.data.value:15;if(bonus<=0)return;var ex=await db.from('transactions').select('id').eq('user_id',uid).eq('title','Bonus inscription').single();if(ex.data)return;var ud=await db.from('user_data').select('points,total_earned').eq('user_id',uid).single(),cp=(ud.data&&ud.data.points)||0,ce=(ud.data&&ud.data.total_earned)||0;await db.from('user_data').update({points:cp+bonus,total_earned:ce+bonus}).eq('user_id',uid);await db.from('transactions').insert({user_id:uid,type:'earned',title:'Bonus inscription',amount:bonus})}catch(e){console.error('Signup bonus error:',e)}}
-async function loadUserTier(){try{var u=await getUser();if(!u){currentTier=1;currentDiscountUntil=null;updateCostUI();return}var d=await getUserData();currentTier=d.tier||1;currentDiscountUntil=d.discount_until||null}catch(e){currentTier=1;currentDiscountUntil=null}updateCostUI()}
-function notify(m,t){t=t||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t;setTimeout(function(){n.classList.remove('show')},3000)}async function getUser(){var r=await db.auth.getUser();return r.data.user}
+async function loadUserTier(){try{var u=await getUser();if(!u){currentTier=1;currentDiscountUntil=null;updateCostUI();return}var d=await getUserData();currentTier=d.tier||1;currentDiscountUntil=d.discount_until||null}catch(e){currentTier=1;currentDiscountUntil=null}updateCostUI()}function notify(m,t){t=t||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t;setTimeout(function(){n.classList.remove('show')},3000)}
+async function getUser(){var r=await db.auth.getUser();return r.data.user}
 async function isLogged(){return!!await getUser()}
 function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeAuth(){document.getElementById('auth-modal').classList.remove('active');document.body.style.overflow=''}
