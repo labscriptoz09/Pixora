@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug IA Pixora</title>
+    <style>
+        body{background:#050507;color:#FAFAFA;font-family:'Inter',sans-serif;padding:2rem;line-height:1.6}
+        h1{color:#8B5CF6;margin-bottom:1rem}
+        .test{margin:1rem 0;padding:1rem;border-radius:12px;border:1px solid rgba(63,63,70,0.5)}
+        .test.ok{border-color:#10B981;background:rgba(16,185,129,0.1)}
+        .test.fail{border-color:#EF4444;background:rgba(239,68,68,0.1)}
+        .test.pending{border-color:#FBBF24;background:rgba(251,191,36,0.1)}
+        .label{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;display:flex;align-items:center;gap:0.5rem}
+        .detail{font-size:0.8rem;color:#A1A1AA;font-family:'JetBrains Mono',monospace;word-break:break-all}
+        .icon{font-size:1.1rem}
+        button{margin-top:1rem;padding:0.7rem 1.5rem;background:#8B5CF6;color:white;border:none;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer}
+        button:hover{background:#7C3AED}
+    </style>
+</head>
+<body>
+<h1>🔍 Debug IA Pixora</h1>
+<div id="results"></div>
+<button onclick="runTests()">Relancer les tests</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var BUCKET = 'pixora-gallery';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function addResult(id, label, status, detail) {
+    var div = document.createElement('div');
+    div.className = 'test ' + status;
+    div.innerHTML = '<div class="label"><span class="icon">' + 
+        (status === 'ok' ? '✅' : status === 'fail' ? '❌' : '⏳') + 
+        '</span>' + label + '</div><div class="detail">' + detail + '</div>';
+    document.getElementById('results').appendChild(div);
+}
+
+async function runTests() {
+    document.getElementById('results').innerHTML = '';
+    
+    // TEST 1: Connexion Supabase
+    addResult('t1', 'Connexion Supabase', 'pending', 'Test en cours...');
+    try {
+        var r = await db.auth.getSession();
+        if (r.error) throw r.error;
+        addResult('t1', 'Connexion Supabase', 'ok', 'Client connecté. Session: ' + (r.data.session ? 'active' : 'aucune (anon)'));    } catch(e) {
+        addResult('t1', 'Connexion Supabase', 'fail', e.message);
+    }
+
+    // TEST 2: Lecture storage.objects via SDK
+    addResult('t2', 'SDK storage.list()', 'pending', 'Test en cours...');
+    try {
+        var r = await db.storage.from(BUCKET).list('', { limit: 5, sortBy: { column: 'created_at', order: 'desc' } });
+        if (r.error) throw r.error;
+        var count = r.data ? r.data.length : 0;
+        var names = r.data ? r.data.map(f => f.name).join(', ') : 'aucun';
+        addResult('t2', 'SDK storage.list()', count > 0 ? 'ok' : 'fail', 
+            count + ' fichiers trouvés. Noms: ' + names);
+    } catch(e) {
+        addResult('t2', 'SDK storage.list()', 'fail', e.message);
+    }
+
+    // TEST 3: Lecture via REST API (bypass RLS)
+    addResult('t3', 'REST API /object/list', 'pending', 'Test en cours...');
+    try {
+        var res = await fetch(SUPABASE_URL + '/storage/v1/object/list/' + BUCKET + '?limit=5&order=created_at.desc', {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + SUPABASE_KEY }
+        });
+        var data = await res.json();
+        if (data.error) throw new Error(data.error);
+        var objects = data.objects || [];
+        var count = objects.length;
+        var details = objects.map(f => f.name + ' | created_at=' + f.created_at).join('<br>');
+        addResult('t3', 'REST API /object/list', count > 0 ? 'ok' : 'fail', 
+            count + ' fichiers. Détails:<br>' + details);
+    } catch(e) {
+        addResult('t3', 'REST API /object/list', 'fail', e.message);
+    }
+
+    // TEST 4: Vérifier si created_at est valide
+    addResult('t4', 'Validité created_at', 'pending', 'Test en cours...');
+    try {
+        var res = await fetch(SUPABASE_URL + '/storage/v1/object/list/' + BUCKET + '?limit=5&order=created_at.desc', {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + SUPABASE_KEY }
+        });
+        var data = await res.json();
+        var objects = data.objects || [];
+        if (objects.length === 0) {
+            addResult('t4', 'Validité created_at', 'fail', 'Aucun fichier à tester');
+        } else {
+            var allValid = true;
+            var details = '';
+            for (var i = 0; i < objects.length; i++) {                var f = objects[i];
+                var ts = new Date(f.created_at).getTime();
+                var valid = !isNaN(ts) && ts > 0;
+                if (!valid) allValid = false;
+                var age = valid ? ((Date.now() - ts) / 3600000).toFixed(1) + 'h' : 'INVALIDE';
+                details += f.name + ' → ' + f.created_at + ' → ' + age + '<br>';
+            }
+            addResult('t4', 'Validité created_at', allValid ? 'ok' : 'fail', details);
+        }
+    } catch(e) {
+        addResult('t4', 'Validité created_at', 'fail', e.message);
+    }
+
+    // TEST 5: Upload test (fichier temporaire)
+    addResult('t5', 'Upload anonyme', 'pending', 'Test en cours...');
+    try {
+        var testBlob = new Blob(['test'], { type: 'text/plain' });
+        var testName = 'debug_test_' + Date.now() + '.txt';
+        var r = await db.storage.from(BUCKET).upload(testName, testBlob, {
+            contentType: 'text/plain',
+            upsert: false,
+            cacheControl: 'public,max-age=86400'
+        });
+        if (r.error) throw r.error;
+        addResult('t5', 'Upload anonyme', 'ok', 'Fichier créé: ' + testName);
+        
+        // Nettoyage immédiat
+        await db.storage.from(BUCKET).remove([testName]);
+        addResult('t5b', 'Nettoyage debug', 'ok', 'Fichier supprimé après test');
+    } catch(e) {
+        addResult('t5', 'Upload anonyme', 'fail', e.message);
+    }
+
+    // TEST 6: Vérifier policy RLS
+    addResult('t6', 'Policy RLS anon SELECT', 'pending', 'Test en cours...');
+    try {
+        var res = await fetch(SUPABASE_URL + '/rest/v1/storage.objects?select=name,created_at&bucket_id=eq.' + BUCKET + '&limit=1', {
+            method: 'GET',
+            headers: { 
+                'Authorization': 'Bearer ' + SUPABASE_KEY,
+                'apikey': SUPABASE_KEY
+            }
+        });
+        if (res.status === 200) {
+            var data = await res.json();
+            addResult('t6', 'Policy RLS anon SELECT', 'ok', 
+                'RLS autorise SELECT pour anon. ' + data.length + ' résultat(s)');
+        } else {
+            var errText = await res.text();
+            addResult('t6', 'Policy RLS anon SELECT', 'fail',                 'Status ' + res.status + ': ' + errText);
+        }
+    } catch(e) {
+        addResult('t6', 'Policy RLS anon SELECT', 'fail', e.message);
+    }
+}
+
+// Lancer automatiquement au chargement
+runTests();
+</script>
+</body>
+</html>
