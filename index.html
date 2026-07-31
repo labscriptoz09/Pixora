@@ -47,13 +47,79 @@ function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.da
 function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
 var BADGES_CONFIG=[{id:'bronze',name:'Apprenti',icon:'🎨',threshold:5},{id:'silver',name:'Confirmé',icon:'🖌️',threshold:15},{id:'gold',name:'Maître',icon:'👑',threshold:20},{id:'diamond',name:'Légende',icon:'💎',threshold:50}];
 async function loadMiniBadge(){var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!await isLogged()){el.classList.remove('show');return}try{var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}else{ic.textContent='❓';nm.textContent='Badge';nx.textContent=''}}catch(e){console.error('Mini badge error:',e);el.classList.remove('show')}}
-var I18N={},currentLang='fr',FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'🎉 Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'🔗 Lien copié !',share_points:'+5 points pour le partage !'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'}};function t(k){var p=k.split('.'),v=I18N;for(var i=0;i<p.length;i++){if(v&&typeof v==='object')v=v[p[i]];else return k}return v||k}
-async function loadLang(l){currentLang=l;I18N=JSON.parse(JSON.stringify(FR_TRANSLATIONS));if(l!=='fr'){try{var r=await fetch('/lang/'+l+'.json');if(r.ok){var d=await r.json();for(var s in d){if(typeof d[s]==='object'&&I18N[s])for(var k in d[s])I18N[s][k]=d[s][k];else I18N[s]=d[s]}}}catch(e){console.warn('[i18n] Failed:',e)}}applyTranslations();document.documentElement.lang=l;document.title=t('meta.title');var md=document.querySelector('meta[name="description"]');if(md)md.content=t('meta.description');var sel=document.getElementById('lang-select');if(sel)sel.value=l;localStorage.setItem('pixora_lang',l)}
+var I18N={},currentLang='fr',FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'🎉 Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'🎨 Génération en cours...',downloaded:'📥 Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'🔗 Lien copié !',share_points:'+5 points pour le partage !'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'}};function t(k){var p=k.split('.'),v=I18N;for(var i=0;i<p.length;i++){if(v&&typeof v==='object')v=v[p[i]];else return k}return v||k}async function loadLang(l){currentLang=l;I18N=JSON.parse(JSON.stringify(FR_TRANSLATIONS));if(l!=='fr'){try{var r=await fetch('/lang/'+l+'.json');if(r.ok){var d=await r.json();for(var s in d){if(typeof d[s]==='object'&&I18N[s])for(var k in d[s])I18N[s][k]=d[s][k];else I18N[s]=d[s]}}}catch(e){console.warn('[i18n] Failed:',e)}}applyTranslations();document.documentElement.lang=l;document.title=t('meta.title');var md=document.querySelector('meta[name="description"]');if(md)md.content=t('meta.description');var sel=document.getElementById('lang-select');if(sel)sel.value=l;localStorage.setItem('pixora_lang',l)}
 function applyTranslations(){document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n'),v=t(k);if(v!==k)el.textContent=v});document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){var k=el.getAttribute('data-i18n-placeholder'),v=t(k);if(v!==k)el.placeholder=v})}
 function changeLang(l){loadLang(l)}
 function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}
 var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU',db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image',DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}},CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
-var API_PROVIDERS=[{id:'huggingface',name:'Hugging Face',types:['video'],endpoint:'https://api-inference.huggingface.co/models/cerspense/zeroscope_v2_576w',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{inputs:p,parameters:{num_frames:24,width:576,height:320,fps:24}}},parseUrl:function(r,c){if(c&&(c.includes('video/')||c.includes('octet-stream')))return URL.createObjectURL(r);try{var d=r;if(typeof d==='string'&&d.startsWith('http'))return d;if(d.video&&d.video.url)return d.video.url;if(d.output&&d.output.video&&d.output.video.url)return d.output.video.url;return null}catch(e){return null}}},{id:'fal.ai',name:'fal.ai',types:['image'],endpoint:'https://queue.fal.run/fal-ai/flux/schnell',authHeader:function(k){return{'Authorization':'Key '+k}},buildBody:function(p){return{prompt:p,width:512,height:512,num_images:1}},parseUrl:function(d){if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;if(d.output&&d.output.images&&d.output.images[0]&&d.output.images[0].url)return d.output.images[0].url;return null}},{id:'leonardo',name:'Leonardo.Ai',types:['image'],endpoint:'https://cloud.leonardo.ai/api/rest/v1/generations',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{prompt:p,width:512,height:512,num_images:1}},parseUrl:function(d){if(d.generations&&d.generations[0]&&d.generations[0].generated_images&&d.generations[0].generated_images[0])return d.generations[0].generated_images[0].url;return null}},{id:'tensor',name:'Tensor.Art',types:['image'],endpoint:'https://api.tensor.art/v1/generate',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{prompt:p,width:512,height:512}},parseUrl:function(d){if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;return null}}];
+var API_PROVIDERS=[
+  {
+    id:'huggingface',
+    name:'Hugging Face',
+    types:['video'],
+    endpoint:'https://api-inference.huggingface.co/models/cerspense/zeroscope_v2_576w',
+    authHeader:function(k){return{'Authorization':'Bearer '+k}},
+    buildBody:function(p){
+      return{
+        inputs:p,
+        parameters:{num_frames:24,width:576,height:320,fps:24}
+      }
+    },
+    parseUrl:function(r,c){
+      if(c&&(c.includes('video/')||c.includes('octet-stream')))return URL.createObjectURL(r);
+      try{
+        var d=r;
+        if(typeof d==='string'&&d.startsWith('http'))return d;
+        if(d.video&&d.video.url)return d.video.url;
+        if(d.output&&d.output.video&&d.output.video.url)return d.output.video.url;
+        return null;
+      }catch(e){return null}
+    }
+  },
+  {
+    id:'fal.ai',
+    name:'fal.ai',
+    types:['image'],
+    endpoint:'https://queue.fal.run/fal-ai/flux/schnell',
+    authHeader:function(k){return{'Authorization':'Key '+k}},
+    buildBody:function(p){
+      return{prompt:p,width:1024,height:1024,num_images:1} // ✅ 1024×1024
+    },
+    parseUrl:function(d){
+      if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;
+      if(d.output&&d.output.images&&d.output.images[0]&&d.output.images[0].url)return d.output.images[0].url;
+      return null;
+    }
+  },
+  {
+    id:'leonardo',
+    name:'Leonardo.Ai',
+    types:['image'],
+    endpoint:'https://cloud.leonardo.ai/api/rest/v1/generations',
+    authHeader:function(k){return{'Authorization':'Bearer '+k}},    buildBody:function(p){
+      return{prompt:p,width:1024,height:1024,num_images:1} // ✅ 1024×1024
+    },
+    parseUrl:function(d){
+      if(d.generations&&d.generations[0]&&d.generations[0].generated_images&&d.generations[0].generated_images[0])
+        return d.generations[0].generated_images[0].url;
+      return null;
+    }
+  },
+  {
+    id:'tensor',
+    name:'Tensor.Art',
+    types:['image'],
+    endpoint:'https://api.tensor.art/v1/generate',
+    authHeader:function(k){return{'Authorization':'Bearer '+k}},
+    buildBody:function(p){
+      return{prompt:p,width:1024,height:1024} // ✅ 1024×1024
+    },
+    parseUrl:function(d){
+      if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;
+      return null;
+    }
+  }
+];
 async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
 function getPollinationsUrl(p,t){return'https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=512&height=512&nologo=true&seed='+Math.floor(Math.random()*100000)+(t==='video'?'&type=video':'')}
 async function generateWithFallback(p,t){for(var i=0;i<API_PROVIDERS.length;i++){var pr=API_PROVIDERS[i];if(!pr.types.includes(t))continue;var k=API_KEYS[pr.id];if(!k)continue;try{var h={'Content-Type':'application/json'},ah=pr.authHeader(k);for(var x in ah)h[x]=ah[x];var res=await fetch(pr.endpoint,{method:'POST',headers:h,body:JSON.stringify(pr.buildBody(p))});if(!res.ok)continue;var ct=res.headers.get('content-type')||'';if(ct.includes('video/')||ct.includes('octet-stream')){var b=await res.blob();return{url:URL.createObjectURL(b),provider:pr.name}}var d=await res.json();var u=pr.parseUrl(d,ct);if(u)return{url:u,provider:pr.name}}catch(e){console.warn('API '+pr.id+' failed:',e.message);continue}}return{url:getPollinationsUrl(p,t),provider:'Pollinations'}}
@@ -76,11 +142,10 @@ document.getElementById('auth-modal').addEventListener('click',function(e){if(e.
 function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(t,i){t.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
 async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
 async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim(),pv=document.getElementById('r-pw').value,nv=document.getElementById('r-name').value.trim(),r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;var nid=sr.data.user?sr.data.user.id:null;if(nid){await ensureUserData(nid);await grantSignupBonus(nid);await processReferral(nid)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
-async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}
+async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
 async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}
-function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
-function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
+function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
 document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});
 async function doLogout(){await db.auth.signOut();closeUserMenu();currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();notify(t('auth.logout'),'success');setTimeout(function(){location.reload()},800)}
 async function updateUI(){var logged=await isLogged(),user=await getUser();document.getElementById('user-stats').classList.toggle('show',logged);document.getElementById('user-avatar').classList.toggle('show',logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';var qs=document.getElementById('quick-stats');if(logged)qs.classList.add('show');else qs.classList.remove('show');if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('stat-points').textContent=d.points||0;document.getElementById('stat-streak').textContent=d.streak||1;document.getElementById('stat-generated').textContent=d.total_generated||0;document.getElementById('stat-earned').textContent=d.total_earned||0;var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur',ini=nm.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=ini;document.getElementById('menu-avatar').textContent=ini;document.getElementById('menu-name').textContent=nm;document.getElementById('menu-email').textContent=user.email;document.getElementById('menu-points').textContent=d.points||0}await loadMiniBadge()}
@@ -98,12 +163,223 @@ function getShareUrl(){return'https://iapixora.com/share.html?img='+encodeURICom
 function getShareText(){return t('share.text')}
 function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
-async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.from('pixora_creations').select('file_name,created_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}grid.innerHTML='';for(var i=0;i<result.data.length;i++){var row=result.data[i];var urlData=db.storage.from(BUCKET).getPublicUrl(row.file_name);var url=urlData.data.publicUrl;var isVideo=row.file_name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';(function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);grid.appendChild(card)}}catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}}
-async function uploadToStorage(mediaUrl,type){try{var response=await fetch(mediaUrl),blob=await response.blob(),prefix=type==='video'?'_video_':'_img_';var rand=Math.random().toString(36).substring(2,10);var fileName='img_'+rand+'_'+prefix+Math.floor(Math.random()*1000)+(type==='video'?'.mp4':'.jpg');var contentType=type==='video'?'video/mp4':'image/jpeg',currentUser=await getUser(),userId=currentUser?currentUser.id:'anonymous';await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false,cacheControl:'public,max-age=86400'});await db.from('pixora_creations').insert({file_name:fileName,user_id:userId});loadStudio()}catch(err){console.error('Upload failed:',err)}}
-async function generate(){if(curType==='video'){notifyVideoSoon();return}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');return}var logged=await isLogged(),cost=0,isDiscounted=false;if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}if(logged){await loadUserTier();var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],userData=await getUserData(),baseCost=c.costs.image;isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();cost=isDiscounted?Math.ceil(baseCost/2):baseCost;if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid'),card=document.createElement('div');card.className='result-card';var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now(),tmr=document.getElementById(tmrId),iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100),media=card.querySelector('img'),loaded=false,currentUser=await getUser();try{var result=await generateWithFallback(p,'image'),url=result.url,providerName=result.provider;if(logged&&providerName!=='fal.ai'&&providerName!=='Pollinations')notify(t('notifications.via_provider')+' '+providerName,'success');media.src=url;function onLoad(){if(loaded)return;loaded=true;clearInterval(iv);var elapsed=((Date.now()-st)/1000).toFixed(1),to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image')};uploadToStorage(url,'image');if(logged&&currentUser&&currentUser.id){saveTransaction('spent','Génération image'+(isDiscounted?' (-50%)':''),-cost).then(function(){updateUI()});validatePendingReferral(currentUser.id);getUserData().then(function(fd){var ng=(fd.total_generated||0)+1;db.from('user_data').update({total_generated:ng}).eq('user_id',currentUser.id).catch(function(){})})}var dm=isDiscounted?t('notifications.discount_tag'):'',cd=logged?(' (-'+cost+' '+t('generator.cost_pts')+dm+')'):'';notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+cd,'success');if(!logged)incrementAndCheckFreemium();if(logged)loadMiniBadge();setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000)}media.onload=onLoad;media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}}catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}}
-var authNotified=false;
-db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
-document.addEventListener('DOMContentLoaded',async function(){await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await loadStudio()});
+async function loadStudio(){
+  var grid = document.getElementById('results-grid');
+  try {
+    var result = await db.from('pixora_creations')
+      .select('file_name, created_at')
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (!result.data || result.data.length === 0) {
+      grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';
+      return;
+    }
+
+    grid.innerHTML = '';
+    for (var i = 0; i < result.data.length; i++) {
+      var row = result.data[i];
+      var urlData = db.storage.from(BUCKET).getPublicUrl(row.file_name);
+      var url = urlData.data.publicUrl;
+      var isVideo = row.file_name.indexOf('_video_') !== -1;
+      var card = document.createElement('div');
+      card.className = 'result-card';
+
+      if (isVideo) {
+        card.innerHTML = '<video src="' + url + '" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
+        (function(v) {
+          v.onmouseenter = function() { v.play(); };
+          v.onmouseleave = function() { v.pause(); v.currentTime = 0; };
+        })(card.querySelector('video'));
+      } else {
+        card.innerHTML = '<img src="' + url + '" alt="Creation" loading="lazy">' + buildImageOverlay();
+      }
+      card.onclick = (function(u, v) {
+        return function() { openLB(u, v ? 'video' : 'image'); };
+      })(url, isVideo);
+
+      grid.appendChild(card);
+    }
+  } catch (err) {
+    console.error('Studio load error:', err);
+    grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>';
+  }
+}
+async function uploadToStorage(mediaUrl,type){
+  try{
+    var response = await fetch(mediaUrl);
+    var blob = await response.blob();
+    var prefix = type==='video'?'_video_':'_img_';
+    var rand = Math.random().toString(36).substring(2,10);
+    var fileName = 'img_'+rand+'_'+prefix+Math.floor(Math.random()*1000)+(type==='video'?'.mp4':'.jpg');
+    var contentType = type==='video'?'video/mp4':'image/jpeg';
+    var currentUser = await getUser();
+    var userId = currentUser ? currentUser.id : 'anonymous';
+    await db.storage.from(BUCKET).upload(fileName, blob, {
+      contentType: contentType,
+      upsert: false,
+      cacheControl: 'public,max-age=86400'
+    });
+    await db.from('pixora_creations').insert({
+      file_name: fileName,
+      user_id: userId
+    });
+    loadStudio();
+  } catch(err){
+    console.error('Upload failed:', err);
+  }
+}
+async function generate(){
+  if(curType==='video'){
+    notifyVideoSoon();
+    return;
+  }
+  var p = document.getElementById('prompt').value.trim();
+  if(!p){
+    notify(t('notifications.enter_prompt'),'error');
+    return;
+  }
+  var logged = await isLogged();
+  var cost = 0;
+  var isDiscounted = false;
+  if(!logged){
+    var allowed = await checkFreemiumBlock();
+    if(!allowed){
+      notify(t('notifications.freemium_limit'),'error');
+      return;
+    }
+  }
+
+  if(logged){
+    await loadUserTier();
+    var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
+    var userData = await getUserData();
+    var baseCost = c.costs.image;
+    isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();
+    cost = isDiscounted ? Math.ceil(baseCost/2) : baseCost;
+    if(userData.points < cost){
+      notify(t('notifications.insufficient_points'),'error');
+      return;
+    }
+  }
+
+  notify(t('notifications.generating'),'success');
+  var grid = document.getElementById('results-grid');
+  var card = document.createElement('div');
+  card.className = 'result-card';
+  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+  card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();
+  grid.insertBefore(card, grid.firstChild);
+
+  var st = Date.now();
+  var tmr = document.getElementById(tmrId);
+  var iv = setInterval(function(){
+    if(tmr) tmr.textContent = ((Date.now()-st)/1000).toFixed(1)+'s';
+  }, 100);
+
+  var media = card.querySelector('img');
+  var loaded = false;
+  var currentUser = await getUser();
+
+  try{
+    var result = await generateWithFallback(p, 'image');
+    var url = result.url;
+    var providerName = result.provider;
+
+    if(logged && providerName !== 'fal.ai' && providerName !== 'Pollinations')
+      notify(t('notifications.via_provider') + ' ' + providerName, 'success');
+
+    media.src = url;
+
+    function onLoad(){      if(loaded) return;
+      loaded = true;
+      clearInterval(iv);
+      var elapsed = ((Date.now()-st)/1000).toFixed(1);
+      var to = card.querySelector('.timer-overlay');
+      if(to) to.remove();
+      media.style.opacity = '1';
+      card.onclick = function(){ openLB(url, 'image'); };
+
+      uploadToStorage(url, 'image');
+
+      if(logged && currentUser && currentUser.id){
+        saveTransaction('spent', 'Génération image'+(isDiscounted?' (-50%)':''), -cost)
+          .then(function(){ updateUI(); });
+        validatePendingReferral(currentUser.id);
+        getUserData().then(function(freshData){
+          var newGen = (freshData.total_generated || 0) + 1;
+          db.from('user_data').update({total_generated: newGen})
+            .eq('user_id', currentUser.id)
+            .catch(function(){});
+        });
+      }
+
+      var discountMsg = isDiscounted ? t('notifications.discount_tag') : '';
+      var costDisplay = logged ? (' (-'+cost+' '+t('generator.cost_pts')+discountMsg+')') : '';
+      notify('✅ ' + t('results.generated_in') + ' ' + elapsed + 's !' + costDisplay, 'success');
+
+      if(!logged){
+        incrementAndCheckFreemium();
+      }
+      if(logged){
+        loadMiniBadge();
+      }
+
+      setTimeout(function(){
+        if(card.parentNode === grid) card.remove();
+      }, 86400000); // 24h
+    }
+
+    media.onload = onLoad;
+    media.onerror = function(){
+      clearInterval(iv);
+      card.remove();
+      notify(t('results.failed'), 'error');
+    };
+
+  } catch(err){
+    clearInterval(iv);
+    card.remove();
+    notify(t('results.error'), 'error');  }
+}
+var authNotified = false;
+db.auth.onAuthStateChange(async function(event){
+  if(event === 'SIGNED_IN'){
+    await loadUserTier();
+    updateUI();
+    closeAuth();
+    localStorage.removeItem(PX_ANON_KEY);
+    var ss = document.getElementById('pxr-soft-signup');
+    if(ss) ss.remove();
+    if(!authNotified){
+      notify(t('auth.connected'), 'success');
+      authNotified = true;
+      setTimeout(function(){ authNotified = false; }, 3000);
+    }
+  } else if(event === 'SIGNED_OUT'){
+    currentTier = 1;
+    currentDiscountUntil = null;
+    if(discountTimerInterval){
+      clearInterval(discountTimerInterval);
+      discountTimerInterval = null;
+    }
+    updateCostUI();
+    updateUI();
+    authNotified = false;
+  } else if(event === 'TOKEN_REFRESHED'){
+    updateUI();
+  }
+});
+document.addEventListener('DOMContentLoaded', async function(){
+  await loadLang(detectLang());
+  detectReferral();
+  await loadApiKeys();
+  await loadDynamicConfig();
+  await loadUserTier();
+  await updateUI();
+  await loadStudio();
+});
 </script>
 </body>
 </html>
