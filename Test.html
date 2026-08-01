@@ -3,189 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test FLUX vs SDXL - IA Pixora</title>
+<title>Test Pollinations - Tous les Modèles</title>
 <style>
 body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif}
-.container{max-width:1200px;margin:0 auto}
-h1{text-align:center;margin-bottom:1rem}
-.subtitle{text-align:center;color:#A1A1AA;margin-bottom:2rem}
-.prompt-box{width:100%;min-height:80px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;margin-bottom:1rem}
+.container{max-width:1400px;margin:0 auto}
+h1{text-align:center;margin-bottom:.5rem}
+.subtitle{text-align:center;color:#A1A1AA;margin-bottom:2rem;font-size:.9rem}
+.prompt-box{width:100%;min-height:80px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;margin-bottom:1.5rem}
 .prompt-box:focus{border-color:#8B5CF6}
-.styles{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;justify-content:center}
-.style-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#A1A1AA;padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem;transition:all .2s}
-.style-btn:hover,.style-btn.active{background:rgba(139,92,246,.2);border-color:#8B5CF6;color:#fff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem}
-@media(max-width:768px){.grid{grid-template-columns:1fr}}
-.card{background:rgba(24,24,27,.6);border:1px solid rgba(63,63,70,.5);border-radius:16px;padding:1.5rem;text-align:center}
-.card h2{margin:0 0 .5rem;font-size:1.1rem}
-.card .tag{display:inline-block;font-size:.7rem;padding:.2rem .6rem;border-radius:6px;margin-bottom:1rem;font-weight:600}
-.tag-flux{background:rgba(139,92,246,.2);color:#8B5CF6}
-.tag-sdxl{background:rgba(236,72,153,.2);color:#EC4899}
-.tag-hf{background:rgba(251,191,36,.2);color:#FBBF24}
-.btn{background:#8B5CF6;color:#fff;border:none;padding:.7rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:.9rem}
-.btn:hover{background:#7C3AED}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.result-img{max-width:100%;border-radius:12px;margin-top:1rem;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.status{color:#A1A1AA;margin-top:.8rem;font-size:.85rem}
-.error{color:#EF4444}
+.btn-generate{display:block;width:100%;max-width:400px;margin:0 auto 2rem;padding:1rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1.1rem;cursor:pointer}
+.btn-generate:hover{opacity:.9}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+.card{background:rgba(24,24,27,.6);border:1px solid rgba(63,63,70,.5);border-radius:16px;padding:1rem;text-align:center;position:relative}
+.card h3{margin:0 0 .3rem;font-size:.95rem;color:#fff}
+.card .model-tag{font-size:.7rem;color:#A1A1AA;margin-bottom:.8rem;display:block}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.card .status{font-size:.8rem;color:#A1A1AA;margin-top:.6rem}
+.card .error{color:#EF4444}
+.card .seed{font-size:.7rem;color:#71717A;margin-top:.3rem;font-family:monospace}
+.winner{border-color:#10B981;box-shadow:0 0 20px rgba(16,185,129,.3)}
+.winner::after{content:'⭐ MEILLEUR';position:absolute;top:10px;right:10px;background:#10B981;color:#fff;font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:6px}
+.loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:#8B5CF6;border-radius:50%;animation:spin .8s linear infinite;margin:2rem auto}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>🧪 Test FLUX vs SDXL</h1>
-<p class="subtitle">Compare la qualité des modèles — Même prompt — Styles prédéfinis</p>
+<h1>🧪 Test Pollinations — Tous les Modèles</h1>
+<p class="subtitle">Même prompt • Même seed • 6 modèles comparés • Trouve le meilleur</p>
 
-<textarea class="prompt-box" id="prompt" placeholder="Décris ton image ou choisis un style ci-dessous...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting</textarea>
+<textarea class="prompt-box" id="prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
 
-<div class="styles">
-<button class="style-btn active" onclick="setStyle(this,'')">🎯 Custom</button>
-<button class="style-btn" onclick="setStyle(this,', photorealistic portrait, studio lighting, sharp focus, professional photography, 8k')">📸 Portrait Réaliste</button>
-<button class="style-btn" onclick="setStyle(this,', fantasy art, magical atmosphere, glowing particles, epic composition, detailed illustration')">✨ Fantasy</button>
-<button class="style-btn" onclick="setStyle(this,', cyberpunk city, neon lights, rain reflections, futuristic architecture, cinematic wide angle')">🌃 Cyberpunk</button>
-<button class="style-btn" onclick="setStyle(this,', product photography, luxury perfume bottle, crystal glass, black marble, dramatic studio lighting, commercial shot')">💎 Produit Luxe</button>
-<button class="style-btn" onclick="setStyle(this,', anime style, vibrant colors, detailed character design, beautiful eyes, soft shading, high quality anime art')">🎨 Anime</button>
-<button class="style-btn" onclick="setStyle(this,', landscape photography, mountain vista, golden hour, volumetric light rays, ultra wide angle, nature wallpaper')">🏔️ Paysage</button>
-<button class="style-btn" onclick="setStyle(this,', steampunk aesthetic, brass gears, Victorian fashion, intricate mechanical details, warm sepia tones')">⚙️ Steampunk</button>
-</div>
-<div class="grid">
-<!-- FLUX via Pollinations -->
-<div class="card">
-<h2>🌸 FLUX (Pollinations)</h2>
-<span class="tag tag-flux">model=flux • 1024×1024 • Gratuit</span>
-<button class="btn" id="btn-flux" onclick="generateFlux()">Générer FLUX</button>
-<div id="result-flux"></div>
-</div>
+<button class="btn-generate" id="btn-all" onclick="generateAll()">🚀 Générer les 6 modèles</button>
 
-<!-- SDXL via Pollinations -->
-<div class="card">
-<h2>🎨 SDXL (Pollinations)</h2>
-<span class="tag tag-sdxl">model=sdxl • 1024×1024 • Gratuit</span>
-<button class="btn" id="btn-sdxl" onclick="generateSdxl()">Générer SDXL</button>
-<div id="result-sdxl"></div>
-</div>
-
-<!-- FLUX via Hugging Face -->
-<div class="card">
-<h2>🤗 FLUX.1-dev (HuggingFace)</h2>
-<span class="tag tag-hf">FLUX.1-dev • 1024×1024 • Token requis</span>
-<input type="text" id="hf-token" placeholder="Token HF (hf_xxx...)" style="width:100%;padding:.6rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;margin-bottom:.5rem;font-size:.85rem">
-<button class="btn" id="btn-hf" onclick="generateHF()">Générer HF FLUX</button>
-<div id="result-hf"></div>
-</div>
-
-<!-- FLUX Realism via Pollinations -->
-<div class="card">
-<h2>📷 FLUX-Realism (Pollinations)</h2>
-<span class="tag tag-flux">model=flux-realism • 1024×1024 • Gratuit</span>
-<button class="btn" id="btn-real" onclick="generateRealism()">Générer Realism</button>
-<div id="result-real"></div>
-</div>
-</div>
+<div class="grid" id="grid"></div>
 </div>
 
 <script>
-var currentSuffix = '';
+var MODELS = [
+  { id: 'flux', name: 'FLUX (Default)', param: 'model=flux', desc: 'Modèle principal — Qualité PRO' },
+  { id: 'flux-realism', name: 'FLUX Realism', param: 'model=flux-realism', desc: 'Photo-réaliste — Portraits' },
+  { id: 'flux-anime', name: 'FLUX Anime', param: 'model=flux-anime', desc: 'Style Anime / Illustration' },
+  { id: 'flux-cablyai', name: 'FLUX CablyAI', param: 'model=flux-cablyai', desc: 'Style artistique CablyAI' },
+  { id: 'turbo', name: 'Turbo', param: 'model=turbo', desc: 'Rapide — Qualité basique' },
+  { id: 'none', name: 'Sans modèle', param: '', desc: 'Modèle aléatoire (instable)' }];
 
-function setStyle(btn, suffix) {
-  document.querySelectorAll('.style-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  currentSuffix = suffix;
-}
+async function generateAll() {
+  var prompt = document.getElementById('prompt').value.trim();
+  if (!prompt) { alert('Entre un prompt !'); return; }
 
-function getPrompt() {
-  var p = document.getElementById('prompt').value.trim();
-  if (!p) { alert('Entre un prompt !'); return null; }
-  return p + currentSuffix + ', masterpiece, best quality, ultra detailed, 8k';
-}
-// FLUX via Pollinations
-function generateFlux() {
-  var prompt = getPrompt();
-  if (!prompt) return;
-  var seed = Math.floor(Math.random() * 100000);
-  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=1024&nologo=true&seed=' + seed + '&model=flux';
-  loadImg(url, 'result-flux', 'btn-flux', 'FLUX model=flux — Seed: ' + seed);
-}
-
-// SDXL via Pollinations
-function generateSdxl() {
-  var prompt = getPrompt();
-  if (!prompt) return;
-  var seed = Math.floor(Math.random() * 100000);
-  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=1024&nologo=true&seed=' + seed + '&model=sdxl';
-  loadImg(url, 'result-sdxl', 'btn-sdxl', 'SDXL model=sdxl — Seed: ' + seed);
-}
-
-// FLUX Realism via Pollinations
-function generateRealism() {
-  var prompt = getPrompt();
-  if (!prompt) return;
-  var seed = Math.floor(Math.random() * 100000);
-  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=1024&nologo=true&seed=' + seed + '&model=flux-realism';
-  loadImg(url, 'result-real', 'btn-real', 'FLUX-Realism — Seed: ' + seed);
-}
-
-// FLUX.1-dev via Hugging Face
-async function generateHF() {
-  var prompt = getPrompt();
-  if (!prompt) return;
-  var token = document.getElementById('hf-token').value.trim();
-  var resultDiv = document.getElementById('result-hf');
-  var btn = document.getElementById('btn-hf');
-
-  if (!token) {
-    resultDiv.innerHTML = '<p class="status error">❌ Token HF requis (gratuit sur huggingface.co/settings/tokens)</p>';
-    return;
-  }
-
+  var btn = document.getElementById('btn-all');
   btn.disabled = true;
-  resultDiv.innerHTML = '<p class="status">⏳ Génération HF FLUX.1-dev...</p>';
+  btn.textContent = '⏳ Génération en cours...';
 
-  try {
-    var res = await fetch('https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ inputs: prompt, parameters: { width: 1024, height: 1024, num_inference_steps: 28 } })
-    });    if (!res.ok) throw new Error('HTTP ' + res.status);
-    var blob = await res.blob();
-    var imgUrl = URL.createObjectURL(blob);
+  var grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  var seed = Math.floor(Math.random() * 100000);
+  var suffix = ', masterpiece, best quality, ultra detailed, 8k';
+  var fullPrompt = prompt + suffix;
+
+  MODELS.forEach(function(m) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-' + m.id;
+    card.innerHTML = '<h3>' + m.name + '</h3><span class="model-tag">' + m.desc + '</span><div class="loading-spinner"></div>';
+    grid.appendChild(card);
+
+    var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(fullPrompt) + '?width=1024&height=1024&nologo=true&seed=' + seed;
+    if (m.param) url += '&' + m.param;
+
     var img = new Image();
-    img.className = 'result-img';
-    img.src = imgUrl;
-    resultDiv.innerHTML = '';
-    resultDiv.appendChild(img);
-    var info = document.createElement('p');
-    info.className = 'status';
-    info.textContent = '✅ HF FLUX.1-dev — 1024×1024';
-    resultDiv.appendChild(info);
-  } catch (err) {
-    resultDiv.innerHTML = '<p class="status error">❌ ' + err.message + '</p>';
-  }
-  btn.disabled = false;
-}
+    img.onload = function() {
+      card.innerHTML = '<h3>' + m.name + '</h3><span class="model-tag">' + m.desc + '</span>';
+      card.appendChild(img);
+      var status = document.createElement('p');
+      status.className = 'status';
+      status.textContent = '✅ Généré';
+      card.appendChild(status);
+      var seedInfo = document.createElement('p');
+      seedInfo.className = 'seed';
+      seedInfo.textContent = 'Seed: ' + seed + ' | 1024×1024';
+      card.appendChild(seedInfo);
+    };
+    img.onerror = function() {
+      card.innerHTML = '<h3>' + m.name + '</h3><span class="model-tag">' + m.desc + '</span><p class="error">❌ Échec</p>';
+    };
+    img.src = url;
+  });
 
-// Fonction commune de chargement d'image
-function loadImg(url, divId, btnId, label) {
-  var resultDiv = document.getElementById(divId);
-  var btn = document.getElementById(btnId);
-  btn.disabled = true;
-  resultDiv.innerHTML = '<p class="status">⏳ Génération...</p>';
-
-  var img = new Image();
-  img.className = 'result-img';
-  img.onload = function() {
-    resultDiv.innerHTML = '';
-    resultDiv.appendChild(img);
-    var info = document.createElement('p');
-    info.className = 'status';
-    info.textContent = '✅ ' + label;
-    resultDiv.appendChild(info);
+  // Réactiver le bouton après un délai raisonnable
+  setTimeout(function() {
     btn.disabled = false;
-  };
-  img.onerror = function() {
-    resultDiv.innerHTML = '<p class="status error">❌ Échec — vérifie ta connexion</p>';
-    btn.disabled = false;
-  };
-  img.src = url;
+    btn.textContent = '🚀 Générer les 6 modèles';  }, 30000);
 }
 </script>
 </body>
