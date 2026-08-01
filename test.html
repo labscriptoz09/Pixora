@@ -3,97 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Pollinations - Tous les Modèles</title>
+<title>Test Hugging Face FLUX.1-dev</title>
 <style>
-body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif}
-.container{max-width:1400px;margin:0 auto}
-h1{text-align:center;margin-bottom:.5rem}
-.subtitle{text-align:center;color:#A1A1AA;margin-bottom:2rem;font-size:.9rem}
-.prompt-box{width:100%;min-height:80px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;margin-bottom:1.5rem}
-.prompt-box:focus{border-color:#8B5CF6}
-.btn-generate{display:block;width:100%;max-width:400px;margin:0 auto 2rem;padding:1rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1.1rem;cursor:pointer}
-.btn-generate:hover{opacity:.9}
-.btn-generate:disabled{opacity:.5;cursor:not-allowed}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
-.card{background:rgba(24,24,27,.6);border:1px solid rgba(63,63,70,.5);border-radius:16px;padding:1rem;text-align:center;position:relative}
-.card h3{margin:0 0 .3rem;font-size:.95rem;color:#fff}
-.card .model-tag{font-size:.7rem;color:#A1A1AA;margin-bottom:.8rem;display:block}
-.card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.card .status{font-size:.8rem;color:#A1A1AA;margin-top:.6rem}
-.card .error{color:#EF4444}
-.card .seed{font-size:.7rem;color:#71717A;margin-top:.3rem;font-family:monospace}
-.loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:#8B5CF6;border-radius:50%;animation:spin .8s linear infinite;margin:2rem auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif;text-align:center}
+img{max-width:100%;border-radius:12px;margin:1rem 0;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+button{background:#8B5CF6;color:#fff;border:none;padding:.8rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;margin:.5rem}
+button:hover{background:#7C3AED}
+button:disabled{opacity:.5;cursor:not-allowed}
+.status{color:#A1A1AA;margin:1rem 0}
+textarea,input{width:100%;max-width:600px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;outline:none;margin-bottom:1rem;display:block;margin-left:auto;margin-right:auto}
+textarea{min-height:80px;resize:none}
+textarea:focus,input:focus{border-color:#8B5CF6}
+.timer{font-family:monospace;color:#FBBF24;font-size:.9rem}
 </style>
 </head>
 <body>
-<div class="container">
-<h1>🧪 Test Pollinations — Tous les Modèles + Enhance</h1>
-<p class="subtitle">Même prompt • Même seed • 7 configs comparées</p>
+<h1>🤗 Test Hugging Face FLUX.1-dev</h1>
+<p class="status">Token gratuit → huggingface.co/settings/tokens</p>
 
-<textarea class="prompt-box" id="prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting</textarea>
+<input type="text" id="token" placeholder="Colle ton token HF ici (hf_...)">
 
-<button class="btn-generate" id="btn-all" onclick="generateAll()">🚀 Générer les 7 configs</button>
+<textarea id="prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
 
-<div class="grid" id="grid"></div>
-</div>
+<button id="btn" onclick="generate()">Générer avec HF FLUX.1-dev</button>
+<p class="timer" id="timer"></p>
+
+<div id="result"></div>
 
 <script>
-var CONFIGS = [
-  { id:'flux', name:'FLUX (model=flux)', params:'model=flux', desc:'⭐ Modèle PRO recommandé' },
-  { id:'flux-enhance', name:'FLUX + Enhance', params:'model=flux&enhance=true', desc:'⭐⭐ FLUX + IA améliore le prompt' },
-  { id:'turbo', name:'Turbo', params:'model=turbo', desc:'Rapide mais basse qualité' },
-  { id:'sdxl', name:'Stable Diffusion XL', params:'model=stable-diffusion', desc:'SDXL classique' },
-  { id:'sana', name:'Sana', params:'model=sana', desc:'Modèle léger rapide' },
-  { id:'kontext', name:'Kontext', params:'model=kontext', desc:'Image-to-image' },
-  { id:'none', name:'Sans modèle (défaut)', params:'', desc:'⚠️ Modèle aléatoire Pollinations' }
-];
-function generateAll() {
+async function generate() {
+  var token = document.getElementById('token').value.trim();
   var prompt = document.getElementById('prompt').value.trim();
-  if (!prompt) { alert('Entre un prompt !'); return; }
+  var resultDiv = document.getElementById('result');
+  var btn = document.getElementById('btn');
+  var timerEl = document.getElementById('timer');
 
-  var btn = document.getElementById('btn-all');
-  btn.disabled = true;
-  btn.textContent = '⏳ Génération en cours...';
+  if (!token) {
+    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Colle ton token HF !<br><small>Crée-le gratuitement sur huggingface.co/settings/tokens</small></p>';
+    return;
+  }
+  if (!prompt) {
+    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Entre un prompt !</p>';
+    return;
+  }
 
-  var grid = document.getElementById('grid');
-  grid.innerHTML = '';
+  btn.disabled = true;  btn.textContent = '⏳ Génération...';
+  resultDiv.innerHTML = '<p class="status">⏳ Envoi à Hugging Face...</p>';
 
-  var seed = Math.floor(Math.random() * 100000);
+  var start = Date.now();
+  var timerInterval = setInterval(function() {
+    var elapsed = ((Date.now() - start) / 1000).toFixed(1);
+    timerEl.textContent = 'Temps écoulé : ' + elapsed + 's';
+  }, 100);
 
-  CONFIGS.forEach(function(cfg) {
-    var card = document.createElement('div');
-    card.className = 'card';
-    card.id = 'card-' + cfg.id;
-    card.innerHTML = '<h3>' + cfg.name + '</h3><span class="model-tag">' + cfg.desc + '</span><div class="loading-spinner"></div>';
-    grid.appendChild(card);
+  try {
+    var res = await fetch('https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputs: prompt,
+        parameters: {
+          width: 1024,
+          height: 1024,
+          num_inference_steps: 28,
+          guidance_scale: 3.5
+        }
+      })
+    });
 
-    var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=1024&nologo=true&seed=' + seed;
-    if (cfg.params) url += '&' + cfg.params;
+    clearInterval(timerInterval);
+
+    if (!res.ok) {
+      var errText = await res.text();
+      throw new Error('HTTP ' + res.status + ' — ' + errText);
+    }
+
+    var blob = await res.blob();
+    var imgUrl = URL.createObjectURL(blob);
 
     var img = new Image();
     img.onload = function() {
-      card.innerHTML = '<h3>' + cfg.name + '</h3><span class="model-tag">' + cfg.desc + '</span>';
-      card.appendChild(img);
-      var status = document.createElement('p');
-      status.className = 'status';
-      status.textContent = '✅ Généré';
-      card.appendChild(status);
-      var seedInfo = document.createElement('p');
-      seedInfo.className = 'seed';
-      seedInfo.textContent = 'Seed: ' + seed + ' | 1024×1024';
-      card.appendChild(seedInfo);
+      var elapsed = ((Date.now() - start) / 1000).toFixed(1);
+      resultDiv.innerHTML = '';
+      resultDiv.appendChild(img);
+      var info = document.createElement('p');
+      info.className = 'status';
+      info.textContent = '✅ HF FLUX.1-dev — 1024×1024 — ' + elapsed + 's';
+      resultDiv.appendChild(info);
+      btn.disabled = false;
+      btn.textContent = 'Générer avec HF FLUX.1-dev';
+      timerEl.textContent = '';
+    };    img.onerror = function() {
+      resultDiv.innerHTML = '<p style="color:#EF4444">❌ Impossible d\'afficher l\'image</p>';
+      btn.disabled = false;
+      btn.textContent = 'Générer avec HF FLUX.1-dev';
+      timerEl.textContent = '';
     };
-    img.onerror = function() {
-      card.innerHTML = '<h3>' + cfg.name + '</h3><span class="model-tag">' + cfg.desc + '</span><p class="error">❌ Échec</p>';
-    };
-    img.src = url;
-  });
+    img.src = imgUrl;
 
-  setTimeout(function() {
+  } catch (err) {
+    clearInterval(timerInterval);
+    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Erreur : ' + err.message + '</p>';
     btn.disabled = false;
-    btn.textContent = '🚀 Générer les 7 configs';
-  }, 45000);
+    btn.textContent = 'Générer avec HF FLUX.1-dev';
+    timerEl.textContent = '';
+  }
 }
 </script>
-</body></html>
+</body>
+</html>
