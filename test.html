@@ -3,199 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test uPixelDream - Nouvelles Fonctions</title>
+<title>Test Pollinations Feed - Images + Prompts</title>
 <style>
 body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:'Inter',sans-serif}
-.container{max-width:900px;margin:0 auto}
-h1{text-align:center;margin-bottom:2rem;color:#8B5CF6}
-.section{background:rgba(24,24,27,0.6);border:1px solid rgba(63,63,70,0.5);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem}
-.section-title{font-size:1rem;font-weight:700;margin-bottom:1rem;color:#fff;display:flex;align-items:center;gap:0.5rem}
-.section-title i{color:#8B5CF6}
-
-/* Prompts Rapides */
-.prompt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.5rem}
-.prompt-btn{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);color:#fff;padding:0.8rem;border-radius:10px;cursor:pointer;font-size:0.85rem;transition:all 0.2s}
-.prompt-btn:hover{background:rgba(139,92,246,0.2);border-color:rgba(139,92,246,0.5);transform:translateY(-2px)}
-
-/* Styles */
-.style-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.5rem}
-.style-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:#A1A1AA;padding:0.6rem;border-radius:8px;cursor:pointer;font-size:0.8rem;transition:all 0.2s}
-.style-btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.3)}
-.style-btn.active{background:rgba(139,92,246,0.2);border-color:rgba(139,92,246,0.5);color:#fff}
-
-/* Formats */
-.format-select{width:100%;padding:0.8rem;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;font-size:0.95rem;outline:none}
-.format-select:focus{border-color:#8B5CF6}
-
-/* Modèle */
-.model-select{width:100%;padding:0.8rem;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;font-size:0.95rem;outline:none}
-.model-select:focus{border-color:#8B5CF6}
-
-/* Prompt principal */
-.prompt-area{width:100%;min-height:100px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:0.95rem;resize:none;outline:none;margin-bottom:1rem}
-.prompt-area:focus{border-color:#8B5CF6}
-
-/* Bouton générer */
-.btn-gen{width:100%;padding:1rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1.1rem;cursor:pointer;transition:all 0.2s}
-.btn-gen:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5)}
-.btn-gen:disabled{opacity:0.5;cursor:not-allowed;transform:none}
-
-/* Résultat */
-.result-container{text-align:center;margin-top:1.5rem}
-.result-img{max-width:100%;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.5);margin-bottom:1rem}
-.timer{font-family:monospace;color:#FBBF24;font-size:0.9rem;margin-bottom:0.5rem}
-.status{color:#A1A1AA;font-size:0.85rem}
+.container{max-width:1200px;margin:0 auto}
+h1{text-align:center;margin-bottom:.5rem}
+.subtitle{text-align:center;color:#A1A1AA;margin-bottom:1.5rem;font-size:.9rem}
+.controls{display:flex;gap:.8rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
+.controls select,.controls button{padding:.7rem 1.2rem;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:.9rem;cursor:pointer;outline:none;font-family:inherit}
+.controls select:focus{border-color:#8B5CF6}
+.controls button{background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;font-weight:700}
+.controls button:hover{opacity:.9}
+.controls button:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
+.card{background:rgba(24,24,27,.6);border:1px solid rgba(63,63,70,.5);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.card-body{padding:1rem}
+.card-prompt{font-size:.82rem;color:#FAFAFA;line-height:1.5;margin-bottom:.8rem;word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{font-size:.65rem;padding:.2rem .6rem;border-radius:6px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.tag-model{background:rgba(139,92,246,.2);color:#8B5CF6}
+.tag-size{background:rgba(255,255,255,.08);color:#A1A1AA}
+.tag-seed{background:rgba(251,191,36,.15);color:#FBBF24}
+.status{text-align:center;color:#A1A1AA;padding:3rem;font-size:1rem}
 .error{color:#EF4444}
-
-@media(max-width:768px){  .prompt-grid{grid-template-columns:repeat(2,1fr)}
-  .style-grid{grid-template-columns:repeat(3,1fr)}
-}
+.count{text-align:center;color:#71717A;font-size:.8rem;margin-top:1rem}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-<h1>🎨 Test uPixelDream — Nouvelles Fonctions</h1>
+<h1>🧪 Test Pollinations Feed API</h1>
+<p class="subtitle">Images réelles + prompts de la communauté mondiale — Gratuit sans clé</p>
 
-<!-- Prompts Rapides -->
-<div class="section">
-  <div class="section-title"><i class="fas fa-bolt"></i> Prompts Rapides</div>
-  <div class="prompt-grid">
-    <button class="prompt-btn" onclick="setPrompt('Cyberpunk city at night with neon lights and flying cars, rain reflections on wet streets')">🌆 Cyberpunk City</button>
-    <button class="prompt-btn" onclick="setPrompt('Majestic dragon perched on mountain peak, fantasy art style, glowing eyes, epic composition')">🐉 Fantasy Dragon</button>
-    <button class="prompt-btn" onclick="setPrompt('Zen Japanese garden with koi pond, cherry blossoms, stone lanterns, peaceful atmosphere')">🌸 Zen Garden</button>
-    <button class="prompt-btn" onclick="setPrompt('Futuristic space station orbiting alien planet, stars in background, sci-fi art')">🚀 Space Station</button>
-    <button class="prompt-btn" onclick="setPrompt('Magical library with floating books, glowing crystals, ancient tomes, fantasy interior')">📚 Magic Library</button>
-    <button class="prompt-btn" onclick="setPrompt('Cozy café interior, warm lighting, coffee cups, rainy window, hygge atmosphere')">☕ Cozy Café</button>
-  </div>
+<div class="controls">
+<select id="model-filter">
+<option value="">Tous les modèles</option>
+<option value="flux">Flux</option>
+<option value="turbo">Turbo</option>
+<option value="flux-realism">Flux Realism</option>
+<option value="flux-anime">Flux Anime</option>
+<option value="sdxl">SDXL</option>
+</select>
+<select id="limit-select">
+<option value="20">20 images</option><option value="50">50 images</option>
+<option value="100">100 images</option>
+</select>
+<button id="btn-load" onclick="loadFeed()">🚀 Charger le Feed</button>
 </div>
 
-<!-- Styles Artistiques -->
-<div class="section">
-  <div class="section-title"><i class="fas fa-palette"></i> Style Artistique</div>
-  <div class="style-grid">
-    <button class="style-btn active" onclick="setStyle(this,'')">Auto</button>
-    <button class="style-btn" onclick="setStyle(this,'photorealistic, professional photography')">📸 Photorealistic</button>
-    <button class="style-btn" onclick="setStyle(this,'anime style, vibrant colors, detailed character design')">🎨 Anime</button>
-    <button class="style-btn" onclick="setStyle(this,'oil painting, classical art style, brush strokes visible')">🎨 Oil Painting</button>
-    <button class="style-btn" onclick="setStyle(this,'watercolor painting, soft colors, artistic')">💧 Watercolor</button>
-    <button class="style-btn" onclick="setStyle(this,'cyberpunk aesthetic, neon lights, futuristic')">⚡ Cyberpunk</button>
-    <button class="style-btn" onclick="setStyle(this,'fantasy art, magical, epic composition')">✨ Fantasy</button>
-    <button class="style-btn" onclick="setStyle(this,'pencil sketch, black and white, detailed drawing')">✏️ Sketch</button>
-    <button class="style-btn" onclick="setStyle(this,'3D render, CGI, realistic lighting')">🎮 3D Render</button>
-  </div>
-</div>
-
-<!-- Format -->
-<div class="section">
-  <div class="section-title"><i class="fas fa-crop-alt"></i> Format d'Image</div>
-  <select class="format-select" id="format">
-    <option value="1024x1024">Square 1:1 (1024×1024)</option>
-    <option value="1024x1024">Large 1:1 (1024×1024)</option>
-    <option value="768x1024">Portrait 3:4 (768×1024)</option>
-    <option value="1024x768">Landscape 4:3 (1024×768)</option>
-    <option value="1024x576">Wide 16:9 (1024×576)</option>
-  </select>
-</div>
-<!-- Modèle IA -->
-<div class="section">
-  <div class="section-title"><i class="fas fa-robot"></i> Modèle IA</div>
-  <select class="model-select" id="model">
-    <option value="flux">Flux (Qualité PRO)</option>
-    <option value="turbo">Turbo (Rapide)</option>
-  </select>
-</div>
-
-<!-- Prompt principal -->
-<div class="section">
-  <div class="section-title"><i class="fas fa-pen-fancy"></i> Votre Prompt</div>
-  <textarea class="prompt-area" id="prompt" placeholder="Décrivez votre image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting</textarea>
-  <button class="btn-gen" id="btn" onclick="generate()">🚀 Générer l'Image</button>
-</div>
-
-<!-- Résultat -->
-<div class="result-container">
-  <p class="timer" id="timer"></p>
-  <div id="result"></div>
-</div>
-
+<div id="status" class="status">Clique sur "Charger le Feed" pour commencer</div>
+<div class="grid" id="grid"></div>
+<div class="count" id="count"></div>
 </div>
 
 <script>
-var currentStyle = '';
-
-function setPrompt(text) {
-  document.getElementById('prompt').value = text;
-}
-
-function setStyle(btn, style) {
-  document.querySelectorAll('.style-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  currentStyle = style;
-}
-
-async function generate() {
-  var prompt = document.getElementById('prompt').value.trim();
-  var format = document.getElementById('format').value;
-  var model = document.getElementById('model').value;
-  var btn = document.getElementById('btn');
-  var resultDiv = document.getElementById('result');
-  var timerEl = document.getElementById('timer');
-
-  if (!prompt) {
-    resultDiv.innerHTML = '<p class="error">❌ Entre un prompt !</p>';
-    return;
-  }
-  // Ajout du style au prompt
-  var fullPrompt = prompt;
-  if (currentStyle) {
-    fullPrompt += ', ' + currentStyle;
-  }
-  fullPrompt += ', masterpiece, best quality, ultra detailed';
-
-  var dimensions = format.split('x');
-  var width = dimensions[0];
-  var height = dimensions[1];
+async function loadFeed() {
+  var model = document.getElementById('model-filter').value;
+  var limit = document.getElementById('limit-select').value;
+  var btn = document.getElementById('btn-load');
+  var statusEl = document.getElementById('status');
+  var grid = document.getElementById('grid');
+  var countEl = document.getElementById('count');
 
   btn.disabled = true;
-  btn.textContent = '⏳ Génération...';
-  resultDiv.innerHTML = '';
-  timerEl.textContent = '';
+  btn.textContent = '⏳ Chargement...';
+  statusEl.className = 'status';
+  statusEl.textContent = '⏳ Récupération du feed Pollinations...';
+  grid.innerHTML = '';
+  countEl.textContent = '';
 
-  var start = Date.now();
-  var timerInterval = setInterval(function() {
-    var elapsed = ((Date.now() - start) / 1000).toFixed(1);
-    timerEl.textContent = 'Temps : ' + elapsed + 's';
-  }, 100);
+  try {
+    var url = 'https://image.pollinations.ai/api/feed?limit=' + limit;
+    if (model) url += '&model=' + model;
 
-  var seed = Math.floor(Math.random() * 100000);
-  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(fullPrompt) + 
-            '?width=' + width + '&height=' + height + 
-            '&nologo=true&seed=' + seed + 
-            '&model=' + model;
+    var res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
 
-  var img = new Image();
-  img.onload = function() {
-    clearInterval(timerInterval);
-    var elapsed = ((Date.now() - start) / 1000).toFixed(1);
-    resultDiv.innerHTML = '';
-    img.className = 'result-img';
-    resultDiv.appendChild(img);
-    var info = document.createElement('p');
-    info.className = 'status';
-    info.textContent = '✅ Généré en ' + elapsed + 's — ' + width + '×' + height + ' — Modèle: ' + model;
-    resultDiv.appendChild(info);
-    btn.disabled = false;
-    btn.textContent = '🚀 Générer une autre';
-    timerEl.textContent = '';
-  };
-  img.onerror = function() {
-    clearInterval(timerInterval);
-    resultDiv.innerHTML = '<p class="error">❌ Échec de génération</p>';
-    btn.disabled = false;
-    btn.textContent = 'Réessayer';
-    timerEl.textContent = '';  };
-  img.src = url;
+    var data = await res.json();
+    statusEl.textContent = '';
+
+    if (!data || data.length === 0) {
+      statusEl.className = 'status error';
+      statusEl.textContent = '❌ Aucune image trouvée pour ce filtre';
+      btn.disabled = false;
+      btn.textContent = '🚀 Charger le Feed';
+      return;
+    }
+
+    grid.innerHTML = '';
+    var displayed = 0;
+
+    data.forEach(function(item) {
+      if (!item.image || !item.prompt) return;
+      displayed++;
+      var card = document.createElement('div');
+      card.className = 'card';
+
+      var modelName = item.model || 'inconnu';
+      var width = item.width || '?';
+      var height = item.height || '?';
+      var seed = item.seed || '?';
+      var promptText = item.prompt || 'Pas de prompt';
+
+      card.innerHTML =
+        '<img src="' + item.image + '" alt="IA Art" loading="lazy" onclick="window.open(\'' + item.image + '\',\'_blank\')" style="cursor:pointer">' +
+        '<div class="card-body">' +
+          '<div class="card-prompt">' + escapeHtml(promptText) + '</div>' +
+          '<div class="card-meta">' +
+            '<span class="tag tag-model">🤖 ' + escapeHtml(modelName) + '</span>' +
+            '<span class="tag tag-size">📐 ' + width + '×' + height + '</span>' +
+            '<span class="tag tag-seed">🎲 ' + seed + '</span>' +
+          '</div>' +
+        '</div>';
+
+      grid.appendChild(card);
+    });
+
+    countEl.textContent = '✅ ' + displayed + ' images chargées — Source: Pollinations Feed API';
+
+  } catch(err) {
+    statusEl.className = 'status error';
+    statusEl.textContent = '❌ Erreur: ' + err.message;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🚀 Charger le Feed';
+}
+
+function escapeHtml(text) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
 }
 </script>
 </body>
