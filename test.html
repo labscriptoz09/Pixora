@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Pollinations Feed - Images + Prompts</title>
+<title>Test Civitai Feed - Images + Prompts</title>
 <style>
 body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:'Inter',sans-serif}
 .container{max-width:1200px;margin:0 auto}
@@ -18,14 +18,14 @@ h1{text-align:center;margin-bottom:.5rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
 .card{background:rgba(24,24,27,.6);border:1px solid rgba(63,63,70,.5);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s}
 .card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;cursor:pointer}
 .card-body{padding:1rem}
 .card-prompt{font-size:.82rem;color:#FAFAFA;line-height:1.5;margin-bottom:.8rem;word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .card-meta{display:flex;flex-wrap:wrap;gap:.4rem}
 .tag{font-size:.65rem;padding:.2rem .6rem;border-radius:6px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .tag-model{background:rgba(139,92,246,.2);color:#8B5CF6}
 .tag-size{background:rgba(255,255,255,.08);color:#A1A1AA}
-.tag-seed{background:rgba(251,191,36,.15);color:#FBBF24}
+.tag-likes{background:rgba(236,72,153,.15);color:#EC4899}
 .status{text-align:center;color:#A1A1AA;padding:3rem;font-size:1rem}
 .error{color:#EF4444}
 .count{text-align:center;color:#71717A;font-size:.8rem;margin-top:1rem}
@@ -34,21 +34,22 @@ h1{text-align:center;margin-bottom:.5rem}
 </head>
 <body>
 <div class="container">
-<h1>🧪 Test Pollinations Feed API</h1>
-<p class="subtitle">Images réelles + prompts de la communauté mondiale — Gratuit sans clé</p>
+<h1>🧪 Test Civitai Feed API</h1>
+<p class="subtitle">Images réelles + prompts de la communauté mondiale — API publique gratuite</p>
 
 <div class="controls">
-<select id="model-filter">
-<option value="">Tous les modèles</option>
-<option value="flux">Flux</option>
-<option value="turbo">Turbo</option>
-<option value="flux-realism">Flux Realism</option>
-<option value="flux-anime">Flux Anime</option>
-<option value="sdxl">SDXL</option>
+<select id="sort-select">
+<option value="MostReactions">🔥 Plus populaires</option>
+<option value="Newest">🆕 Plus récentes</option>
+<option value="MostComments"> Plus commentées</option>
 </select>
-<select id="limit-select">
-<option value="20">20 images</option><option value="50">50 images</option>
-<option value="100">100 images</option>
+<select id="period-select">
+<option value="Week">Cette semaine</option>
+<option value="Month">Ce mois</option>
+<option value="AllTime">Tous les temps</option>
+</select><select id="limit-select">
+<option value="20">20 images</option>
+<option value="50">50 images</option>
 </select>
 <button id="btn-load" onclick="loadFeed()">🚀 Charger le Feed</button>
 </div>
@@ -60,7 +61,8 @@ h1{text-align:center;margin-bottom:.5rem}
 
 <script>
 async function loadFeed() {
-  var model = document.getElementById('model-filter').value;
+  var sort = document.getElementById('sort-select').value;
+  var period = document.getElementById('period-select').value;
   var limit = document.getElementById('limit-select').value;
   var btn = document.getElementById('btn-load');
   var statusEl = document.getElementById('status');
@@ -70,13 +72,12 @@ async function loadFeed() {
   btn.disabled = true;
   btn.textContent = '⏳ Chargement...';
   statusEl.className = 'status';
-  statusEl.textContent = '⏳ Récupération du feed Pollinations...';
+  statusEl.textContent = '⏳ Récupération du feed Civitai...';
   grid.innerHTML = '';
   countEl.textContent = '';
 
   try {
-    var url = 'https://image.pollinations.ai/api/feed?limit=' + limit;
-    if (model) url += '&model=' + model;
+    var url = 'https://civitai.com/api/v1/images?limit=' + limit + '&sort=' + sort + '&period=' + period;
 
     var res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -84,9 +85,9 @@ async function loadFeed() {
     var data = await res.json();
     statusEl.textContent = '';
 
-    if (!data || data.length === 0) {
+    if (!data || !data.items || data.items.length === 0) {
       statusEl.className = 'status error';
-      statusEl.textContent = '❌ Aucune image trouvée pour ce filtre';
+      statusEl.textContent = '❌ Aucune image trouvée';
       btn.disabled = false;
       btn.textContent = '🚀 Charger le Feed';
       return;
@@ -95,33 +96,33 @@ async function loadFeed() {
     grid.innerHTML = '';
     var displayed = 0;
 
-    data.forEach(function(item) {
-      if (!item.image || !item.prompt) return;
+    data.items.forEach(function(item) {      if (!item.url || !item.meta || !item.meta.prompt) return;
+
       displayed++;
       var card = document.createElement('div');
       card.className = 'card';
 
-      var modelName = item.model || 'inconnu';
+      var modelName = item.meta.Model || 'Inconnu';
       var width = item.width || '?';
       var height = item.height || '?';
-      var seed = item.seed || '?';
-      var promptText = item.prompt || 'Pas de prompt';
+      var likes = item.stats ? (item.stats.thumbsUpCount || 0) : 0;
+      var promptText = item.meta.prompt || 'Pas de prompt';
 
       card.innerHTML =
-        '<img src="' + item.image + '" alt="IA Art" loading="lazy" onclick="window.open(\'' + item.image + '\',\'_blank\')" style="cursor:pointer">' +
+        '<img src="' + item.url + '" alt="IA Art" loading="lazy" onclick="window.open(\'' + item.url + '\',\'_blank\')">' +
         '<div class="card-body">' +
           '<div class="card-prompt">' + escapeHtml(promptText) + '</div>' +
           '<div class="card-meta">' +
             '<span class="tag tag-model">🤖 ' + escapeHtml(modelName) + '</span>' +
-            '<span class="tag tag-size">📐 ' + width + '×' + height + '</span>' +
-            '<span class="tag tag-seed">🎲 ' + seed + '</span>' +
+            '<span class="tag tag-size"> ' + width + '×' + height + '</span>' +
+            '<span class="tag tag-likes">❤️ ' + likes + '</span>' +
           '</div>' +
         '</div>';
 
       grid.appendChild(card);
     });
 
-    countEl.textContent = '✅ ' + displayed + ' images chargées — Source: Pollinations Feed API';
+    countEl.textContent = '✅ ' + displayed + ' images chargées — Source: Civitai API';
 
   } catch(err) {
     statusEl.className = 'status error';
