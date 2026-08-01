@@ -3,18 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Civitai Feed - Images + Prompts</title>
+<title>Test Lexica.art Feed — Prompts + Images</title>
 <style>
 body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:'Inter',sans-serif}
 .container{max-width:1200px;margin:0 auto}
 h1{text-align:center;margin-bottom:.5rem}
 .subtitle{text-align:center;color:#A1A1AA;margin-bottom:1.5rem;font-size:.9rem}
 .controls{display:flex;gap:.8rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
-.controls select,.controls button{padding:.7rem 1.2rem;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:.9rem;cursor:pointer;outline:none;font-family:inherit}
-.controls select:focus{border-color:#8B5CF6}
+.controls input,.controls button{padding:.7rem 1.2rem;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:.9rem;cursor:pointer;outline:none;font-family:inherit}
+.controls input:focus{border-color:#8B5CF6}
 .controls button{background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;font-weight:700}
 .controls button:hover{opacity:.9}
-.controls button:disabled{opacity:.5;cursor:not-allowed}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
 .card{background:rgba(24,24,27,.6);border:1px solid rgba(63,63,70,.5);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s}
 .card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
@@ -25,7 +24,6 @@ h1{text-align:center;margin-bottom:.5rem}
 .tag{font-size:.65rem;padding:.2rem .6rem;border-radius:6px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .tag-model{background:rgba(139,92,246,.2);color:#8B5CF6}
 .tag-size{background:rgba(255,255,255,.08);color:#A1A1AA}
-.tag-likes{background:rgba(236,72,153,.15);color:#EC4899}
 .status{text-align:center;color:#A1A1AA;padding:3rem;font-size:1rem}
 .error{color:#EF4444}
 .count{text-align:center;color:#71717A;font-size:.8rem;margin-top:1rem}
@@ -34,109 +32,89 @@ h1{text-align:center;margin-bottom:.5rem}
 </head>
 <body>
 <div class="container">
-<h1>🧪 Test Civitai Feed API</h1>
-<p class="subtitle">Images réelles + prompts de la communauté mondiale — API publique gratuite</p>
+<h1>🔍 Test Lexica.art Feed</h1>
+<p class="subtitle">Prompts réels + images de la communauté IA — API gratuite, sans clé</p>
 
 <div class="controls">
-<select id="sort-select">
-<option value="MostReactions">🔥 Plus populaires</option>
-<option value="Newest">🆕 Plus récentes</option>
-<option value="MostComments"> Plus commentées</option>
-</select>
-<select id="period-select">
-<option value="Week">Cette semaine</option>
-<option value="Month">Ce mois</option>
-<option value="AllTime">Tous les temps</option>
-</select><select id="limit-select">
+<input type="text" id="query" placeholder="Ex: portrait, anime, cyberpunk" value="portrait">
+<select id="limit">
 <option value="20">20 images</option>
 <option value="50">50 images</option>
 </select>
-<button id="btn-load" onclick="loadFeed()">🚀 Charger le Feed</button>
+<button onclick="loadFeed()">🚀 Charger</button>
 </div>
 
-<div id="status" class="status">Clique sur "Charger le Feed" pour commencer</div>
+<div id="status" class="status">Clique sur "Charger" pour tester</div>
 <div class="grid" id="grid"></div>
 <div class="count" id="count"></div>
 </div>
-
 <script>
 async function loadFeed() {
-  var sort = document.getElementById('sort-select').value;
-  var period = document.getElementById('period-select').value;
-  var limit = document.getElementById('limit-select').value;
-  var btn = document.getElementById('btn-load');
+  var q = document.getElementById('query').value.trim() || 'portrait';
+  var limit = document.getElementById('limit').value;
+  var btn = document.querySelector('.controls button');
   var statusEl = document.getElementById('status');
   var grid = document.getElementById('grid');
   var countEl = document.getElementById('count');
 
+  if (!q) { statusEl.className='status error'; statusEl.textContent='❌ Entrez un mot-clé'; return; }
+
   btn.disabled = true;
-  btn.textContent = '⏳ Chargement...';
+  btn.textContent = '⏳ ...';
   statusEl.className = 'status';
-  statusEl.textContent = '⏳ Récupération du feed Civitai...';
+  statusEl.textContent = 'Récupération depuis lexica.art...';
   grid.innerHTML = '';
   countEl.textContent = '';
 
   try {
-    var url = 'https://civitai.com/api/v1/images?limit=' + limit + '&sort=' + sort + '&period=' + period;
-
+    // ✅ Lexica.art API publique — fonctionne sans token
+    var url = `https://lexica.art/api/v1/search?q=${encodeURIComponent(q)}&limit=${limit}`;
     var res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    
     var data = await res.json();
-    statusEl.textContent = '';
-
-    if (!data || !data.items || data.items.length === 0) {
-      statusEl.className = 'status error';
-      statusEl.textContent = '❌ Aucune image trouvée';
-      btn.disabled = false;
-      btn.textContent = '🚀 Charger le Feed';
-      return;
+    if (!data || !data.images || data.images.length === 0) {
+      throw new Error('Aucune image trouvée');
     }
 
     grid.innerHTML = '';
-    var displayed = 0;
-
-    data.items.forEach(function(item) {      if (!item.url || !item.meta || !item.meta.prompt) return;
-
-      displayed++;
-      var card = document.createElement('div');
-      card.className = 'card';
-
-      var modelName = item.meta.Model || 'Inconnu';
+    data.images.forEach(function(item) {
+      var prompt = item.prompt || 'Pas de prompt';
+      var model = item.model || 'Inconnu';
       var width = item.width || '?';
       var height = item.height || '?';
-      var likes = item.stats ? (item.stats.thumbsUpCount || 0) : 0;
-      var promptText = item.meta.prompt || 'Pas de prompt';
+      var imageUrl = item.src || '';
 
+      if (!imageUrl) return;
+
+      var card = document.createElement('div');
+      card.className = 'card';
       card.innerHTML =
-        '<img src="' + item.url + '" alt="IA Art" loading="lazy" onclick="window.open(\'' + item.url + '\',\'_blank\')">' +
-        '<div class="card-body">' +
-          '<div class="card-prompt">' + escapeHtml(promptText) + '</div>' +
-          '<div class="card-meta">' +
-            '<span class="tag tag-model">🤖 ' + escapeHtml(modelName) + '</span>' +
-            '<span class="tag tag-size"> ' + width + '×' + height + '</span>' +
-            '<span class="tag tag-likes">❤️ ' + likes + '</span>' +
-          '</div>' +
-        '</div>';
-
+        `<img src="${imageUrl}" alt="IA Art" loading="lazy" onclick="window.open('${imageUrl}','_blank')" style="cursor:pointer">` +
+        `<div class="card-body">` +
+          `<div class="card-prompt">${escapeHtml(prompt)}</div>` +
+          `<div class="card-meta">` +
+            `<span class="tag tag-model">🤖 ${escapeHtml(model)}</span>` +
+            `<span class="tag tag-size">📐 ${width}×${height}</span>` +
+          `</div>` +        `</div>`;
       grid.appendChild(card);
     });
 
-    countEl.textContent = '✅ ' + displayed + ' images chargées — Source: Civitai API';
+    countEl.textContent = `✅ ${data.images.length} images chargées — Source: lexica.art`;
+    statusEl.textContent = '';
 
   } catch(err) {
     statusEl.className = 'status error';
     statusEl.textContent = '❌ Erreur: ' + err.message;
+    console.error('Lexica error:', err);
   }
 
   btn.disabled = false;
-  btn.textContent = '🚀 Charger le Feed';
+  btn.textContent = '🚀 Charger';
 }
 
 function escapeHtml(text) {
-  var div = document.createElement('div');
-  div.appendChild(document.createTextNode(text));
-  return div.innerHTML;
+  return text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"').replace(/'/g, '&#039;');
 }
 </script>
 </body>
