@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Hugging Face FLUX.1-dev</title>
+<title>Test HF FLUX.1-dev - Diagnostic Complet</title>
 <style>
 body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif;text-align:center}
 img{max-width:100%;border-radius:12px;margin:1rem 0;box-shadow:0 10px 30px rgba(0,0,0,.5)}
@@ -11,43 +11,64 @@ button{background:#8B5CF6;color:#fff;border:none;padding:.8rem 1.5rem;border-rad
 button:hover{background:#7C3AED}
 button:disabled{opacity:.5;cursor:not-allowed}
 .status{color:#A1A1AA;margin:1rem 0}
+.error{color:#EF4444;margin:1rem 0}
+.success{color:#10B981;margin:1rem 0}
 textarea,input{width:100%;max-width:600px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;outline:none;margin-bottom:1rem;display:block;margin-left:auto;margin-right:auto}
 textarea{min-height:80px;resize:none}
 textarea:focus,input:focus{border-color:#8B5CF6}
 .timer{font-family:monospace;color:#FBBF24;font-size:.9rem}
+.log{background:rgba(0,0,0,.3);border-radius:8px;padding:1rem;margin-top:1rem;text-align:left;font-family:monospace;font-size:.75rem;color:#A1A1AA;max-width:600px;margin-left:auto;margin-right:auto;white-space:pre-wrap;word-break:break-all}
 </style>
 </head>
 <body>
-<h1>🤗 Test Hugging Face FLUX.1-dev</h1>
-<p class="status">Token gratuit → huggingface.co/settings/tokens</p>
+<h1>🤗 Test HF FLUX.1-dev — Diagnostic Complet</h1>
+<p class="status">Token gratuit → <a href="https://huggingface.co/settings/tokens" target="_blank" style="color:#8B5CF6">huggingface.co/settings/tokens</a></p>
 
 <input type="text" id="token" placeholder="Colle ton token HF ici (hf_...)">
-
 <textarea id="prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
 
-<button id="btn" onclick="generate()">Générer avec HF FLUX.1-dev</button>
+<button id="btn" onclick="generate()">🚀 Générer avec HF FLUX.1-dev</button>
 <p class="timer" id="timer"></p>
-
 <div id="result"></div>
+<div class="log" id="log">Journal de diagnostic prêt...</div>
 
 <script>
+function addLog(msg) {
+  var log = document.getElementById('log');
+  var time = new Date().toLocaleTimeString();
+  log.textContent += '\n[' + time + '] ' + msg;
+  log.scrollTop = log.scrollHeight;
+  console.log('[HF-TEST] ' + msg);
+}
+
 async function generate() {
   var token = document.getElementById('token').value.trim();
   var prompt = document.getElementById('prompt').value.trim();
   var resultDiv = document.getElementById('result');
   var btn = document.getElementById('btn');
   var timerEl = document.getElementById('timer');
+  // Reset
+  document.getElementById('log').textContent = '=== Nouveau test ===';
+  resultDiv.innerHTML = '';
+  timerEl.textContent = '';
 
+  // Validation
   if (!token) {
-    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Colle ton token HF !<br><small>Crée-le gratuitement sur huggingface.co/settings/tokens</small></p>';
+    resultDiv.innerHTML = '<p class="error">❌ Colle ton token HF !<br><small>Crée-le sur huggingface.co/settings/tokens</small></p>';
+    addLog('ERREUR: Token manquant');
     return;
   }
   if (!prompt) {
-    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Entre un prompt !</p>';
+    resultDiv.innerHTML = '<p class="error">❌ Entre un prompt !</p>';
+    addLog('ERREUR: Prompt manquant');
     return;
   }
 
-  btn.disabled = true;  btn.textContent = '⏳ Génération...';
+  addLog('Token: ' + token.substring(0, 8) + '...');
+  addLog('Prompt: ' + prompt.substring(0, 50) + '...');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Génération...';
   resultDiv.innerHTML = '<p class="status">⏳ Envoi à Hugging Face...</p>';
 
   var start = Date.now();
@@ -57,6 +78,8 @@ async function generate() {
   }, 100);
 
   try {
+    addLog('Envoi requête POST vers api-inference.huggingface.co...');
+
     var res = await fetch('https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev', {
       method: 'POST',
       headers: {
@@ -73,42 +96,68 @@ async function generate() {
         }
       })
     });
-
-    clearInterval(timerInterval);
+    addLog('Réponse reçue: HTTP ' + res.status + ' ' + res.statusText);
+    addLog('Content-Type: ' + (res.headers.get('content-type') || 'inconnu'));
 
     if (!res.ok) {
       var errText = await res.text();
+      addLog('Corps erreur: ' + errText.substring(0, 500));
       throw new Error('HTTP ' + res.status + ' — ' + errText);
     }
 
     var blob = await res.blob();
+    addLog('Blob reçu: ' + blob.size + ' octets, type: ' + blob.type);
+
+    if (blob.size < 1000) {
+      throw new Error('Image trop petite (' + blob.size + ' octets) — réponse invalide');
+    }
+
     var imgUrl = URL.createObjectURL(blob);
 
     var img = new Image();
     img.onload = function() {
+      clearInterval(timerInterval);
       var elapsed = ((Date.now() - start) / 1000).toFixed(1);
       resultDiv.innerHTML = '';
       resultDiv.appendChild(img);
       var info = document.createElement('p');
-      info.className = 'status';
-      info.textContent = '✅ HF FLUX.1-dev — 1024×1024 — ' + elapsed + 's';
+      info.className = 'success';
+      info.textContent = '✅ HF FLUX.1-dev — 1024×1024 — ' + elapsed + 's — ' + blob.size + ' octets';
       resultDiv.appendChild(info);
       btn.disabled = false;
-      btn.textContent = 'Générer avec HF FLUX.1-dev';
+      btn.textContent = '🚀 Régénérer';
       timerEl.textContent = '';
-    };    img.onerror = function() {
-      resultDiv.innerHTML = '<p style="color:#EF4444">❌ Impossible d\'afficher l\'image</p>';
+      addLog('SUCCÈS: Image affichée (' + img.width + 'x' + img.height + ') en ' + elapsed + 's');
+    };
+    img.onerror = function() {
+      clearInterval(timerInterval);
+      resultDiv.innerHTML = '<p class="error">❌ Impossible d\'afficher l\'image<br><small>Blob size: ' + blob.size + ', type: ' + blob.type + '</small></p>';
       btn.disabled = false;
-      btn.textContent = 'Générer avec HF FLUX.1-dev';
+      btn.textContent = 'Réessayer';
       timerEl.textContent = '';
+      addLog('ERREUR: Image onload échoué');
     };
     img.src = imgUrl;
 
   } catch (err) {
     clearInterval(timerInterval);
-    resultDiv.innerHTML = '<p style="color:#EF4444">❌ Erreur : ' + err.message + '</p>';
+    addLog('EXCEPTION: ' + err.message);
+
+    var errMsg = err.message || 'Erreur inconnue';
+    var hint = '';
+    if (errMsg.indexOf('Failed to fetch') !== -1 || errMsg.indexOf('NetworkError') !== -1) {
+      hint = '<br><br>💡 <strong>CORS ou réseau bloqué.</strong> Essaie depuis un autre navigateur ou désactive ton adblocker.';
+    } else if (errMsg.indexOf('401') !== -1) {
+      hint = '<br><br>💡 <strong>Token invalide.</strong> Vérifie qu\'il commence par hf_ et qu\'il n\'est pas expiré.';
+    } else if (errMsg.indexOf('503') !== -1 || errMsg.indexOf('loading') !== -1) {
+      hint = '<br><br>💡 <strong>Modèle en chargement.</strong> Réessaie dans 30-60 secondes.';
+    } else if (errMsg.indexOf('429') !== -1) {
+      hint = '<br><br>💡 <strong>Rate limit atteint.</strong> Attends quelques minutes.';
+    }
+
+    resultDiv.innerHTML = '<p class="error">❌ ' + errMsg + hint + '</p>';
     btn.disabled = false;
-    btn.textContent = 'Générer avec HF FLUX.1-dev';
+    btn.textContent = 'Réessayer';
     timerEl.textContent = '';
   }
 }
