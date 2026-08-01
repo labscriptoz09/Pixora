@@ -47,8 +47,7 @@
         .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 20s infinite ease-in-out}
         .o1{width:400px;height:400px;background:var(--prim);top:-100px;left:-100px}
         .o2{width:300px;height:300px;background:var(--sec);bottom:10%;right:-50px;animation-delay:-5s}
-        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
-        a{color:inherit;text-decoration:none}
+        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(0.9)}}        button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}        a{color:inherit;text-decoration:none}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
         .toast-notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:0.8rem 1.2rem;font-size:0.85rem;font-weight:600;z-index:10000;transition:transform 0.4s cubic-bezier(0.25,0.8,0.25,1);display:flex;align-items:center;gap:0.7rem;box-shadow:0 10px 40px rgba(0,0,0,0.5);white-space:nowrap;max-width:90vw;text-align:center;justify-content:center}
         .toast-notification.show{transform:translateX(-50%) translateY(0)}
@@ -97,8 +96,7 @@
         .nav-item[data-nav="studio"].active{color:var(--prim)}
         .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,0.6))}
         .nav-item[data-nav="gallery"].active{color:#3B82F6}        .nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 8px rgba(59,130,246,0.6))}
-        .nav-item[data-nav="points"].active{color:var(--gold)}
-        .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
+        .nav-item[data-nav="points"].active{color:var(--gold)}        .nav-item[data-nav="points"].active i{filter:drop-shadow(0 0 8px rgba(251,191,36,0.6))}
         .nav-item[data-nav="profile"].active{color:var(--sec)}
         .nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,0.6))}
         .nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:white;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:6px;min-width:16px;text-align:center;font-family:var(--mono)}
@@ -147,8 +145,7 @@
         .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
         .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}        .site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}
         .site-footer a:hover{color:var(--prim)}
-    </style>
-</head>
+    </style></head>
 <body>
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="toast-notification" id="toast"><i class="fas fa-check-circle"></i><span id="toast-text"></span></div>
@@ -197,8 +194,7 @@
         </div>    </div>
 </header>
 
-<nav class="nav-mobile">
-    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
+<nav class="nav-mobile">    <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a>
     <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>    <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
     <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a>
 </nav>
@@ -207,7 +203,7 @@
     <h1 class="page-title" data-i18n="gallery.title">Galerie Publique</h1>
     <p class="page-sub" data-i18n="gallery.subtitle">Les dernières créations de la communauté IA Pixora</p>
     
-    <!-- 🔷 EN HAUT : IMAGES UTILISATEUR (dynamiques, effacées après 1h) -->
+    <!-- 🔷 EN HAUT : IMAGES UTILISATEUR (dynamiques, effacées après 24h) -->
     <div class="results-grid" id="gallery-grid">
         <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p data-i18n="common.loading">Chargement...</p></div>
     </div>
@@ -248,7 +244,6 @@
         <div data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
     </footer>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="ads-loader.js"></script>
 <script>
 // =============================================
@@ -297,8 +292,7 @@ function applyGalleryTranslations() {    document.querySelectorAll('[data-i18n]'
         var val = tGallery(key);
         if (val !== key) el.textContent = val;
     });    
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n-placeholder');
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {        var key = el.getAttribute('data-i18n-placeholder');
         var val = tGallery(key);
         if (val !== key) el.placeholder = val;
     });
@@ -347,8 +341,7 @@ async function loadTaskLimits() {
                 if (tasks[i].type === 'comment' && tasks[i].active) {                    
                     COMMENT_LIMIT = tasks[i].limit || 1;
                 }
-            }
-        }
+            }        }
     } catch(e) {
         console.error('Load task limits error:', e);
     }
@@ -397,8 +390,7 @@ async function updateUI() {
         var initial = name.charAt(0).toUpperCase();
         document.getElementById('avatar-initial').textContent = initial;
         document.getElementById('menu-avatar').textContent = initial;
-        document.getElementById('menu-name').textContent = name;
-        document.getElementById('menu-email').textContent = logged.email;
+        document.getElementById('menu-name').textContent = name;        document.getElementById('menu-email').textContent = logged.email;
     }
 }
 
@@ -447,8 +439,7 @@ async function doVote(fileName, btnElement) {
         if (existing.data && existing.data.length > 0) {
             showToast(tGallery('vote.already_voted'), 'error');
             return;
-        }
-        var insertRes = await db.from('votes').insert({ user_id: user.id, creation_id: fileName });
+        }        var insertRes = await db.from('votes').insert({ user_id: user.id, creation_id: fileName });
         if (insertRes.error) throw new Error(insertRes.error.message);
         var ud = await getUserData();
         var newPts = (ud.points || 0) + 2;
@@ -497,8 +488,7 @@ async function submitComment() {
     var user = await getUser();
     if (!user) { showToast(tGallery('comment.login_required'), 'error'); return; }
     var content = document.getElementById('comment-input').value.trim();
-    if (content.length < 10) { showToast(tGallery('comment.too_short'), 'error'); return; }
-    var btn = document.getElementById('btn-submit-comment');
+    if (content.length < 10) { showToast(tGallery('comment.too_short'), 'error'); return; }    var btn = document.getElementById('btn-submit-comment');
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
     try {
         var startOfDay = new Date();
@@ -533,11 +523,12 @@ async function submitComment() {
 }
 
 // =============================================
-// GALERIE DYNAMIQUE (images utilisateur, effacées après 1h)
+// GALERIE DYNAMIQUE (images utilisateur, effacées après 24h)
 // =============================================
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
-    try {                var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
+    try {
+        var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
         if (result.error) throw new Error(result.error.message);
         if (!result.data || result.data.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>' + tGallery('gallery.empty') + '<br>' + tGallery('gallery.empty_cta') + '</p></div>';
@@ -546,9 +537,9 @@ async function loadGallery() {
         var now = Date.now();
         var validFiles = [];
         for (var i = 0; i < result.data.length; i++) {
-            var file = result.data[i];
-            var createdAt = new Date(file.created_at).getTime();
-            if ((now - createdAt) < 3600000) {
+            var file = result.data[i];            var createdAt = new Date(file.created_at).getTime();
+            // ✅ CORRIGÉ : 24h au lieu de 1h (86400000 ms = 24 heures)
+            if ((now - createdAt) < 86400000) {
                 var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
                 validFiles.push({ url: urlData.data.publicUrl, name: file.name });
             } else {
@@ -595,8 +586,7 @@ async function loadGallery() {
     }
 }
 
-// =============================================
-// INIT
+// =============================================// INIT
 // =============================================
 document.addEventListener('DOMContentLoaded', async function() {
     var lang = detectGalleryLang();
