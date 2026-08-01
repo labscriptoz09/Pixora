@@ -3,100 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Pollinations - Tous les Modèles</title>
+<title>Test Ancienne Config - IA Pixora</title>
 <style>
-body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif}
-.container{max-width:1400px;margin:0 auto}
-h1{text-align:center;margin-bottom:.5rem}
-.subtitle{text-align:center;color:#A1A1AA;margin-bottom:2rem;font-size:.9rem}
-.prompt-box{width:100%;min-height:80px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;margin-bottom:1.5rem}
-.prompt-box:focus{border-color:#8B5CF6}
-.btn-generate{display:block;width:100%;max-width:400px;margin:0 auto 2rem;padding:1rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1.1rem;cursor:pointer}
-.btn-generate:hover{opacity:.9}
-.btn-generate:disabled{opacity:.5;cursor:not-allowed}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
-.card{background:rgba(24,24,27,.6);border:1px solid rgba(63,63,70,.5);border-radius:16px;padding:1rem;text-align:center;position:relative}
-.card h3{margin:0 0 .3rem;font-size:.95rem;color:#fff}
-.card .model-tag{font-size:.7rem;color:#A1A1AA;margin-bottom:.8rem;display:block}
-.card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.card .status{font-size:.8rem;color:#A1A1AA;margin-top:.6rem}
-.card .error{color:#EF4444}
-.card .seed{font-size:.7rem;color:#71717A;margin-top:.3rem;font-family:monospace}
-.winner{border-color:#10B981;box-shadow:0 0 20px rgba(16,185,129,.3)}
-.winner::after{content:'⭐ MEILLEUR';position:absolute;top:10px;right:10px;background:#10B981;color:#fff;font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:6px}
-.loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:#8B5CF6;border-radius:50%;animation:spin .8s linear infinite;margin:2rem auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:sans-serif;text-align:center}
+img{max-width:100%;border-radius:12px;margin:1rem 0;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+button{background:#8B5CF6;color:#fff;border:none;padding:.8rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer;margin:.5rem}
+button:hover{background:#7C3AED}
+.status{color:#A1A1AA;margin:1rem 0}
+textarea{width:100%;max-width:600px;min-height:80px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;margin-bottom:1rem}
+textarea:focus{border-color:#8B5CF6}
 </style>
 </head>
 <body>
-<div class="container">
-<h1>🧪 Test Pollinations — Tous les Modèles</h1>
-<p class="subtitle">Même prompt • Même seed • 6 modèles comparés • Trouve le meilleur</p>
+<h1>🧪 Test ANCIENNE Config</h1>
+<p class="status">Config originale : 512×512 • Sans upscale • Sans steps • Sans model=flux</p>
 
-<textarea class="prompt-box" id="prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
+<textarea id="prompt" placeholder="Décris ton image...">Portrait of a young woman with freckles and curly red hair, golden hour sunlight, cinematic lighting, masterpiece, best quality, ultra detailed, 8k</textarea>
 
-<button class="btn-generate" id="btn-all" onclick="generateAll()">🚀 Générer les 6 modèles</button>
+<button onclick="testPollinations()">Test Pollinations (512×512)</button>
+<button onclick="testFalAI()">Test fal.ai (512×512)</button>
 
-<div class="grid" id="grid"></div>
-</div>
+<div id="result"></div>
 
 <script>
-var MODELS = [
-  { id: 'flux', name: 'FLUX (Default)', param: 'model=flux', desc: 'Modèle principal — Qualité PRO' },
-  { id: 'flux-realism', name: 'FLUX Realism', param: 'model=flux-realism', desc: 'Photo-réaliste — Portraits' },
-  { id: 'flux-anime', name: 'FLUX Anime', param: 'model=flux-anime', desc: 'Style Anime / Illustration' },
-  { id: 'flux-cablyai', name: 'FLUX CablyAI', param: 'model=flux-cablyai', desc: 'Style artistique CablyAI' },
-  { id: 'turbo', name: 'Turbo', param: 'model=turbo', desc: 'Rapide — Qualité basique' },
-  { id: 'none', name: 'Sans modèle', param: '', desc: 'Modèle aléatoire (instable)' }];
+// EXACTEMENT comme dans l'ancien index.html
+function getPollinationsUrlOld(prompt) {
+    var seed = Math.floor(Math.random() * 100000);
+    var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed;
+    return url;
+}
 
-async function generateAll() {
-  var prompt = document.getElementById('prompt').value.trim();
-  if (!prompt) { alert('Entre un prompt !'); return; }
+// Test Pollinations avec l'ancienne config
+function testPollinations() {
+    var prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) { alert('Entre un prompt !'); return; }
 
-  var btn = document.getElementById('btn-all');
-  btn.disabled = true;
-  btn.textContent = '⏳ Génération en cours...';
-
-  var grid = document.getElementById('grid');
-  grid.innerHTML = '';
-
-  var seed = Math.floor(Math.random() * 100000);
-  var suffix = ', masterpiece, best quality, ultra detailed, 8k';
-  var fullPrompt = prompt + suffix;
-
-  MODELS.forEach(function(m) {
-    var card = document.createElement('div');
-    card.className = 'card';
-    card.id = 'card-' + m.id;
-    card.innerHTML = '<h3>' + m.name + '</h3><span class="model-tag">' + m.desc + '</span><div class="loading-spinner"></div>';
-    grid.appendChild(card);
-
-    var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(fullPrompt) + '?width=1024&height=1024&nologo=true&seed=' + seed;
-    if (m.param) url += '&' + m.param;
+    var url = getPollinationsUrlOld(prompt);
+    var resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '<p class="status">⏳ Pollinations 512×512 (ancienne config)...</p>';
 
     var img = new Image();
     img.onload = function() {
-      card.innerHTML = '<h3>' + m.name + '</h3><span class="model-tag">' + m.desc + '</span>';
-      card.appendChild(img);
-      var status = document.createElement('p');
-      status.className = 'status';
-      status.textContent = '✅ Généré';
-      card.appendChild(status);
-      var seedInfo = document.createElement('p');
-      seedInfo.className = 'seed';
-      seedInfo.textContent = 'Seed: ' + seed + ' | 1024×1024';
-      card.appendChild(seedInfo);
+        resultDiv.innerHTML = '';
+        resultDiv.appendChild(img);
+        var info = document.createElement('p');
+        info.className = 'status';        info.textContent = '✅ Pollinations — 512×512 — Seed: ' + url.split('seed=')[1];
+        resultDiv.appendChild(info);
     };
     img.onerror = function() {
-      card.innerHTML = '<h3>' + m.name + '</h3><span class="model-tag">' + m.desc + '</span><p class="error">❌ Échec</p>';
+        resultDiv.innerHTML = '<p style="color:#EF4444">❌ Échec Pollinations</p>';
     };
     img.src = url;
-  });
+}
 
-  // Réactiver le bouton après un délai raisonnable
-  setTimeout(function() {
-    btn.disabled = false;
-    btn.textContent = '🚀 Générer les 6 modèles';  }, 30000);
+// Test fal.ai avec l'ancienne config (EXACTEMENT comme dans l'ancien code)
+async function testFalAI() {
+    var prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) { alert('Entre un prompt !'); return; }
+
+    // NOTE: fal.ai nécessite une clé API. Si tu n'en as pas, ce test échouera.
+    // L'ancien code utilisait fal.ai AVEC une clé stockée dans Supabase admin_config
+    var FAL_KEY = ''; // ← Mets ta clé fal.ai ici si tu l'as
+
+    if (!FAL_KEY) {
+        document.getElementById('result').innerHTML = '<p style="color:#FBBF24">⚠️ Clé fal.ai requise. Vérifie dans Supabase → admin_config → api_keys<br><small>L\'ancien code chargeait la clé depuis Supabase automatiquement</small></p>';
+        return;
+    }
+
+    var resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '<p class="status">⏳ fal.ai 512×512 (ancienne config)...</p>';
+
+    try {
+        // EXACTEMENT comme dans l'ancien buildBody de fal.ai
+        var res = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Key ' + FAL_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                prompt: prompt,
+                width: 512,
+                height: 512,
+                num_images: 1
+                // PAS de upscale, PAS de steps, PAS de guidance_scale
+            })
+        });
+
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+
+        var data = await res.json();
+        var url = null;
+        if (data.images && data.images[0] && data.images[0].url) {
+            url = data.images[0].url;
+        } else if (data.output && data.output.images && data.output.images[0] && data.output.images[0].url) {            url = data.output.images[0].url;
+        }
+
+        if (!url) throw new Error('URL non trouvée dans la réponse');
+
+        var img = new Image();
+        img.onload = function() {
+            resultDiv.innerHTML = '';
+            resultDiv.appendChild(img);
+            var info = document.createElement('p');
+            info.className = 'status';
+            info.textContent = '✅ fal.ai flux/schnell — 512×512 — Sans upscale/steps';
+            resultDiv.appendChild(info);
+        };
+        img.src = url;
+
+    } catch (err) {
+        resultDiv.innerHTML = '<p style="color:#EF4444">❌ fal.ai Error: ' + err.message + '</p>';
+    }
 }
 </script>
 </body>
