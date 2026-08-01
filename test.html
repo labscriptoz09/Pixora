@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test OVHcloud AI Endpoints - SDXL</title>
+<title>Test OVHcloud AI Endpoints - Debug 401</title>
 <style>
 body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:'Inter',sans-serif}
 .container{max-width:800px;margin:0 auto}
@@ -11,138 +11,121 @@ h1{text-align:center;margin-bottom:.5rem}
 .subtitle{text-align:center;color:#A1A1AA;margin-bottom:1.5rem;font-size:.9rem}
 .form-group{margin-bottom:1.2rem}
 label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.5rem;color:#FAFAFA}
-input[type="text"],textarea{width:100%;padding:.9rem;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;transition:all .3s}
-input[type="text"]:focus,textarea:focus{border-color:#0066FF;background:rgba(255,255,255,.1)}
-textarea{min-height:100px;resize:vertical}
-.btn-gen{width:100%;padding:1rem;background:linear-gradient(135deg,#0066FF,#00A3FF);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all .3s}
-.btn-gen:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,102,255,.4)}
-.btn-gen:disabled{opacity:.5;cursor:not-allowed;transform:none}
+input[type="text"],textarea{width:100%;padding:.9rem;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none}
+textarea{min-height:80px;resize:vertical}
+.btn-gen{width:100%;padding:1rem;background:linear-gradient(135deg,#0066FF,#00A3FF);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer}
+.btn-gen:disabled{opacity:.5;cursor:not-allowed}
 .result{margin-top:1.5rem;text-align:center}
 .result img{max-width:100%;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
-.status{padding:1rem;border-radius:10px;margin-top:1rem;text-align:center}
+.status{padding:1rem;border-radius:10px;margin-top:1rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;word-break:break-all}
 .status.loading{background:rgba(0,102,255,.1);color:#00A3FF}
 .status.success{background:rgba(16,185,129,.1);color:#10B981}
 .status.error{background:rgba(239,68,68,.1);color:#EF4444}
-.timer{font-family:'JetBrains Mono',monospace;font-size:.9rem;margin-top:.5rem}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-<h1>🧪 Test OVHcloud AI Endpoints</h1>
-<p class="subtitle">Stable Diffusion XL — API gratuite</p>
+<h1>🔧 Test OVHcloud (Debug 401)</h1>
+<p class="subtitle">Tente les 2 formats d'API OVH pour trouver le bon</p>
 
 <div class="form-group">
-<label for="prompt">Prompt</label>
-<textarea id="prompt" placeholder="Ex: Portrait of a young woman with curly red hair, golden hour lighting, cinematic"></textarea>
+<label>Prompt</label>
+<textarea id="prompt">A beautiful portrait of a young woman with curly red hair, golden hour lighting, cinematic, masterpiece</textarea>
 </div>
 
-<div class="form-group">
-<label for="negative">Negative Prompt</label>
-<input type="text" id="negative" placeholder="ugly, blurry, low quality">
-</div>
-
-<button class="btn-gen" id="btn" onclick="generate()"> Générer</button>
-
+<button class="btn-gen" id="btn" onclick="generate()">🚀 Tester les 2 endpoints</button>
 <div id="status"></div>
 <div class="result" id="result"></div>
 </div>
+
 <script>
+// Ton token (vérifie qu'il n'y a pas d'espace avant ou après)
 const API_KEY = 'eyJhbGciOiJFZERTQSIsImtpZCI6IjgzMkFGNUE5ODg3MzFCMDNGM0EzMTRFMDJFRUJFRjBGNDE5MUY0Q0YiLCJraW5kIjoicGF0IiwidHlwIjoiSldUIn0.eyJ0b2tlbiI6Im1QenRqTkxlMlY2SVpyMWRrbkV2R1RXaEhmaXFxNFdnN3FuYnBuRUNVSUE9In0.t6eESdVYmFD3mXwwUUetJJXlhL1BxEWijT4wkK8xbURgYXrcCZsvComY3xaNT_BBNDwptHYgL4wHrIwsEP0QBQ';
-const API_URL = 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1';
+
+const BASE_URL = 'https://oai.endpoints.kepler.ai.cloud.ovh.net';
 
 async function generate() {
   const prompt = document.getElementById('prompt').value.trim();
-  const negative = document.getElementById('negative').value.trim();
   const btn = document.getElementById('btn');
-  const statusEl = document.getElementById('status');
-  const resultEl = document.getElementById('result');
-
-  if (!prompt) {
-    statusEl.innerHTML = '<div class="status error">❌ Entre un prompt !</div>';
-    return;
-  }
+  const statusEl = document.getElementById('status');  const resultEl = document.getElementById('result');
 
   btn.disabled = true;
-  btn.textContent = '⏳ Génération...';
+  btn.textContent = '⏳ Test en cours...';
   resultEl.innerHTML = '';
-  
-  const startTime = Date.now();
-  statusEl.innerHTML = '<div class="status loading">⏳ Connexion à OVHcloud...<div class="timer">0.0s</div></div>';
-  
-  const timerInterval = setInterval(() => {
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    const timerEl = statusEl.querySelector('.timer');
-    if (timerEl) timerEl.textContent = `${elapsed}s`;
-  }, 100);
 
-  try {
-    // Format OpenAI-compatible
-    const response = await fetch(`${API_URL}/images/generations`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'stabilityai/stable-diffusion-xl',
-        prompt: prompt,
-        negative_prompt: negative || 'ugly, blurry, low quality',
-        width: 1024,
-        height: 1024,
-        steps: 30,
-        cfg_scale: 7.5
-      })
-    });
+  const payload = {
+    model: "stabilityai/stable-diffusion-xl-base-1.0",
+    prompt: prompt,
+    negative_prompt: "ugly, blurry, low quality, distorted, watermark",
+    width: 1024,
+    height: 1024,
+    num_inference_steps: 30,
+    guidance_scale: 7.5
+  };
 
-    clearInterval(timerInterval);
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API Error:', errorText);
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  const headers = {
+    'Authorization': `Bearer ${API_KEY.trim()}`,
+    'Content-Type': 'application/json'
+  };
+
+  // On teste d'abord l'endpoint natif OVH, puis le format OpenAI
+  const endpointsToTry = [
+    `${BASE_URL}/api/generate`,
+    `${BASE_URL}/v1/images/generations`
+  ];
+
+  for (const url of endpointsToTry) {
+    statusEl.className = 'status loading';
+    statusEl.textContent = `🔄 Tentative sur : ${url}...`;
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('SUCCÈS:', data);
+        
+        // Extraire l'URL de l'image selon le format de réponse
+        let imageUrl = null;
+        if (data.images && data.images[0]) imageUrl = data.images[0].url || data.images[0];
+        else if (data.data && data.data[0]) imageUrl = data.data[0].url;
+        else if (data.output && data.output.images) imageUrl = data.output.images[0].url;
+
+        if (imageUrl) {
+          statusEl.className = 'status success';          statusEl.textContent = `✅ SUCCÈS sur : ${url}`;
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.onclick = () => window.open(imageUrl, '_blank');
+          resultEl.appendChild(img);
+          btn.disabled = false;
+          btn.textContent = '🚀 Régénérer';
+          return; // On arrête ici, ça a marché !
+        }
+      } else {
+        const errorText = await response.text();
+        console.warn(`Échec sur ${url}:`, response.status, errorText);
+        if (response.status === 401) {
+          statusEl.className = 'status error';
+          statusEl.innerHTML = `❌ ERREUR 401 sur ${url}<br><br>Message du serveur :<br>${errorText}<br><br>👉 <strong>Action requise :</strong> Ton token est invalide ou expiré. Retourne dans la console OVHcloud et régénère un nouveau token pour ce modèle.`;
+          btn.disabled = false;
+          btn.textContent = '🚀 Réessayer';
+          return; // On arronne car si c'est 401 sur le premier, ça le sera sur le second
+        }
+      }
+    } catch (err) {
+      console.error('Erreur réseau:', err);
     }
-
-    const data = await response.json();
-    console.log('Response:', data);
-    
-    // Récupérer l'URL de l'image
-    let imageUrl = null;
-    if (data.data && data.data[0] && data.data[0].url) {
-      imageUrl = data.data[0].url;
-    } else if (data.images && data.images[0]) {
-      imageUrl = data.images[0].url || data.images[0];
-    } else if (data.url) {
-      imageUrl = data.url;
-    }
-
-    if (!imageUrl) {
-      throw new Error('Aucune URL d\'image dans la réponse');
-    }
-
-    statusEl.innerHTML = `<div class="status success">✅ Générée en ${elapsed}s !</div>`;
-    
-    const img = document.createElement('img');
-    img.src = imageUrl;
-    img.alt = 'SDXL Generated';
-    img.style.cursor = 'pointer';
-    img.onclick = () => window.open(imageUrl, '_blank');
-    
-    const info = document.createElement('p');
-    info.style.cssText = 'color:#A1A1AA;margin-top:1rem;font-size:.85rem';
-    info.innerHTML = `📐 1024×1024 | ️ ${elapsed}s`;
-    
-    resultEl.appendChild(img);
-    resultEl.appendChild(info);
-
-  } catch (error) {
-    clearInterval(timerInterval);
-    console.error('Error:', error);
-    statusEl.innerHTML = `<div class="status error">❌ Erreur: ${error.message}</div>`;
   }
 
+  statusEl.className = 'status error';
+  statusEl.textContent = '❌ Échec sur tous les endpoints. Vérifie la console (F12) pour les détails.';
   btn.disabled = false;
-  btn.textContent = '🚀 Générer';
+  btn.textContent = '🚀 Réessayer';
 }
 </script>
-</body></html>
+</body>
+</html>
