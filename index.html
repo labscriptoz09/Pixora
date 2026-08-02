@@ -47,8 +47,7 @@
 var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
 function getAnonCount(){return parseInt(localStorage.getItem(PX_ANON_KEY)||'0')}
 function incrementAnonCount(){var c=getAnonCount()+1;localStorage.setItem(PX_ANON_KEY,c.toString());return c}
-function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=getAnonCount();if(c>=PX_FREE_LIMIT){showSoftSignupPrompt();return false}}else{localStorage.removeItem(PX_ANON_KEY)}return true})}
-function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
+function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=getAnonCount();if(c>=PX_FREE_LIMIT){showSoftSignupPrompt();return false}}else{localStorage.removeItem(PX_ANON_KEY)}return true})}function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
 var BADGES_CONFIG=[{id:'bronze',name:'Apprenti',icon:'🎨',threshold:5},{id:'silver',name:'Confirmé',icon:'️',threshold:15},{id:'gold',name:'Maître',icon:'👑',threshold:20},{id:'diamond',name:'Légende',icon:'💎',threshold:50}];
 async function loadMiniBadge(){var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!await isLogged()){el.classList.remove('show');return}try{var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}else{ic.textContent='❓';nm.textContent='Badge';nx.textContent=''}}catch(e){console.error('Mini badge error:',e);el.classList.remove('show')}}
 var I18N={},currentLang='fr',FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:' Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:' Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'👋 Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:' Génération en cours...',downloaded:' Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:' Lien copié !',share_points:'+5 points pour le partage !'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:' Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'}};
@@ -97,8 +96,7 @@ function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(t,
 async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
 async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim(),pv=document.getElementById('r-pw').value,nv=document.getElementById('r-name').value.trim(),r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;var nid=sr.data.user?sr.data.user.id:null;if(nid){await ensureUserData(nid);await grantSignupBonus(nid);await processReferral(nid)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
 async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
-async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}
-function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
+async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
 function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
 document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});
 async function doLogout(){await db.auth.signOut();closeUserMenu();currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();notify(t('auth.logout'),'success');setTimeout(function(){location.reload()},800)}
@@ -123,7 +121,70 @@ async function uploadToStorage(mediaUrl,type){try{var response=await fetch(media
 async function generate(){if(curType==='video'){notifyVideoSoon();return}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');return}var logged=await isLogged(),cost=0,isDiscounted=false;if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}if(logged){await loadUserTier();var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],userData=await getUserData(),baseCost=c.costs.image;isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();cost=isDiscounted?Math.ceil(baseCost/2):baseCost;if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid'),card=document.createElement('div');card.className='result-card';var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now(),tmr=document.getElementById(tmrId),iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100),media=card.querySelector('img'),loaded=false,currentUser=await getUser();try{var result=await generateWithFallback(p,'image'),url=result.url,providerName=result.provider;if(logged&&providerName!=='fal.ai'&&providerName!=='Pollinations')notify(t('notifications.via_provider')+' '+providerName,'success');media.src=url;function onLoad(){if(loaded)return;loaded=true;clearInterval(iv);var elapsed=((Date.now()-st)/1000).toFixed(1),to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image')};uploadToStorage(url,'image');if(logged&&currentUser&&currentUser.id){saveTransaction('spent','Génération image'+(isDiscounted?' (-50%)':''),-cost).then(function(){updateUI()});validatePendingReferral(currentUser.id);getUserData().then(function(fd){var ng=(fd.total_generated||0)+1;db.from('user_data').update({total_generated:ng}).eq('user_id',currentUser.id).catch(function(){})})}var dm=isDiscounted?t('notifications.discount_tag'):'',cd=logged?(' (-'+cost+' '+t('generator.cost_pts')+dm+')'):'';notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+cd,'success');if(!logged)incrementAndCheckFreemium();if(logged)loadMiniBadge();setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000)}media.onload=onLoad;media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}}catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}}
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
-document.addEventListener('DOMContentLoaded',async function(){await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await loadStudio()});
+
+// 🧹 NETTOYAGE AUTOMATIQUE - Supprime les images de +24h de Supabase (SANS TOUCHER AUX RÉCENTES)
+async function cleanupExpiredCreations() {
+  try {
+    console.log('[Nettoyage] Vérification des images expirées...');
+    const { data: expiredItems, error: fetchError } = await db
+      .from('pixora_creations')
+      .select('file_name')
+      .lt('expires_at', new Date().toISOString());
+
+    if (fetchError) {
+      console.error('[Nettoyage] Erreur requête:', fetchError);
+      return;
+    }
+
+    if (!expiredItems || expiredItems.length === 0) {
+      console.log('[Nettoyage] Aucune image à supprimer');
+      return;
+    }
+
+    console.log('[Nettoyage] ' + expiredItems.length + ' image(s) à supprimer');
+
+    for (let i = 0; i < expiredItems.length; i++) {
+      const fileName = expiredItems[i].file_name;
+      try {        // 1. Supprimer du storage
+        const { error: storageError } = await db.storage.from(BUCKET).remove([fileName]);
+        if (storageError) {
+          console.warn('[Nettoyage] Erreur storage pour', fileName, ':', storageError.message);
+        }
+
+        // 2. Supprimer de la base de données
+        const { error: dbError } = await db
+          .from('pixora_creations')
+          .delete()
+          .eq('file_name', fileName);
+
+        if (dbError) {
+          console.warn('[Nettoyage] Erreur DB pour', fileName, ':', dbError.message);
+        } else {
+          console.log('[Nettoyage] ✅ Supprimé:', fileName);
+        }
+      } catch (err) {
+        console.error('[Nettoyage] Erreur sur', fileName, ':', err);
+      }
+    }
+    console.log('[Nettoyage] Terminé.');
+  } catch (err) {
+    console.error('[Nettoyage] Erreur globale:', err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+  await loadLang(detectLang());
+  detectReferral();
+  await loadApiKeys();
+  await loadDynamicConfig();
+  await loadUserTier();
+  await updateUI();
+  
+  // 🧹 Lancer le nettoyage avant d'afficher la galerie
+  await cleanupExpiredCreations();
+  
+  await loadStudio();
+});
 </script>
 </body>
 </html>
