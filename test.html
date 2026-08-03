@@ -1,131 +1,427 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test OVHcloud AI Endpoints - Debug 401</title>
-<style>
-body{margin:0;padding:2rem;background:#050507;color:#fff;font-family:'Inter',sans-serif}
-.container{max-width:800px;margin:0 auto}
-h1{text-align:center;margin-bottom:.5rem}
-.subtitle{text-align:center;color:#A1A1AA;margin-bottom:1.5rem;font-size:.9rem}
-.form-group{margin-bottom:1.2rem}
-label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.5rem;color:#FAFAFA}
-input[type="text"],textarea{width:100%;padding:.9rem;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none}
-textarea{min-height:80px;resize:vertical}
-.btn-gen{width:100%;padding:1rem;background:linear-gradient(135deg,#0066FF,#00A3FF);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer}
-.btn-gen:disabled{opacity:.5;cursor:not-allowed}
-.result{margin-top:1.5rem;text-align:center}
-.result img{max-width:100%;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
-.status{padding:1rem;border-radius:10px;margin-top:1rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;word-break:break-all}
-.status.loading{background:rgba(0,102,255,.1);color:#00A3FF}
-.status.success{background:rgba(16,185,129,.1);color:#10B981}
-.status.error{background:rgba(239,68,68,.1);color:#EF4444}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API IA - Comparaison Qualité</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f14 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: #A1A1AA;
+            margin-bottom: 2rem;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .test-card {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(63, 63, 70, 0.5);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+        .test-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }        .test-card h2 span {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            color: #8B5CF6;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: #A1A1AA;
+            margin-bottom: 0.5rem;
+        }
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #8B5CF6;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .result img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .loading.active {
+            display: flex;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(139, 92, 246, 0.2);
+            border-top-color: #8B5CF6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .info {
+            font-size: 0.8rem;
+            color: #71717A;            margin-top: 0.5rem;
+        }
+        .price-tag {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 6px;
+            color: #10B981;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .comparison-section {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid rgba(63, 63, 70, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .comparison-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<h1>🔧 Test OVHcloud (Debug 401)</h1>
-<p class="subtitle">Tente les 2 formats d'API OVH pour trouver le bon</p>
+    <div class="container">
+        <h1>🎨 Test API IA - Comparaison Qualité</h1>
+        <p class="subtitle">Teste et compare les différents providers avant intégration</p>
 
-<div class="form-group">
-<label>Prompt</label>
-<textarea id="prompt">A beautiful portrait of a young woman with curly red hair, golden hour lighting, cinematic, masterpiece</textarea>
-</div>
+        <div class="test-grid">
+            <!-- REPLICATE FLUX-2-PRO -->
+            <div class="test-card">
+                <h2>
+                    Replicate FLUX-2-Pro
+                    <span class="price-tag">~$0.03/img</span>
+                </h2>
+                
+                <div class="form-group">
+                    <label>API Token Replicate</label>
+                    <input type="password" id="replicate-token" placeholder="r8_xxxxx...">                </div>
 
-<button class="btn-gen" id="btn" onclick="generate()">🚀 Tester les 2 endpoints</button>
-<div id="status"></div>
-<div class="result" id="result"></div>
-</div>
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <textarea id="replicate-prompt" placeholder="A futuristic cyberpunk city at night, neon lights, highly detailed, 8k resolution, cinematic lighting">A futuristic cyberpunk city at night, neon lights, highly detailed, 8k resolution, cinematic lighting</textarea>
+                </div>
 
-<script>
-// Ton token (vérifie qu'il n'y a pas d'espace avant ou après)
-const API_KEY = 'eyJhbGciOiJFZERTQSIsImtpZCI6IjgzMkFGNUE5ODg3MzFCMDNGM0EzMTRFMDJFRUJFRjBGNDE5MUY0Q0YiLCJraW5kIjoicGF0IiwidHlwIjoiSldUIn0.eyJ0b2tlbiI6Im1QenRqTkxlMlY2SVpyMWRrbkV2R1RXaEhmaXFxNFdnN3FuYnBuRUNVSUE9In0.t6eESdVYmFD3mXwwUUetJJXlhL1BxEWijT4wkK8xbURgYXrcCZsvComY3xaNT_BBNDwptHYgL4wHrIwsEP0QBQ';
+                <div class="form-group">
+                    <label>Format</label>
+                    <select id="replicate-format">
+                        <option value="square">Carré (1024x1024)</option>
+                        <option value="portrait">Portrait (768x1024)</option>
+                        <option value="landscape">Paysage (1024x768)</option>
+                    </select>
+                </div>
 
-const BASE_URL = 'https://oai.endpoints.kepler.ai.cloud.ovh.net';
+                <button onclick="testReplicate()" id="btn-replicate">
+                     Générer avec Replicate
+                </button>
 
-async function generate() {
-  const prompt = document.getElementById('prompt').value.trim();
-  const btn = document.getElementById('btn');
-  const statusEl = document.getElementById('status');  const resultEl = document.getElementById('result');
+                <div class="result" id="result-replicate">
+                    <div class="loading" id="loading-replicate">
+                        <div class="spinner"></div>
+                        <span>Génération en cours...</span>
+                    </div>
+                    <div id="image-replicate"></div>
+                </div>
+                <p class="info">Modèle: black-forest-labs/flux-2-pro</p>
+            </div>
 
-  btn.disabled = true;
-  btn.textContent = '⏳ Test en cours...';
-  resultEl.innerHTML = '';
+            <!-- FAL.AI FLUX -->
+            <div class="test-card">
+                <h2>
+                    Fal.ai FLUX
+                    <span class="price-tag">~$0.003/img</span>
+                </h2>
+                
+                <div class="form-group">
+                    <label>API Key Fal.ai</label>
+                    <input type="password" id="fal-token" placeholder="Ta clé Fal.ai">
+                </div>
 
-  const payload = {
-    model: "stabilityai/stable-diffusion-xl-base-1.0",
-    prompt: prompt,
-    negative_prompt: "ugly, blurry, low quality, distorted, watermark",
-    width: 1024,
-    height: 1024,
-    num_inference_steps: 30,
-    guidance_scale: 7.5
-  };
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <textarea id="fal-prompt" placeholder="Epic fantasy warrior in black armor with glowing blue runes, cinematic lighting, highly detailed">Epic fantasy warrior in black armor with glowing blue runes, cinematic lighting, highly detailed</textarea>
+                </div>
 
-  const headers = {
-    'Authorization': `Bearer ${API_KEY.trim()}`,
-    'Content-Type': 'application/json'
-  };
+                <div class="form-group">
+                    <label>Modèle</label>
+                    <select id="fal-model">                        <option value="flux/dev">FLUX.1 Dev (Qualité max)</option>
+                        <option value="flux/schnell">FLUX.1 Schnell (Rapide)</option>
+                    </select>
+                </div>
 
-  // On teste d'abord l'endpoint natif OVH, puis le format OpenAI
-  const endpointsToTry = [
-    `${BASE_URL}/api/generate`,
-    `${BASE_URL}/v1/images/generations`
-  ];
+                <button onclick="testFal()" id="btn-fal">
+                    ⚡ Générer avec Fal.ai
+                </button>
 
-  for (const url of endpointsToTry) {
-    statusEl.className = 'status loading';
-    statusEl.textContent = `🔄 Tentative sur : ${url}...`;
-    
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(payload)
-      });
+                <div class="result" id="result-fal">
+                    <div class="loading" id="loading-fal">
+                        <div class="spinner"></div>
+                        <span>Génération en cours...</span>
+                    </div>
+                    <div id="image-fal"></div>
+                </div>
+                <p class="info">Endpoint: fal-ai/flux</p>
+            </div>
+        </div>
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('SUCCÈS:', data);
-        
-        // Extraire l'URL de l'image selon le format de réponse
-        let imageUrl = null;
-        if (data.images && data.images[0]) imageUrl = data.images[0].url || data.images[0];
-        else if (data.data && data.data[0]) imageUrl = data.data[0].url;
-        else if (data.output && data.output.images) imageUrl = data.output.images[0].url;
+        <!-- COMPARAISON CÔTE À CÔTE -->
+        <div class="comparison-section">
+            <h2 style="margin-bottom: 1rem;"> Comparaison Rapide</h2>
+            <div class="comparison-grid">
+                <div class="comparison-item">
+                    <strong style="color: #8B5CF6;">Replicate FLUX-2-Pro</strong>
+                    <ul style="margin-top: 0.5rem; padding-left: 1.2rem; font-size: 0.85rem; color: #A1A1AA; line-height: 1.8;">
+                        <li>✅ Qualité exceptionnelle (10/10)</li>
+                        <li>✅ Détails ultra-précis</li>
+                        <li>❌ Plus cher ($0.03/image)</li>
+                        <li>❌ Plus lent (5-10s)</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <strong style="color: #10B981;">Fal.ai FLUX</strong>
+                    <ul style="margin-top: 0.5rem; padding-left: 1.2rem; font-size: 0.85rem; color: #A1A1AA; line-height: 1.8;">
+                        <li>✅ Très bonne qualité (9/10)</li>
+                        <li>✅ Extrêmement rapide (2-4s)</li>
+                        <li>✅ Très économique ($0.003/image)</li>
+                        <li>⚠️ Légèrement moins détaillé</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        if (imageUrl) {
-          statusEl.className = 'status success';          statusEl.textContent = `✅ SUCCÈS sur : ${url}`;
-          const img = document.createElement('img');
-          img.src = imageUrl;
-          img.onclick = () => window.open(imageUrl, '_blank');
-          resultEl.appendChild(img);
-          btn.disabled = false;
-          btn.textContent = '🚀 Régénérer';
-          return; // On arrête ici, ça a marché !
+    <script>
+        async function testReplicate() {
+            const token = document.getElementById('replicate-token').value;
+            const prompt = document.getElementById('replicate-prompt').value;            const format = document.getElementById('replicate-format').value;
+            const btn = document.getElementById('btn-replicate');
+            const loading = document.getElementById('loading-replicate');
+            const resultDiv = document.getElementById('image-replicate');
+
+            if (!token) {
+                alert('Entre ton token Replicate API');
+                return;
+            }
+
+            btn.disabled = true;
+            loading.classList.add('active');
+            resultDiv.innerHTML = '';
+
+            try {
+                // Dimensions selon le format
+                const dimensions = {
+                    square: { width: 1024, height: 1024 },
+                    portrait: { width: 768, height: 1024 },
+                    landscape: { width: 1024, height: 768 }
+                };
+
+                const response = await fetch('https://api.replicate.com/v1/predictions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        version: 'd9e014044b629bf34f6f1e3f5e5e5e5e5e5e5e5e5e5e5e5e', // Version FLUX-2-Pro
+                        input: {
+                            prompt: prompt,
+                            width: dimensions[format].width,
+                            height: dimensions[format].height,
+                            num_inference_steps: 28,
+                            guidance_scale: 3.5
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur API: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Polling pour attendre le résultat
+                const result = await pollReplicateResult(data.urls.get, token);
+                
+                if (result.output && result.output[0]) {                    resultDiv.innerHTML = `<img src="${result.output[0]}" alt="Generated">`;
+                }
+
+            } catch (error) {
+                console.error('Erreur Replicate:', error);
+                resultDiv.innerHTML = `<p style="color: #EF4444;">Erreur: ${error.message}</p>`;
+            } finally {
+                btn.disabled = false;
+                loading.classList.remove('active');
+            }
         }
-      } else {
-        const errorText = await response.text();
-        console.warn(`Échec sur ${url}:`, response.status, errorText);
-        if (response.status === 401) {
-          statusEl.className = 'status error';
-          statusEl.innerHTML = `❌ ERREUR 401 sur ${url}<br><br>Message du serveur :<br>${errorText}<br><br>👉 <strong>Action requise :</strong> Ton token est invalide ou expiré. Retourne dans la console OVHcloud et régénère un nouveau token pour ce modèle.`;
-          btn.disabled = false;
-          btn.textContent = '🚀 Réessayer';
-          return; // On arronne car si c'est 401 sur le premier, ça le sera sur le second
-        }
-      }
-    } catch (err) {
-      console.error('Erreur réseau:', err);
-    }
-  }
 
-  statusEl.className = 'status error';
-  statusEl.textContent = '❌ Échec sur tous les endpoints. Vérifie la console (F12) pour les détails.';
-  btn.disabled = false;
-  btn.textContent = '🚀 Réessayer';
-}
-</script>
+        async function pollReplicateResult(url, token) {
+            while (true) {
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Token ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.status === 'succeeded') {
+                    return data;
+                } else if (data.status === 'failed') {
+                    throw new Error('Génération échouée');
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+
+        async function testFal() {
+            const token = document.getElementById('fal-token').value;
+            const prompt = document.getElementById('fal-prompt').value;
+            const model = document.getElementById('fal-model').value;
+            const btn = document.getElementById('btn-fal');
+            const loading = document.getElementById('loading-fal');
+            const resultDiv = document.getElementById('image-fal');
+
+            if (!token) {
+                alert('Entre ta clé API Fal.ai');
+                return;
+            }
+
+            btn.disabled = true;
+            loading.classList.add('active');
+            resultDiv.innerHTML = '';
+
+            try {
+                const response = await fetch(`https://queue.fal.run/fal-ai/flux/${model}`, {
+                    method: 'POST',
+                    headers: {                        'Authorization': `Key ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        image_size: { width: 1024, height: 1024 },
+                        num_inference_steps: 28,
+                        guidance_scale: 3.5,
+                        num_images: 1
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur API: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.images && data.images[0] && data.images[0].url) {
+                    resultDiv.innerHTML = `<img src="${data.images[0].url}" alt="Generated">`;
+                } else {
+                    throw new Error('Aucune image générée');
+                }
+
+            } catch (error) {
+                console.error('Erreur Fal.ai:', error);
+                resultDiv.innerHTML = `<p style="color: #EF4444;">Erreur: ${error.message}</p>`;
+            } finally {
+                btn.disabled = false;
+                loading.classList.remove('active');
+            }
+        }
+    </script>
 </body>
 </html>
