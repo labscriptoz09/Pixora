@@ -13,7 +13,7 @@
             min-height: 100vh;
             padding: 2rem 1rem;
         }
-        .container { max-width: 1000px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
         h1 {
             font-size: 2rem;
             margin-bottom: 0.5rem;
@@ -26,7 +26,7 @@
         
         .test-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 1.5rem;
         }
         .test-card {
@@ -67,7 +67,7 @@
             outline: none;
         }
         input:focus, textarea:focus { border-color: #8B5CF6; }
-        textarea { min-height: 70px; resize: vertical; }
+        textarea { min-height: 80px; resize: vertical; }
         
         button {
             width: 100%;
@@ -85,7 +85,7 @@
         
         .result-box {
             margin-top: 1rem;
-            min-height: 200px;
+            min-height: 250px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             display: flex;
@@ -98,31 +98,41 @@
         .loading { display: none; color: #8B5CF6; font-size: 0.85rem; }
         .loading.active { display: block; text-align: center; }        .error-msg { color: #EF4444; font-size: 0.8rem; padding: 1rem; text-align: center; }
         .info-text { font-size: 0.7rem; color: #71717A; margin-top: 0.5rem; text-align: center; }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-top-color: #8B5CF6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Test API IA - Comparaison</h1>
-        <p class="subtitle">Teste la qualité des APIs avant intégration dans IA Pixora</p>
+        <h1>🎨 Test API IA - Comparaison Qualité</h1>
+        <p class="subtitle">Teste FLUX.2 Pro, FLUX.1 et Pollinations avant intégration</p>
 
         <div class="test-grid">
-            <!-- POLLINATIONS (Gratuit & Sans clé) -->
+            <!-- POLLINATIONS -->
             <div class="test-card">
-                <h2>Pollinations (Gratuit) <span class="price-tag">0€</span></h2>
+                <h2>Pollinations <span class="price-tag">Gratuit</span></h2>
                 <div class="form-group">
                     <label>Prompt</label>
                     <textarea id="poll-prompt">A cute cat wearing a spacesuit, highly detailed, 8k</textarea>
                 </div>
-                <button onclick="testPollinations()">Tester Pollinations</button>
+                <button onclick="testPollinations()">Tester</button>
                 <div class="result-box" id="res-poll">
-                    <div class="loading" id="load-poll">Génération...</div>
+                    <div class="loading" id="load-poll"><div class="spinner"></div><br>Génération...</div>
                 </div>
-                <p class="info-text">Aucune clé requise. Qualité moyenne.</p>
+                <p class="info-text">Qualité basique - Aucune clé requise</p>
             </div>
 
-            <!-- FAL.AI -->
+            <!-- FAL.AI FLUX.1 -->
             <div class="test-card">
-                <h2>Fal.ai FLUX <span class="price-tag">~$0.003</span></h2>
+                <h2>Fal.ai FLUX.1 <span class="price-tag">~$0.003</span></h2>
                 <div class="form-group">
                     <label>Clé API Fal.ai</label>
                     <input type="password" id="fal-token" placeholder="Colle ta clé ici...">
@@ -133,32 +143,41 @@
                 </div>
                 <button onclick="testFal()">Tester Fal.ai</button>
                 <div class="result-box" id="res-fal">
-                    <div class="loading" id="load-fal">Génération...</div>
+                    <div class="loading" id="load-fal"><div class="spinner"></div><br>Génération...</div>
                 </div>
-                <p class="info-text">Si erreur 403 : Problème de CORS (navigateur) ou clé invalide.</p>
-            </div>
+                <p class="info-text">Rapide & économique - Qualité 9/10</p>            </div>
 
-            <!-- REPLICATE -->
+            <!-- REPLICATE FLUX.2 PRO -->
             <div class="test-card">
-                <h2>Replicate FLUX <span class="price-tag">~$0.03</span></h2>
+                <h2>Replicate FLUX.2 Pro <span class="price-tag">~$0.03</span></h2>
                 <div class="form-group">
                     <label>Token Replicate</label>
                     <input type="password" id="rep-token" placeholder="r8_xxxxx...">
                 </div>
-                <div class="form-group">                    <label>Prompt</label>
-                    <textarea id="rep-prompt">Futuristic cyberpunk city at night, neon lights, highly detailed</textarea>
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <textarea id="rep-prompt">Glossy candy-colored 3D letters in hot pink, electric orange, and lime green on a sun-drenched poolside patio with bold terrazzo tiles and vintage lounge chairs in turquoise and yellow. Shot on Kodachrome film with a Hasselblad 500C, warm golden afternoon sunlight, dramatic lens flare, punchy oversaturated colors with that distinctive 70s yellow-orange cast, shallow depth of field with the text sharp in the foreground, tropical palms and a sparkling aquamarine pool behind that spells out "Run FLUX.2 [pro] on Replicate!"</textarea>
                 </div>
-                <button onclick="testReplicate()">Tester Replicate</button>
+                <div class="form-group">
+                    <label>Format</label>
+                    <select id="rep-format">
+                        <option value="1:1">Carré (1:1)</option>
+                        <option value="16:9">Paysage (16:9)</option>
+                        <option value="9:16">Portrait (9:16)</option>
+                        <option value="4:3">Paysage 4:3</option>
+                    </select>
+                </div>
+                <button onclick="testReplicate()">Tester FLUX.2 Pro</button>
                 <div class="result-box" id="res-rep">
-                    <div class="loading" id="load-rep">Génération...</div>
+                    <div class="loading" id="load-rep"><div class="spinner"></div><br>Génération (10-20s)...</div>
                 </div>
-                <p class="info-text">Qualité max. Nécessite un token valide.</p>
+                <p class="info-text">Qualité maximale - Détails exceptionnels</p>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. TEST POLLINATIONS (Fonctionne toujours)
+        // 1. TEST POLLINATIONS
         async function testPollinations() {
             const prompt = document.getElementById('poll-prompt').value;
             const resBox = document.getElementById('res-poll');
@@ -175,15 +194,14 @@
                 load.classList.remove('active');
                 resBox.innerHTML = '';
                 resBox.appendChild(img);
-            };
-            img.onerror = () => {
+            };            img.onerror = () => {
                 load.classList.remove('active');
                 resBox.innerHTML = '<div class="error-msg">Erreur de chargement</div>';
             };
             img.src = url;
         }
 
-        // 2. TEST FAL.AI
+        // 2. TEST FAL.AI FLUX.1
         async function testFal() {
             const token = document.getElementById('fal-token').value.trim();
             const prompt = document.getElementById('fal-prompt').value;
@@ -195,9 +213,9 @@
             load.classList.add('active');
             resBox.innerHTML = '';
             resBox.appendChild(load);
+
             try {
-                // On utilise l'endpoint REST direct
-                const response = await fetch('https://fal.run/fal-ai/flux/schnell', {
+                const response = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Key ' + token,
@@ -212,7 +230,7 @@
 
                 if (!response.ok) {
                     const errText = await response.text();
-                    throw new Error(`Erreur ${response.status}: ${errText.substring(0, 50)}`);
+                    throw new Error(`Erreur ${response.status}: ${errText.substring(0, 100)}`);
                 }
 
                 const data = await response.json();
@@ -220,20 +238,21 @@
                     load.classList.remove('active');
                     const img = document.createElement('img');
                     img.src = data.images[0].url;
+                    img.alt = "Generated by Fal.ai";
                     resBox.appendChild(img);
                 } else {
                     throw new Error('Aucune image retournée');
                 }
-            } catch (e) {
-                load.classList.remove('active');
-                resBox.innerHTML = `<div class="error-msg">${e.message}</div>`;
+            } catch (e) {                load.classList.remove('active');
+                resBox.innerHTML = `<div class="error-msg"> ${e.message}</div>`;
             }
         }
 
-        // 3. TEST REPLICATE
+        // 3. TEST REPLICATE FLUX.2 PRO (Avec les paramètres exacts du curl)
         async function testReplicate() {
             const token = document.getElementById('rep-token').value.trim();
             const prompt = document.getElementById('rep-prompt').value;
+            const format = document.getElementById('rep-format').value;
             const resBox = document.getElementById('res-rep');
             const load = document.getElementById('load-rep');
 
@@ -243,46 +262,55 @@
             resBox.innerHTML = '';
             resBox.appendChild(load);
 
-            try {                // On utilise l'endpoint qui attend la fin de la génération
-                const response = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-1.1-pro/predictions', {
+            try {
+                const response = await fetch('https://api.replicate.com/v1/models/black-forest-labs/flux-2-pro/predictions', {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer ' + token,
+                        'Authorization': 'Token ' + token,
                         'Content-Type': 'application/json',
-                        'Prefer': 'wait'
+                        'Prefer': 'wait'  // Attendre la fin de la génération
                     },
                     body: JSON.stringify({
                         input: {
                             prompt: prompt,
-                            aspect_ratio: "1:1",
-                            output_format: "jpg"
+                            resolution: "1 MP",        // ~1024x1024
+                            aspect_ratio: format,      // Format choisi
+                            output_format: "webp",     // Format léger
+                            output_quality: 80,        // Qualité 80%
+                            safety_tolerance: 2,       // Filtre modéré
+                            input_images: []           // Pas d'image d'entrée
                         }
                     })
                 });
 
                 if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`Erreur ${response.status}`);
+                    let errMsg = `Erreur ${response.status}`;
+                    try {
+                        const err = await response.json();
+                        errMsg = err.detail || err.error || errMsg;
+                    } catch(e) {}
+                    throw new Error(errMsg);
                 }
 
-                const data = await response.json();
-                
-                // Replicate retourne l'image dans data.output (parfois un objet, parfois une string)
-                let imgUrl = null;
-                if (typeof data.output === 'string') imgUrl = data.output;
-                else if (data.output && data.output[0]) imgUrl = data.output[0];
-
-                if (imgUrl) {
+                const data = await response.json();                
+                // FLUX.2 Pro retourne l'URL dans data.output
+                if (data.output) {
                     load.classList.remove('active');
                     const img = document.createElement('img');
-                    img.src = imgUrl;
+                    img.src = data.output;
+                    img.alt = "Generated by FLUX.2 Pro";
                     resBox.appendChild(img);
+                    
+                    console.log('✅ Image générée avec succès!');
+                    console.log('URL:', data.output);
                 } else {
-                    throw new Error('Format de réponse inattendu');
+                    throw new Error('Aucune image dans la réponse');
                 }
-            } catch (e) {
+                
+            } catch (error) {
+                console.error('❌ Erreur Replicate:', error);
                 load.classList.remove('active');
-                resBox.innerHTML = `<div class="error-msg">${e.message}</div>`;
+                resBox.innerHTML = `<div class="error-msg">❌ ${error.message}</div>`;
             }
         }
     </script>
