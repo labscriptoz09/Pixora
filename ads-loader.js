@@ -1,4 +1,4 @@
-// ads-loader.js v36.3 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR
+// ads-loader.js v36.3 — SSA Visible + Modale Rewarded avec DÉTECTION RETOUR (CORRIGÉ)
 (function() {
     'use strict';
 
@@ -47,7 +47,8 @@
         bodyContent.innerHTML = '<div class="pxr-rw-status-msg ' + type + '"><i class="fas fa-' + (type === 'limit' ? 'lock' : 'hourglass-half') + '"></i><h3>' + title + '</h3><p>' + message + '</p></div>';
         document.getElementById('pxr-rw-overlay').classList.add('active');
         document.body.style.overflow = 'hidden';
-    }    function restoreModalContent() {
+    }
+    function restoreModalContent() {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
         bodyContent.innerHTML = '<div class="pxr-rw-reward"><i class="fas fa-bolt"></i> <span id="pxr-rw-points">1</span> points</div><div class="pxr-rw-info">Cliquez sur l\'offre, attendez la fin du timer, puis réclamez vos points.</div><iframe id="pxr-rw-iframe" class="pxr-rw-iframe" sandbox="allow-scripts allow-same-origin allow-popups"></iframe><div class="pxr-rw-timer" id="pxr-rw-timer-display">20s</div><button id="pxr-rw-claim-btn" class="pxr-rw-btn-claim" disabled><i class="fas fa-clock"></i> Patientez...</button><div class="pxr-rw-limit" id="pxr-rw-limit-info"></div><div class="pxr-rw-error" id="pxr-rw-error" style="display:none"></div>';
@@ -95,8 +96,8 @@
                 if (data.reason === 'daily_limit_reached') {
                     rwDailyLimit = data.daily_limit || 5;
                     showStatusMessage('limit', 'Limite quotidienne atteinte', 'Vous avez déjà vu ' + data.views_today + '/' + rwDailyLimit + ' pubs récompensées aujourd\'hui.<br><br>Revenez demain pour gagner plus de points !');
-                    return;
-                }                if (data.reason === 'cooldown_active') {
+                    return;                }
+                if (data.reason === 'cooldown_active') {
                     showStatusMessage('cooldown', 'Patientez un moment', 'Vous devez attendre encore ' + data.wait_seconds + ' secondes avant de voir une nouvelle pub récompensée.');
                     return;
                 }
@@ -144,8 +145,8 @@
                     timerDisplay.textContent = '✅ Terminé !';
                     timerDisplay.classList.add('done');
 
-                    if (rwClicked === true) {
-                        claimBtn.disabled = false;                        claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
+                    if (rwClicked === true) {                        claimBtn.disabled = false;
+                        claimBtn.innerHTML = '<i class="fas fa-check-circle"></i> Réclamer mes points';
                     } else {
                         claimBtn.innerHTML = '⚠️ Cliquez d\'abord sur l\'offre !';
                         claimBtn.style.background = 'rgba(239,68,68,0.5)';
@@ -193,8 +194,8 @@
                     var currentViews = parseInt(parts[0]) || 0;
                     limitEl.textContent = (currentViews + 1) + '/' + rwDailyLimit + ' vues aujourd\'hui';
                 }
-                window.pxrCloseRewarded();
-                if (typeof updateUI === 'function') updateUI();            } else {
+                window.pxrCloseRewarded();                if (typeof updateUI === 'function') updateUI();
+            } else {
                 var errEl = document.getElementById('pxr-rw-error');
                 if (data.error === 'timer_not_complete') {
                     errEl.textContent = 'Patientez encore ' + data.remaining_seconds + 's.';
@@ -242,8 +243,8 @@
         label.className = 'pxr-label';
         label.textContent = '⭐ SPONSORISÉ ⭐';
         wrapper.appendChild(label);
-        var adBox = document.createElement('div');
-        adBox.id = id;        adBox.className = 'pxr-ad-box';
+        var adBox = document.createElement('div');        adBox.id = id;
+        adBox.className = 'pxr-ad-box';
         adBox.innerHTML = '<div style="color:#A1A1AA;padding:1rem">Chargement...</div>';
         wrapper.appendChild(adBox);
         var btnBox = document.createElement('div');
@@ -278,29 +279,31 @@
             var midSlot = createProtectedSlot('pxr-mid');
             var btmSlot = createProtectedSlot('pxr-btm');
 
-            var hero = main.querySelector('.hero');
-            if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
-            else main.insertBefore(topSlot.wrapper, main.firstChild);
+            // ✅ MODIFICATION CRITIQUE : Insérer la pub PRINCIPALE (topSlot) APRÈS le générateur
+            var generator = main.querySelector('.generator');
+            if (generator && generator.parentNode) {
+                generator.parentNode.insertBefore(topSlot.wrapper, generator.nextSibling);
+            } else {
+                var hero = main.querySelector('.hero');
+                if (hero && hero.parentNode) hero.parentNode.insertBefore(topSlot.wrapper, hero.nextSibling);
+                else main.insertBefore(topSlot.wrapper, main.firstChild);
+            }
 
-            // ✅ MODIFICATION UNIQUE : Insérer midSlot AVANT "Créations de référence"
+            // ✅ Insérer midSlot AVANT "Créations de référence" (ou après le générateur en fallback)
             var refEl = null;
             var allNodes = main.querySelectorAll('*');
-            for (var i = 0; i < allNodes.length; i++) {
-                var txt = allNodes[i].textContent.trim().toLowerCase();
+            for (var i = 0; i < allNodes.length; i++) {                var txt = allNodes[i].textContent.trim().toLowerCase();
                 if (txt.includes('créations de référence') || txt.includes('reference creations')) {
                     refEl = allNodes[i];
                     break;
                 }
             }
-            if (refEl && refEl.parentNode) {                refEl.parentNode.insertBefore(midSlot.wrapper, refEl);
+            if (refEl && refEl.parentNode) {
+                refEl.parentNode.insertBefore(midSlot.wrapper, refEl);
+            } else if (generator && generator.parentNode) {
+                generator.parentNode.insertBefore(midSlot.wrapper, generator.nextSibling);
             } else {
-                // Fallback identique à l'original
-                var generator = main.querySelector('.generator');
-                if (generator && generator.parentNode) {
-                    generator.parentNode.insertBefore(midSlot.wrapper, generator.nextSibling);
-                } else {
-                    main.appendChild(midSlot.wrapper);
-                }
+                main.appendChild(midSlot.wrapper);
             }
 
             var footer = main.querySelector('.site-footer');
