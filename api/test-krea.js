@@ -1,11 +1,10 @@
 // api/test-krea.js
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
     const { prompt, width = 1024, height = 1024 } = req.body;
@@ -15,63 +14,55 @@ export default async function handler(req, res) {
     if (!apiKey) return res.status(500).json({ error: 'Clé RapidAPI non configurée' });
 
     const host = 'krea-flux-ai-prompt-to-image-generator.p.rapidapi.com';
+    
+    // Encoder le prompt pour l'URL
+    const encodedPrompt = encodeURIComponent(prompt);
+    
+    // URL exacte comme dans ton exemple curl (méthode GET)
+    const url = `https://${host}/generate?prompt=${encodedPrompt}&size=${width}x${height}&seed=42`;
 
-    // Essayer plusieurs endpoints possibles
-    const endpoints = [
-      { url: `https://${host}/generate`, method: 'POST', body: { prompt, width, height } },
-      { url: `https://${host}/predict`, method: 'POST', body: { prompt, width, height } },
-      { url: `https://${host}/text-to-image`, method: 'POST', body: { prompt, width, height } },
-      { url: `https://${host}/generateImage?prompt=${encodeURIComponent(prompt)}&width=${width}&height=${height}`, method: 'GET' }
-    ];
+    console.log('Appel API Krea:', url);
 
-    let lastError = null;
-
-    for (const endpoint of endpoints) {
-      try {
-        const options = {
-          method: endpoint.method,
-          headers: {
-            'X-RapidAPI-Key': apiKey,
-            'X-RapidAPI-Host': host,
-            'Content-Type': 'application/json'
-          }
-        };
-
-        if (endpoint.method === 'POST') {
-          options.body = JSON.stringify(endpoint.body);
-        }
-
-        const response = await fetch(endpoint.url, options);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(`✅ Endpoint ${endpoint.url} fonctionne !`);
-          
-          // Extraire l'URL de l'image
-          const imageUrl = data.image || data.imageUrl || data.output || 
-                          (data.images && data.images[0]) || data.url;
-          
-          if (imageUrl) {
-            return res.status(200).json({ 
-              success: true, 
-              url: imageUrl,
-              endpoint: endpoint.url,
-              raw: data
-            });
-          }
-        } else {
-          lastError = `Erreur ${response.status} sur ${endpoint.url}`;
-        }
-      } catch (err) {
-        lastError = err.message;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': apiKey,
+        'X-RapidAPI-Host': host,
+        'Content-Type': 'application/json'
       }
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Erreur API:', errorText);
+      return res.status(response.status).json({ 
+        error: `Erreur RapidAPI: ${response.status}`,
+        details: errorText.substring(0, 200)
+      });
     }
 
-    return res.status(500).json({ 
-      error: 'Aucun endpoint ne fonctionne', 
-      lastError,
-      hint: 'Vérifie le nom exact de l\'API sur RapidAPI'
-    });
+    const data = await response.json();
+    console.log('✅ Réponse Krea:', data);
+
+    // Extraire l'URL de l'image selon la structure
+    let imageUrl = null;
+    if (typeof data === 'object') {
+      imageUrl = data.image || data.imageUrl || data.output || data.url || 
+                 (data.images && data.images[0]) || data.image_url;
+    }
+
+    if (imageUrl) {
+      return res.status(200).json({ 
+        success: true, 
+        url: imageUrl,
+        raw: data
+      });
+    } else {
+      return res.status(500).json({ 
+        error: 'Aucune image dans la réponse',
+        received: data
+      });
+    }
 
   } catch (error) {
     console.error('Erreur Krea:', error);
