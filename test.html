@@ -3,74 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Krea API - IA Pixora</title>
+    <title>Test Urgence - IA Pixora</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f0f14 0%, #1a1a2e 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #fff;
             min-height: 100vh;
             padding: 2rem 1rem;
         }
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 1000px; margin: 0 auto; }
         h1 {
             font-size: 2rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #8B5CF6, #EC4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ef4444;
             text-align: center;
         }
-        .subtitle { color: #A1A1AA; margin-bottom: 2rem; text-align: center; }
+        .subtitle { color: #a1a1aa; margin-bottom: 2rem; text-align: center; }
         
-        .test-card {
-            background: rgba(24, 24, 27, 0.6);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(63, 63, 70, 0.5);
+        .test-section {
+            background: rgba(24, 24, 27, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
-        .form-group { margin-bottom: 1.5rem; }
-        label { 
-            display: block; 
-            font-size: 0.85rem; 
+        .test-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .status { 
+            font-size: 0.8rem; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 20px;
             font-weight: 600;
-            color: #A1A1AA; 
-            margin-bottom: 0.5rem;
         }
-        input, textarea, select {
+        .status.ok { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .status.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status.loading { background: rgba(234, 179, 8, 0.2); color: #eab308; }
+        
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; color: #a1a1aa; margin-bottom: 0.5rem; }        input, textarea {
             width: 100%;
-            padding: 0.85rem;
+            padding: 0.75rem;
             background: rgba(255, 255, 255, 0.05);
             border: 1.5px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             color: #fff;
             font-family: inherit;
-            font-size: 0.9rem;            outline: none;
-            transition: all 0.3s;
+            outline: none;
         }
-        input:focus, textarea:focus, select:focus { 
-            border-color: #8B5CF6; 
-            background: rgba(139, 92, 246, 0.05);
-        }
-        textarea { min-height: 100px; resize: vertical; }
+        input:focus, textarea:focus { border-color: #8b5cf6; }
+        textarea { min-height: 80px; resize: vertical; }
         
         button {
             width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             border: none;
             border-radius: 12px;
             color: #fff;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
         }
         button:hover:not(:disabled) { 
             transform: translateY(-2px); 
@@ -78,212 +78,347 @@
         }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        .result-box {
-            margin-top: 2rem;
-            min-height: 400px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 2px dashed rgba(255,255,255,0.1);
-            position: relative;
-        }
-        .result-box img { 
-            max-width: 100%; 
-            border-radius: 8px;
-            display: block;
-        }
-        .loading { 
-            display: none;             text-align: center; 
-            color: #8B5CF6;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-        .loading.active { display: flex; }
-        .error-msg { 
-            color: #EF4444; 
-            padding: 1.5rem; 
-            text-align: center;
-            font-size: 0.95rem;
-        }
-        .success-msg {
-            color: #10B981;
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(139, 92, 246, 0.2);
-            border-top-color: #8B5CF6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .info-box {
+        .result {
             margin-top: 1rem;
             padding: 1rem;
-            background: rgba(139, 92, 246, 0.1);
-            border-left: 4px solid #8B5CF6;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            min-height: 100px;
         }
-        .info-box code {
-            background: rgba(0,0,0,0.3);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
+        .result img { max-width: 100%; border-radius: 8px; }
+        .error { color: #ef4444; font-size: 0.9rem; }
+        .success { color: #22c55e; }
+        .info { color: #3b82f6; font-size: 0.85rem; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        
+        .log {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;            border-radius: 8px;
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
         }
+        .log-line { margin: 0.25rem 0; }
+        .log-error { color: #ef4444; }
+        .log-success { color: #22c55e; }
+        .log-info { color: #60a5fa; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Test Krea API</h1>
-        <p class="subtitle">Via Vercel Proxy - RapidAPI</p>
-        <div class="test-card">
-            <div class="form-group">
-                <label>Prompt</label>
-                <textarea id="krea-prompt" placeholder="Décris l'image que tu veux générer...">Epic fantasy warrior in black armor with glowing blue runes, cinematic lighting, highly detailed, photorealistic</textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>Format</label>
-                <select id="krea-format">
-                    <option value="1024x1024">Carré (1024×1024)</option>
-                    <option value="768x1024">Portrait (768×1024)</option>
-                    <option value="1024x768">Paysage (1024×768)</option>
-                    <option value="1024x576">Wide (1024×576)</option>
-                    <option value="576x1024">Vertical (576×1024)</option>
-                </select>
-            </div>
+        <h1>🚨 Test Urgence - IA Pixora</h1>
+        <p class="subtitle">Diagnostic des APIs de génération</p>
 
-            <button onclick="testKrea()" id="btn-krea">
-                <span>🎨</span>
-                <span>Générer avec Krea</span>
-            </button>
-
-            <div class="info-box">
-                💡 <strong>Info :</strong> Cette API utilise RapidAPI via ton serveur Vercel. 
-                La clé est configurée dans les variables d'environnement Vercel.
-            </div>
-
-            <div class="result-box" id="res-krea">
-                <div class="loading" id="load-krea">
-                    <div class="spinner"></div>
-                    <div>
-                        <p style="font-weight: 600; font-size: 1.1rem;">Génération en cours...</p>
-                        <p style="font-size: 0.85rem; color: #A1A1AA;">Cela peut prendre 10-30 secondes</p>
-                    </div>
+        <div class="grid">
+            <!-- TEST 1: Pollinations.ai -->
+            <div class="test-section">
+                <h2>
+                    1️⃣ Pollinations.ai
+                    <span class="status" id="status-pollinations">En attente</span>
+                </h2>
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <input type="text" id="prompt-pollinations" value="Epic fantasy warrior in black armor">
                 </div>
+                <button onclick="testPollinations()" id="btn-pollinations">
+                    Tester Pollinations
+                </button>
+                <div class="result" id="result-pollinations"></div>
+            </div>
+
+            <!-- TEST 2: FluxAI API -->
+            <div class="test-section">
+                <h2>
+                    2️⃣ FluxAI API
+                    <span class="status" id="status-fluxai">En attente</span>
+                </h2>
+                <div class="form-group">
+                    <label>Clé API FluxAI</label>
+                    <input type="password" id="key-fluxai" placeholder="Ta clé FluxAI">
+                </div>
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <input type="text" id="prompt-fluxai" value="Epic fantasy warrior in black armor">
+                </div>
+                <button onclick="testFluxAI()" id="btn-fluxai">
+                    Tester FluxAI
+                </button>                <div class="result" id="result-fluxai"></div>
+            </div>
+
+            <!-- TEST 3: Ton endpoint Vercel -->
+            <div class="test-section">
+                <h2>
+                    3️⃣ Ton Endpoint Vercel
+                    <span class="status" id="status-vercel">En attente</span>
+                </h2>
+                <div class="form-group">
+                    <label>URL de ton endpoint</label>
+                    <input type="text" id="url-vercel" placeholder="https://iapixora.vercel.app/api/generate">
+                </div>
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <input type="text" id="prompt-vercel" value="Epic fantasy warrior in black armor">
+                </div>
+                <button onclick="testVercel()" id="btn-vercel">
+                    Tester Vercel
+                </button>
+                <div class="result" id="result-vercel"></div>
+            </div>
+
+            <!-- TEST 4: Hugging Face -->
+            <div class="test-section">
+                <h2>
+                    4️ Hugging Face (Backup)
+                    <span class="status" id="status-hf">En attente</span>
+                </h2>
+                <div class="form-group">
+                    <label>Token HF (optionnel)</label>
+                    <input type="password" id="token-hf" placeholder="hf_xxxxx">
+                </div>
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <input type="text" id="prompt-hf" value="Epic fantasy warrior in black armor">
+                </div>
+                <button onclick="testHuggingFace()" id="btn-hf">
+                    Tester Hugging Face
+                </button>
+                <div class="result" id="result-hf"></div>
             </div>
         </div>
+
+        <!-- LOGS -->
+        <div class="test-section">
+            <h2>📋 Logs Détaillés</h2>
+            <div class="log" id="logs"></div>
+        </div>
     </div>
-
     <script>
-        async function testKrea() {
-            const prompt = document.getElementById('krea-prompt').value.trim();
-            const format = document.getElementById('krea-format').value;
-            const btn = document.getElementById('btn-krea');
-            const load = document.getElementById('load-krea');
-            const resBox = document.getElementById('res-krea');
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const line = document.createElement('div');
+            line.className = `log-line log-${type}`;
+            const time = new Date().toLocaleTimeString();
+            line.textContent = `[${time}] ${message}`;
+            logs.appendChild(line);
+            logs.scrollTop = logs.scrollHeight;
+        }
 
-            if (!prompt) { 
-                alert('Entre un prompt pour générer une image'); 
-                return;             }
+        function updateStatus(id, status, message) {
+            const el = document.getElementById(id);
+            el.className = `status ${status}`;
+            el.textContent = message || status;
+        }
 
+        // TEST 1: Pollinations.ai
+        async function testPollinations() {
+            const prompt = document.getElementById('prompt-pollinations').value;
+            const btn = document.getElementById('btn-pollinations');
+            const resultDiv = document.getElementById('result-pollinations');
+            
             btn.disabled = true;
-            load.classList.add('active');
-            resBox.innerHTML = '';
-            resBox.appendChild(load);
-
-            const [width, height] = format.split('x').map(Number);
-            const startTime = Date.now();
+            updateStatus('status-pollinations', 'loading', 'Test...');
+            resultDiv.innerHTML = '<p class="info">Génération en cours...</p>';
+            log(`Test Pollinations: "${prompt}"`, 'info');
 
             try {
-                const response = await fetch('/api/test-krea', {
+                const encodedPrompt = encodeURIComponent(prompt);
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
+                
+                log(`URL générée: ${imageUrl}`, 'info');
+                
+                // Tester si l'image charge
+                const img = new Image();
+                img.onload = () => {
+                    updateStatus('status-pollinations', 'ok', 'OK');
+                    resultDiv.innerHTML = `<img src="${imageUrl}" alt="Generated"><p class="success">✅ Pollinations fonctionne !</p>`;
+                    log('Pollinations: SUCCÈS - Image générée avec succès', 'success');
+                    btn.disabled = false;
+                };
+                img.onerror = () => {
+                    updateStatus('status-pollinations', 'error', 'Échec');
+                    resultDiv.innerHTML = `<p class="error">❌ L'image ne charge pas. Pollinations est peut-être down.</p>`;
+                    log('Pollinations: ÉCHEC - Image ne charge pas', 'error');
+                    btn.disabled = false;
+                };
+                img.src = imageUrl;                
+            } catch (error) {
+                updateStatus('status-pollinations', 'error', 'Erreur');
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+                log(`Pollinations: ERREUR - ${error.message}`, 'error');
+                btn.disabled = false;
+            }
+        }
+
+        // TEST 2: FluxAI API
+        async function testFluxAI() {
+            const apiKey = document.getElementById('key-fluxai').value.trim();
+            const prompt = document.getElementById('prompt-fluxai').value;
+            const btn = document.getElementById('btn-fluxai');
+            const resultDiv = document.getElementById('result-fluxai');
+            
+            if (!apiKey) {
+                alert('Entre ta clé FluxAI');
+                btn.disabled = false;
+                return;
+            }
+
+            btn.disabled = true;
+            updateStatus('status-fluxai', 'loading', 'Test...');
+            resultDiv.innerHTML = '<p class="info">Appel API en cours...</p>';
+            log(`Test FluxAI: "${prompt}"`, 'info');
+
+            try {
+                const response = await fetch('https://ai.runonflux.com/v1/images/generations', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({
                         prompt: prompt,
-                        width: width,
-                        height: height
+                        model: 'flux-one',
+                        width: 1024,
+                        height: 1024,
+                        n: 1
                     })
                 });
 
-                const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
+                log(`FluxAI Response status: ${response.status}`, 'info');
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || errorData.message || `Erreur ${response.status}`);
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                const data = await response.json();
+                log(`FluxAI Response: ${JSON.stringify(data).substring(0, 200)}`, 'success');
+
+                const imageUrl = data.data?.[0]?.url || data.url;
+                
+                if (imageUrl) {
+                    updateStatus('status-fluxai', 'ok', 'OK');
+                    resultDiv.innerHTML = `<img src="${imageUrl}" alt="Generated"><p class="success">✅ FluxAI fonctionne !</p>`;
+                    log('FluxAI: SUCCÈS', 'success');
+                } else {
+                    throw new Error('Pas d\'URL d\'image dans la réponse');
                 }
 
-                const data = await response.json();
-                console.log('✅ Réponse Krea:', data);
-                
-                load.classList.remove('active');
-                
-                if (data.url || data.output || data.image) {
-                    const imageUrl = data.url || data.output || data.image || (data.images && data.images[0]);
-                    
-                    if (imageUrl) {
-                        // Créer l'élément image
-                        const img = document.createElement('img');
-                        img.src = imageUrl;
-                        img.alt = "Generated by Krea";
-                        img.onload = () => {
-                            console.log(`✅ Image chargée en ${elapsedTime}s`);
-                        };
-                        img.onerror = () => {
-                            console.error('Erreur chargement image');
-                        };
-                        
-                        // Créer un conteneur avec infos
-                        const container = document.createElement('div');                        container.style.textAlign = 'center';
-                        
-                        container.innerHTML = `
-                            <div class="success-msg">
-                                ✅ Généré en <strong>${elapsedTime}s</strong><br>
-                                <small>Format: ${width}×${height}</small>
-                            </div>
-                        `;
-                        container.appendChild(img);
-                        
-                        resBox.appendChild(container);
-                        
-                        // Afficher l'endpoint utilisé si disponible
-                        if (data.endpoint) {
-                            console.log(`Endpoint utilisé: ${data.endpoint}`);
-                        }
-                    } else {
-                        throw new Error('Aucune URL d\'image dans la réponse');
-                    }
-                } else {
-                    console.log('Données brutes:', data);
-                    throw new Error('Format de réponse inattendu. Vérifie la console.');
-                }
-                
             } catch (error) {
-                console.error('❌ Erreur Krea:', error);
-                load.classList.remove('active');
-                resBox.innerHTML = `
-                    <div class="error-msg">
-                        <div style="font-size: 2rem; margin-bottom: 1rem;">❌</div>
-                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Erreur de génération</div>
-                        <div style="font-size: 0.85rem; color: #A1A1AA;">${error.message}</div>
-                        <div style="margin-top: 1rem; font-size: 0.8rem;">
-                            💡 Vérifie que la clé RAPIDAPI_KEY est configurée dans Vercel
-                        </div>
-                    </div>
-                `;
+                updateStatus('status-fluxai', 'error', 'Erreur');
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+                log(`FluxAI: ERREUR - ${error.message}`, 'error');
             } finally {
                 btn.disabled = false;
             }
         }
+
+        // TEST 3: Ton endpoint Vercel
+        async function testVercel() {
+            const url = document.getElementById('url-vercel').value.trim();
+            const prompt = document.getElementById('prompt-vercel').value;
+            const btn = document.getElementById('btn-vercel');
+            const resultDiv = document.getElementById('result-vercel');
+            
+            if (!url) {
+                alert('Entre l\'URL de ton endpoint');
+                btn.disabled = false;
+                return;
+            }
+
+            btn.disabled = true;
+            updateStatus('status-vercel', 'loading', 'Test...');
+            resultDiv.innerHTML = '<p class="info">Appel endpoint en cours...</p>';
+            log(`Test Vercel: ${url}`, 'info');
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+
+                log(`Vercel Response status: ${response.status}`, 'info');
+
+                if (!response.ok) {                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+                log(`Vercel Response: ${JSON.stringify(data).substring(0, 200)}`, 'success');
+
+                const imageUrl = data.url || data.output || data.image;
+                
+                if (imageUrl) {
+                    updateStatus('status-vercel', 'ok', 'OK');
+                    resultDiv.innerHTML = `<img src="${imageUrl}" alt="Generated"><p class="success">✅ Ton endpoint fonctionne !</p>`;
+                    log('Vercel: SUCCÈS', 'success');
+                } else {
+                    throw new Error('Pas d\'URL d\'image dans la réponse');
+                }
+
+            } catch (error) {
+                updateStatus('status-vercel', 'error', 'Erreur');
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+                log(`Vercel: ERREUR - ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // TEST 4: Hugging Face
+        async function testHuggingFace() {
+            const token = document.getElementById('token-hf').value.trim();
+            const prompt = document.getElementById('prompt-hf').value;
+            const btn = document.getElementById('btn-hf');
+            const resultDiv = document.getElementById('result-hf');
+            
+            btn.disabled = true;
+            updateStatus('status-hf', 'loading', 'Test...');
+            resultDiv.innerHTML = '<p class="info">Appel API en cours...</p>';
+            log(`Test Hugging Face: "${prompt}"`, 'info');
+
+            try {
+                const response = await fetch(
+                    'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': token ? `Bearer ${token}` : '',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ inputs: prompt })
+                    }
+                );
+                log(`HF Response status: ${response.status}`, 'info');
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                
+                updateStatus('status-hf', 'ok', 'OK');
+                resultDiv.innerHTML = `<img src="${imageUrl}" alt="Generated"><p class="success">✅ Hugging Face fonctionne !</p>`;
+                log('Hugging Face: SUCCÈS', 'success');
+
+            } catch (error) {
+                updateStatus('status-hf', 'error', 'Erreur');
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+                log(`Hugging Face: ERREUR - ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Auto-log au chargement
+        window.onload = () => {
+            log('=== PAGE DE TEST CHARGÉE ===', 'success');
+            log('Commence par tester Pollinations (le plus simple)', 'info');
+        };
     </script>
 </body>
 </html>
