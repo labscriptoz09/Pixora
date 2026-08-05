@@ -30,7 +30,6 @@
 <div class="hero"><h1 data-i18n="hero.title">Générez l'impossible avec IA Pixora</h1><p data-i18n="hero.subtitle">Images IA professionnelles. Gratuit. Sans limite.</p></div>
 <div class="quick-stats" id="quick-stats"><div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl" data-i18n="stats.points">Points</div></div><div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl" data-i18n="stats.streak">Streak</div></div><div class="stat-card"><div class="stat-card-icon"><i class="fas fa-image"></i></div><div class="stat-val" id="stat-generated">0</div><div class="stat-lbl" data-i18n="stats.creations">Créations</div></div><div class="stat-card"><div class="stat-card-icon"><i class="fas fa-coins"></i></div><div class="stat-val" id="stat-earned">0</div><div class="stat-lbl" data-i18n="stats.total_earned">Total Gagné</div></div></div>
 
-<!-- ✅ GÉNÉRATEUR MAINTENANT EN PREMIER (visible immédiatement) -->
 <div class="generator">
   <div style="margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;">
     <i class="fas fa-pen-fancy" style="color:var(--prim);font-size:0.9rem;"></i>
@@ -47,11 +46,10 @@
   <div class="type-selector">
     <button class="type-btn active" onclick="selType('image')" aria-pressed="true"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
     <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
-  </div>  <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem"><span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span><span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span></div>
-  <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
+  </div>  
+  <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem"><span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span><span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span></div>  <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
 </div>
 
-<!-- ✅ PUB SPONSORISÉE MAINTENANT APRÈS LE GÉNÉRATEUR (ads-loader.js injecte ici) -->
 <div id="sponsorised-container" style="margin-bottom:1.5rem;"></div>
 
 <div class="section-label"><h2 data-i18n="results.title">Vos Créations</h2><span data-i18n="results.auto_delete">Auto-effacement après 24h</span></div>
@@ -76,25 +74,41 @@ function applyTranslations(){document.querySelectorAll('[data-i18n]').forEach(fu
 function changeLang(l){loadLang(l)}
 function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}
 var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU',db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image',DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}},CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
-var QUALITY_SUFFIX=', masterpiece, best quality, ultra detailed, 8k, cinematic lighting';
-var API_PROVIDERS=[
-  {id:'fal.ai',name:'fal.ai',types:['image'],endpoint:'https://queue.fal.run/fal-ai/flux/dev',authHeader:function(k){return{'Authorization':'Key '+k}},buildBody:function(p){return{prompt:p+QUALITY_SUFFIX,image_size:{width:1024,height:1024},num_inference_steps:28,guidance_scale:3.5,num_images:1}},parseUrl:function(d){if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;if(d.output&&d.output.images&&d.output.images[0]&&d.output.images[0].url)return d.output.images[0].url;return null}},
-  {id:'leonardo',name:'Leonardo.Ai',types:['image'],endpoint:'https://cloud.leonardo.ai/api/rest/v1/ai/generations',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{prompt:p+QUALITY_SUFFIX,width:1024,height:1024,num_inference_steps:30,guidance_scale:7,num_images:1}},parseUrl:function(d){if(d.generations&&d.generations[0]&&d.generations[0].generated_images&&d.generations[0].generated_images[0])return d.generations[0].generated_images[0].url;return null}},
-  {id:'tensor',name:'Tensor.Art',types:['image'],endpoint:'https://api.tensor.art/v1/generate',authHeader:function(k){return{'Authorization':'Bearer '+k}},buildBody:function(p){return{prompt:p+QUALITY_SUFFIX,width:1024,height:1024,steps:20,cfg_scale:7}},parseUrl:function(d){if(d.images&&d.images[0]&&d.images[0].url)return d.images[0].url;return null}}
-];
-async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
-function getPollinationsUrl(p,t){
-  var format=document.getElementById('format-select').value;
-  var dims=format.split('x');
-  var width=dims[0];
-  var height=dims[1];
-  var model=document.getElementById('model-select').value||'flux';
-  var seed=Math.floor(Math.random()*100000);
-  var url='https://image.pollinations.ai/prompt/'+encodeURIComponent(p+QUALITY_SUFFIX)+'?width='+width+'&height='+height+'&nologo=true&seed='+seed+'&model='+model;
-  if(t==='video')url+='&type=video';
-  return url;
+
+// ✅ CORRECTION 1 : Nouveau système via Proxy Vercel (remplace l'ancien fallback Pollinations)
+async function generateImageViaProxy(prompt, width, height) {
+  try {
+    const currentUser = await getUser();
+    const userId = currentUser ? currentUser.id : 'anon';
+
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        prompt: prompt,
+        width: width,
+        height: height,
+        userId: userId
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || `Erreur serveur: ${response.status}`);
+    }
+    return { 
+      url: data.url, 
+      provider: 'IA Pixora Cloud'
+    };
+
+  } catch (error) {
+    console.error('Erreur proxy:', error);
+    throw new Error('Échec de la génération via le serveur');
+  }
 }
-async function generateWithFallback(p,t){for(var i=0;i<API_PROVIDERS.length;i++){var pr=API_PROVIDERS[i];if(!pr.types.includes(t))continue;var k=API_KEYS[pr.id];if(!k)continue;try{var h={'Content-Type':'application/json'},ah=pr.authHeader(k);for(var x in ah)h[x]=ah[x];var res=await fetch(pr.endpoint,{method:'POST',headers:h,body:JSON.stringify(pr.buildBody(p))});if(!res.ok)continue;var ct=res.headers.get('content-type')||'';if(ct.includes('video/')||ct.includes('octet-stream')){var b=await res.blob();return{url:URL.createObjectURL(b),provider:pr.name}}var d=await res.json();var u=pr.parseUrl(d,ct);if(u)return{url:u,provider:pr.name}}catch(e){console.warn('API '+pr.id+' failed:',e.message);continue}}return{url:getPollinationsUrl(p,t),provider:'Pollinations'}}
+
+async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
 async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value}catch(e){console.error('Config error:',e)}updateCostUI()}
 function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date(),ic=c.costs.image,ie=document.getElementById('cost-image'),bn=document.getElementById('discount-banner'),te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s'},1000)}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}}}function notifyVideoSoon(){notify('🎥 '+t('generator.video_soon'),'success')}
 function buildImageOverlay(){return'<div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)" title="'+t('results.download')+'"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(this.closest(\'.result-card\').querySelector(\'img,video\').src)" title="'+t('share.title')+'"><i class="fas fa-share-nodes"></i></button></div>'}
@@ -131,12 +145,125 @@ function closeShareModal(){document.getElementById('share-modal').classList.remo
 document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});
 function getShareUrl(){return'https://iapixora.com/share.html?img='+encodeURIComponent(currentShareUrl)}
 function getShareText(){return t('share.text')}
-function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}
-function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
+function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.from('pixora_creations').select('file_name,created_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}grid.innerHTML='';for(var i=0;i<result.data.length;i++){var row=result.data[i];var urlData=db.storage.from(BUCKET).getPublicUrl(row.file_name);var url=urlData.data.publicUrl;var isVideo=row.file_name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';(function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);grid.appendChild(card)}}catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}}
-async function uploadToStorage(mediaUrl,type){try{var response=await fetch(mediaUrl),blob=await response.blob(),prefix=type==='video'?'_video_':'_img_';var rand=Math.random().toString(36).substring(2,10);var fileName='img_'+rand+'_'+prefix+Math.floor(Math.random()*1000)+(type==='video'?'.mp4':'.jpg');var contentType=type==='video'?'video/mp4':'image/jpeg',currentUser=await getUser(),userId=currentUser?currentUser.id:'anonymous';await db.storage.from(BUCKET).upload(fileName,blob,{contentType:contentType,upsert:false,cacheControl:'public,max-age=86400'});await db.from('pixora_creations').insert({file_name:fileName,user_id:userId});loadStudio()}catch(err){console.error('Upload failed:',err)}}
-async function generate(){if(curType==='video'){notifyVideoSoon();return}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');return}var logged=await isLogged(),cost=0,isDiscounted=false;if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}if(logged){await loadUserTier();var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],userData=await getUserData(),baseCost=c.costs.image;isDiscounted=userData.discount_until&&new Date(userData.discount_until)>new Date();cost=isDiscounted?Math.ceil(baseCost/2):baseCost;if(userData.points<cost){notify(t('notifications.insufficient_points'),'error');return}}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid'),card=document.createElement('div');card.className='result-card';var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildImageOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now(),tmr=document.getElementById(tmrId),iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100),media=card.querySelector('img'),loaded=false,currentUser=await getUser();try{var result=await generateWithFallback(p,'image'),url=result.url,providerName=result.provider;if(logged&&providerName!=='fal.ai'&&providerName!=='Pollinations')notify(t('notifications.via_provider')+' '+providerName,'success');media.src=url;function onLoad(){if(loaded)return;loaded=true;clearInterval(iv);var elapsed=((Date.now()-st)/1000).toFixed(1),to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image')};uploadToStorage(url,'image');if(logged&&currentUser&&currentUser.id){saveTransaction('spent','Génération image'+(isDiscounted?' (-50%)':''),-cost).then(function(){updateUI()});validatePendingReferral(currentUser.id);getUserData().then(function(fd){var ng=(fd.total_generated||0)+1;db.from('user_data').update({total_generated:ng}).eq('user_id',currentUser.id).catch(function(){})})}var dm=isDiscounted?t('notifications.discount_tag'):'',cd=logged?(' (-'+cost+' '+t('generator.cost_pts')+dm+')'):'';notify('✅ '+t('results.generated_in')+' '+elapsed+'s !'+cd,'success');if(!logged)incrementAndCheckFreemium();if(logged)loadMiniBadge();setTimeout(function(){if(card.parentNode===grid)card.remove()},86400000)}media.onload=onLoad;media.onerror=function(){clearInterval(iv);card.remove();notify(t('results.failed'),'error')}}catch(err){clearInterval(iv);card.remove();notify(t('results.error'),'error')}}
+
+// ✅ CORRECTION 2 : Ajout de expires_at pour que le nettoyage de 24h fonctionne et libère l'espace Supabase
+async function uploadToStorage(mediaUrl, type) {
+  try {
+    var response = await fetch(mediaUrl), blob = await response.blob();
+    var prefix = type === 'video' ? '_video_' : '_img_';
+    var rand = Math.random().toString(36).substring(2, 10);
+    var fileName = 'img_' + rand + '_' + prefix + Math.floor(Math.random() * 1000) + (type === 'video' ? '.mp4' : '.jpg');
+    var contentType = type === 'video' ? 'video/mp4' : 'image/jpeg';
+    var currentUser = await getUser();
+    var userId = currentUser ? currentUser.id : 'anonymous';
+    
+    await db.storage.from(BUCKET).upload(fileName, blob, {
+      contentType: contentType,
+      upsert: false,
+      cacheControl: 'public,max-age=86400'
+    });
+
+    // Calcul de la date d'expiration (+24 heures)
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 1);
+
+    await db.from('pixora_creations').insert({
+      file_name: fileName,
+      user_id: userId,
+      expires_at: expiresAt.toISOString() // <-- C'est ici que la magie opère pour le nettoyage
+    });
+    
+    loadStudio();
+  } catch (err) {
+    console.error('Upload failed:', err);
+  }
+}
+
+async function generate() {
+  if (curType === 'video') { notifyVideoSoon(); return; }
+  var p = document.getElementById('prompt').value.trim();
+  if (!p) { notify(t('notifications.enter_prompt'), 'error'); return; }
+  
+  var logged = await isLogged(), cost = 0, isDiscounted = false;
+  if (!logged) {
+    var allowed = await checkFreemiumBlock();
+    if (!allowed) { notify(t('notifications.freemium_limit'), 'error'); return; }
+  }
+  
+  if (logged) {
+    await loadUserTier();    var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
+    var userData = await getUserData();
+    var baseCost = c.costs.image;
+    isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();
+    cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
+    if (userData.points < cost) { notify(t('notifications.insufficient_points'), 'error'); return; }
+  }
+  
+  notify(t('notifications.generating'), 'success');
+  var grid = document.getElementById('results-grid'), card = document.createElement('div');
+  card.className = 'result-card';
+  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+  card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">' + t('results.generating') + '</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">' + buildImageOverlay();
+  grid.insertBefore(card, grid.firstChild);
+  
+  var st = Date.now(), tmr = document.getElementById(tmrId), iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
+  var media = card.querySelector('img'), loaded = false, currentUser = await getUser();
+  
+  try {
+    // ✅ CORRECTION 3 : Appel du nouveau proxy avec les dimensions choisies par l'utilisateur
+    var format = document.getElementById('format-select').value;
+    var dims = format.split('x');
+    var w = parseInt(dims[0]);
+    var h = parseInt(dims[1]);
+    
+    var result = await generateImageViaProxy(p, w, h);
+    var url = result.url, providerName = result.provider;
+    
+    if (logged && providerName !== 'fal.ai' && providerName !== 'Pollinations') {
+      notify(t('notifications.via_provider') + ' ' + providerName, 'success');
+    }
+    
+    media.src = url;
+    function onLoad() {
+      if (loaded) return;
+      loaded = true;
+      clearInterval(iv);
+      var elapsed = ((Date.now() - st) / 1000).toFixed(1), to = card.querySelector('.timer-overlay');
+      if (to) to.remove();
+      media.style.opacity = '1';
+      card.onclick = function() { openLB(url, 'image'); };
+      
+      uploadToStorage(url, 'image');
+      
+      if (logged && currentUser && currentUser.id) {
+        saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
+        validatePendingReferral(currentUser.id);
+        getUserData().then(function(fd) {
+          var ng = (fd.total_generated || 0) + 1;
+          db.from('user_data').update({ total_generated: ng }).eq('user_id', currentUser.id).catch(function() {});        });
+      }
+      
+      var dm = isDiscounted ? t('notifications.discount_tag') : '';
+      var cd = logged ? (' (-' + cost + ' ' + t('generator.cost_pts') + dm + ')') : '';
+      notify('✅ ' + t('results.generated_in') + ' ' + elapsed + 's !' + cd, 'success');
+      
+      if (!logged) incrementAndCheckFreemium();
+      if (logged) loadMiniBadge();
+      
+      setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 86400000);
+    }
+    media.onload = onLoad;
+    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); };
+  } catch (err) {
+    clearInterval(iv);
+    card.remove();
+    notify(t('results.error'), 'error');
+  }
+}
+
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
 
@@ -145,7 +272,8 @@ async function cleanupExpiredCreations() {
     console.log('[Nettoyage] Vérification des images expirées...');
     const { data: expiredItems, error: fetchError } = await db
       .from('pixora_creations')
-      .select('file_name')      .lt('expires_at', new Date().toISOString());
+      .select('file_name')
+      .lt('expires_at', new Date().toISOString());
 
     if (fetchError) {
       console.error('[Nettoyage] Erreur requête:', fetchError);
@@ -164,8 +292,7 @@ async function cleanupExpiredCreations() {
       try {
         const { error: storageError } = await db.storage.from(BUCKET).remove([fileName]);
         if (storageError) {
-          console.warn('[Nettoyage] Erreur storage pour', fileName, ':', storageError.message);
-        }
+          console.warn('[Nettoyage] Erreur storage pour', fileName, ':', storageError.message);        }
 
         const { error: dbError } = await db
           .from('pixora_creations')
@@ -194,7 +321,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   await loadDynamicConfig();
   await loadUserTier();
   await updateUI();
-  await cleanupExpiredCreations();  await loadStudio();
+  await cleanupExpiredCreations();
+  await loadStudio();
 });
 </script>
 </body>
