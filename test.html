@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test R2 - IA Pixora</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    background: #0a0a0a; 
+    color: #fff; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+    padding: 20px; 
+    line-height: 1.6;
+  }
+  h1 { 
+    font-size: 1.5rem; 
+    margin-bottom: 20px; 
+    color: #8B5CF6;
+    text-align: center;
+  }
+  .test-section { 
+    background: rgba(255,255,255,0.05); 
+    border: 1px solid rgba(255,255,255,0.1); 
+    border-radius: 12px; 
+    padding: 15px; 
+    margin-bottom: 15px;
+  }
+  .test-title { 
+    font-weight: 700; 
+    font-size: 0.9rem; 
+    margin-bottom: 10px; 
+    color: #A1A1AA;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .btn { 
+    background: linear-gradient(135deg, #8B5CF6, #EC4899); 
+    color: #fff; 
+    border: none; 
+    padding: 12px 24px; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    font-size: 0.9rem; 
+    cursor: pointer; 
+    width: 100%;
+    margin-top: 10px;
+    transition: transform 0.2s;
+  }
+  .btn:hover { transform: translateY(-2px); }  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .result { 
+    margin-top: 10px; 
+    padding: 10px; 
+    background: rgba(0,0,0,0.3); 
+    border-radius: 8px; 
+    font-family: monospace; 
+    font-size: 0.8rem;
+    word-break: break-all;
+    min-height: 40px;
+  }
+  .success { color: #10B981; }
+  .error { color: #EF4444; }
+  .info { color: #3B82F6; }
+  .image-preview { 
+    max-width: 100%; 
+    border-radius: 8px; 
+    margin-top: 10px;
+    border: 2px solid rgba(255,255,255,0.1);
+  }
+  .log { 
+    background: #000; 
+    color: #0f0; 
+    padding: 10px; 
+    border-radius: 8px; 
+    font-family: monospace; 
+    font-size: 0.75rem;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+  }
+  .log-entry { margin-bottom: 5px; }
+  .log-error { color: #f00; }
+  .log-success { color: #0f0; }
+  .log-info { color: #0af; }
+</style>
+</head>
+<body>
+
+<h1> Test R2 - IA Pixora</h1>
+
+<!-- TEST 1 : Connexion Worker -->
+<div class="test-section">
+  <div class="test-title">1️⃣ Test Connexion Worker</div>
+  <button class="btn" onclick="testWorker()">Tester le Worker</button>
+  <div class="result" id="worker-result">En attente...</div>
+</div>
+
+<!-- TEST 2 : Génération Image -->
+<div class="test-section">  <div class="test-title">2️⃣ Test Génération Image</div>
+  <input type="text" id="test-prompt" value="A beautiful pink flower" style="width:100%;padding:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#fff;margin-bottom:10px;">
+  <button class="btn" onclick="testGeneration()">Générer une image</button>
+  <div class="result" id="gen-result">En attente...</div>
+  <img id="gen-preview" class="image-preview" style="display:none;">
+</div>
+
+<!-- TEST 3 : Vérification R2 -->
+<div class="test-section">
+  <div class="test-title">3️⃣ Test Accès R2</div>
+  <button class="btn" onclick="testR2Access()">Vérifier R2</button>
+  <div class="result" id="r2-result">En attente...</div>
+</div>
+
+<!-- LOGS -->
+<div class="test-section">
+  <div class="test-title">📋 Logs en temps réel</div>
+  <div class="log" id="log-container"></div>
+</div>
+
+<script>
+  const WORKER_URL = 'https://ia-pixora-api.slimansoufian1.workers.dev';
+  
+  function log(msg, type = 'info') {
+    const container = document.getElementById('log-container');
+    const entry = document.createElement('div');
+    entry.className = `log-entry log-${type}`;
+    const time = new Date().toLocaleTimeString();
+    entry.textContent = `[${time}] ${msg}`;
+    container.appendChild(entry);
+    container.scrollTop = container.scrollHeight;
+    console.log(`[${type}] ${msg}`);
+  }
+
+  // TEST 1 : Worker
+  async function testWorker() {
+    const resultDiv = document.getElementById('worker-result');
+    resultDiv.textContent = 'Test en cours...';
+    resultDiv.className = 'result info';
+    
+    try {
+      log(' Test de connexion au Worker...', 'info');
+      const response = await fetch(WORKER_URL, { method: 'GET' });
+      log(`Worker répond: ${response.status}`, response.ok ? 'success' : 'error');
+      
+      if (response.ok) {
+        resultDiv.textContent = `✅ Worker OK (Status: ${response.status})`;
+        resultDiv.className = 'result success';
+      } else {
+        resultDiv.textContent = `❌ Worker Error (Status: ${response.status})`;        resultDiv.className = 'result error';
+      }
+    } catch (error) {
+      log(`❌ Erreur Worker: ${error.message}`, 'error');
+      resultDiv.textContent = `❌ Erreur: ${error.message}`;
+      resultDiv.className = 'result error';
+    }
+  }
+
+  // TEST 2 : Génération
+  async function testGeneration() {
+    const prompt = document.getElementById('test-prompt').value;
+    const resultDiv = document.getElementById('gen-result');
+    const preview = document.getElementById('gen-preview');
+    
+    resultDiv.textContent = 'Génération en cours...';
+    resultDiv.className = 'result info';
+    preview.style.display = 'none';
+    
+    try {
+      log(`🎨 Génération avec prompt: "${prompt}"`, 'info');
+      
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: prompt,
+          width: 768,
+          height: 768
+        })
+      });
+      
+      const data = await response.json();
+      log(`Réponse reçue: ${response.status}`, response.ok ? 'success' : 'error');
+      
+      if (response.ok && data.success) {
+        log(`✅ Image générée: ${data.fileName}`, 'success');
+        log(`📍 URL: ${data.url}`, 'success');
+        
+        resultDiv.innerHTML = `✅ Succès!<br>FileName: ${data.fileName}<br>URL: ${data.url}`;
+        resultDiv.className = 'result success';
+        
+        preview.src = data.url;
+        preview.style.display = 'block';
+        preview.onload = () => log('️ Image chargée avec succès', 'success');
+        preview.onerror = () => {
+          log('❌ Erreur chargement image', 'error');
+          resultDiv.innerHTML += '<br>❌ Erreur chargement image';
+        };
+      } else {        log(`❌ Erreur: ${data.error || 'Inconnue'}`, 'error');
+        resultDiv.textContent = `❌ Erreur: ${data.error || 'Inconnue'}`;
+        resultDiv.className = 'result error';
+      }
+    } catch (error) {
+      log(` Erreur fetch: ${error.message}`, 'error');
+      resultDiv.textContent = `❌ Erreur: ${error.message}`;
+      resultDiv.className = 'result error';
+    }
+  }
+
+  // TEST 3 : R2 Access
+  async function testR2Access() {
+    const resultDiv = document.getElementById('r2-result');
+    resultDiv.textContent = 'Test en cours...';
+    resultDiv.className = 'result info';
+    
+    try {
+      log('🔍 Test d\'accès à R2...', 'info');
+      
+      // Test avec l'URL publique R2
+      const r2Url = 'https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
+      const response = await fetch(r2Url);
+      
+      log(`R2 répond: ${response.status}`, response.ok ? 'success' : 'error');
+      
+      if (response.ok) {
+        resultDiv.textContent = `✅ R2 Accessible (Status: ${response.status})`;
+        resultDiv.className = 'result success';
+      } else {
+        resultDiv.textContent = `❌ R2 Error (Status: ${response.status})`;
+        resultDiv.className = 'result error';
+      }
+    } catch (error) {
+      log(`❌ Erreur R2: ${error.message}`, 'error');
+      resultDiv.textContent = `❌ Erreur: ${error.message}`;
+      resultDiv.className = 'result error';
+    }
+  }
+
+  // Auto-test au chargement
+  window.onload = () => {
+    log('🚀 Page de test chargée', 'info');
+    log(`Worker URL: ${WORKER_URL}`, 'info');
+  };
+</script>
+
+</body>
+</html>
