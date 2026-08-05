@@ -135,36 +135,81 @@ function getShareText(){return t('share.text')}
 function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 
-// ✅ CHARGEMENT STUDIO HYBRIDE (Supabase Storage + R2)
+// ✅ CHARGEMENT STUDIO HYBRIDE BLINDÉ (Supabase + R2 + Filtre Client + CORS)
 async function loadStudio(){
   var grid=document.getElementById('results-grid');
   try{
-    var result=await db.from('pixora_creations').select('file_name,created_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);
-    if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}
+    // Charger TOUTES les créations (sans filtre SQL date pour éviter le bug expires_at)
+    var result=await db.from('pixora_creations')
+      .select('file_name,created_at,expires_at')
+      .order('created_at',{ascending:false})
+      .limit(20);
+    
+    if(!result.data||result.data.length===0){      grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';
+      return;
+    }
+    
+    // Filtrer côté client les images non expirées
+    var now=new Date().toISOString();
+    var validItems=result.data.filter(function(item){
+      return !item.expires_at || item.expires_at > now;
+    });
+    
+    if(validItems.length===0){
+      grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création valide</div>';
+      return;
+    }
+    
     grid.innerHTML='';
-    for(var i=0;i<result.data.length;i++){
-      var row=result.data[i];
+    for(var i=0;i<validItems.length;i++){
+      var row=validItems[i];
       var fileName=row.file_name;
-      // ✅ Détection: Ancienne image (Supabase) ou Nouvelle (R2)?      var url;
-      if(fileName.indexOf('img_')===0 && fileName.indexOf('.jpg')>0){
+      
+      // Détection source: R2 ou Supabase Storage
+      var url;
+      var isR2=(fileName.indexOf('img_')===0 && fileName.indexOf('.jpg')>0);
+      
+      if(isR2){
         url=R2_PUBLIC_URL+'/'+fileName;
       }else{
-        var urlData=db.storage.from(BUCKET).getPublicUrl(fileName);
-        url=urlData.data.publicUrl;
+        try{
+          var urlData=db.storage.from(BUCKET).getPublicUrl(fileName);
+          url=urlData.data.publicUrl;
+        }catch(e){
+          console.warn('URL Supabase échouée pour',fileName,e);
+          continue;
+        }
       }
+      
       var isVideo=fileName.indexOf('_video_')!==-1;
       var card=document.createElement('div');
       card.className='result-card';
+      
       if(isVideo){
-        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
-        (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))
+        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy" crossorigin="anonymous"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
+        (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'));
       }else{
-        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()
+        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy" crossorigin="anonymous">'+buildImageOverlay();
       }
+      
+      // Gestion erreur image individuelle (ne bloque pas les autres)
+      (function(c,u,fn){
+        var media=c.querySelector('img,video');        if(media){
+          media.onerror=function(){
+            console.warn('Image échouée:',fn,'URL:',u);
+            c.style.opacity='0.3';
+            c.title='Erreur chargement: '+fn;
+          };
+        }
+      })(card,url,fileName);
+      
       card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
-      grid.appendChild(card)
+      grid.appendChild(card);
     }
-  }catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}
+  }catch(err){
+    console.error('Studio load error:',err);
+    grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur: '+err.message+'</div>';
+  }
 }
 
 // ✅ STOCKAGE R2 (enregistre juste le fileName en DB)
@@ -194,11 +239,11 @@ function addPromptRemixToCard(card, prompt) {
   promptText.title = prompt;
   const buttons = document.createElement('div');
   buttons.style.cssText = 'display:flex;gap:0.3rem;';
-  const reuseBtn = document.createElement('button');  reuseBtn.className = 'icon-btn';
+  const reuseBtn = document.createElement('button');
+  reuseBtn.className = 'icon-btn';
   reuseBtn.innerHTML = '<i class="fas fa-redo"></i>';
   reuseBtn.title = 'Réutiliser ce prompt';
-  reuseBtn.onclick = (e) => {
-    e.stopPropagation();
+  reuseBtn.onclick = (e) => {    e.stopPropagation();
     document.getElementById('prompt').value = prompt;
     document.getElementById('prompt').focus();
     notify('✨ Prompt chargé ! Modifie-le et régénère.', 'success');
@@ -218,7 +263,7 @@ function addPromptRemixToCard(card, prompt) {
   card.appendChild(remixZone);
 }
 
-// ✅ GÉNÉRATION (formats exacts + remix + debug erreur)
+// ✅ GÉNÉRATION (formats exacts + remix sécurisé + debug erreur)
 async function generate() {
   if (curType === 'video') { notifyVideoSoon(); return; }
   var p = document.getElementById('prompt').value.trim();
@@ -243,11 +288,11 @@ async function generate() {
   var format = document.getElementById('format-select').value;
   var dims = format.split('x');
   var w = parseInt(dims[0]);
-  var h = parseInt(dims[1]);  card.style.aspectRatio = w + '/' + h;
+  var h = parseInt(dims[1]);
+  card.style.aspectRatio = w + '/' + h;
   var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
   card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">' + t('results.generating') + '</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">' + buildImageOverlay();
-  grid.insertBefore(card, grid.firstChild);
-  var st = Date.now(), tmr = document.getElementById(tmrId), iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
+  grid.insertBefore(card, grid.firstChild);  var st = Date.now(), tmr = document.getElementById(tmrId), iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
   var media = card.querySelector('img'), loaded = false, currentUser = await getUser();
   try {
     var result = await generateImageViaProxy(p, w, h);
@@ -265,7 +310,21 @@ async function generate() {
       media.style.opacity = '1';
       card.onclick = function() { openLB(url, 'image'); };
       uploadToStorage(fileName);
-      addPromptRemixToCard(card, p);
+      
+      // ✅ Vérification image R2 avant remix (sécurité CORS)
+      try {
+        var imgCheck = new Image();
+        imgCheck.crossOrigin = 'anonymous';
+        imgCheck.onload = function() { addPromptRemixToCard(card, p); };
+        imgCheck.onerror = function() {
+          console.warn('Image R2 non vérifiable, remix ajouté quand même');
+          addPromptRemixToCard(card, p);
+        };
+        imgCheck.src = url;
+      } catch(e) {
+        addPromptRemixToCard(card, p);
+      }
+
       if (logged && currentUser && currentUser.id) {
         saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
         validatePendingReferral(currentUser.id);
@@ -282,8 +341,7 @@ async function generate() {
       setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 86400000);
     }
     media.onload = onLoad;
-    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); };
-  } catch (err) {
+    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); };  } catch (err) {
     clearInterval(iv);
     const to = card.querySelector('.timer-overlay');
     if (to) { to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur: ' + err.message + '</div>'; }
@@ -293,6 +351,7 @@ async function generate() {
 
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
+
 async function cleanupExpiredCreations() {
   try {
     const { data: expiredItems, error: fetchError } = await db.from('pixora_creations').select('file_name').lt('expires_at', new Date().toISOString());
