@@ -136,7 +136,7 @@ function getShareText(){return t('share.text')}
 function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 
-// ✅ LOAD STUDIO HYBRIDE BLINDÉ (Filtre Client + CORS + Erreur Individuelle)
+// ✅ LOAD STUDIO HYBRIDE FINAL (R2 + Supabase distingués par préfixe)
 async function loadStudio(){
   var grid=document.getElementById('results-grid');
   try{
@@ -149,7 +149,7 @@ async function loadStudio(){
       return;
     }
     
-    // Filtre côté client (plus fiable que le filtre SQL)
+    // Filtre côté client (expires_at NULL = permanent)
     var now=new Date().toISOString();
     var validItems=result.data.filter(function(item){
       return !item.expires_at || item.expires_at > now;
@@ -163,25 +163,27 @@ async function loadStudio(){
     grid.innerHTML='';
     for(var i=0;i<validItems.length;i++){
       var row=validItems[i];
-      var fileName=row.file_name;
+      var rawName=row.file_name;
+      var url='';
+      var isSupabase=(rawName.indexOf('supabase_')===0);
       
-      // Détection source: R2 ou Supabase Storage
-      var url;
-      var isR2=(fileName.indexOf('img_')===0 && fileName.indexOf('.jpg')>0);
-      
-      if(isR2){
-        url=R2_PUBLIC_URL+'/'+fileName;
-      }else{
+      // ✅ CONSTRUCTION URL SELON LA SOURCE
+      if(isSupabase){
+        // Image Supabase Storage : retirer le préfixe "supabase_" pour getPublicUrl
+        var realName=rawName.replace('supabase_','');
         try{
-          var urlData=db.storage.from(BUCKET).getPublicUrl(fileName);
+          var urlData=db.storage.from(BUCKET).getPublicUrl(realName);
           url=urlData.data.publicUrl;
         }catch(e){
-          console.warn('URL Supabase échouée pour',fileName,e);
+          console.warn('URL Supabase échouée:',realName,e);
           continue;
         }
+      }else{
+        // Image R2 : URL directe
+        url=R2_PUBLIC_URL+'/'+rawName;
       }
       
-      var isVideo=fileName.indexOf('_video_')!==-1;
+      var isVideo=rawName.indexOf('_video_')!==-1;
       var card=document.createElement('div');
       card.className='result-card';
       
@@ -192,16 +194,16 @@ async function loadStudio(){
         card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy" crossorigin="anonymous">'+buildImageOverlay();
       }
       
-      // Gestion erreur image individuelle
-      (function(c,u,fn){
-        var media=c.querySelector('img,video');        if(media){
+      // Gestion erreur individuelle      (function(c,u,fn){
+        var media=c.querySelector('img,video');
+        if(media){
           media.onerror=function(){
             console.warn('Image échouée:',fn,'URL:',u);
             c.style.opacity='0.3';
-            c.title='Erreur chargement: '+fn;
+            c.title='Erreur: '+fn;
           };
         }
-      })(card,url,fileName);
+      })(card,url,rawName);
       
       card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
       grid.appendChild(card);
@@ -212,7 +214,7 @@ async function loadStudio(){
   }
 }
 
-// ✅ STOCKAGE R2 (Juste le fileName en DB)
+// ✅ STOCKAGE R2 (Juste le fileName en DB, pas de rechargement global)
 async function uploadToStorage(fileName) {
   try {
     var currentUser = await getUser();
@@ -225,30 +227,23 @@ async function uploadToStorage(fileName) {
       user_id: userId,
       expires_at: expiresAt.toISOString()
     });
-    // ❌ NE PAS recharger toute la grille ici (évite le scintillement)
-    // La nouvelle image est déjà affichée via generate()
   } catch (err) { console.error('Échec sauvegarde DB:', err); }
 }
 
 // ✅ PROMPT REMIX
 function addPromptRemixToCard(card, prompt) {
-  // Éviter les doublons
   if(card.querySelector('.remix-zone')) return;
-  
   const remixZone = document.createElement('div');
   remixZone.className = 'remix-zone';
   remixZone.style.cssText = 'padding:0.5rem;background:rgba(0,0,0,0.4);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:0.3rem;';
-  
   const promptText = document.createElement('p');
   promptText.style.cssText = 'font-size:0.65rem;color:var(--muted);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);';
   promptText.textContent = prompt;
   promptText.title = prompt;
-    const buttons = document.createElement('div');
+  const buttons = document.createElement('div');
   buttons.style.cssText = 'display:flex;gap:0.3rem;';
-  
   const reuseBtn = document.createElement('button');
-  reuseBtn.className = 'icon-btn';
-  reuseBtn.innerHTML = '<i class="fas fa-redo"></i>';
+  reuseBtn.className = 'icon-btn';  reuseBtn.innerHTML = '<i class="fas fa-redo"></i>';
   reuseBtn.title = 'Réutiliser ce prompt';
   reuseBtn.onclick = (e) => {
     e.stopPropagation();
@@ -256,7 +251,6 @@ function addPromptRemixToCard(card, prompt) {
     document.getElementById('prompt').focus();
     notify('✨ Prompt chargé ! Modifie-le et régénère.', 'success');
   };
-  
   const copyBtn = document.createElement('button');
   copyBtn.className = 'icon-btn';
   copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
@@ -265,7 +259,6 @@ function addPromptRemixToCard(card, prompt) {
     e.stopPropagation();
     navigator.clipboard.writeText(prompt).then(() => { notify('📋 Prompt copié !', 'success'); });
   };
-  
   buttons.appendChild(reuseBtn);
   buttons.appendChild(copyBtn);
   remixZone.appendChild(promptText);
@@ -292,14 +285,14 @@ async function generate() {
     cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
     if (userData.points < cost) { notify(t('notifications.insufficient_points'), 'error'); return; }
   }
-  notify(t('notifications.generating'), 'success');  var grid = document.getElementById('results-grid'), card = document.createElement('div');
+  notify(t('notifications.generating'), 'success');
+  var grid = document.getElementById('results-grid'), card = document.createElement('div');
   card.className = 'result-card';
   var format = document.getElementById('format-select').value;
   var dims = format.split('x');
   var w = parseInt(dims[0]);
   var h = parseInt(dims[1]);
-  card.style.aspectRatio = w + '/' + h;
-  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+  card.style.aspectRatio = w + '/' + h;  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
   card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">' + t('results.generating') + '</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">' + buildImageOverlay();
   grid.insertBefore(card, grid.firstChild);
   var st = Date.now(), tmr = document.getElementById(tmrId), iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
@@ -319,13 +312,8 @@ async function generate() {
       if (to) to.remove();
       media.style.opacity = '1';
       card.onclick = function() { openLB(url, 'image'); };
-      
-      // Sauvegarde en DB (sans recharger la grille)
       uploadToStorage(fileName);
-      
-      // ✅ Remix TOUJOURS ajouté (même si CORS échoue)
       addPromptRemixToCard(card, p);
-
       if (logged && currentUser && currentUser.id) {
         saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
         validatePendingReferral(currentUser.id);
@@ -341,7 +329,8 @@ async function generate() {
       if (logged) loadMiniBadge();
       setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 86400000);
     }
-    media.onload = onLoad;    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); };
+    media.onload = onLoad;
+    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); };
   } catch (err) {
     clearInterval(iv);
     const to = card.querySelector('.timer-overlay');
@@ -352,7 +341,6 @@ async function generate() {
 
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
-
 async function cleanupExpiredCreations() {
   try {
     const { data: expiredItems, error: fetchError } = await db.from('pixora_creations').select('file_name').lt('expires_at', new Date().toISOString());
