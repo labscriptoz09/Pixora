@@ -63,42 +63,70 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
 <script>
+// ✅ DEBUG GLOBAL : Attrape TOUTES les erreurs JS
+window.onerror = function(msg, url, line, col, error) {
+  console.error('ERREUR JS:', msg, 'Ligne:', line, 'URL:', url);
+  var n = document.getElementById('notif');
+  if(n) {
+    document.getElementById('notif-text').textContent = '❌ ERREUR: ' + msg;
+    n.className = 'notification show error';
+    setTimeout(function(){ n.classList.remove('show'); }, 5000);
+  }
+};
+
 var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
 function getAnonCount(){return parseInt(localStorage.getItem(PX_ANON_KEY)||'0')}
 function incrementAnonCount(){var c=getAnonCount()+1;localStorage.setItem(PX_ANON_KEY,c.toString());return c}
-function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=getAnonCount();if(c>=PX_FREE_LIMIT){showSoftSignupPrompt();return false}}else{localStorage.removeItem(PX_ANON_KEY)}return true})}function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
+function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}
+function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=getAnonCount();if(c>=PX_FREE_LIMIT){showSoftSignupPrompt();return false}}else{localStorage.removeItem(PX_ANON_KEY)}return true})}
+function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
+
 var BADGES_CONFIG=[{id:'bronze',name:'Apprenti',icon:'🎨',threshold:5},{id:'silver',name:'Confirmé',icon:'🥈',threshold:15},{id:'gold',name:'Maître',icon:'👑',threshold:20},{id:'diamond',name:'Légende',icon:'💎',threshold:50}];
-async function loadMiniBadge(){var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!await isLogged()){el.classList.remove('show');return}try{var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}else{ic.textContent='❓';nm.textContent='Badge';nx.textContent=''}}catch(e){console.error('Mini badge error:',e);el.classList.remove('show')}}
+
+async function loadMiniBadge(){
+  try{
+    var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');
+    if(!await isLogged()){el.classList.remove('show');return}
+    var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;
+    for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}
+    for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}
+    el.classList.add('show');
+    if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}
+    else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}
+    else{ic.textContent='❓';nm.textContent='Badge';nx.textContent=''}
+  }catch(e){console.error('Mini badge error:',e)}
+}
 var I18N={},currentLang='fr',FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:' Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'⚡ Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:' Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'}};
 function t(k){var p=k.split('.'),v=I18N;for(var i=0;i<p.length;i++){if(v&&typeof v==='object')v=v[p[i]];else return k}return v||k}
 async function loadLang(l){currentLang=l;I18N=JSON.parse(JSON.stringify(FR_TRANSLATIONS));if(l!=='fr'){try{var r=await fetch('/lang/'+l+'.json');if(r.ok){var d=await r.json();for(var s in d){if(typeof d[s]==='object'&&I18N[s])for(var k in d[s])I18N[s][k]=d[s][k];else I18N[s]=d[s]}}}catch(e){console.warn('[i18n] Failed:',e)}}applyTranslations();document.documentElement.lang=l;document.title=t('meta.title');var md=document.querySelector('meta[name="description"]');if(md)md.content=t('meta.description');var sel=document.getElementById('lang-select');if(sel)sel.value=l;localStorage.setItem('pixora_lang',l)}
 function applyTranslations(){document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n'),v=t(k);if(v!==k)el.textContent=v});document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){var k=el.getAttribute('data-i18n-placeholder'),v=t(k);if(v!==k)el.placeholder=v})}
 function changeLang(l){loadLang(l)}
 function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}
-var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU',db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image',DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}},CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
 
-const R2_PUBLIC_URL = 'https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
+var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+var BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image';
+var DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}};
+var CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
+var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
 
 async function generateImageViaProxy(prompt, width, height) {
-  try {
-    const currentUser = await getUser();
-    const userId = currentUser ? currentUser.id : 'anon';
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: prompt, width: width, height: height, userId: userId })
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || `Erreur serveur: ${response.status}`);
-    return { url: data.url, fileName: data.fileName, provider: 'IA Pixora Cloud' };
-  } catch (error) {
-    console.error('Erreur proxy:', error);
-    throw new Error('Échec de la génération via le serveur');
-  }
+  console.log('[PROXY] Appel /api/generate...');
+  var response = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt: prompt, width: width, height: height })
+  });
+  var data = await response.json();
+  console.log('[PROXY] Réponse:', data);
+  if (!response.ok) throw new Error(data.error || 'Erreur serveur: ' + response.status);
+  return { url: data.url, fileName: data.fileName, provider: 'IA Pixora Cloud' };
 }
+
 async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
 async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value}catch(e){console.error('Config error:',e)}updateCostUI()}
-function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date(),ic=c.costs.image,ie=document.getElementById('cost-image'),bn=document.getElementById('discount-banner'),te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s'},1000)}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}}}function notifyVideoSoon(){notify('🎥 '+t('generator.video_soon'),'success')}
+function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date(),ic=c.costs.image,ie=document.getElementById('cost-image'),bn=document.getElementById('discount-banner'),te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s'},1000)}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}}}
+function notifyVideoSoon(){notify('🎥 '+t('generator.video_soon'),'success')}
 function buildImageOverlay(){return'<div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)" title="'+t('results.download')+'"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(this.closest(\'.result-card\').querySelector(\'img,video\').src)" title="'+t('share.title')+'"><i class="fas fa-share-nodes"></i></button></div>'}
 function detectReferral(){var p=new URLSearchParams(window.location.search),r=p.get('ref');if(r&&r.length>10){pendingReferrer=r;localStorage.setItem('pixora_ref',r)}else pendingReferrer=localStorage.getItem('pixora_ref')}
 async function processReferral(uid){var rid=pendingReferrer||localStorage.getItem('pixora_ref');if(!rid||rid===uid)return;try{var rc=await db.from('admin_config').select('value').eq('key','referral_config').single(),cfg=(rc.data&&rc.data.value)?rc.data.value:{enabled:true,points:10};if(!cfg.enabled)return;var ex=await db.from('referrals').select('id').eq('sponsor_id',rid).eq('referred_id',uid).single();if(ex.data)return;await db.from('referrals').insert({sponsor_id:rid,referred_id:uid,points:cfg.points||10,validated:false});localStorage.removeItem('pixora_ref');pendingReferrer=null}catch(e){console.error('Referral error:',e)}}
@@ -115,7 +143,8 @@ document.getElementById('auth-modal').addEventListener('click',function(e){if(e.
 function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(t,i){t.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
 async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
 async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim(),pv=document.getElementById('r-pw').value,nv=document.getElementById('r-name').value.trim(),r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;var nid=sr.data.user?sr.data.user.id:null;if(nid){await ensureUserData(nid);await grantSignupBonus(nid);await processReferral(nid)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
-async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
+async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}
+async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
 async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
 function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
 document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});
@@ -133,144 +162,97 @@ function closeShareModal(){document.getElementById('share-modal').classList.remo
 document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});
 function getShareUrl(){return'https://iapixora.com/share.html?img='+encodeURIComponent(currentShareUrl)}
 function getShareText(){return t('share.text')}
-function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
+function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}
+function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 
-// ✅ LOAD STUDIO HYBRIDE FINAL (R2 + Supabase distingués par préfixe)
+// ✅ LOAD STUDIO HYBRIDE (R2 + Supabase)
 async function loadStudio(){
+  console.log('[STUDIO] Chargement...');
   var grid=document.getElementById('results-grid');
   try{
-    var result=await db.from('pixora_creations')
-      .select('file_name,created_at,expires_at')
-      .order('created_at',{ascending:false})
-      .limit(20);
-    
-    if(!result.data||result.data.length===0){      grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';
-      return;
-    }
-    
-    // Filtre côté client (expires_at NULL = permanent)
+    var result=await db.from('pixora_creations').select('file_name,created_at,expires_at').order('created_at',{ascending:false}).limit(20);
+    console.log('[STUDIO] Résultats DB:', result.data ? result.data.length : 0);
+    if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}
     var now=new Date().toISOString();
-    var validItems=result.data.filter(function(item){
-      return !item.expires_at || item.expires_at > now;
-    });
-    
-    if(validItems.length===0){
-      grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création valide</div>';
-      return;
-    }
-    
+    var validItems=result.data.filter(function(item){return !item.expires_at || item.expires_at > now});
+    console.log('[STUDIO] Items valides:', validItems.length);
+    if(validItems.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création valide</div>';return}
     grid.innerHTML='';
     for(var i=0;i<validItems.length;i++){
       var row=validItems[i];
       var rawName=row.file_name;
       var url='';
       var isSupabase=(rawName.indexOf('supabase_')===0);
-      
-      // ✅ CONSTRUCTION URL SELON LA SOURCE
       if(isSupabase){
-        // Image Supabase Storage : retirer le préfixe "supabase_" pour getPublicUrl
         var realName=rawName.replace('supabase_','');
-        try{
-          var urlData=db.storage.from(BUCKET).getPublicUrl(realName);
-          url=urlData.data.publicUrl;
-        }catch(e){
-          console.warn('URL Supabase échouée:',realName,e);
-          continue;
-        }
+        try{var urlData=db.storage.from(BUCKET).getPublicUrl(realName);url=urlData.data.publicUrl;}catch(e){console.warn('URL Supabase échouée:',realName);continue;}
       }else{
-        // Image R2 : URL directe
         url=R2_PUBLIC_URL+'/'+rawName;
       }
-      
+      console.log('[STUDIO] Image:', rawName, '→', url.substring(0,60)+'...');
       var isVideo=rawName.indexOf('_video_')!==-1;
       var card=document.createElement('div');
       card.className='result-card';
-      
-      if(isVideo){
-        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy" crossorigin="anonymous"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
+      if(isVideo){        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy" crossorigin="anonymous"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
         (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'));
       }else{
         card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy" crossorigin="anonymous">'+buildImageOverlay();
       }
-      
-      // Gestion erreur individuelle      (function(c,u,fn){
-        var media=c.querySelector('img,video');
-        if(media){
-          media.onerror=function(){
-            console.warn('Image échouée:',fn,'URL:',u);
-            c.style.opacity='0.3';
-            c.title='Erreur: '+fn;
-          };
-        }
-      })(card,url,rawName);
-      
+      (function(c,u,fn){var media=c.querySelector('img,video');if(media){media.onerror=function(){console.warn('Image échouée:',fn);c.style.opacity='0.3';c.title='Erreur: '+fn;};}})(card,url,rawName);
       card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
       grid.appendChild(card);
     }
-  }catch(err){
-    console.error('Studio load error:',err);
-    grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur: '+err.message+'</div>';
-  }
+    console.log('[STUDIO] ✅', validItems.length, 'images affichées');
+  }catch(err){console.error('[STUDIO] ERREUR:', err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur: '+err.message+'</div>';}
 }
 
-// ✅ STOCKAGE R2 (Juste le fileName en DB, pas de rechargement global)
 async function uploadToStorage(fileName) {
   try {
     var currentUser = await getUser();
     var userId = currentUser ? currentUser.id : 'anonymous';
     if (!fileName) { console.error('Aucun fileName reçu'); return; }
-    const expiresAt = new Date();
+    var expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 1);
-    await db.from('pixora_creations').insert({
-      file_name: fileName,
-      user_id: userId,
-      expires_at: expiresAt.toISOString()
-    });
-  } catch (err) { console.error('Échec sauvegarde DB:', err); }
+    await db.from('pixora_creations').insert({ file_name: fileName, user_id: userId, expires_at: expiresAt.toISOString() });
+    console.log('[STORAGE] ✅ Sauvegardé:', fileName);
+  } catch (err) { console.error('[STORAGE] ERREUR:', err); }
 }
 
-// ✅ PROMPT REMIX
 function addPromptRemixToCard(card, prompt) {
   if(card.querySelector('.remix-zone')) return;
-  const remixZone = document.createElement('div');
+  var remixZone = document.createElement('div');
   remixZone.className = 'remix-zone';
   remixZone.style.cssText = 'padding:0.5rem;background:rgba(0,0,0,0.4);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:0.3rem;';
-  const promptText = document.createElement('p');
+  var promptText = document.createElement('p');
   promptText.style.cssText = 'font-size:0.65rem;color:var(--muted);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);';
   promptText.textContent = prompt;
   promptText.title = prompt;
-  const buttons = document.createElement('div');
+  var buttons = document.createElement('div');
   buttons.style.cssText = 'display:flex;gap:0.3rem;';
-  const reuseBtn = document.createElement('button');
-  reuseBtn.className = 'icon-btn';  reuseBtn.innerHTML = '<i class="fas fa-redo"></i>';
+  var reuseBtn = document.createElement('button');
+  reuseBtn.className = 'icon-btn';
+  reuseBtn.innerHTML = '<i class="fas fa-redo"></i>';
   reuseBtn.title = 'Réutiliser ce prompt';
-  reuseBtn.onclick = (e) => {
-    e.stopPropagation();
-    document.getElementById('prompt').value = prompt;
-    document.getElementById('prompt').focus();
-    notify('✨ Prompt chargé ! Modifie-le et régénère.', 'success');
-  };
-  const copyBtn = document.createElement('button');
+  reuseBtn.onclick = function(e) { e.stopPropagation(); document.getElementById('prompt').value = prompt; document.getElementById('prompt').focus(); notify('✨ Prompt chargé !', 'success'); };
+  var copyBtn = document.createElement('button');
   copyBtn.className = 'icon-btn';
   copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
   copyBtn.title = 'Copier le prompt';
-  copyBtn.onclick = (e) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(prompt).then(() => { notify('📋 Prompt copié !', 'success'); });
-  };
+  copyBtn.onclick = function(e) { e.stopPropagation(); navigator.clipboard.writeText(prompt).then(function(){ notify('📋 Prompt copié !', 'success'); }); };
   buttons.appendChild(reuseBtn);
   buttons.appendChild(copyBtn);
   remixZone.appendChild(promptText);
-  remixZone.appendChild(buttons);
-  card.appendChild(remixZone);
+  remixZone.appendChild(buttons);  card.appendChild(remixZone);
 }
 
-// ✅ GÉNÉRATION (Formats + Remix + Pas de rechargement global)
+// ✅ GÉNÉRATEUR BLINDÉ AVEC LOGS
 async function generate() {
+  console.log('[GEN] Démarrage...');
   if (curType === 'video') { notifyVideoSoon(); return; }
   var p = document.getElementById('prompt').value.trim();
   if (!p) { notify(t('notifications.enter_prompt'), 'error'); return; }
+  
   var logged = await isLogged(), cost = 0, isDiscounted = false;
   if (!logged) {
     var allowed = await checkFreemiumBlock();
@@ -285,35 +267,49 @@ async function generate() {
     cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
     if (userData.points < cost) { notify(t('notifications.insufficient_points'), 'error'); return; }
   }
+  
+  console.log('[GEN] Prompt:', p);
   notify(t('notifications.generating'), 'success');
-  var grid = document.getElementById('results-grid'), card = document.createElement('div');
+  
+  var grid = document.getElementById('results-grid');
+  var card = document.createElement('div');
   card.className = 'result-card';
   var format = document.getElementById('format-select').value;
   var dims = format.split('x');
   var w = parseInt(dims[0]);
   var h = parseInt(dims[1]);
-  card.style.aspectRatio = w + '/' + h;  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+  card.style.aspectRatio = w + '/' + h;
+  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
   card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">' + t('results.generating') + '</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">' + buildImageOverlay();
   grid.insertBefore(card, grid.firstChild);
-  var st = Date.now(), tmr = document.getElementById(tmrId), iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
+  
+  var st = Date.now(), tmr = document.getElementById(tmrId);
+  var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
   var media = card.querySelector('img'), loaded = false, currentUser = await getUser();
+  
   try {
+    console.log('[GEN] Appel proxy...');
     var result = await generateImageViaProxy(p, w, h);
+    console.log('[GEN] Proxy OK:', result.url);
     var url = result.url, fileName = result.fileName, providerName = result.provider;
-    if (logged && providerName !== 'fal.ai' && providerName !== 'Pollinations') {
+        if (logged && providerName !== 'fal.ai' && providerName !== 'Pollinations') {
       notify(t('notifications.via_provider') + ' ' + providerName, 'success');
     }
+    
     media.src = url;
-    function onLoad() {
+    media.onload = function() {
       if (loaded) return;
       loaded = true;
       clearInterval(iv);
-      var elapsed = ((Date.now() - st) / 1000).toFixed(1), to = card.querySelector('.timer-overlay');
+      var elapsed = ((Date.now() - st) / 1000).toFixed(1);
+      var to = card.querySelector('.timer-overlay');
       if (to) to.remove();
       media.style.opacity = '1';
       card.onclick = function() { openLB(url, 'image'); };
+      
       uploadToStorage(fileName);
       addPromptRemixToCard(card, p);
+      
       if (logged && currentUser && currentUser.id) {
         saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
         validatePendingReferral(currentUser.id);
@@ -327,13 +323,14 @@ async function generate() {
       notify('✅ ' + t('results.generated_in') + ' ' + elapsed + 's !' + cd, 'success');
       if (!logged) incrementAndCheckFreemium();
       if (logged) loadMiniBadge();
+      console.log('[GEN] ✅ Terminé');
       setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 86400000);
-    }
-    media.onload = onLoad;
-    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); };
+    };
+    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); console.error('[GEN] Image onload error'); };
   } catch (err) {
     clearInterval(iv);
-    const to = card.querySelector('.timer-overlay');
+    console.error('[GEN] ERREUR:', err);
+    var to = card.querySelector('.timer-overlay');
     if (to) { to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur: ' + err.message + '</div>'; }
     notify('Erreur: ' + err.message, 'error');
   }
@@ -341,25 +338,32 @@ async function generate() {
 
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
+
 async function cleanupExpiredCreations() {
   try {
-    const { data: expiredItems, error: fetchError } = await db.from('pixora_creations').select('file_name').lt('expires_at', new Date().toISOString());
-    if (fetchError || !expiredItems || expiredItems.length === 0) return;
-    for (let i = 0; i < expiredItems.length; i++) {
-      await db.from('pixora_creations').delete().eq('file_name', expiredItems[i].file_name).catch(function(){});
+    var result = await db.from('pixora_creations').select('file_name').lt('expires_at', new Date().toISOString());    if (!result.data || result.data.length === 0) return;
+    for (var i = 0; i < result.data.length; i++) {
+      await db.from('pixora_creations').delete().eq('file_name', result.data[i].file_name).catch(function(){});
     }
   } catch (err) { console.error('[Nettoyage] Erreur:', err); }
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-  await loadLang(detectLang());
-  detectReferral();
-  await loadApiKeys();
-  await loadDynamicConfig();
-  await loadUserTier();
-  await updateUI();
-  await cleanupExpiredCreations();
-  await loadStudio();
+  console.log('[INIT] Démarrage...');
+  try {
+    await loadLang(detectLang());
+    detectReferral();
+    await loadApiKeys();
+    await loadDynamicConfig();
+    await loadUserTier();
+    await updateUI();
+    await cleanupExpiredCreations();
+    await loadStudio();
+    console.log('[INIT] ✅ Tout chargé');
+  } catch(err) {
+    console.error('[INIT] ERREUR FATALE:', err);
+    notify('Erreur init: ' + err.message, 'error');
+  }
 });
 </script>
 </body>
