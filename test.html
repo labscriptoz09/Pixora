@@ -1,118 +1,51 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Worker IA Pixora - V2</title>
+    <title>Test JSON Worker</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0f0f14;
-            color: #fff;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 { color: #a855f7; }
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            background: #18181b;
-            border: 1px solid #27272a;
-            color: #fff;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        button {
-            background: linear-gradient(135deg, #8b5cf6, #ec4899);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        button:hover { opacity: 0.9; }
-        #result {
-            margin-top: 20px;
-            padding: 20px;
-            background: #18181b;
-            border-radius: 12px;
-            min-height: 100px;
-        }
-        #result img {
-            max-width: 100%;
-            border-radius: 8px;
-            display: block;
-            margin: 10px 0;
-        }        .error { color: #ef4444; }
-        .success { color: #22c55e; }
-        .loading { color: #eab308; }
+        body { background: #0f0f14; color: #fff; padding: 20px; font-family: Arial; }
+        button { background: #8b5cf6; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; margin: 10px 0; }
+        #output { background: #000; padding: 15px; border-radius: 8px; font-size: 12px; word-break: break-all; max-height: 500px; overflow-y: auto; }
     </style>
 </head>
 <body>
-    <h1> Test Worker IA Pixora - V2</h1>
-    <p>Worker: <code style="color: #a855f7;">ia-pixora-api.slimansoufian1.workers.dev</code></p>
-    
-    <textarea id="prompt" placeholder="Ton prompt...">Epic fantasy warrior in black armor with glowing blue runes</textarea>
-    <br>
-    <button onclick="genererImage()">🚀 Générer l'image</button>
-    
-    <div id="result"></div>
+    <h1>Test JSON Brut</h1>
+    <button onclick="test()">Tester le Worker</button>
+    <div id="output">Clique sur le bouton...</div>
 
     <script>
-        async function genererImage() {
-            const prompt = document.getElementById('prompt').value;
-            const resultDiv = document.getElementById('result');
-            
-            resultDiv.innerHTML = '<p class="loading">⏳ Génération en cours...</p>';
+        async function test() {
+            const output = document.getElementById('output');
+            output.textContent = 'Chargement...';
             
             try {
                 const response = await fetch('https://ia-pixora-api.slimansoufian1.workers.dev', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        prompt: prompt,
-                        width: 768,
-                        height: 768
+                        prompt: 'A red apple on white background',
+                        width: 512,
+                        height: 512
                     })
                 });
 
                 const data = await response.json();
-                console.log('Réponse complète:', data);
-
-                if (!response.ok) {
-                    throw new Error(data.error || `Erreur ${response.status}`);
-                }
-
-                if (data.url) {
-                    console.log('URL reçue:', data.url.substring(0, 100) + '...');
-                    
-                    // Afficher l'image
-                    resultDiv.innerHTML = `
-                        <p class="success">✅ Succès !</p>
-                        <p><strong>Prompt:</strong> ${prompt}</p>
-                        <p><strong>Taille:</strong> ${data.width}x${data.height}</p>
-                        <img src="${data.url}" alt="Image générée" onerror="this.onerror=null;this.parentElement.innerHTML='<p class=error> Erreur de chargement de l\\'image</p>'">
-                        <br>                        <a href="${data.url}" download="ia-pixora-image.png" style="color: #8b5cf6;">⬇️ Télécharger l'image</a>
-                        <br><br>
-                        <details>
-                            <summary style="cursor: pointer; color: #a1a1aa;">Voir l'URL complète (debug)</summary>
-                            <p style="font-size: 12px; word-break: break-all; background: #000; padding: 10px; border-radius: 4px;">${data.url}</p>
-                        </details>
-                    `;
-                } else {
-                    resultDiv.innerHTML = `<p class="error">❌ Erreur: Pas d'URL dans la réponse<br><br>Réponse: ${JSON.stringify(data)}</p>`;
-                }
-
-            } catch (error) {
-                console.error('Erreur:', error);
-                resultDiv.innerHTML = `
-                    <p class="error">❌ Erreur: ${error.message}</p>
-                    <p style="font-size: 12px; color: #a1a1aa;">Vérifie la console (F12) pour plus de détails</p>
+                
+                // Afficher le JSON complet
+                output.innerHTML = `
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Success:</strong> ${data.success}</p>
+                    <p><strong>Width:</strong> ${data.width}</p>
+                    <p><strong>Height:</strong> ${data.height}</p>
+                    <p><strong>URL commence par:</strong></p>
+                    <p>${data.url ? data.url.substring(0, 100) : 'PAS D\'URL'}</p>
+                    <hr>
+                    <p><strong>JSON complet:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
                 `;
+            } catch (error) {
+                output.textContent = 'Erreur: ' + error.message;
             }
         }
     </script>
