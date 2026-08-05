@@ -26,7 +26,7 @@
 <div class="lightbox" id="lightbox"><div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div><div id="lb-container"></div><div class="lightbox-actions"><button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="results.download">Télécharger</span></button><button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="results.close">Fermer</span></button></div></div>
 <div class="share-modal" id="share-modal"><div class="share-box"><div class="share-header"><h3><i class="fas fa-share-nodes"></i> <span data-i18n="share.title">Partager</span></h3><button class="share-close" onclick="closeShareModal()"><i class="fas fa-times"></i></button></div><div class="share-preview" id="share-preview"></div><div class="share-category" data-i18n="share.cat_messaging">💬 Messagerie</div><div class="share-grid"><a class="share-btn whatsapp" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i>WhatsApp</a><a class="share-btn telegram" onclick="shareTo('telegram')"><i class="fab fa-telegram"></i>Telegram</a><a class="share-btn email" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a><a class="share-btn copy" onclick="copyShareLink()"><i class="fas fa-link"></i><span data-i18n="share.copy">Copier</span></a></div><div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div><div class="share-grid"><a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a><a class="share-btn facebook" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a><a class="share-btn instagram" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a><a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a><a class="share-btn linkedin" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a><a class="share-btn pinterest" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a><a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a><a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a></div><div class="share-category" data-i18n="share.cat_community">👥 Communautés</div><div class="share-grid"><a class="share-btn discord" onclick="shareTo('discord')"><i class="fab fa-discord"></i>Discord</a><a class="share-btn snapchat" onclick="shareTo('snapchat')"><i class="fab fa-snapchat"></i>Snapchat</a><a class="share-btn bluesky" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a><a class="share-btn mastodon" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a></div><div class="share-category" data-i18n="share.cat_regional">🌍 Régionaux</div><div class="share-grid"><a class="share-btn wechat" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a><a class="share-btn line" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a><a class="share-btn kakao" onclick="shareTo('kakao')"><i class="fas fa-comment"></i>Kakao</a><a class="share-btn vk" onclick="shareTo('vk')"><i class="fab fa-vk"></i>VK</a></div></div></div>
 <div class="auth-overlay" id="auth-modal"><div class="auth-modal"><button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button><div class="auth-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span>IA Pixora</span></div><p class="auth-sub" data-i18n="auth.connect_to_generate">Connectez-vous pour générer et gagner des points</p><div class="auth-tabs"><button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_title">Connexion</button><button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button></div><div class="form-section active" id="sec-login"><form onsubmit="doLogin(event)"><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div><button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.login_btn">Se connecter</span></button></form></div><div class="form-section" id="sec-register"><form onsubmit="doRegister(event)"><div class="form-group"><label class="form-label" data-i18n="auth.username">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div><button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button></form></div><div class="auth-divider" data-i18n="auth.or_continue">ou continuer avec</div><button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> <span data-i18n="auth.google">Continuer avec Google</span></button><button class="social-btn github" onclick="notify(t('auth.github_soon'),'success')"><i class="fab fa-github"></i> <span data-i18n="auth.github">Continuer avec GitHub</span></button><div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div></div></div>
-<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeLang(this.value)"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><a href="earn.html#badges" class="mini-badge-pill" id="mini-badge" title="Voir mes badges"><span class="mini-badge-icon" id="mini-badge-icon"></span><span class="mini-badge-text" id="mini-badge-name"></span><span class="mini-badge-next" id="mini-badge-next"></span></a><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
+<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeLang(this.value)"><option value="fr">🇫🇷 FR</option><option value="en">🇬 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><a href="earn.html#badges" class="mini-badge-pill" id="mini-badge" title="Voir mes badges"><span class="mini-badge-icon" id="mini-badge-icon"></span><span class="mini-badge-text" id="mini-badge-name"></span><span class="mini-badge-next" id="mini-badge-next"></span></a><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
 <nav class="nav-mobile"><a href="index.html" class="nav-item active" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a><a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a><a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a><a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a></nav>
 <main class="main-content">
 <div class="hero"><h1 data-i18n="hero.title">Générez l'impossible avec IA Pixora</h1><p data-i18n="hero.subtitle">Images IA professionnelles. Gratuit. Sans limite.</p></div>
@@ -76,41 +76,27 @@ function changeLang(l){loadLang(l)}
 function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}
 var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU',db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image',DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}},CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
 
-// ✅ CORRECTION 1 : Nouveau système via Proxy Vercel (remplace l'ancien fallback Pollinations)
+// ✅ URL R2 PUBLIQUE (pour charger les images)
+const R2_PUBLIC_URL = 'https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
+
+// ✅ PROXY VERCEL (récupère url + fileName depuis R2)
 async function generateImageViaProxy(prompt, width, height) {
   try {
     const currentUser = await getUser();
     const userId = currentUser ? currentUser.id : 'anon';
-
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        prompt: prompt,
-        width: width,
-        height: height,
-        userId: userId
-      })
+      body: JSON.stringify({ prompt: prompt, width: width, height: height, userId: userId })
     });
-
     const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || `Erreur serveur: ${response.status}`);    }
-    
-    // ✅ On récupère maintenant le fileName venant de R2
-    return { 
-      url: data.url, 
-      fileName: data.fileName, 
-      provider: 'IA Pixora Cloud'
-    };
-
+    if (!response.ok) throw new Error(data.error || `Erreur serveur: ${response.status}`);
+    return { url: data.url, fileName: data.fileName, provider: 'IA Pixora Cloud' };
   } catch (error) {
     console.error('Erreur proxy:', error);
     throw new Error('Échec de la génération via le serveur');
   }
 }
-
 async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
 async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value}catch(e){console.error('Config error:',e)}updateCostUI()}
 function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date(),ic=c.costs.image,ie=document.getElementById('cost-image'),bn=document.getElementById('discount-banner'),te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s'},1000)}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}}}function notifyVideoSoon(){notify('🎥 '+t('generator.video_soon'),'success')}
@@ -145,74 +131,81 @@ function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(f
 var currentShareUrl='';
 function openShareModal(imgUrl){currentShareUrl=imgUrl;document.getElementById('share-preview').innerHTML='<img src="'+imgUrl+'" alt="Share preview">';document.getElementById('share-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeShareModal(){document.getElementById('share-modal').classList.remove('active');document.body.style.overflow='';currentShareUrl=''}
-document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});function getShareUrl(){return'https://iapixora.com/share.html?img='+encodeURIComponent(currentShareUrl)}
+document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});
+function getShareUrl(){return'https://iapixora.com/share.html?img='+encodeURIComponent(currentShareUrl)}
 function getShareText(){return t('share.text')}
 function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
-async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.from('pixora_creations').select('file_name,created_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}grid.innerHTML='';for(var i=0;i<result.data.length;i++){var row=result.data[i];var urlData=db.storage.from(BUCKET).getPublicUrl(row.file_name);var url=urlData.data.publicUrl;var isVideo=row.file_name.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';(function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()}card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);grid.appendChild(card)}}catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}}
 
-// ✅ CORRECTION 2 : Ajout de expires_at pour que le nettoyage de 24h fonctionne et libère l'espace Supabase
+// ✅ CHARGEMENT STUDIO (depuis R2 au lieu de Supabase Storage)
+async function loadStudio(){
+  var grid=document.getElementById('results-grid');
+  try{
+    var result=await db.from('pixora_creations').select('file_name,created_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);
+    if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}
+    grid.innerHTML='';
+    for(var i=0;i<result.data.length;i++){
+      var row=result.data[i];      // ✅ URL R2 au lieu de Supabase Storage
+      var url=R2_PUBLIC_URL+'/'+row.file_name;
+      var isVideo=row.file_name.indexOf('_video_')!==-1;
+      var card=document.createElement('div');
+      card.className='result-card';
+      if(isVideo){
+        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
+        (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))
+      }else{
+        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildImageOverlay()
+      }
+      card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
+      grid.appendChild(card)
+    }
+  }catch(err){console.error('Studio load error:',err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur chargement</div>'}
+}
+
+// ✅ STOCKAGE R2 (enregistre juste le fileName en DB, pas le fichier)
 async function uploadToStorage(fileName) {
   try {
     var currentUser = await getUser();
     var userId = currentUser ? currentUser.id : 'anonymous';
-    
-    if (!fileName) {
-      console.error('Aucun fileName reçu pour le stockage');
-      return;
-    }
-
-    // Calcul de la date d'expiration (+24 heures)
+    if (!fileName) { console.error('Aucun fileName reçu'); return; }
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 1);
-
-    // ✅ On enregistre SEULEMENT la référence en base de données (pas le fichier !)
     await db.from('pixora_creations').insert({
       file_name: fileName,
       user_id: userId,
       expires_at: expiresAt.toISOString()
     });
-    
     loadStudio();
-  } catch (err) {
-    console.error('Échec de la sauvegarde en base de données:', err);
-  }
+  } catch (err) { console.error('Échec sauvegarde DB:', err); }
 }
 
-// ✅ FONCTIONS PROMPT REMIX
+// ✅ FONCTION PROMPT REMIX
 function addPromptRemixToCard(card, prompt) {
   const remixZone = document.createElement('div');
   remixZone.style.cssText = 'padding:0.5rem;background:rgba(0,0,0,0.4);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:0.3rem;';
-  
   const promptText = document.createElement('p');
   promptText.style.cssText = 'font-size:0.65rem;color:var(--muted);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);';
   promptText.textContent = prompt;
-  promptText.title = prompt; // Affiche tout au survol
-  
+  promptText.title = prompt;
   const buttons = document.createElement('div');
   buttons.style.cssText = 'display:flex;gap:0.3rem;';
-  
   const reuseBtn = document.createElement('button');
   reuseBtn.className = 'icon-btn';
-  reuseBtn.innerHTML = '<i class="fas fa-redo"></i>';  reuseBtn.title = 'Réutiliser ce prompt';
+  reuseBtn.innerHTML = '<i class="fas fa-redo"></i>';
+  reuseBtn.title = 'Réutiliser ce prompt';
   reuseBtn.onclick = (e) => {
-    e.stopPropagation();
-    document.getElementById('prompt').value = prompt;
+    e.stopPropagation();    document.getElementById('prompt').value = prompt;
     document.getElementById('prompt').focus();
     notify('✨ Prompt chargé ! Modifie-le et régénère.', 'success');
   };
-  
   const copyBtn = document.createElement('button');
   copyBtn.className = 'icon-btn';
   copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
   copyBtn.title = 'Copier le prompt';
   copyBtn.onclick = (e) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(prompt).then(() => {
-      notify('📋 Prompt copié !', 'success');
-    });
+    navigator.clipboard.writeText(prompt).then(() => { notify('📋 Prompt copié !', 'success'); });
   };
-  
   buttons.appendChild(reuseBtn);
   buttons.appendChild(copyBtn);
   remixZone.appendChild(promptText);
@@ -220,17 +213,16 @@ function addPromptRemixToCard(card, prompt) {
   card.appendChild(remixZone);
 }
 
+// ✅ GÉNÉRATION (avec formats exacts + remix)
 async function generate() {
   if (curType === 'video') { notifyVideoSoon(); return; }
   var p = document.getElementById('prompt').value.trim();
   if (!p) { notify(t('notifications.enter_prompt'), 'error'); return; }
-  
   var logged = await isLogged(), cost = 0, isDiscounted = false;
   if (!logged) {
     var allowed = await checkFreemiumBlock();
     if (!allowed) { notify(t('notifications.freemium_limit'), 'error'); return; }
   }
-  
   if (logged) {
     await loadUserTier();
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
@@ -240,33 +232,29 @@ async function generate() {
     cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
     if (userData.points < cost) { notify(t('notifications.insufficient_points'), 'error'); return; }
   }
-  
   notify(t('notifications.generating'), 'success');
   var grid = document.getElementById('results-grid'), card = document.createElement('div');
-  card.className = 'result-card';  
-  // ✅ 1. GESTION DU FORMAT EXACT
+  card.className = 'result-card';
+  
+  // ✅ FORMAT EXACT
   var format = document.getElementById('format-select').value;
   var dims = format.split('x');
   var w = parseInt(dims[0]);
   var h = parseInt(dims[1]);
-  card.style.aspectRatio = w + '/' + h; // Applique le ratio dynamique
+  card.style.aspectRatio = w + '/' + h;
 
-  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-  card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">' + t('results.generating') + '</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">' + buildImageOverlay();
+  var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);  card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">' + t('results.generating') + '</div></div><img alt="" loading="lazy" style="opacity:0;transition:opacity 0.3s">' + buildImageOverlay();
   grid.insertBefore(card, grid.firstChild);
   
   var st = Date.now(), tmr = document.getElementById(tmrId), iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
   var media = card.querySelector('img'), loaded = false, currentUser = await getUser();
   
   try {
-    // ✅ 2. APPEL AU PROXY AVEC LES BONNES DIMENSIONS
     var result = await generateImageViaProxy(p, w, h);
     var url = result.url, fileName = result.fileName, providerName = result.provider;
-    
     if (logged && providerName !== 'fal.ai' && providerName !== 'Pollinations') {
       notify(t('notifications.via_provider') + ' ' + providerName, 'success');
     }
-    
     media.src = url;
     function onLoad() {
       if (loaded) return;
@@ -276,13 +264,8 @@ async function generate() {
       if (to) to.remove();
       media.style.opacity = '1';
       card.onclick = function() { openLB(url, 'image'); };
-      
-      // ✅ 3. SAUVEGARDE DU FICHIER R2 (Plus d'upload de blob)
       uploadToStorage(fileName);
-      
-      // ✅ 4. AJOUT DU PROMPT REMIX
-      addPromptRemixToCard(card, p);
-
+      addPromptRemixToCard(card, p); // ✅ PROMPT REMIX
       if (logged && currentUser && currentUser.id) {
         saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
         validatePendingReferral(currentUser.id);
@@ -291,71 +274,41 @@ async function generate() {
           db.from('user_data').update({ total_generated: ng }).eq('user_id', currentUser.id).catch(function() {});
         });
       }
-      
-      var dm = isDiscounted ? t('notifications.discount_tag') : '';      var cd = logged ? (' (-' + cost + ' ' + t('generator.cost_pts') + dm + ')') : '';
+      var dm = isDiscounted ? t('notifications.discount_tag') : '';
+      var cd = logged ? (' (-' + cost + ' ' + t('generator.cost_pts') + dm + ')') : '';
       notify('✅ ' + t('results.generated_in') + ' ' + elapsed + 's !' + cd, 'success');
-      
       if (!logged) incrementAndCheckFreemium();
       if (logged) loadMiniBadge();
-      
       setTimeout(function() { if (card.parentNode === grid) card.remove(); }, 86400000);
     }
     media.onload = onLoad;
     media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); };
   } catch (err) {
     clearInterval(iv);
-    card.remove();
-    notify(t('results.error'), 'error');
+    const to = card.querySelector('.timer-overlay');
+    if (to) { to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur: ' + err.message + '</div>'; }
+    notify('Erreur: ' + err.message, 'error');
   }
 }
 
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
-
 async function cleanupExpiredCreations() {
   try {
-    console.log('[Nettoyage] Vérification des images expirées...');
-    const { data: expiredItems, error: fetchError } = await db
-      .from('pixora_creations')
-      .select('file_name')
-      .lt('expires_at', new Date().toISOString());
-
-    if (fetchError) {
-      console.error('[Nettoyage] Erreur requête:', fetchError);
-      return;
-    }
-
-    if (!expiredItems || expiredItems.length === 0) {
-      console.log('[Nettoyage] Aucune image à supprimer');
-      return;
-    }
-
+    console.log('[Nettoyage] Vérification...');
+    const { data: expiredItems, error: fetchError } = await db.from('pixora_creations').select('file_name').lt('expires_at', new Date().toISOString());
+    if (fetchError) { console.error('[Nettoyage] Erreur:', fetchError); return; }
+    if (!expiredItems || expiredItems.length === 0) { console.log('[Nettoyage] Rien à supprimer'); return; }
     console.log('[Nettoyage] ' + expiredItems.length + ' image(s) à supprimer');
-
     for (let i = 0; i < expiredItems.length; i++) {
       const fileName = expiredItems[i].file_name;
       try {
-        const { error: storageError } = await db.storage.from(BUCKET).remove([fileName]);
-        if (storageError) {
-          console.warn('[Nettoyage] Erreur storage pour', fileName, ':', storageError.message);        }
-
-        const { error: dbError } = await db
-          .from('pixora_creations')
-          .delete()          .eq('file_name', fileName);
-
-        if (dbError) {
-          console.warn('[Nettoyage] Erreur DB pour', fileName, ':', dbError.message);
-        } else {
-          console.log('[Nettoyage] ✅ Supprimé:', fileName);
-        }
-      } catch (err) {
-        console.error('[Nettoyage] Erreur sur', fileName, ':', err);
-      }
+        const { error: dbError } = await db.from('pixora_creations').delete().eq('file_name', fileName);
+        if (dbError) console.warn('[Nettoyage] Erreur DB:', dbError.message);
+        else console.log('[Nettoyage] ✅ Supprimé:', fileName);
+      } catch (err) { console.error('[Nettoyage] Erreur:', err); }
     }
-    console.log('[Nettoyage] Terminé.');
-  } catch (err) {
-    console.error('[Nettoyage] Erreur globale:', err);
-  }
+  } catch (err) { console.error('[Nettoyage] Erreur globale:', err); }
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
