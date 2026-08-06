@@ -35,29 +35,25 @@
         .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem}@media(min-width:768px){.results-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem}}
         .result-card{aspect-ratio:1;background:var(--surf);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}.result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}.result-card img{width:100%;height:100%;object-fit:cover;display:block}
         
-        /* ✅ OVERLAY HAUT : Remix & Prompt (toujours visible) */
-        .gallery-overlay{position:absolute;top:0;left:0;right:0;background:linear-gradient(to bottom,rgba(0,0,0,0.7) 0%,transparent 60%);display:flex;align-items:flex-start;justify-content:center;padding:0.6rem;gap:0.4rem;z-index:5}
+        /* ✅ OVERLAY HAUT : Remix & Prompt */
+        .gallery-overlay{position:absolute;top:0;left:0;right:0;background:linear-gradient(to bottom,rgba(0,0,0,0.7) 0%,transparent 60%);display:flex;align-items:flex-start;justify-content:center;padding:0.6rem;gap:0.4rem;opacity:0;transition:opacity 0.3s;z-index:5}.result-card:hover .gallery-overlay{opacity:1}@media(hover:none){.gallery-overlay{opacity:0}}
         .gallery-btn{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;transition:all 0.2s;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px)}.gallery-btn-remix{background:rgba(139,92,246,0.3);border-color:rgba(139,92,246,0.5)}.gallery-btn-remix:hover{background:#8B5CF6;transform:scale(1.15);box-shadow:0 0 15px rgba(139,92,246,0.6)}.gallery-btn-prompt{background:rgba(6,182,212,0.3);border-color:rgba(6,182,212,0.5)}.gallery-btn-prompt:hover{background:#06B6D4;transform:scale(1.15);box-shadow:0 0 15px rgba(6,182,212,0.6)}
         
-        /* ✅ OVERLAY BAS : 4 boutons alignés (Vote, Comment, Download, Share) */
-        .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);display:flex;align-items:flex-end;justify-content:space-between;padding:0.6rem;z-index:4}.card-actions{display:flex;gap:0.4rem;align-items:center;flex:1}
+        /* ✅ OVERLAY BAS : Vote, Comment, Download, Share */
+        .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);display:flex;align-items:flex-end;justify-content:space-between;padding:0.6rem;opacity:0;transition:opacity 0.3s;z-index:4}.result-card:hover .result-overlay{opacity:1}@media(hover:none){.result-overlay{opacity:1}}.card-actions{display:flex;gap:0.4rem;align-items:center}
         
         /* ✅ BOUTON VOTE (Rouge/Rose) */
-        .action-btn{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;background:rgba(239,68,68,0.2);backdrop-filter:blur(10px);border:1px solid rgba(239,68,68,0.4);border-radius:8px;color:#FCA5A5;font-size:0.75rem;font-weight:600;transition:all 0.2s;cursor:pointer;flex:1;justify-content:center}.action-btn:hover{background:#EF4444;border-color:#EF4444;transform:scale(1.05);box-shadow:0 0 15px rgba(239,68,68,0.5)}.action-btn.voted{background:rgba(239,68,68,0.5);border-color:#EF4444;color:#fff}.action-btn i{font-size:0.8rem}.action-count{font-family:var(--mono);font-size:0.7rem}
+        .action-btn{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;background:rgba(239,68,68,0.2);backdrop-filter:blur(10px);border:1px solid rgba(239,68,68,0.4);border-radius:8px;color:#FCA5A5;font-size:0.75rem;font-weight:600;transition:all 0.2s;cursor:pointer}.action-btn:hover{background:#EF4444;border-color:#EF4444;transform:scale(1.05);box-shadow:0 0 15px rgba(239,68,68,0.5)}.action-btn.voted{background:rgba(239,68,68,0.5);border-color:#EF4444;color:#fff}.action-btn i{font-size:0.8rem}.action-count{font-family:var(--mono);font-size:0.7rem}
         
         /* ✅ BOUTON COMMENTAIRE (Orange) */
-        .action-btn-comment{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;background:rgba(249,115,22,0.2);backdrop-filter:blur(10px);border:1px solid rgba(249,115,22,0.4);border-radius:8px;color:#FDBA74;font-size:0.75rem;font-weight:600;transition:all 0.2s;cursor:pointer;flex:1;justify-content:center}.action-btn-comment:hover{background:#F97316;border-color:#F97316;transform:scale(1.05);box-shadow:0 0 15px rgba(249,115,22,0.5)}.action-btn-comment i{font-size:0.8rem}
+        .action-btn-comment{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;background:rgba(249,115,22,0.2);backdrop-filter:blur(10px);border:1px solid rgba(249,115,22,0.4);border-radius:8px;color:#FDBA74;font-size:0.75rem;font-weight:600;transition:all 0.2s;cursor:pointer}.action-btn-comment:hover{background:#F97316;border-color:#F97316;transform:scale(1.05);box-shadow:0 0 15px rgba(249,115,22,0.5)}.action-btn-comment i{font-size:0.8rem}
                 /* ✅ BOUTON DOWNLOAD (Vert) */
         .dl-btn{width:34px;height:34px;background:rgba(16,185,129,0.2);backdrop-filter:blur(10px);border:1px solid rgba(16,185,129,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#6EE7B7;font-size:0.8rem;transition:all 0.2s;cursor:pointer}.dl-btn:hover{background:#10B981;border-color:#10B981;transform:scale(1.1);box-shadow:0 0 15px rgba(16,185,129,0.6)}
         
-        /* ✅ BOUTON SHARE (Rose) - NOUVEAU */
+        /* ✅ BOUTON SHARE (Rose) */
         .share-btn-gallery{width:34px;height:34px;background:rgba(236,72,153,0.2);backdrop-filter:blur(10px);border:1px solid rgba(236,72,153,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#F9A8D4;font-size:0.8rem;transition:all 0.2s;cursor:pointer;margin-left:0.3rem}.share-btn-gallery:hover{background:#EC4899;border-color:#EC4899;transform:scale(1.1);box-shadow:0 0 15px rgba(236,72,153,0.6)}
         
         .comment-modal{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}.comment-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:450px;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}@keyframes scaleIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}.comment-box h3{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}.comment-box h3 i{color:var(--prim)}.comment-input{width:100%;min-height:80px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.8rem;color:var(--text);font-family:var(--font);font-size:0.9rem;resize:none;outline:none;transition:all 0.3s;margin-bottom:0.8rem}.comment-input:focus{border-color:var(--prim);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,0.12)}.comment-input::placeholder{color:rgba(255,255,255,0.35)}.comment-actions{display:flex;gap:0.6rem;justify-content:flex-end}.comment-btn{padding:0.6rem 1.2rem;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;border:none}.comment-btn.primary{background:var(--prim);color:white}.comment-btn.primary:hover{background:var(--sec);transform:translateY(-1px)}.comment-btn.secondary{background:rgba(255,255,255,0.08);color:var(--muted)}.comment-btn.secondary:hover{background:rgba(255,255,255,0.12);color:var(--text)}.comment-char{font-size:0.7rem;color:var(--dim);margin-bottom:0.5rem;text-align:right;font-family:var(--mono)}
-        
-        /* ✅ MODAL DE PARTAGE */
-        .share-modal{position:fixed;inset:0;z-index:10004;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}.share-modal.active{display:flex}.share-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:420px;max-height:85vh;overflow-y:auto;animation:scaleIn 0.3s cubic-bezier(0.25,0.8,0.25,1)}.share-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}.share-header h3{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}.share-header h3 i{color:var(--prim)}.share-close{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1rem;background:rgba(255,255,255,0.05);transition:all 0.2s;cursor:pointer;border:none}.share-close:hover{background:rgba(255,255,255,0.1);color:var(--text)}.share-category{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin:0.8rem 0 0.4rem;padding-left:0.2rem}.share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem}.share-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;padding:0.6rem 0.3rem;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:0.6rem;font-weight:600;cursor:pointer;transition:all 0.2s;text-decoration:none}.share-btn:hover{background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.3);transform:translateY(-2px)}.share-btn i{font-size:1.2rem}.share-btn.whatsapp i{color:#25D366}.share-btn.telegram i{color:#0088cc}.share-btn.twitter i{color:#1DA1F2}.share-btn.facebook i{color:#1877F2}.share-btn.instagram i{color:#E4405F}.share-btn.tiktok i{color:#ff0050}.share-btn.linkedin i{color:#0A66C2}.share-btn.pinterest i{color:#E60023}.share-btn.reddit i{color:#FF4500}.share-btn.discord i{color:#5865F2}.share-btn.snapchat i{color:#FFFC00}.share-btn.threads i{color:#fff}.share-btn.bluesky i{color:#0085ff}.share-btn.mastodon i{color:#6364FF}.share-btn.wechat i{color:#07C160}.share-btn.line i{color:#06C755}.share-btn.kakao i{color:#FEE500}.share-btn.vk i{color:#0077FF}.share-btn.email i{color:#EA4335}.share-btn.copy i{color:var(--gold)}.share-preview{width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;margin-bottom:0.8rem;border:1px solid var(--border)}.share-preview img{width:100%;height:100%;object-fit:cover}
-        
         .lightbox{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.95);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;flex-direction:column;padding:1rem}.lightbox img{max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)}.lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;cursor:pointer;transition:all 0.2s}.lightbox-close:hover{background:var(--danger);transform:rotate(90deg)}.lightbox-actions{display:flex;gap:1rem;margin-top:1.5rem}.lb-btn{padding:0.7rem 1.3rem;background:var(--prim);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s}.lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}.lb-btn.sec{background:rgba(255,255,255,0.1)}
         .site-footer{text-align:center;padding:1.5rem 1rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}.footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:0.5rem;flex-wrap:wrap}.site-footer a{color:var(--muted);transition:color 0.2s;font-weight:500}.site-footer a:hover{color:var(--prim)}
     </style>
@@ -65,53 +61,10 @@
 <body>
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="toast-notification" id="toast"><i class="fas fa-check-circle"></i><span id="toast-text"></span></div>
-
-<!-- ✅ MODAL DE PARTAGE (ajouté) -->
-<div class="share-modal" id="share-modal">
-    <div class="share-box">
-        <div class="share-header">
-            <h3><i class="fas fa-share-nodes"></i> <span data-i18n="share.title">Partager</span></h3>
-            <button class="share-close" onclick="closeShareModal()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="share-preview" id="share-preview"></div>
-        <div class="share-category" data-i18n="share.cat_messaging">💬 Messagerie</div>
-        <div class="share-grid">
-            <a class="share-btn whatsapp" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i>WhatsApp</a>
-            <a class="share-btn telegram" onclick="shareTo('telegram')"><i class="fab fa-telegram"></i>Telegram</a>
-            <a class="share-btn email" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a>
-            <a class="share-btn copy" onclick="copyShareLink()"><i class="fas fa-link"></i><span data-i18n="share.copy">Copier</span></a>
-        </div>
-        <div class="share-category" data-i18n="share.cat_social"> Réseaux sociaux</div>
-        <div class="share-grid">
-            <a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a>
-            <a class="share-btn facebook" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a>
-            <a class="share-btn instagram" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a>
-            <a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a>
-            <a class="share-btn linkedin" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a>
-            <a class="share-btn pinterest" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a>
-            <a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a>
-            <a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a>
-        </div>
-        <div class="share-category" data-i18n="share.cat_community">👥 Communautés</div>
-        <div class="share-grid">
-            <a class="share-btn discord" onclick="shareTo('discord')"><i class="fab fa-discord"></i>Discord</a>
-            <a class="share-btn snapchat" onclick="shareTo('snapchat')"><i class="fab fa-snapchat"></i>Snapchat</a>
-            <a class="share-btn bluesky" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a>            <a class="share-btn mastodon" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a>
-        </div>
-        <div class="share-category" data-i18n="share.cat_regional">🌍 Régionaux</div>
-        <div class="share-grid">
-            <a class="share-btn wechat" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a>
-            <a class="share-btn line" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a>
-            <a class="share-btn kakao" onclick="shareTo('kakao')"><i class="fas fa-comment"></i>Kakao</a>
-            <a class="share-btn vk" onclick="shareTo('vk')"><i class="fab fa-vk"></i>VK</a>
-        </div>
-    </div>
-</div>
-
 <div class="comment-modal" id="comment-modal"><div class="comment-box"><h3><i class="fas fa-comment-dots"></i> <span data-i18n="comment.title">Laisser un commentaire</span></h3><textarea class="comment-input" id="comment-input" data-i18n-placeholder="comment.placeholder" placeholder="Votre commentaire (min. 10 caractères)..."></textarea><div class="comment-char" id="comment-char">0/10 min</div><div class="comment-actions"><button class="comment-btn secondary" onclick="closeCommentModal()" data-i18n="comment.cancel">Annuler</button><button class="comment-btn primary" id="btn-submit-comment" onclick="submitComment()"><i class="fas fa-paper-plane"></i> <span data-i18n="comment.send">Envoyer</span></button></div></div></div>
 <div class="lightbox" id="lightbox"><div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div><img id="lb-img" src="" alt="Zoom"><div class="lightbox-actions"><button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="lightbox.download">Télécharger</span></button><button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="lightbox.close">Fermer</span></button></div></div>
 
-<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeGalleryLang(this.value)"><option value="fr">🇷 FR</option><option value="en">🇬🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
+<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeGalleryLang(this.value)"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
 
 <nav class="nav-mobile"><a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a><a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a><a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a><a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a></nav>
 
@@ -143,9 +96,8 @@ var GALLERY_I18N = {
         lightbox:{download:'Télécharger',close:'Fermer'},
         common:{loading:'Chargement...'},
         footer:{studio:'Studio',points:'Points',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
-        toast:{vote_error:'ERREUR VOTE: ',comment_error:'ERREUR COMMENT: ',gallery_error:'ERREUR GALERIE: '},
-        actions:{remix:'Remix',prompt:'Copier le prompt',remix_success:'✨ Prompt remixé ! Redirection vers le Studio...',prompt_copied:'📋 Prompt copié dans le presse-papier !',prompt_unavailable:'⚠️ Prompt non disponible'},
-        share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'}    },
+        toast:{vote_error:'ERREUR VOTE: ',comment_error:'ERREUR COMMENT: ',gallery_error:'ERREUR GALERIE: '},        actions:{remix:'Remix',prompt:'Copier le prompt',remix_success:'✨ Prompt remixé ! Redirection vers le Studio...',prompt_copied:' Prompt copié dans le presse-papier !',prompt_unavailable:'⚠️ Prompt non disponible'}
+    },
     en: {
         header:{login:'Login',points:'points'},
         menu:{profile:'My Profile',earn:'Earn Points',shop:'My Purchases',logout:'Logout'},
@@ -157,8 +109,7 @@ var GALLERY_I18N = {
         common:{loading:'Loading...'},
         footer:{studio:'Studio',points:'Points',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},
         toast:{vote_error:'VOTE ERROR: ',comment_error:'COMMENT ERROR: ',gallery_error:'GALLERY ERROR: '},
-        actions:{remix:'Remix',prompt:'Copy Prompt',remix_success:'✨ Prompt remixed! Redirecting to Studio...',prompt_copied:'📋 Prompt copied to clipboard!',prompt_unavailable:'⚠️ Prompt not available'},
-        share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:'🌍 Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'}
+        actions:{remix:'Remix',prompt:'Copy Prompt',remix_success:'✨ Prompt remixed! Redirecting to Studio...',prompt_copied:'📋 Prompt copied to clipboard!',prompt_unavailable:'⚠️ Prompt not available'}
     }
 };
 
@@ -177,7 +128,6 @@ var db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 var BUCKET='pixora-gallery';
 var lbUrl='';
 var currentCommentFile='';
-var currentShareUrl='';
 var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
 
 // =============================================
@@ -194,13 +144,13 @@ function showToast(message,type){type=type||'success';var t=document.getElementB
 
 // =============================================
 // USER MENU
-// =============================================function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
-function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
+// =============================================
+function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
 document.addEventListener('click',function(e){var menu=document.getElementById('user-menu');var avatar=document.getElementById('user-avatar');var mob=document.getElementById('mob-profile');if(!menu.contains(e.target)&&!avatar.contains(e.target)&&!mob.contains(e.target))closeUserMenu()});
 async function doLogout(){await db.auth.signOut();closeUserMenu();updateUI();setTimeout(function(){location.reload()},800)}
 async function getUser(){var r=await db.auth.getUser();return r.data.user}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,user_id:null};var r=await db.from('user_data').select('*').eq('user_id',u.id).single();var d=r.data||{points:0,streak:1};d.user_id=u.id;return d}
-async function updateUI(){var logged=await getUser();document.getElementById('user-stats').classList.toggle('show',!!logged);document.getElementById('user-avatar').classList.toggle('show',!!logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none;document.getElementById('menu-points').textContent=d.points||0;var name=logged.user_metadata&&logged.user_metadata.name?logged.user_metadata.name:'Utilisateur';var initial=name.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=initial;document.getElementById('menu-avatar').textContent=initial;document.getElementById('menu-name').textContent=name;document.getElementById('menu-email').textContent=logged.email}}
+async function updateUI(){var logged=await getUser();document.getElementById('user-stats').classList.toggle('show',!!logged);document.getElementById('user-avatar').classList.toggle('show',!!logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('menu-points').textContent=d.points||0;var name=logged.user_metadata&&logged.user_metadata.name?logged.user_metadata.name:'Utilisateur';var initial=name.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=initial;document.getElementById('menu-avatar').textContent=initial;document.getElementById('menu-name').textContent=name;document.getElementById('menu-email').textContent=logged.email}}
 
 // =============================================
 // LIGHTBOX
@@ -212,23 +162,11 @@ async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl);var b=await 
 async function dlDirect(btn){var card=btn.closest('.result-card');var img=card.querySelector('img');if(!img||!img.src)return;try{var r=await fetch(img.src);var b=await r.blob();var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}catch(e){window.open(img.src,'_blank')}}
 
 // =============================================
-// ✅ FONCTIONS REMIX ET PROMPT
+// ✅ NOUVELLES FONCTIONS REMIX ET PROMPT
 // =============================================
 function remixPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){showToast(tGallery('actions.prompt_unavailable'),'error');return}showToast(tGallery('actions.remix_success'),'success');window.location.href='index.html?remix='+encodeURIComponent(prompt)}
 function copyPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){showToast(tGallery('actions.prompt_unavailable'),'error');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(function(){showToast(tGallery('actions.prompt_copied'),'success')}).catch(function(){fallbackCopyPrompt(prompt)})}else{fallbackCopyPrompt(prompt)}}
 function fallbackCopyPrompt(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast(tGallery('actions.prompt_copied'),'success')}catch(e){showToast('Copy failed','error')}document.body.removeChild(ta)}
-
-// =============================================
-// ✅ FONCTIONS DE PARTAGE
-// =============================================
-function openShareModal(imgUrl){currentShareUrl=imgUrl;document.getElementById('share-preview').innerHTML='<img src="'+imgUrl+'" alt="Share preview">';document.getElementById('share-modal').classList.add('active');document.body.style.overflow='hidden'}
-function closeShareModal(){document.getElementById('share-modal').classList.remove('active');document.body.style.overflow='';currentShareUrl=''}
-document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});
-function getShareUrl(){return'https://iapixora.com/share.html?img='+encodeURIComponent(currentShareUrl)}
-function getShareText(){return tGallery('share.text')}
-function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}
-function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){showToast('✅ Lien copié !','success')}).catch(function(){fallbackCopyLink(url)});else fallbackCopyLink(url)}
-function fallbackCopyLink(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast('✅ Lien copié !','success')}catch(e){showToast('Copy failed','error')}document.body.removeChild(ta)}
 
 // =============================================
 // VOTE
@@ -243,31 +181,131 @@ function closeCommentModal(){document.getElementById('comment-modal').style.disp
 document.getElementById('comment-modal').addEventListener('click',function(e){if(e.target===this)closeCommentModal()});
 document.getElementById('comment-input').addEventListener('input',function(){var len=this.value.trim().length;document.getElementById('comment-char').textContent=len+'/10 min';document.getElementById('comment-char').style.color=len>=10?'var(--success)':'var(--dim)'});
 async function submitComment(){var user=await getUser();if(!user){showToast(tGallery('comment.login_required'),'error');return}var content=document.getElementById('comment-input').value.trim();if(content.length<10){showToast(tGallery('comment.too_short'),'error');return}var btn=document.getElementById('btn-submit-comment');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var startOfDay=new Date();startOfDay.setHours(0,0,0,0);var todayComments=await db.from('comments').select('*',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',startOfDay.toISOString());if(todayComments.error)throw new Error(todayComments.error.message);if(todayComments.count>=COMMENT_LIMIT){showToast(tGallery('comment.already_today')+' ('+COMMENT_LIMIT+'/jour)','error');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>';return}var insertRes=await db.from('comments').insert({user_id:user.id,creation_id:currentCommentFile,content:content});if(insertRes.error)throw new Error(insertRes.error.message);var ud=await getUserData();var newPts=(ud.points||0)+2;var newEarned=(ud.total_earned||0)+2;await Promise.all([db.from('user_data').update({points:newPts,total_earned:newEarned}).eq('user_id',user.id),db.from('transactions').insert({user_id:user.id,type:'earned',title:'Commenter une création',amount:2}),db.from('task_completions').insert({user_id:user.id,task_name:'Commenter une création',task_type:'comment',points:2})]);document.getElementById('header-points').textContent=newPts;document.getElementById('menu-points').textContent=newPts;document.getElementById('nav-points-badge').textContent=newPts;closeCommentModal();showToast(tGallery('comment.success'),'success');setTimeout(function(){window.location.href='earn.html?validated=comment'},1500)}catch(e){console.error('Comment error:',e);showToast(tGallery('toast.comment_error')+e.message,'error')}btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>'}
-// =============================================
-// ✅ GALERIE AVEC 6 BOUTONS COLORÉS (2 en haut + 4 en bas)
-// =============================================
-async function loadGallery(){var grid=document.getElementById('gallery-grid');try{var result=await db.from('pixora_creations').select('file_name,created_at,expires_at,prompt').order('created_at',{ascending:false}).limit(50);if(result.error)throw new Error(result.error.message);if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>'+tGallery('gallery.empty')+'<br>'+tGallery('gallery.empty_cta')+'</p></div>';return}var now=new Date().toISOString();var validItems=result.data.filter(function(item){return!item.expires_at||item.expires_at>now});if(validItems.length===0){grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><p>Aucune création valide.</p></div>';return}var user=await getUser();var userId=user?user.id:null;var promises=validItems.map(function(item){var rawName=item.file_name;var promptText=item.prompt||'';var url='';var isSupabase=(rawName.indexOf('supabase_')===0);if(isSupabase){var realName=rawName.replace('supabase_','');try{url=db.storage.from(BUCKET).getPublicUrl(realName).data.publicUrl}catch(e){return null}}else{url=R2_PUBLIC_URL+'/'+rawName}var pVotes=db.from('votes').select('id',{count:'exact',head:true}).eq('creation_id',rawName);var pComments=db.from('comments').select('id',{count:'exact',head:true}).eq('creation_id',rawName);var pUserVoted=userId?db.from('votes').select('id').eq('user_id',userId).eq('creation_id',rawName).limit(1):Promise.resolve({data:[]});return Promise.all([pVotes,pComments,pUserVoted]).then(function(results){return{name:rawName,prompt:promptText,url:url,voteCount:results[0].count||0,commentCount:results[1].count||0,userVoted:results[2].data&&results[2].data.length>0}}).catch(function(err){console.error('Stats error for '+rawName+':',err);return{name:rawName,prompt:promptText,url:url,voteCount:0,commentCount:0,userVoted:false}})});var stats=await Promise.all(promises);stats=stats.filter(function(s){return s!==null});grid.innerHTML='';stats.forEach(function(s){var card=document.createElement('div');card.className='result-card';if(s.prompt){card.setAttribute('data-prompt',s.prompt)}card.innerHTML='<img src="'+s.url+'" alt="Création IA Pixora" loading="lazy" onerror="this.parentElement.style.display=\'none\'">'+
-// Overlay HAUT : Remix + Prompt
-'<div class="gallery-overlay">'+
-'<button class="gallery-btn gallery-btn-remix" onclick="event.stopPropagation();remixPrompt(this.closest(\'.result-card\'))" title="'+tGallery('actions.remix')+'"><i class="fas fa-wand-magic-sparkles"></i></button>'+
-'<button class="gallery-btn gallery-btn-prompt" onclick="event.stopPropagation();copyPrompt(this.closest(\'.result-card\'))" title="'+tGallery('actions.prompt')+'"><i class="fas fa-copy"></i></button>'+
-'</div>'+
-// Overlay BAS : Vote + Comment + Download + Share (4 boutons alignés)
-'<div class="result-overlay">'+
-'<div class="card-actions">'+
-'<button class="action-btn '+(s.userVoted?'voted':'')+'" onclick="event.stopPropagation();doVote(\''+s.name+'\',this)" title="Voter"><i class="fas fa-heart"></i><span class="action-count">'+s.voteCount+'</span></button>'+
-'<button class="action-btn-comment" onclick="event.stopPropagation();openCommentModal(\''+s.name+'\')" title="Commenter"><i class="fas fa-comment"></i><span class="action-count">'+s.commentCount+'</span></button>'+
-'</div>'+
-'<div style="display:flex;gap:0.3rem">'+
-'<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>'+
-'<button class="share-btn-gallery" onclick="event.stopPropagation();openShareModal(\''+s.url+'\')" title="Partager"><i class="fas fa-share-nodes"></i></button>'+
-'</div>'+
-'</div>';card.onclick=function(){openLB(s.url)};grid.appendChild(card)})}catch(err){console.error('Gallery error:',err);showToast(tGallery('toast.gallery_error')+err.message,'error');grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>'+tGallery('gallery.error')+'</p></div>'}}
 
 // =============================================
-// INIT
+// ✅ GALERIE CORRIGÉE AVEC 6 BOUTONS
 // =============================================
-document.addEventListener('DOMContentLoaded',async function(){var lang=detectGalleryLang();currentGalleryLang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;document.documentElement.lang=lang;applyGalleryTranslations();await loadTaskLimits();await updateUI();await loadGallery()});
+async function loadGallery(){
+    console.log('[GALLERY] Début du chargement...');
+    var grid=document.getElementById('gallery-grid');
+    try{
+        // Sélectionne prompt depuis la DB
+        var result=await db.from('pixora_creations').select('file_name,created_at,expires_at,prompt').order('created_at',{ascending:false}).limit(50);
+        console.log('[GALLERY] Résultat DB:', result);
+        
+        if(result.error){
+            console.error('[GALLERY] Erreur DB:', result.error);            throw new Error(result.error.message);
+        }
+        
+        if(!result.data||result.data.length===0){
+            console.log('[GALLERY] Aucune donnée');
+            grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>'+tGallery('gallery.empty')+'<br>'+tGallery('gallery.empty_cta')+'</p></div>';
+            return;
+        }
+
+        var now=new Date().toISOString();
+        var validItems=result.data.filter(function(item){return!item.expires_at||item.expires_at>now});
+        console.log('[GALLERY] Items valides:', validItems.length);
+        
+        if(validItems.length===0){
+            grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><p>Aucune création valide.</p></div>';
+            return;
+        }
+
+        var user=await getUser();
+        var userId=user?user.id:null;
+
+        var promises=validItems.map(function(item){
+            var rawName=item.file_name;
+            var promptText=item.prompt||'';
+            var url='';
+            var isSupabase=(rawName.indexOf('supabase_')===0);
+            
+            if(isSupabase){
+                var realName=rawName.replace('supabase_','');
+                try{url=db.storage.from(BUCKET).getPublicUrl(realName).data.publicUrl}catch(e){return null}
+            }else{
+                url=R2_PUBLIC_URL+'/'+rawName;
+            }
+
+            var pVotes=db.from('votes').select('id',{count:'exact',head:true}).eq('creation_id',rawName);
+            var pComments=db.from('comments').select('id',{count:'exact',head:true}).eq('creation_id',rawName);
+            var pUserVoted=userId?db.from('votes').select('id').eq('user_id',userId).eq('creation_id',rawName).limit(1):Promise.resolve({data:[]});
+
+            return Promise.all([pVotes,pComments,pUserVoted]).then(function(results){
+                return{name:rawName,prompt:promptText,url:url,voteCount:results[0].count||0,commentCount:results[1].count||0,userVoted:results[2].data&&results[2].data.length>0}
+            }).catch(function(err){
+                console.error('Stats error for '+rawName+':',err);
+                return{name:rawName,prompt:promptText,url:url,voteCount:0,commentCount:0,userVoted:false}
+            });
+        });
+
+        var stats=await Promise.all(promises);
+        stats=stats.filter(function(s){return s!==null});
+        console.log('[GALLERY] Stats chargées:', stats.length);
+                grid.innerHTML='';
+        stats.forEach(function(s){
+            var card=document.createElement('div');
+            card.className='result-card';
+            if(s.prompt){card.setAttribute('data-prompt',s.prompt)}
+            
+            card.innerHTML='<img src="'+s.url+'" alt="Création IA Pixora" loading="lazy" onerror="this.parentElement.style.display=\'none\'">'+
+            '<div class="gallery-overlay">'+
+            '<button class="gallery-btn gallery-btn-remix" onclick="event.stopPropagation();remixPrompt(this.closest(\'.result-card\'))" title="'+tGallery('actions.remix')+'"><i class="fas fa-wand-magic-sparkles"></i></button>'+
+            '<button class="gallery-btn gallery-btn-prompt" onclick="event.stopPropagation();copyPrompt(this.closest(\'.result-card\'))" title="'+tGallery('actions.prompt')+'"><i class="fas fa-copy"></i></button>'+
+            '</div>'+
+            '<div class="result-overlay">'+
+            '<div class="card-actions">'+
+            '<button class="action-btn '+(s.userVoted?'voted':'')+'" onclick="event.stopPropagation();doVote(\''+s.name+'\',this)" title="Voter"><i class="fas fa-heart"></i><span class="action-count">'+s.voteCount+'</span></button>'+
+            '<button class="action-btn-comment" onclick="event.stopPropagation();openCommentModal(\''+s.name+'\')" title="Commenter"><i class="fas fa-comment"></i><span class="action-count">'+s.commentCount+'</span></button>'+
+            '</div>'+
+            '<div style="display:flex;gap:0.3rem">'+
+            '<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>'+
+            '<button class="share-btn-gallery" onclick="event.stopPropagation();openShareModal(\''+s.url+'\')" title="Partager"><i class="fas fa-share-nodes"></i></button>'+
+            '</div>'+
+            '</div>';
+            
+            card.onclick=function(){openLB(s.url)};
+            grid.appendChild(card);
+        });
+        
+        console.log('[GALLERY] ✅ Galerie chargée avec succès');
+    }catch(err){
+        console.error('[GALLERY] ERREUR:', err);
+        showToast(tGallery('toast.gallery_error')+err.message,'error');
+        grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur: '+err.message+'</p></div>';
+    }
+}
+
+// =============================================
+// ✅ FONCTIONS DE PARTAGE (ajoutées)
+// =============================================
+var currentShareUrl='';
+function openShareModal(imgUrl){
+    currentShareUrl=imgUrl;
+    // Créer le modal de partage dynamiquement
+    var modal=document.createElement('div');
+    modal.id='share-modal-dynamic';
+    modal.className='share-modal active';
+    modal.innerHTML='<div class="share-box"><div class="share-header"><h3><i class="fas fa-share-nodes"></i> Partager</h3><button class="share-close" onclick="this.closest(\'.share-modal\').remove()"><i class="fas fa-times"></i></button></div><div class="share-preview"><img src="'+imgUrl+'" alt="Share preview"></div><div class="share-category">Réseaux sociaux</div><div class="share-grid"><a class="share-btn twitter" href="https://twitter.com/intent/tweet?text=Regarde cette image IA créée avec IA Pixora!&url='+encodeURIComponent(window.location.href)+'"><i class="fab fa-x-twitter"></i>X</a><a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href)+'"><i class="fab fa-facebook-f"></i>Facebook</a><a class="share-btn whatsapp" href="https://wa.me/?text=Regarde cette image IA! '+encodeURIComponent(window.location.href)+'"><i class="fab fa-whatsapp"></i>WhatsApp</a><a class="share-btn copy" onclick="navigator.clipboard.writeText(\''+imgUrl+'\');this.closest(\'.share-modal\').remove();showToast(\'Lien copié!\',\'success\')"><i class="fas fa-link"></i>Copier</a></div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click',function(e){if(e.target===this)this.remove()});
+}
+
+// =============================================// INIT
+// =============================================
+document.addEventListener('DOMContentLoaded',async function(){
+    console.log('[INIT] Démarrage...');
+    var lang=detectGalleryLang();
+    currentGalleryLang=lang;
+    var sel=document.getElementById('lang-select');
+    if(sel)sel.value=lang;
+    document.documentElement.lang=lang;
+    applyGalleryTranslations();
+    await loadTaskLimits();
+    await updateUI();
+    await loadGallery();
+});
 </script>
 </body>
 </html>
