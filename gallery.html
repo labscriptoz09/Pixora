@@ -13,8 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- SEO & TRAFFIC OPTIMIZATION -->
-    <title>Galerie Publique IA Pixora | Créations Communauté</title>
-    <meta name="description" content="Découvrez les dernières créations générées par la communauté IA Pixora. Votez, commentez et inspirez-vous gratuitement.">
+    <title>Galerie Publique IA Pixora | Créations Communauté Permanentes</title>
+    <meta name="description" content="Découvrez les créations IA générées par la communauté IA Pixora. Une galerie permanente pour voter, commenter et s'inspirer gratuitement.">
     <link rel="canonical" href="https://iapixora.com/gallery.html">
     
     <!-- Open Graph / Facebook / LinkedIn -->
@@ -22,22 +22,32 @@
     <meta property="og:site_name" content="IA Pixora">
     <meta property="og:url" content="https://iapixora.com/gallery.html">
     <meta property="og:title" content="Galerie Publique IA Pixora | Créations Communauté">
-    <meta property="og:description" content="Découvrez les dernières créations générées par la communauté IA Pixora. Votez, commentez et inspirez-vous gratuitement.">
+    <meta property="og:description" content="Découvrez les créations IA générées par la communauté IA Pixora. Une galerie permanente pour voter, commenter et s'inspirer gratuitement.">
     <meta property="og:image" content="https://iapixora.com/og-image.jpg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://iapixora.com/gallery.html">
     <meta property="twitter:title" content="Galerie Publique IA Pixora | Créations Communauté">
-    <meta property="twitter:description" content="Découvrez les dernières créations générées par la communauté IA Pixora.">
+    <meta property="twitter:description" content="Découvrez les créations IA générées par la communauté IA Pixora.">
     <meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
     
     <!-- Robots -->
     <meta name="robots" content="index, follow">
     <meta name="author" content="IA Pixora">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- ✅ AJOUT 1 : Schema.org ImageGallery pour le SEO Google Images -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ImageGallery",
+      "name": "Galerie Publique IA Pixora",
+      "description": "Créations IA générées par la communauté, disponibles en permanence.",
+      "url": "https://iapixora.com/gallery.html"
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--hdr:rgba(20,20,23,0.85)}
@@ -86,8 +96,7 @@
         .menu-item i{width:18px;text-align:center;color:var(--muted);font-size:0.85rem;transition:color 0.2s}
         .menu-item:hover i{color:var(--prim)}
         .menu-item.danger{color:var(--danger)}
-        .menu-item.danger i{color:var(--danger)}
-        .menu-item.danger:hover{background:rgba(239,68,68,0.08)}
+        .menu-item.danger i{color:var(--danger)}        .menu-item.danger:hover{background:rgba(239,68,68,0.08)}
         .menu-divider{height:1px;background:var(--border);margin:0.3rem 0}
         .nav-mobile{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,11,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:0.4rem 0 0.5rem;padding-bottom:calc(0.5rem + env(safe-area-inset-bottom));z-index:1000}
         .nav-item{width:58px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;border-radius:16px;color:var(--muted);transition:all 0.3s;position:relative;text-decoration:none}
@@ -136,8 +145,7 @@
         .comment-char{font-size:0.7rem;color:var(--dim);margin-bottom:0.5rem;text-align:right;font-family:var(--mono)}
         .lightbox{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.95);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;flex-direction:column;padding:1rem}
         .lightbox img{max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
-        .lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;cursor:pointer;transition:all 0.2s}
-        .lightbox-close:hover{background:var(--danger);transform:rotate(90deg)}
+        .lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;cursor:pointer;transition:all 0.2s}        .lightbox-close:hover{background:var(--danger);transform:rotate(90deg)}
         .lightbox-actions{display:flex;gap:1rem;margin-top:1.5rem}
         .lb-btn{padding:0.7rem 1.3rem;background:var(--prim);color:white;border-radius:10px;font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s}
         .lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
@@ -186,8 +194,7 @@
         <div class="user-menu" id="user-menu">
             <div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
             <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div>
-            <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a>
-            <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a>
+            <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a>            <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a>
             <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a>
             <div class="menu-divider"></div>
             <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
@@ -201,9 +208,10 @@
 
 <main class="main-content">
     <h1 class="page-title" data-i18n="gallery.title">Galerie Publique</h1>
-    <p class="page-sub" data-i18n="gallery.subtitle">Les dernières créations de la communauté IA Pixora</p>
+    <!-- ✅ AJOUT 2 : Texte mis à jour pour refléter la permanence -->
+    <p class="page-sub" data-i18n="gallery.subtitle">Découvrez et inspirez-vous des créations permanentes de la communauté IA Pixora</p>
     
-    <!-- 🔷 EN HAUT : IMAGES UTILISATEUR (dynamiques, effacées après 24h) -->
+    <!-- 🔷 GRILLE DYNAMIQUE (désormais alignée avec la table pixora_creations pour la permanence) -->
     <div class="results-grid" id="gallery-grid">
         <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p data-i18n="common.loading">Chargement...</p></div>
     </div>
@@ -235,8 +243,7 @@
     </div>
 
     <footer class="site-footer">
-        <div class="footer-links">
-            <a href="index.html" data-i18n="footer.studio">Studio</a>
+        <div class="footer-links">            <a href="index.html" data-i18n="footer.studio">Studio</a>
             <a href="earn.html" data-i18n="footer.points">Points</a>
             <a href="shop.html" data-i18n="footer.shop">Boutique</a>
             <a href="profile.html" data-i18n="footer.profile">Profil</a>            <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
@@ -254,7 +261,7 @@ var GALLERY_I18N = {
         header:{login:'Connexion',points:'points'},
         menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
         nav:{studio:'Studio',gallery:'Galerie'},
-        gallery:{title:'Galerie Publique',subtitle:'Les dernières créations de la communauté IA Pixora',empty:'Aucune création récente.',empty_cta:'Soyez le premier à générer !',error:'Erreur chargement galerie',permanent_title:'Créations de référence'},
+        gallery:{title:'Galerie Publique',subtitle:'Découvrez et inspirez-vous des créations permanentes de la communauté IA Pixora',empty:'Aucune création pour le moment.',empty_cta:'Soyez le premier à générer dans le Studio !',error:'Erreur chargement galerie',permanent_title:'Créations de référence'},
         comment:{title:'Laisser un commentaire',placeholder:'Votre commentaire (min. 10 caractères)...',cancel:'Annuler',send:'Envoyer',too_short:'Commentaire trop court (min. 10 caractères)',success:'+2 points pour votre commentaire !',already_today:'Vous avez déjà commenté aujourd\'hui',login_required:'Connectez-vous pour commenter'},
         vote:{success:'+2 points pour votre vote !',already_today:'Vous avez déjà voté aujourd\'hui',already_voted:'Vous avez déjà voté cette création',login_required:'Connectez-vous pour voter'},
         lightbox:{download:'Télécharger',close:'Fermer'},
@@ -266,7 +273,7 @@ var GALLERY_I18N = {
         header:{login:'Login',points:'points'},
         menu:{profile:'My Profile',earn:'Earn Points',shop:'My Purchases',logout:'Logout'},
         nav:{studio:'Studio',gallery:'Gallery'},
-        gallery:{title:'Public Gallery',subtitle:'Latest creations from the IA Pixora community',empty:'No recent creations.',empty_cta:'Be the first to generate!',error:'Gallery loading error',permanent_title:'Reference Creations'},
+        gallery:{title:'Public Gallery',subtitle:'Discover and get inspired by permanent creations from the IA Pixora community',empty:'No creations yet.',empty_cta:'Be the first to generate in the Studio!',error:'Gallery loading error',permanent_title:'Reference Creations'},
         comment:{title:'Leave a comment',placeholder:'Your comment (min. 10 characters)...',cancel:'Cancel',send:'Send',too_short:'Comment too short (min. 10 characters)',success:'+2 points for your comment!',already_today:'You already commented today',login_required:'Log in to comment'},
         vote:{success:'+2 points for your vote!',already_today:'You already voted today',already_voted:'You already voted this creation',login_required:'Log in to vote'},
         lightbox:{download:'Download',close:'Close'},
@@ -286,7 +293,6 @@ function tGallery(key) {
     }
     return val || key;
 }
-
 function applyGalleryTranslations() {    document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var key = el.getAttribute('data-i18n');
         var val = tGallery(key);
@@ -318,11 +324,14 @@ function detectGalleryLang() {
 // =============================================
 // SUPABASE
 // =============================================
-var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var BUCKET = 'pixora-gallery';
 var lbUrl = '';
 var currentCommentFile = '';
+// ✅ AJOUT 3 : Constante R2 pour la cohérence avec index.html
+var R2_PUBLIC_URL = 'https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
 
 // =============================================
 // LIMITES DYNAMIQUES DEPUIS ADMIN
@@ -332,8 +341,7 @@ var COMMENT_LIMIT = 1;
 
 async function loadTaskLimits() {
     try {
-        var result = await db.from('admin_config').select('value').eq('key', 'internal_tasks').single();
-        if (result.data && result.data.value) {
+        var result = await db.from('admin_config').select('value').eq('key', 'internal_tasks').single();        if (result.data && result.data.value) {
             var tasks = result.data.value;
             for (var i = 0; i < tasks.length; i++) {                if (tasks[i].type === 'vote' && tasks[i].active) {
                     VOTE_LIMIT = tasks[i].limit || 1;
@@ -382,8 +390,7 @@ async function updateUI() {
     document.getElementById('user-avatar').classList.toggle('show', !!logged);
     document.getElementById('auth-btn').style.display = logged ? 'none' : 'flex';
     if (logged) {
-        var d = await getUserData();
-        document.getElementById('header-points').textContent = d.points || 0;        document.getElementById('nav-points-badge').textContent = d.points || 0;
+        var d = await getUserData();        document.getElementById('header-points').textContent = d.points || 0;        document.getElementById('nav-points-badge').textContent = d.points || 0;
         document.getElementById('nav-points-badge').style.display = d.points > 0 ? 'block' : 'none';
         document.getElementById('menu-points').textContent = d.points || 0;        
         var name = logged.user_metadata && logged.user_metadata.name ? logged.user_metadata.name : 'Utilisateur';
@@ -432,8 +439,7 @@ async function doVote(fileName, btnElement) {
         var todayVotes = await db.from('votes').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfDay.toISOString());
         if (todayVotes.error) throw new Error(todayVotes.error.message);
         if (todayVotes.count >= VOTE_LIMIT) {            showToast(tGallery('vote.already_today') + ' (' + VOTE_LIMIT + '/jour)', 'error');
-            return;        
-        }
+            return;                }
         var existing = await db.from('votes').select('id').eq('user_id', user.id).eq('creation_id', fileName).limit(1);
         if (existing.error) throw new Error(existing.error.message);
         if (existing.data && existing.data.length > 0) {
@@ -483,7 +489,6 @@ document.getElementById('comment-input').addEventListener('input', function() { 
     document.getElementById('comment-char').textContent = len + '/10 min';
     document.getElementById('comment-char').style.color = len >= 10 ? 'var(--success)' : 'var(--dim)';
 });
-
 async function submitComment() {
     var user = await getUser();
     if (!user) { showToast(tGallery('comment.login_required'), 'error'); return; }
@@ -523,51 +528,71 @@ async function submitComment() {
 }
 
 // =============================================
-// GALERIE DYNAMIQUE (images utilisateur, effacées après 24h)
+// ✅ AJOUT 4 : GALERIE DYNAMIQUE CORRIGÉE (Alignée avec index.html et stratégie permanente)
 // =============================================
 async function loadGallery() {
     var grid = document.getElementById('gallery-grid');
     try {
-        var result = await db.storage.from(BUCKET).list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
+        // ✅ On interroge la table pixora_creations (comme index.html) au lieu du bucket storage
+        // Puisque uploadToStorage met désormais expires_at à +10 ans, toutes ces créations sont permanentes.
+        var result = await db.from('pixora_creations')
+            .select('file_name, created_at, expires_at')
+            .order('created_at', { ascending: false })            .limit(50); // Affiche les 50 dernières créations permanentes
+
         if (result.error) throw new Error(result.error.message);
         if (!result.data || result.data.length === 0) {
             grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>' + tGallery('gallery.empty') + '<br>' + tGallery('gallery.empty_cta') + '</p></div>';
             return;
         }
-        var now = Date.now();
-        var validFiles = [];
-        for (var i = 0; i < result.data.length; i++) {
-            var file = result.data[i];            var createdAt = new Date(file.created_at).getTime();
-            // ✅ CORRIGÉ : 24h au lieu de 1h (86400000 ms = 24 heures)
-            if ((now - createdAt) < 86400000) {
-                var urlData = db.storage.from(BUCKET).getPublicUrl(file.name);
-                validFiles.push({ url: urlData.data.publicUrl, name: file.name });
-            } else {
-                await db.storage.from(BUCKET).remove([file.name]);
-            }
-        }
-        if (validFiles.length === 0) {
-            grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>' + tGallery('gallery.empty') + '<br>' + tGallery('gallery.empty_cta') + '</p></div>';
+
+        var now = new Date().toISOString();
+        // Filtre de sécurité (bien que tout devrait être valide grâce aux +10 ans)
+        var validItems = result.data.filter(function(item) {
+            return !item.expires_at || item.expires_at > now;
+        });
+
+        if (validItems.length === 0) {
+            grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><p>Aucune création valide.</p></div>';
             return;
         }
+
         var user = await getUser();
         var userId = user ? user.id : null;
-        var promises = validFiles.map(function(item) {
-            var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
-            var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('creation_id', item.name);
-            var pUserVoted = userId ? db.from('votes').select('id').eq('user_id', userId).eq('creation_id', item.name).limit(1) : Promise.resolve({ data: [] });            return Promise.all([pVotes, pComments, pUserVoted]).then(function(results) {
-                return { name: item.name, url: item.url, voteCount: results[0].count || 0, commentCount: results[1].count || 0, userVoted: results[2].data && results[2].data.length > 0 };
+
+        var promises = validItems.map(function(item) {
+            var rawName = item.file_name;
+            var url = '';
+            var isSupabase = (rawName.indexOf('supabase_') === 0);
+            
+            if (isSupabase) {
+                var realName = rawName.replace('supabase_', '');
+                try { url = db.storage.from(BUCKET).getPublicUrl(realName).data.publicUrl; }
+                catch(e) { return null; } // Ignore les erreurs d'URL
+            } else {
+                url = R2_PUBLIC_URL + '/' + rawName;
+            }
+
+            var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('creation_id', rawName);
+            var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('creation_id', rawName);
+            var pUserVoted = userId ? db.from('votes').select('id').eq('user_id', userId).eq('creation_id', rawName).limit(1) : Promise.resolve({ data: [] });
+
+            return Promise.all([pVotes, pComments, pUserVoted]).then(function(results) {
+                return { name: rawName, url: url, voteCount: results[0].count || 0, commentCount: results[1].count || 0, userVoted: results[2].data && results[2].data.length > 0 };
             }).catch(function(err) {
-                console.error('Stats error for ' + item.name + ':', err);
-                return { name: item.name, url: item.url, voteCount: 0, commentCount: 0, userVoted: false };
+                console.error('Stats error for ' + rawName + ':', err);
+                return { name: rawName, url: url, voteCount: 0, commentCount: 0, userVoted: false };
             });
         });
+
         var stats = await Promise.all(promises);
+        // Filtre les éléments null (échec de génération d'URL)
+        stats = stats.filter(function(s) { return s !== null; });
         grid.innerHTML = '';
         stats.forEach(function(s) {
             var card = document.createElement('div');
             card.className = 'result-card';
-            card.innerHTML = '<img src="' + s.url + '" alt="Création IA Pixora" loading="lazy">' +
+            // ✅ Ajout de onerror pour cacher proprement les images qui échouent à charger
+            card.innerHTML = '<img src="' + s.url + '" alt="Création IA Pixora" loading="lazy" onerror="this.parentElement.style.display=\'none\'">' +
                 '<div class="result-overlay">' +
                 '<div class="card-actions">' +
                 '<button class="action-btn ' + (s.userVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + s.name + '\',this)" title="Voter">' +
@@ -577,7 +602,8 @@ async function loadGallery() {
                 '</div>' +
                 '<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>' +
                 '</div>';            
-            card.onclick = function() { openLB(s.url); };            grid.appendChild(card);
+            card.onclick = function() { openLB(s.url); };
+            grid.appendChild(card);
         });
     } catch (err) {
         console.error('Gallery error:', err);
@@ -586,7 +612,8 @@ async function loadGallery() {
     }
 }
 
-// =============================================// INIT
+// =============================================
+// INIT
 // =============================================
 document.addEventListener('DOMContentLoaded', async function() {
     var lang = detectGalleryLang();
