@@ -16,7 +16,6 @@ export default function handler(req, res) {
 
   const t = texts[lang];
 
-  // On injecte l'URL de l'image DIRECTEMENT dans le HTML côté serveur
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
@@ -25,12 +24,14 @@ export default function handler(req, res) {
     <title>${t.title}</title>
     <meta name="description" content="${t.desc}">
     
-    <!-- C'EST ICI QUE LA MAGIE OPÈRE POUR TWITTER/FACEBOOK -->
+    <!-- Meta tags pour Twitter/Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="IA Pixora">
     <meta property="og:title" content="${t.title}">
     <meta property="og:description" content="${t.desc}">
     <meta property="og:image" content="${imgUrl}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${t.title}">
@@ -46,9 +47,9 @@ export default function handler(req, res) {
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem;text-align:center}
         .container{max-width:600px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.2rem}
         .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);margin-bottom:0.3rem}
-        .logo svg{width:32px;height:32px}
-        .logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}        .badge-free{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
-        .image-wrapper{width:100%;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.25);position:relative;background:var(--surf);cursor:zoom-in}
+        .logo svg{width:32px;height:32px}        .logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .badge-free{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
+        .image-wrapper{width:100%;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.25);position:relative;background:var(--surf)}
         .image-wrapper img{width:100%;height:auto;display:block}
         .actions{display:flex;gap:0.8rem;width:100%;flex-wrap:wrap;justify-content:center}
         .btn-create{display:inline-flex;align-items:center;gap:0.6rem;padding:1rem 2rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;text-decoration:none;box-shadow:0 8px 30px rgba(139,92,246,0.4);transition:all 0.3s;border:none;cursor:pointer;flex:1;justify-content:center;min-width:200px}
@@ -61,47 +62,30 @@ export default function handler(req, res) {
         .cta-sub{font-size:0.9rem;color:var(--muted);line-height:1.5;max-width:420px}
         .footer{margin-top:1.5rem;font-size:0.7rem;color:var(--muted)}
         .footer a{color:var(--prim);text-decoration:none}
-        .lightbox{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.95);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:1rem;cursor:zoom-out}
-        .lightbox.active{display:flex}
-        .lightbox img{max-width:95vw;max-height:90vh;border-radius:12px}
-        .lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;cursor:pointer;border:none}
         @media(max-width:400px){.cta-title{font-size:1.15rem}.btn-create,.btn-download{padding:0.85rem 1rem;font-size:0.85rem;min-width:auto}}
     </style>
 </head>
 <body>
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
-        <img id="lb-img" src="" alt="Zoom">
-    </div>
-
     <div class="container">
         <a href="https://iapixora.com" class="logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#sg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
             <span>IA Pixora</span>
         </a>
-        <div class="badge-free"><i class="fas fa-check-circle"></i> ${t.fr ? 'Générée gratuitement' : 'Generated for free'}</div>
-        <div class="image-wrapper" id="img-container" onclick="openLightbox()">
+        <div class="badge-free"><i class="fas fa-check-circle"></i> ${lang === 'fr' ? 'Générée gratuitement' : 'Generated for free'}</div>
+        <div class="image-wrapper">
             <img src="${imgUrl}" alt="AI Generated Image" onerror="this.parentElement.innerHTML='<p style=padding:2rem;color:var(--muted)>Image non disponible</p>'">
         </div>
         <h1 class="cta-title">${t.title}</h1>
         <p class="cta-sub">${t.desc}</p>
         <div class="actions">
-            <a href="https://iapixora.com" class="btn-create"><i class="fas fa-sparkles"></i> ${t.fr ? 'Créer mon image' : 'Create my image'}</a>
-            <button class="btn-download" onclick="downloadImage('${imgUrl}')"><i class="fas fa-download"></i> ${t.fr ? 'Télécharger' : 'Download'}</button>
+            <a href="https://iapixora.com" class="btn-create"><i class="fas fa-sparkles"></i> ${lang === 'fr' ? 'Créer mon image' : 'Create my image'}</a>
+            <button class="btn-download" onclick="downloadImage('${imgUrl}')"><i class="fas fa-download"></i> ${lang === 'fr' ? 'Télécharger' : 'Download'}</button>
         </div>
-        <a href="https://iapixora.com/gallery.html" class="btn-secondary"><i class="fas fa-images"></i> ${t.fr ? 'Voir la galerie' : 'View gallery'}</a>
+        <a href="https://iapixora.com/gallery.html" class="btn-secondary"><i class="fas fa-images"></i> ${lang === 'fr' ? 'Voir la galerie' : 'View gallery'}</a>
         <div class="footer">© 2026 IA Pixora · <a href="https://iapixora.com/privacy.html">Confidentialité</a></div>
     </div>
 
     <script>
-        function openLightbox() {
-            document.getElementById('lb-img').src = '${imgUrl}';
-            document.getElementById('lightbox').classList.add('active');            document.body.style.overflow = 'hidden';
-        }
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('active');
-            document.body.style.overflow = '';
-        }
         function downloadImage(url) {
             fetch(url).then(r=>r.blob()).then(blob=>{
                 const u = URL.createObjectURL(blob);
@@ -113,7 +97,6 @@ export default function handler(req, res) {
     <\/script>
 </body>
 </html>`;
-
   res.setHeader('Content-Type', 'text/html');
   res.status(200).send(html);
 }
