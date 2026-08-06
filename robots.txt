@@ -1,88 +1,94 @@
 # ============================================
-# IA Pixora - Optimisé pour Google
+# IA Pixora - Optimisé pour Google & Réseaux Sociaux
 # ============================================
 
 # 1. CONFIGURATION PRINCIPALE (TOUS LES BOTS)
 User-agent: *
 Allow: /
+# ✅ SUPPRIMÉ : Disallow: /*?*  (C'était ça qui bloquait Twitter !)
 Disallow: /profile.html
 Disallow: /shop.html
 Disallow: /earn.html
 Disallow: /admin/
-Disallow: /*?*
 Disallow: /*.json$
 
 # Sitemap pour Google
 Sitemap: https://iapixora.com/sitemap.xml
 
 # ============================================
-# 2. GOOGLEBOT (Plein accès pour indexation)
+# 2. MOTEURS DE RECHERCHE (Plein accès)
 # ============================================
 User-agent: Googlebot
 Allow: /
-# Pas de restrictions pour Google
 
-# ============================================
-# 3. GOOGLEBOT-IMAGE (Pour Google Images)
-# ============================================
 User-agent: Googlebot-Image
 Allow: /
-# Autoriser l'indexation des images générées
 
-# ============================================
-# 4. BING (Indexation secondaire)
-# ============================================
 User-agent: Bingbot
 Allow: /
 
-# ============================================
-# 5. BLOQUER LES BOTS IA (Protection contenu)
-# ============================================
+User-agent: DuckDuckBot
+Allow: /
 
-# OpenAI / ChatGPT
+User-agent: Yandex
+Allow: /
+
+# ============================================
+# 3. RÉSEAUX SOCIAUX (CRUCIAL POUR LES APERÇUS)
+# ============================================
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+User-agent: TelegramBot
+Allow: /
+
+# ============================================
+# 4. BLOQUER LES BOTS IA (Protection contenu)
+# ============================================
 User-agent: ChatGPT-User
 Disallow: /
 
 User-agent: GPTBot
 Disallow: /
 
-# Anthropic / Claude
-User-agent: ClaudeBotDisallow: /
+User-agent: ClaudeBot
+Disallow: /
 
 User-agent: Claude-User
 Disallow: /
 
-# Google Gemini (mais pas pour l'indexation)
 User-agent: Google-Extended
 Disallow: /
 
-# Meta AI (Facebook/Instagram)
 User-agent: Meta-ExternalAgent
 Disallow: /
 
 User-agent: FacebookBot
 Disallow: /
 
-# Perplexity AI
 User-agent: PerplexityBot
 Disallow: /
 
-# Common Crawl (données pour IA)
 User-agent: CCBot
 Disallow: /
 
-# Amazon Alexa
 User-agent: Amazonbot
 Disallow: /
 
-# Apple Siri
 User-agent: Applebot
 Disallow: /
 
 # ============================================
-# 6. BLOQUER LES SCRAPERS AGRESSIFS
+# 5. BLOQUER LES SCRAPERS AGRESSIFS
 # ============================================
-
 User-agent: AhrefsBot
 Disallow: /
 
@@ -91,21 +97,5 @@ Disallow: /
 
 User-agent: MJ12bot
 Disallow: /
-
 User-agent: DotBot
 Disallow: /
-
-# ============================================
-# 7. AUTORISER LES BONS BOTS# ============================================
-
-# DuckDuckGo
-User-agent: DuckDuckBot
-Allow: /
-
-# Yandex (moteur russe)
-User-agent: Yandex
-Allow: /
-
-# Baidu (moteur chinois - optionnel)
-User-agent: Baiduspider
-Allow: /
