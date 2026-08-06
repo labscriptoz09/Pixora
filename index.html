@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Schema.org SoftwareApplication pour le SEO (Rich Snippets Google) -->
+<!-- ✅ AJOUT 1 : Schema.org SoftwareApplication pour le SEO (Rich Snippets Google) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -47,10 +47,9 @@
 </head>
 <body>
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
-<div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div><div class="lightbox" id="lightbox"><div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div><div id="lb-container"></div><div class="lightbox-actions"><button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="results.download">Télécharger</span></button><button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="results.close">Fermer</span></button></div></div>
-<div class="share-modal" id="share-modal"><div class="share-box"><div class="share-header"><h3><i class="fas fa-share-nodes"></i> <span data-i18n="share.title">Partager</span></h3><button class="share-close" onclick="closeShareModal()"><i class="fas fa-times"></i></button></div><div class="share-preview" id="share-preview"></div><div class="share-category" data-i18n="share.cat_messaging">💬 Messagerie</div><div class="share-grid"><a class="share-btn whatsapp" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i>WhatsApp</a><a class="share-btn telegram" onclick="shareTo('telegram')"><i class="fab fa-telegram"></i>Telegram</a><a class="share-btn email" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a><a class="share-btn copy" onclick="copyShareLink()"><i class="fas fa-link"></i><span data-i18n="share.copy">Copier</span></a></div><div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div><div class="share-grid"><a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a><a class="share-btn facebook" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a><a class="share-btn instagram" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a><a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a><a class="share-btn linkedin" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a><a class="share-btn pinterest" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a><a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a><a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a></div><div class="share-category" data-i18n="share.cat_community">👥 Communautés</div><div class="share-grid"><a class="share-btn discord" onclick="shareTo('discord')"><i class="fab fa-discord"></i>Discord</a><a class="share-btn snapchat" onclick="shareTo('snapchat')"><i class="fab fa-snapchat"></i>Snapchat</a><a class="share-btn bluesky" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a><a class="share-btn mastodon" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a></div><div class="share-category" data-i18n="share.cat_regional"> Régionaux</div><div class="share-grid"><a class="share-btn wechat" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a><a class="share-btn line" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a><a class="share-btn kakao" onclick="shareTo('kakao')"><i class="fas fa-comment"></i>Kakao</a><a class="share-btn vk" onclick="shareTo('vk')"><i class="fab fa-vk"></i>VK</a></div></div></div>
+<div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div><div class="lightbox" id="lightbox"><div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div><div id="lb-container"></div><div class="lightbox-actions"><button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="results.download">Télécharger</span></button><button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="results.close">Fermer</span></button></div></div><div class="share-modal" id="share-modal"><div class="share-box"><div class="share-header"><h3><i class="fas fa-share-nodes"></i> <span data-i18n="share.title">Partager</span></h3><button class="share-close" onclick="closeShareModal()"><i class="fas fa-times"></i></button></div><div class="share-preview" id="share-preview"></div><div class="share-category" data-i18n="share.cat_messaging">💬 Messagerie</div><div class="share-grid"><a class="share-btn whatsapp" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i>WhatsApp</a><a class="share-btn telegram" onclick="shareTo('telegram')"><i class="fab fa-telegram"></i>Telegram</a><a class="share-btn email" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a><a class="share-btn copy" onclick="copyShareLink()"><i class="fas fa-link"></i><span data-i18n="share.copy">Copier</span></a></div><div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div><div class="share-grid"><a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a><a class="share-btn facebook" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a><a class="share-btn instagram" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a><a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a><a class="share-btn linkedin" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a><a class="share-btn pinterest" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a><a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a><a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a></div><div class="share-category" data-i18n="share.cat_community">👥 Communautés</div><div class="share-grid"><a class="share-btn discord" onclick="shareTo('discord')"><i class="fab fa-discord"></i>Discord</a><a class="share-btn snapchat" onclick="shareTo('snapchat')"><i class="fab fa-snapchat"></i>Snapchat</a><a class="share-btn bluesky" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a><a class="share-btn mastodon" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a></div><div class="share-category" data-i18n="share.cat_regional">🌍 Régionaux</div><div class="share-grid"><a class="share-btn wechat" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a><a class="share-btn line" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a><a class="share-btn kakao" onclick="shareTo('kakao')"><i class="fas fa-comment"></i>Kakao</a><a class="share-btn vk" onclick="shareTo('vk')"><i class="fab fa-vk"></i>VK</a></div></div></div>
 <div class="auth-overlay" id="auth-modal"><div class="auth-modal"><button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button><div class="auth-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span>IA Pixora</span></div><p class="auth-sub" data-i18n="auth.connect_to_generate">Connectez-vous pour générer et gagner des points</p><div class="auth-tabs"><button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_title">Connexion</button><button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button></div><div class="form-section active" id="sec-login"><form onsubmit="doLogin(event)"><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div><button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.login_btn">Se connecter</span></button></form></div><div class="form-section" id="sec-register"><form onsubmit="doRegister(event)"><div class="form-group"><label class="form-label" data-i18n="auth.username">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div><button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button></form></div><div class="auth-divider" data-i18n="auth.or_continue">ou continuer avec</div><button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> <span data-i18n="auth.google">Continuer avec Google</span></button><button class="social-btn github" onclick="notify(t('auth.github_soon'),'success')"><i class="fab fa-github"></i> <span data-i18n="auth.github">Continuer avec GitHub</span></button><div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div></div></div>
-<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeLang(this.value)"><option value="fr">🇫 FR</option><option value="en">🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><a href="earn.html#badges" class="mini-badge-pill" id="mini-badge" title="Voir mes badges"><span class="mini-badge-icon" id="mini-badge-icon"></span><span class="mini-badge-text" id="mini-badge-name"></span><span class="mini-badge-next" id="mini-badge-next"></span></a><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
+<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeLang(this.value)"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><a href="earn.html#badges" class="mini-badge-pill" id="mini-badge" title="Voir mes badges"><span class="mini-badge-icon" id="mini-badge-icon"></span><span class="mini-badge-text" id="mini-badge-name"></span><span class="mini-badge-next" id="mini-badge-next"></span></a><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
 <nav class="nav-mobile"><a href="index.html" class="nav-item active" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a><a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a><a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a><a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a></nav>
 <main class="main-content">
 <div class="hero"><h1 data-i18n="hero.title">Générez l'impossible avec IA Pixora</h1><p data-i18n="hero.subtitle">Images IA professionnelles. Gratuit. Sans limite.</p></div>
@@ -77,10 +76,11 @@
 
 <div id="sponsorised-container" style="margin-bottom:1.5rem;"></div>
 
+<!-- ✅ AJOUT 2 : Texte modifié pour refléter le stockage permanent -->
 <div class="section-label"><h2 data-i18n="results.title">Vos Créations</h2><span style="color:var(--success); font-size:0.7rem; display:flex; align-items:center; gap:0.3rem;"><i class="fas fa-infinity"></i> <span data-i18n="results.permanent">Sauvegardé définitivement</span></span></div>
 <div class="results-grid" id="results-grid"></div>
 
-<!-- Section SEO "Comment ça marche" TRADUISIBLE -->
+<!-- ✅ AJOUT 3 : Section SEO "Comment ça marche" TRADUISIBLE -->
 <section class="seo-content" style="padding: 1.5rem; background: var(--surf); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 2rem;">
   <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);" data-i18n="how.title">Comment créer des images IA avec IA Pixora ?</h2>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
@@ -122,7 +122,7 @@ window.onerror = function(msg, url, line, col, error) {
 var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
 function getAnonCount(){return parseInt(localStorage.getItem(PX_ANON_KEY)||'0')}
 function incrementAnonCount(){var c=getAnonCount()+1;localStorage.setItem(PX_ANON_KEY,c.toString());return c}
-function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon"></div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}
+function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}
 function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=getAnonCount();if(c>=PX_FREE_LIMIT){showSoftSignupPrompt();return false}}else{localStorage.removeItem(PX_ANON_KEY)}return true})}
 function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
 
@@ -141,12 +141,89 @@ async function loadMiniBadge(){
     else{ic.textContent='';nm.textContent='Badge';nx.textContent=''}
   }catch(e){console.error('Mini badge error:',e)}
 }
-var I18N={},currentLang='fr',FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',permanent:'Sauvegardé définitivement',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:' GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:' Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:' Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:' Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:' Réseaux sociaux',cat_community:' Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},gallery:{reference_title:'Créations de référence'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'},how:{title:'Comment créer des images IA avec IA Pixora ?',step1_title:'Décrivez votre idée',step1_desc:'Écrivez un prompt détaillé. Plus vous êtes précis, meilleur sera le résultat.',step2_title:'Choisissez le format',step2_desc:'Carré pour les réseaux, portrait pour les fonds d\'écran, ou cinéma pour le réalisme.',step3_title:'Générez & Téléchargez',step3_desc:'Obtenez votre image en quelques secondes. 3 essais gratuits, puis accès illimité.'}};
 
-var EN_TRANSLATIONS={meta:{title:'IA Pixora — Free AI Image Studio',description:'IA Pixora: Create professional AI images and videos for free.'},header:{login:'Login',points:'points'},nav:{studio:'Studio',gallery:'Gallery',earn:'Earn',profile:'Profile'},hero:{title:'Generate the impossible with IA Pixora',subtitle:'Professional AI images. Free. No limits.'},generator:{prompt_title:'Describe your image',placeholder:'Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic 8k lighting',image:'Image',video:'Video',video_soon:'Coming Soon',generate:'Generate',discount_active:'-50% ACTIVE',expires_in:'Expires in',cost_pts:'pts'},results:{title:'Your Creations',permanent:'Saved permanently',auto_delete:'Auto-delete after 24h',download:'Download',close:'Close',generating:'AI Generating...',generated_in:'Generated in',failed:'Generation failed. Try again.',error:'Generation error. Try again.'},stats:{points:'Points',streak:'Streak',creations:'Creations',total_earned:'Total Earned'},auth:{login_title:'Login',register_title:'Sign Up',email:'Email',password:'Password',password_min:'Min. 8 characters',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',google:'Continue with Google',github:'Continue with GitHub',github_soon:'⏳ GitHub coming soon...',footer:'By continuing, you accept our',conditions:'terms',welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'✅ Account created! +15 bonus pts',wrong_credentials:'❌ Incorrect credentials',email_exists:'❌ This email is already used',password_short:'❌ Password too short',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:' Logged out',connect_to_generate:'Log in to generate and earn points'},menu:{my_profile:'My Profile',earn_points:'Earn Points',my_purchases:'My Purchases',logout:'Logout'},notifications:{enter_prompt:'Please enter a prompt',insufficient_points:'Insufficient points! Visit the Points page.',generating:'⚡ Generating...',downloaded:'✅ Downloaded!',no_image:'❌ No image found',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Free limit reached! Sign up to continue.',share_success:'✅ Link copied!',share_points:'+5 points for sharing!'},footer:{earn_points:'Earn Points',gallery:'Gallery',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:' Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'},gallery:{reference_title:'Reference Creations'},faq:{q1:'Is IA Pixora really free?',a1:'Yes, IA Pixora is 100% free for generating AI images and videos.',q2:'How to generate an image without signup?',a2:'3 free generations without account.',q3:'What is the difference between IA Pixora and Midjourney?',a3:'IA Pixora is completely free, no subscription required.',q4:'Can I use generated images commercially?',a4:'Yes, royalty-free.',q5:'How many free generations per day?',a5:'3 without signup, unlimited after.'},how:{title:'How to create AI images with IA Pixora?',step1_title:'Describe your idea',step1_desc:'Write a detailed prompt. The more precise you are, the better the result.',step2_title:'Choose the format',step2_desc:'Square for social media, portrait for wallpapers, or cinema for realism.',step3_title:'Generate & Download',step3_desc:'Get your image in seconds. 3 free trials, then unlimited access.'}};
+var I18N={},currentLang='fr';
 
-function t(k){var p=k.split('.'),v=I18N;for(var i=0;i<p.length;i++){if(v&&typeof v==='object')v=v[p[i]];else return k}return v||k}async function loadLang(l){currentLang=l;I18N=(l==='en')?JSON.parse(JSON.stringify(EN_TRANSLATIONS)):JSON.parse(JSON.stringify(FR_TRANSLATIONS));applyTranslations();document.documentElement.lang=l;document.title=t('meta.title');var md=document.querySelector('meta[name="description"]');if(md)md.content=t('meta.description');var sel=document.getElementById('lang-select');if(sel)sel.value=l;localStorage.setItem('pixora_lang',l)}
-function applyTranslations(){document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n'),v=t(k);if(v!==k)el.textContent=v});document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){var k=el.getAttribute('data-i18n-placeholder'),v=t(k);if(v!==k)el.placeholder=v})}
+// ✅ TRADUCTIONS FRANÇAISES COMPLÈTES
+var FR_TRANSLATIONS={  meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},
+  header:{login:'Connexion',points:'points'},
+  nav:{studio:'Studio',gallery:'Galerie',earn:'Earn',profile:'Profile'},
+  hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},
+  generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},
+  results:{title:'Vos Créations',permanent:'Sauvegardé définitivement',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},
+  stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},
+  auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:' Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},
+  menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},
+  notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:' Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !'},
+  footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
+  language:{label:'Language',fr:'Français',en:'English'},
+  share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:' Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:' Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},
+  gallery:{reference_title:'Créations de référence'},
+  faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'},
+  how:{
+    title:'Comment créer des images IA avec IA Pixora ?',
+    step1_title:'Décrivez votre idée',
+    step1_desc:'Écrivez un prompt détaillé. Plus vous êtes précis, meilleur sera le résultat.',
+    step2_title:'Choisissez le format',
+    step2_desc:'Carré pour les réseaux, portrait pour les fonds d\'écran, ou cinéma pour le réalisme.',
+    step3_title:'Générez & Téléchargez',
+    step3_desc:'Obtenez votre image en quelques secondes. 3 essais gratuits, puis accès illimité.'
+  }
+};
+
+// ✅ TRADUCTIONS ANGLAISES COMPLÈTES
+var EN_TRANSLATIONS={
+  meta:{title:'IA Pixora — Free AI Image Studio',description:'IA Pixora: Create professional AI images and videos for free.'},
+  header:{login:'Login',points:'points'},
+  nav:{studio:'Studio',gallery:'Gallery',earn:'Earn',profile:'Profile'},
+  hero:{title:'Generate the impossible with IA Pixora',subtitle:'Professional AI images. Free. No limits.'},
+  generator:{prompt_title:'Describe your image',placeholder:'Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic 8k lighting',image:'Image',video:'Video',video_soon:'Coming Soon',generate:'Generate',discount_active:'-50% ACTIVE',expires_in:'Expires in',cost_pts:'pts'},
+  results:{title:'Your Creations',permanent:'Saved permanently',auto_delete:'Auto-delete after 24h',download:'Download',close:'Close',generating:'AI Generating...',generated_in:'Generated in',failed:'Generation failed. Try again.',error:'Generation error. Try again.'},
+  stats:{points:'Points',streak:'Streak',creations:'Creations',total_earned:'Total Earned'},
+  auth:{login_title:'Login',register_title:'Sign Up',email:'Email',password:'Password',password_min:'Min. 8 characters',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',google:'Continue with Google',github:'Continue with GitHub',github_soon:'⏳ GitHub coming soon...',footer:'By continuing, you accept our',conditions:'terms',welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'✅ Account created! +15 bonus pts',wrong_credentials:'❌ Incorrect credentials',email_exists:'❌ This email is already used',password_short:'❌ Password too short',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:' Logged out',connect_to_generate:'Log in to generate and earn points'},
+  menu:{my_profile:'My Profile',earn_points:'Earn Points',my_purchases:'My Purchases',logout:'Logout'},
+  notifications:{enter_prompt:'Please enter a prompt',insufficient_points:'Insufficient points! Visit the Points page.',generating:' Generating...',downloaded:'✅ Downloaded!',no_image:'❌ No image found',via_provider:' Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Free limit reached! Sign up to continue.',share_success:'✅ Link copied!',share_points:'+5 points for sharing!'},
+  footer:{earn_points:'Earn Points',gallery:'Gallery',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},
+  language:{label:'Language',fr:'Français',en:'English'},
+  share:{title:'Share',copy:'Copy',cat_messaging:' Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:' Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'},
+  gallery:{reference_title:'Reference Creations'},
+  faq:{q1:'Is IA Pixora really free?',a1:'Yes, IA Pixora is 100% free for generating AI images and videos.',q2:'How to generate an image without signup?',a2:'3 free generations without account.',q3:'What is the difference between IA Pixora and Midjourney?',a3:'IA Pixora is completely free, no subscription required.',q4:'Can I use generated images commercially?',a4:'Yes, royalty-free.',q5:'How many free generations per day?',a5:'3 without signup, unlimited after.'},
+  how:{
+    title:'How to create AI images with IA Pixora?',
+    step1_title:'Describe your idea',
+    step1_desc:'Write a detailed prompt. The more precise you are, the better the result.',
+    step2_title:'Choose the format',
+    step2_desc:'Square for social media, portrait for wallpapers, or cinema for realism.',
+    step3_title:'Generate & Download',    step3_desc:'Get your image in seconds. 3 free trials, then unlimited access.'
+  }
+};
+
+function t(k){var p=k.split('.'),v=I18N;for(var i=0;i<p.length;i++){if(v&&typeof v==='object')v=v[p[i]];else return k}return v||k}
+
+async function loadLang(l){
+  currentLang=l;
+  I18N=(l==='en')?JSON.parse(JSON.stringify(EN_TRANSLATIONS)):JSON.parse(JSON.stringify(FR_TRANSLATIONS));
+  applyTranslations();
+  document.documentElement.lang=l;
+  document.title=t('meta.title');
+  var md=document.querySelector('meta[name="description"]');
+  if(md)md.content=t('meta.description');
+  var sel=document.getElementById('lang-select');
+  if(sel)sel.value=l;
+  localStorage.setItem('pixora_lang',l);
+}
+
+function applyTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.getAttribute('data-i18n'),v=t(k);
+    if(v!==k)el.textContent=v;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var k=el.getAttribute('data-i18n-placeholder'),v=t(k);
+    if(v!==k)el.placeholder=v;
+  });
+}
+
 function changeLang(l){loadLang(l)}
 function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}
 
@@ -166,8 +243,7 @@ async function generateImageViaProxy(prompt, width, height) {
   });
   var data = await response.json();
   console.log('[PROXY] Réponse:', data);
-  if (!response.ok) throw new Error(data.error || 'Erreur serveur: ' + response.status);
-  return { url: data.url, fileName: data.fileName, provider: 'IA Pixora Cloud' };
+  if (!response.ok) throw new Error(data.error || 'Erreur serveur: ' + response.status);  return { url: data.url, fileName: data.fileName, provider: 'IA Pixora Cloud' };
 }
 
 async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
@@ -194,9 +270,9 @@ async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'go
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
 async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
 function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
-document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});async function doLogout(){await db.auth.signOut();closeUserMenu();currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();notify(t('auth.logout'),'success');setTimeout(function(){location.reload()},800)}
-async function updateUI(){var logged=await isLogged(),user=await getUser();document.getElementById('user-stats').classList.toggle('show',logged);document.getElementById('user-avatar').classList.toggle('show',logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';var qs=document.getElementById('quick-stats');if(logged)qs.classList.add('show');else qs.classList.remove('show');if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('stat-points').textContent=d.points||0;document.getElementById('stat-streak').textContent=d.streak||1;document.getElementById('stat-generated').textContent=d.total_generated||0;document.getElementById('stat-earned').textContent=d.total_earned||0;var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur',ini=nm.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=ini;document.getElementById('menu-avatar').textContent=ini;document.getElementById('menu-name').textContent=nm;document.getElementById('menu-email').textContent=user.email;document.getElementById('menu-points').textContent=d.points||0}await loadMiniBadge()}
-function openLB(url,type){lbUrl=url;lbType=type||'image';var c=document.getElementById('lb-container');c.innerHTML='';if(lbType==='video'){var v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.loop=true;v.style.cssText='max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';c.appendChild(v)}else{var i=document.createElement('img');i.src=url;i.alt='Zoom';c.appendChild(i)}document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
+document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});
+async function doLogout(){await db.auth.signOut();closeUserMenu();currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();notify(t('auth.logout'),'success');setTimeout(function(){location.reload()},800)}
+async function updateUI(){var logged=await isLogged(),user=await getUser();document.getElementById('user-stats').classList.toggle('show',logged);document.getElementById('user-avatar').classList.toggle('show',logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';var qs=document.getElementById('quick-stats');if(logged)qs.classList.add('show');else qs.classList.remove('show');if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('stat-points').textContent=d.points||0;document.getElementById('stat-streak').textContent=d.streak||1;document.getElementById('stat-generated').textContent=d.total_generated||0;document.getElementById('stat-earned').textContent=d.total_earned||0;var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur',ini=nm.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=ini;document.getElementById('menu-avatar').textContent=ini;document.getElementById('menu-name').textContent=nm;document.getElementById('menu-email').textContent=user.email;document.getElementById('menu-points').textContent=d.points||0}await loadMiniBadge()}function openLB(url,type){lbUrl=url;lbType=type||'image';var c=document.getElementById('lb-container');c.innerHTML='';if(lbType==='video'){var v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.loop=true;v.style.cssText='max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';c.appendChild(v)}else{var i=document.createElement('img');i.src=url;i.alt='Zoom';c.appendChild(i)}document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
 function closeLB(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';document.getElementById('lb-container').innerHTML='';lbUrl='';lbType='image'}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
 async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl),b=await r.blob(),ext=lbType==='video'?'.mp4':'.jpg',u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(lbUrl,'_blank')}}
@@ -216,8 +292,7 @@ function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=t
 async function loadStudio(){
   console.log('[STUDIO] Chargement...');
   var grid=document.getElementById('results-grid');
-  try{
-    var result=await db.from('pixora_creations').select('file_name,created_at,expires_at').order('created_at',{ascending:false}).limit(20);
+  try{    var result=await db.from('pixora_creations').select('file_name,created_at,expires_at').order('created_at',{ascending:false}).limit(20);
     console.log('[STUDIO] Résultats DB:', result.data ? result.data.length : 0);
     if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Aucune création</div>';return}
     var now=new Date().toISOString();
@@ -243,16 +318,16 @@ async function loadStudio(){
       if(isVideo){        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy" crossorigin="anonymous"></video><div class="result-overlay"><button class="icon-btn" onclick="event.stopPropagation();dlDirect(this)"><i class="fas fa-download"></i></button><button class="icon-btn" onclick="event.stopPropagation();openShareModal(url)"><i class="fas fa-share-nodes"></i></button></div>';
         (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'));
       }else{
-        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy" crossorigin="anonymous">'+buildImageOverlay();      }
-      (function(c,u,fn){var media=c.querySelector('img,video');if(media){media.onerror=function(){console.warn('Image échouée:',fn);c.style.opacity='0.3';c.title='Erreur: '+fn;};}})(card,url,rawName);
-      card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
+        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy" crossorigin="anonymous">'+buildImageOverlay();
+      }
+      (function(c,u,fn){var media=c.querySelector('img,video');if(media){media.onerror=function(){console.warn('Image échouée:',fn);c.style.opacity='0.3';c.title='Erreur: '+fn;};}})(card,url,rawName);      card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
       grid.appendChild(card);
     }
     console.log('[STUDIO] ✅', validItems.length, 'images affichées');
   }catch(err){console.error('[STUDIO] ERREUR:', err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur: '+err.message+'</div>';}
 }
 
-// ✅ Fonction uploadToStorage avec stockage PERMANENT (10 ans)
+// ✅ AJOUT 4 : Fonction uploadToStorage modifiée pour un stockage PERMANENT (10 ans)
 async function uploadToStorage(fileName) {
   try {
     var currentUser = await getUser();
@@ -266,8 +341,7 @@ async function uploadToStorage(fileName) {
     await db.from('pixora_creations').insert({ 
       file_name: fileName, 
       user_id: userId, 
-      expires_at: permanentDate.toISOString() 
-    });
+      expires_at: permanentDate.toISOString()     });
     console.log('[STORAGE] ✅ Sauvegardé définitivement:', fileName);
   } catch (err) { console.error('[STORAGE] ERREUR:', err); }
 }
@@ -292,9 +366,9 @@ function addPromptRemixToCard(card, prompt) {
   copyBtn.className = 'icon-btn';
   copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
   copyBtn.title = 'Copier le prompt';
-  copyBtn.onclick = function(e) { e.stopPropagation(); navigator.clipboard.writeText(prompt).then(function(){ notify(' Prompt copié !', 'success'); }); };  buttons.appendChild(reuseBtn);
-  buttons.appendChild(copyBtn);
-  remixZone.appendChild(promptText);
+  copyBtn.onclick = function(e) { e.stopPropagation(); navigator.clipboard.writeText(prompt).then(function(){ notify('📋 Prompt copié !', 'success'); }); };
+  buttons.appendChild(reuseBtn);
+  buttons.appendChild(copyBtn);  remixZone.appendChild(promptText);
   remixZone.appendChild(buttons);  card.appendChild(remixZone);
 }
 
@@ -316,8 +390,7 @@ async function generate() {
     var userData = await getUserData();
     var baseCost = c.costs.image;
     isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();
-    cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
-    if (userData.points < cost) { notify(t('notifications.insufficient_points'), 'error'); return; }
+    cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;    if (userData.points < cost) { notify(t('notifications.insufficient_points'), 'error'); return; }
   }
   
   console.log('[GEN] Prompt:', p);
@@ -341,9 +414,9 @@ async function generate() {
   
   try {
     console.log('[GEN] Appel proxy...');
-    var result = await generateImageViaProxy(p, w, h);    console.log('[GEN] Proxy OK:', result.url);
-    var url = result.url, fileName = result.fileName, providerName = result.provider;
-        if (logged && providerName !== 'fal.ai' && providerName !== 'Pollinations') {
+    var result = await generateImageViaProxy(p, w, h);
+    console.log('[GEN] Proxy OK:', result.url);
+    var url = result.url, fileName = result.fileName, providerName = result.provider;        if (logged && providerName !== 'fal.ai' && providerName !== 'Pollinations') {
       notify(t('notifications.via_provider') + ' ' + providerName, 'success');
     }
     
@@ -366,8 +439,7 @@ async function generate() {
         validatePendingReferral(currentUser.id);
         getUserData().then(function(fd) {
           var ng = (fd.total_generated || 0) + 1;
-          db.from('user_data').update({ total_generated: ng }).eq('user_id', currentUser.id).catch(function() {});
-        });
+          db.from('user_data').update({ total_generated: ng }).eq('user_id', currentUser.id).catch(function() {});        });
       }
       var dm = isDiscounted ? t('notifications.discount_tag') : '';
       var cd = logged ? (' (-' + cost + ' ' + t('generator.cost_pts') + dm + ')') : '';
@@ -390,7 +462,8 @@ async function generate() {
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
 
-// ✅ Fonction de nettoyage désactivée pour stockage permanentasync function cleanupExpiredCreations() {
+// ✅ AJOUT 5 : Fonction de nettoyage désactivée pour respecter le stockage permanent
+async function cleanupExpiredCreations() {
   // Désactivé : Les images sont désormais stockées de manière permanente sur R2 pour le SEO et l'UX.
   console.log('[Nettoyage] Désactivé : Stockage permanent activé.');
   return;
@@ -408,15 +481,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     await cleanupExpiredCreations();
     await loadStudio();
     
-    // Fallback AdBlock : cache le bloc sponsorisé s'il est vide après 2s
+    // ✅ AJOUT 6 : Fallback AdBlock pour cacher le bloc sponsorisé s'il est vide après 2s
     setTimeout(function() {
       var sponsorBlock = document.getElementById('sponsorised-container');
       if (sponsorBlock && sponsorBlock.children.length === 0) {
         sponsorBlock.style.display = 'none';
       }
     }, 2000);
-    
-    console.log('[INIT] ✅ Tout chargé');
+        console.log('[INIT] ✅ Tout chargé');
   } catch(err) {
     console.error('[INIT] ERREUR FATALE:', err);
     notify('Erreur init: ' + err.message, 'error');
