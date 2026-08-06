@@ -1,5 +1,6 @@
 // api/share.js
 export default function handler(req, res) {
+  // Récupère l'image et la langue depuis l'URL, avec des valeurs par défaut
   const imgUrl = req.query.img || 'https://iapixora.com/og-image.jpg';
   const lang = req.query.lang === 'en' ? 'en' : 'fr';
 
@@ -16,6 +17,8 @@ export default function handler(req, res) {
 
   const t = texts[lang];
 
+  // On injecte l'URL de l'image DIRECTEMENT dans le HTML côté serveur
+  // C'est ça que Twitter va lire !
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
@@ -24,7 +27,7 @@ export default function handler(req, res) {
     <title>${t.title}</title>
     <meta name="description" content="${t.desc}">
     
-    <!-- Meta tags pour Twitter/Facebook -->
+    <!-- META TAGS DYNAMIQUES POUR LES RÉSEAUX SOCIAUX -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="IA Pixora">
     <meta property="og:title" content="${t.title}">
@@ -44,10 +47,10 @@ export default function handler(req, res) {
     <style>
         :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',sans-serif}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem;text-align:center}
-        .container{max-width:600px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.2rem}
+        body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem;text-align:center}        .container{max-width:600px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.2rem}
         .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);margin-bottom:0.3rem}
-        .logo svg{width:32px;height:32px}        .logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .logo svg{width:32px;height:32px}
+        .logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .badge-free{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
         .image-wrapper{width:100%;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.25);position:relative;background:var(--surf)}
         .image-wrapper img{width:100%;height:auto;display:block}
@@ -84,7 +87,6 @@ export default function handler(req, res) {
         <a href="https://iapixora.com/gallery.html" class="btn-secondary"><i class="fas fa-images"></i> ${lang === 'fr' ? 'Voir la galerie' : 'View gallery'}</a>
         <div class="footer">© 2026 IA Pixora · <a href="https://iapixora.com/privacy.html">Confidentialité</a></div>
     </div>
-
     <script>
         function downloadImage(url) {
             fetch(url).then(r=>r.blob()).then(blob=>{
@@ -94,9 +96,9 @@ export default function handler(req, res) {
                 document.body.appendChild(a); a.click(); document.body.removeChild(a);
             }).catch(()=> window.open(url, '_blank'));
         }
-    <\/script>
-</body>
+    <\/script></body>
 </html>`;
+
   res.setHeader('Content-Type', 'text/html');
   res.status(200).send(html);
 }
