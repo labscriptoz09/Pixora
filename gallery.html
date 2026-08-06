@@ -42,21 +42,21 @@
         /* ✅ OVERLAY BAS : 4 boutons alignés */
         .result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);display:flex;align-items:flex-end;justify-content:space-between;padding:0.5rem;gap:0.3rem;opacity:0;transition:opacity 0.3s;z-index:4}.result-card:hover .result-overlay{opacity:1}@media(hover:none){.result-overlay{opacity:1}}
         
-        /* ✅ CONTENEUR FLEX POUR LES 4 BOUTONS */
+        /* ✅ CONTENEUR FLEX - Centré avec gap */
         .card-actions{display:flex;gap:0.3rem;align-items:center;justify-content:flex-start}
         
-        /* ✅ BOUTON VOTE - Taille contrôlée TOUS APPAREILS */
+        /* ✅ BOUTON VOTE - Taille contrôlée, PAS flex:1 */
         .action-btn{display:flex;align-items:center;justify-content:center;gap:0.2rem;padding:0.4rem 0.6rem;background:rgba(239,68,68,0.2);backdrop-filter:blur(10px);border:1px solid rgba(239,68,68,0.4);border-radius:8px;color:#FCA5A5;font-size:0.7rem;font-weight:600;transition:all 0.2s;cursor:pointer;min-width:60px;max-width:80px}.action-btn:hover{background:#EF4444;border-color:#EF4444;transform:scale(1.05);box-shadow:0 0 15px rgba(239,68,68,0.5)}.action-btn.voted{background:rgba(239,68,68,0.5);border-color:#EF4444;color:#fff}.action-btn i{font-size:0.75rem}.action-count{font-family:var(--mono);font-size:0.65rem}
-                /* ✅ BOUTON COMMENTAIRE - Taille contrôlée TOUS APPAREILS */
+                /* ✅ BOUTON COMMENTAIRE - Taille contrôlée, PAS flex:1 */
         .action-btn-comment{display:flex;align-items:center;justify-content:center;gap:0.2rem;padding:0.4rem 0.6rem;background:rgba(249,115,22,0.2);backdrop-filter:blur(10px);border:1px solid rgba(249,115,22,0.4);border-radius:8px;color:#FDBA74;font-size:0.7rem;font-weight:600;transition:all 0.2s;cursor:pointer;min-width:60px;max-width:80px}.action-btn-comment:hover{background:#F97316;border-color:#F97316;transform:scale(1.05);box-shadow:0 0 15px rgba(249,115,22,0.5)}.action-btn-comment i{font-size:0.75rem}
         
         /* ✅ CONTENEUR DROIT POUR DOWNLOAD + SHARE */
         .action-buttons-right{display:flex;gap:0.3rem;align-items:center}
         
-        /* ✅ BOUTON DOWNLOAD - Taille fixe TOUS APPAREILS */
+        /* ✅ BOUTON DOWNLOAD (Vert) - Taille fixe */
         .dl-btn{width:38px;height:38px;background:rgba(16,185,129,0.2);backdrop-filter:blur(10px);border:1px solid rgba(16,185,129,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#6EE7B7;font-size:0.8rem;transition:all 0.2s;cursor:pointer;flex-shrink:0}.dl-btn:hover{background:#10B981;border-color:#10B981;transform:scale(1.1);box-shadow:0 0 15px rgba(16,185,129,0.6)}
         
-        /* ✅ BOUTON SHARE - Taille fixe TOUS APPAREILS */
+        /* ✅ BOUTON SHARE (Rose) - Taille fixe */
         .share-btn-gallery{width:38px;height:38px;background:rgba(236,72,153,0.2);backdrop-filter:blur(10px);border:1px solid rgba(236,72,153,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#F9A8D4;font-size:0.8rem;transition:all 0.2s;cursor:pointer;flex-shrink:0}.share-btn-gallery:hover{background:#EC4899;border-color:#EC4899;transform:scale(1.1);box-shadow:0 0 15px rgba(236,72,153,0.6)}
         
         /* ✅ MOBILE : Ajustement pour petits écrans */
@@ -109,7 +109,7 @@
             <a class="share-btn bluesky" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a>
             <a class="share-btn mastodon" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a>
         </div>
-        <div class="share-category" data-i18n="share.cat_regional"> Régionaux</div>
+        <div class="share-category" data-i18n="share.cat_regional">🌍 Régionaux</div>
         <div class="share-grid">
             <a class="share-btn wechat" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a>
             <a class="share-btn line" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a>
@@ -122,7 +122,7 @@
 <div class="comment-modal" id="comment-modal"><div class="comment-box"><h3><i class="fas fa-comment-dots"></i> <span data-i18n="comment.title">Laisser un commentaire</span></h3><textarea class="comment-input" id="comment-input" data-i18n-placeholder="comment.placeholder" placeholder="Votre commentaire (min. 10 caractères)..."></textarea><div class="comment-char" id="comment-char">0/10 min</div><div class="comment-actions"><button class="comment-btn secondary" onclick="closeCommentModal()" data-i18n="comment.cancel">Annuler</button><button class="comment-btn primary" id="btn-submit-comment" onclick="submitComment()"><i class="fas fa-paper-plane"></i> <span data-i18n="comment.send">Envoyer</span></button></div></div></div>
 <div class="lightbox" id="lightbox"><div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div><img id="lb-img" src="" alt="Zoom"><div class="lightbox-actions"><button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="lightbox.download">Télécharger</span></button><button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="lightbox.close">Fermer</span></button></div></div>
 
-<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeGalleryLang(this.value)"><option value="fr">🇷 FR</option><option value="en">🇬🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
+<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeGalleryLang(this.value)"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
 
 <nav class="nav-mobile"><a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a><a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a><a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a><a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a></nav>
 
@@ -140,19 +140,22 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
 <script>
+// =============================================
+// I18N GALERIE
+// =============================================
 var GALLERY_I18N = {
     fr: {
-        header:{login:'Connexion',points:'points'},
-        menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
+        header:{login:'Connexion',points:'points'},        menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
         nav:{studio:'Studio',gallery:'Galerie'},
-        gallery:{title:'Galerie Publique',subtitle:'Découvrez et inspirez-vous des créations permanentes de la communauté IA Pixora',empty:'Aucune création pour le moment.',empty_cta:'Soyez le premier à générer dans le Studio !',error:'Erreur chargement galerie',permanent_title:'Créations de référence'},        comment:{title:'Laisser un commentaire',placeholder:'Votre commentaire (min. 10 caractères)...',cancel:'Annuler',send:'Envoyer',too_short:'Commentaire trop court (min. 10 caractères)',success:'+2 points pour votre commentaire !',already_today:'Vous avez déjà commenté aujourd\'hui',login_required:'Connectez-vous pour commenter'},
+        gallery:{title:'Galerie Publique',subtitle:'Découvrez et inspirez-vous des créations permanentes de la communauté IA Pixora',empty:'Aucune création pour le moment.',empty_cta:'Soyez le premier à générer dans le Studio !',error:'Erreur chargement galerie',permanent_title:'Créations de référence'},
+        comment:{title:'Laisser un commentaire',placeholder:'Votre commentaire (min. 10 caractères)...',cancel:'Annuler',send:'Envoyer',too_short:'Commentaire trop court (min. 10 caractères)',success:'+2 points pour votre commentaire !',already_today:'Vous avez déjà commenté aujourd\'hui',login_required:'Connectez-vous pour commenter'},
         vote:{success:'+2 points pour votre vote !',already_today:'Vous avez déjà voté aujourd\'hui',already_voted:'Vous avez déjà voté cette création',login_required:'Connectez-vous pour voter'},
         lightbox:{download:'Télécharger',close:'Fermer'},
         common:{loading:'Chargement...'},
         footer:{studio:'Studio',points:'Points',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
         toast:{vote_error:'ERREUR VOTE: ',comment_error:'ERREUR COMMENT: ',gallery_error:'ERREUR GALERIE: '},
-        actions:{remix:'Remix',prompt:'Copier le prompt',remix_success:'✨ Prompt remixé ! Redirection vers le Studio...',prompt_copied:' Prompt copié dans le presse-papier !',prompt_unavailable:'⚠️ Prompt non disponible'},
-        share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:' Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'}
+        actions:{remix:'Remix',prompt:'Copier le prompt',remix_success:'✨ Prompt remixé ! Redirection vers le Studio...',prompt_copied:'📋 Prompt copié dans le presse-papier !',prompt_unavailable:'️ Prompt non disponible'},
+        share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'}
     },
     en: {
         header:{login:'Login',points:'points'},
@@ -165,8 +168,8 @@ var GALLERY_I18N = {
         common:{loading:'Loading...'},
         footer:{studio:'Studio',points:'Points',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},
         toast:{vote_error:'VOTE ERROR: ',comment_error:'COMMENT ERROR: ',gallery_error:'GALLERY ERROR: '},
-        actions:{remix:'Remix',prompt:'Copy Prompt',remix_success:'✨ Prompt remixed! Redirecting to Studio...',prompt_copied:' Prompt copied to clipboard!',prompt_unavailable:'️ Prompt not available'},
-        share:{title:'Share',copy:'Copy',cat_messaging:' Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:'🌍 Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'}
+        actions:{remix:'Remix',prompt:'Copy Prompt',remix_success:'✨ Prompt remixed! Redirecting to Studio...',prompt_copied:'📋 Prompt copied to clipboard!',prompt_unavailable:'⚠️ Prompt not available'},
+        share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:' Communities',cat_regional:'🌍 Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'}
     }
 };
 
@@ -176,6 +179,9 @@ function applyGalleryTranslations(){document.querySelectorAll('[data-i18n]').for
 function changeGalleryLang(lang){currentGalleryLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;applyGalleryTranslations()}
 function detectGalleryLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();if(nav.indexOf('en')!==-1)return'en';return'fr'}
 
+// =============================================
+// SUPABASE
+// =============================================
 var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co';
 var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -185,29 +191,47 @@ var currentCommentFile='';
 var currentShareUrl='';
 var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
 
-var VOTE_LIMIT=1;
-var COMMENT_LIMIT=1;
+// =============================================
+// LIMITES DYNAMIQUES
+// =============================================
+var VOTE_LIMIT=1;var COMMENT_LIMIT=1;
 async function loadTaskLimits(){try{var result=await db.from('admin_config').select('value').eq('key','internal_tasks').single();if(result.data&&result.data.value){var tasks=result.data.value;for(var i=0;i<tasks.length;i++){if(tasks[i].type==='vote'&&tasks[i].active){VOTE_LIMIT=tasks[i].limit||1}if(tasks[i].type==='comment'&&tasks[i].active){COMMENT_LIMIT=tasks[i].limit||1}}}}catch(e){console.error('Load task limits error:',e)}}
 
+// =============================================
+// TOAST
+// =============================================
 function showToast(message,type){type=type||'success';var t=document.getElementById('toast');var icon=type==='error'?'fa-exclamation-circle':'fa-check-circle';t.innerHTML='<i class="fas '+icon+'"></i><span id="toast-text">'+message+'</span>';t.className='toast-notification show '+type;setTimeout(function(){t.classList.remove('show')},5000)}
 
+// =============================================
+// USER MENU
+// =============================================
 function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
 function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
 document.addEventListener('click',function(e){var menu=document.getElementById('user-menu');var avatar=document.getElementById('user-avatar');var mob=document.getElementById('mob-profile');if(!menu.contains(e.target)&&!avatar.contains(e.target)&&!mob.contains(e.target))closeUserMenu()});
-async function doLogout(){await db.auth.signOut();closeUserMenu();updateUI();setTimeout(function(){location.reload()},800)}async function getUser(){var r=await db.auth.getUser();return r.data.user}
+async function doLogout(){await db.auth.signOut();closeUserMenu();updateUI();setTimeout(function(){location.reload()},800)}
+async function getUser(){var r=await db.auth.getUser();return r.data.user}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,user_id:null};var r=await db.from('user_data').select('*').eq('user_id',u.id).single();var d=r.data||{points:0,streak:1};d.user_id=u.id;return d}
 async function updateUI(){var logged=await getUser();document.getElementById('user-stats').classList.toggle('show',!!logged);document.getElementById('user-avatar').classList.toggle('show',!!logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('menu-points').textContent=d.points||0;var name=logged.user_metadata&&logged.user_metadata.name?logged.user_metadata.name:'Utilisateur';var initial=name.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=initial;document.getElementById('menu-avatar').textContent=initial;document.getElementById('menu-name').textContent=name;document.getElementById('menu-email').textContent=logged.email}}
 
+// =============================================
+// LIGHTBOX
+// =============================================
 function openLB(url){lbUrl=url;document.getElementById('lb-img').src=url;document.getElementById('lightbox').style.display='flex';document.body.style.overflow='hidden'}
 function closeLB(){document.getElementById('lightbox').style.display='none';document.body.style.overflow='';lbUrl=''}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
 async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl);var b=await r.blob();var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}catch(e){window.open(lbUrl,'_blank')}}
 async function dlDirect(btn){var card=btn.closest('.result-card');var img=card.querySelector('img');if(!img||!img.src)return;try{var r=await fetch(img.src);var b=await r.blob();var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}catch(e){window.open(img.src,'_blank')}}
 
+// =============================================
+// ✅ NOUVELLES FONCTIONS REMIX ET PROMPT
+// =============================================
 function remixPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){showToast(tGallery('actions.prompt_unavailable'),'error');return}showToast(tGallery('actions.remix_success'),'success');window.location.href='index.html?remix='+encodeURIComponent(prompt)}
 function copyPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){showToast(tGallery('actions.prompt_unavailable'),'error');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(function(){showToast(tGallery('actions.prompt_copied'),'success')}).catch(function(){fallbackCopyPrompt(prompt)})}else{fallbackCopyPrompt(prompt)}}
 function fallbackCopyPrompt(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast(tGallery('actions.prompt_copied'),'success')}catch(e){showToast('Copy failed','error')}document.body.removeChild(ta)}
 
+// =============================================
+// ✅ FONCTIONS DE PARTAGE
+// =============================================
 function openShareModal(imgUrl){currentShareUrl=imgUrl;document.getElementById('share-preview').innerHTML='<img src="'+imgUrl+'" alt="Share preview">';document.getElementById('share-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeShareModal(){document.getElementById('share-modal').classList.remove('active');document.body.style.overflow='';currentShareUrl=''}
 document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});
@@ -217,14 +241,22 @@ function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whats
 function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){showToast('✅ Lien copié !','success')}).catch(function(){fallbackCopyLink(url)});else fallbackCopyLink(url)}
 function fallbackCopyLink(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast('✅ Lien copié !','success')}catch(e){showToast('Copy failed','error')}document.body.removeChild(ta)}
 
-async function doVote(fileName,btnElement){var user=await getUser();if(!user){showToast(tGallery('vote.login_required'),'error');return}try{var startOfDay=new Date();startOfDay.setHours(0,0,0,0);var todayVotes=await db.from('votes').select('*',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',startOfDay.toISOString());if(todayVotes.error)throw new Error(todayVotes.error.message);if(todayVotes.count>=VOTE_LIMIT){showToast(tGallery('vote.already_today')+' ('+VOTE_LIMIT+'/jour)','error');return}var existing=await db.from('votes').select('id').eq('user_id',user.id).eq('creation_id',fileName).limit(1);if(existing.error)throw new Error(existing.error.message);if(existing.data&&existing.data.length>0){showToast(tGallery('vote.already_voted'),'error');return}var insertRes=await db.from('votes').insert({user_id:user.id,creation_id:fileName});if(insertRes.error)throw new Error(insertRes.error.message);var ud=await getUserData();var newPts=(ud.points||0)+2;var newEarned=(ud.total_earned||0)+2;await Promise.all([db.from('user_data').update({points:newPts,total_earned:newEarned}).eq('user_id',user.id),db.from('transactions').insert({user_id:user.id,type:'earned',title:'Voter pour une création',amount:2}),db.from('task_completions').insert({user_id:user.id,task_name:'Voter pour une création',task_type:'vote',points:2})]);document.getElementById('header-points').textContent=newPts;document.getElementById('menu-points').textContent=newPts;document.getElementById('nav-points-badge').textContent=newPts;if(btnElement){btnElement.classList.add('voted');var countSpan=btnElement.querySelector('.action-count');if(countSpan)countSpan.textContent=parseInt(countSpan.textContent)+1}showToast(tGallery('vote.success'),'success');setTimeout(function(){window.location.href='earn.html?validated=vote'},1500)}catch(e){console.error('Vote error:',e);showToast(tGallery('toast.vote_error')+e.message,'error')}}
+// =============================================
+// VOTE
+// =============================================async function doVote(fileName,btnElement){var user=await getUser();if(!user){showToast(tGallery('vote.login_required'),'error');return}try{var startOfDay=new Date();startOfDay.setHours(0,0,0,0);var todayVotes=await db.from('votes').select('*',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',startOfDay.toISOString());if(todayVotes.error)throw new Error(todayVotes.error.message);if(todayVotes.count>=VOTE_LIMIT){showToast(tGallery('vote.already_today')+' ('+VOTE_LIMIT+'/jour)','error');return}var existing=await db.from('votes').select('id').eq('user_id',user.id).eq('creation_id',fileName).limit(1);if(existing.error)throw new Error(existing.error.message);if(existing.data&&existing.data.length>0){showToast(tGallery('vote.already_voted'),'error');return}var insertRes=await db.from('votes').insert({user_id:user.id,creation_id:fileName});if(insertRes.error)throw new Error(insertRes.error.message);var ud=await getUserData();var newPts=(ud.points||0)+2;var newEarned=(ud.total_earned||0)+2;await Promise.all([db.from('user_data').update({points:newPts,total_earned:newEarned}).eq('user_id',user.id),db.from('transactions').insert({user_id:user.id,type:'earned',title:'Voter pour une création',amount:2}),db.from('task_completions').insert({user_id:user.id,task_name:'Voter pour une création',task_type:'vote',points:2})]);document.getElementById('header-points').textContent=newPts;document.getElementById('menu-points').textContent=newPts;document.getElementById('nav-points-badge').textContent=newPts;if(btnElement){btnElement.classList.add('voted');var countSpan=btnElement.querySelector('.action-count');if(countSpan)countSpan.textContent=parseInt(countSpan.textContent)+1}showToast(tGallery('vote.success'),'success');setTimeout(function(){window.location.href='earn.html?validated=vote'},1500)}catch(e){console.error('Vote error:',e);showToast(tGallery('toast.vote_error')+e.message,'error')}}
 
+// =============================================
+// COMMENTAIRE
+// =============================================
 function openCommentModal(fileName){currentCommentFile=fileName;document.getElementById('comment-input').value='';document.getElementById('comment-char').textContent='0/10 min';document.getElementById('comment-modal').style.display='flex';document.getElementById('comment-input').focus()}
 function closeCommentModal(){document.getElementById('comment-modal').style.display='none';currentCommentFile=''}
 document.getElementById('comment-modal').addEventListener('click',function(e){if(e.target===this)closeCommentModal()});
 document.getElementById('comment-input').addEventListener('input',function(){var len=this.value.trim().length;document.getElementById('comment-char').textContent=len+'/10 min';document.getElementById('comment-char').style.color=len>=10?'var(--success)':'var(--dim)'});
 async function submitComment(){var user=await getUser();if(!user){showToast(tGallery('comment.login_required'),'error');return}var content=document.getElementById('comment-input').value.trim();if(content.length<10){showToast(tGallery('comment.too_short'),'error');return}var btn=document.getElementById('btn-submit-comment');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var startOfDay=new Date();startOfDay.setHours(0,0,0,0);var todayComments=await db.from('comments').select('*',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',startOfDay.toISOString());if(todayComments.error)throw new Error(todayComments.error.message);if(todayComments.count>=COMMENT_LIMIT){showToast(tGallery('comment.already_today')+' ('+COMMENT_LIMIT+'/jour)','error');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>';return}var insertRes=await db.from('comments').insert({user_id:user.id,creation_id:currentCommentFile,content:content});if(insertRes.error)throw new Error(insertRes.error.message);var ud=await getUserData();var newPts=(ud.points||0)+2;var newEarned=(ud.total_earned||0)+2;await Promise.all([db.from('user_data').update({points:newPts,total_earned:newEarned}).eq('user_id',user.id),db.from('transactions').insert({user_id:user.id,type:'earned',title:'Commenter une création',amount:2}),db.from('task_completions').insert({user_id:user.id,task_name:'Commenter une création',task_type:'comment',points:2})]);document.getElementById('header-points').textContent=newPts;document.getElementById('menu-points').textContent=newPts;document.getElementById('nav-points-badge').textContent=newPts;closeCommentModal();showToast(tGallery('comment.success'),'success');setTimeout(function(){window.location.href='earn.html?validated=comment'},1500)}catch(e){console.error('Comment error:',e);showToast(tGallery('toast.comment_error')+e.message,'error')}btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>'}
 
+// =============================================
+// ✅ GALERIE CORRIGÉE AVEC 6 BOUTONS DE MÊME TAILLE
+// =============================================
 async function loadGallery(){console.log('[GALLERY] Début du chargement...');var grid=document.getElementById('gallery-grid');try{var result=await db.from('pixora_creations').select('file_name,created_at,expires_at,prompt').order('created_at',{ascending:false}).limit(50);console.log('[GALLERY] Résultat DB:',result);if(result.error){console.error('[GALLERY] Erreur DB:',result.error);throw new Error(result.error.message)}if(!result.data||result.data.length===0){console.log('[GALLERY] Aucune donnée');grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>'+tGallery('gallery.empty')+'<br>'+tGallery('gallery.empty_cta')+'</p></div>';return}var now=new Date().toISOString();var validItems=result.data.filter(function(item){return!item.expires_at||item.expires_at>now});console.log('[GALLERY] Items valides:',validItems.length);if(validItems.length===0){grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><p>Aucune création valide.</p></div>';return}var user=await getUser();var userId=user?user.id:null;var promises=validItems.map(function(item){var rawName=item.file_name;var promptText=item.prompt||'';var url='';var isSupabase=(rawName.indexOf('supabase_')===0);if(isSupabase){var realName=rawName.replace('supabase_','');try{url=db.storage.from(BUCKET).getPublicUrl(realName).data.publicUrl}catch(e){return null}}else{url=R2_PUBLIC_URL+'/'+rawName}var pVotes=db.from('votes').select('id',{count:'exact',head:true}).eq('creation_id',rawName);var pComments=db.from('comments').select('id',{count:'exact',head:true}).eq('creation_id',rawName);var pUserVoted=userId?db.from('votes').select('id').eq('user_id',userId).eq('creation_id',rawName).limit(1):Promise.resolve({data:[]});return Promise.all([pVotes,pComments,pUserVoted]).then(function(results){return{name:rawName,prompt:promptText,url:url,voteCount:results[0].count||0,commentCount:results[1].count||0,userVoted:results[2].data&&results[2].data.length>0}}).catch(function(err){console.error('Stats error for '+rawName+':',err);return{name:rawName,prompt:promptText,url:url,voteCount:0,commentCount:0,userVoted:false}})});var stats=await Promise.all(promises);stats=stats.filter(function(s){return s!==null});console.log('[GALLERY] Stats chargées:',stats.length);grid.innerHTML='';stats.forEach(function(s){var card=document.createElement('div');card.className='result-card';if(s.prompt){card.setAttribute('data-prompt',s.prompt)}card.innerHTML='<img src="'+s.url+'" alt="Création IA Pixora" loading="lazy" onerror="this.parentElement.style.display=\'none\'">'+
 '<div class="gallery-overlay">'+
 '<button class="gallery-btn gallery-btn-remix" onclick="event.stopPropagation();remixPrompt(this.closest(\'.result-card\'))" title="'+tGallery('actions.remix')+'"><i class="fas fa-wand-magic-sparkles"></i></button>'+
@@ -241,6 +273,9 @@ async function loadGallery(){console.log('[GALLERY] Début du chargement...');va
 '</div>'+
 '</div>';card.onclick=function(){openLB(s.url)};grid.appendChild(card)});console.log('[GALLERY] ✅ Galerie chargée avec succès')}catch(err){console.error('[GALLERY] ERREUR:',err);showToast(tGallery('toast.gallery_error')+err.message,'error');grid.innerHTML='<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur: '+err.message+'</p></div>'}}
 
+// =============================================
+// INIT
+// =============================================
 document.addEventListener('DOMContentLoaded',async function(){console.log('[INIT] Démarrage...');var lang=detectGalleryLang();currentGalleryLang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;document.documentElement.lang=lang;applyGalleryTranslations();await loadTaskLimits();await updateUI();await loadGallery()});
 </script>
 </body>
