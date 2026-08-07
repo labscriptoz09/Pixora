@@ -38,18 +38,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Dimensions invalides' });
     }
 
-    // ✅ 4. RATE LIMITING BASIQUE (par IP)
-    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    // TODO: Implémenter un vrai rate limiter avec Redis ou memory-store
-    // Exemple simple (à remplacer par un store persistant):
-    /*
-    const rateLimit = await checkRateLimit(clientIp);
-    if (rateLimit.exceeded) {
-      return res.status(429).json({ error: 'Trop de requêtes. Réessayez plus tard.' });
-    }
-    */
-
-    // ✅ 5. APPELER LE WORKER (inchangé)
+    // ✅ 4. APPELER LE WORKER (inchangé)
     const workerResponse = await fetch('https://ia-pixora-api.slimansoufian1.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -64,7 +53,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ 6. SAUVEGARDE SUPABASE (sans userId du client)
+    // ✅ 5. SAUVEGARDE SUPABASE (sans userId du client)
     try {
       const supabase = createClient(
         process.env.SUPABASE_URL,
@@ -74,24 +63,21 @@ export default async function handler(req, res) {
       const permanentDate = new Date();
       permanentDate.setFullYear(permanentDate.getFullYear() + 10);
 
-      // On ne prend PAS userId du body (sécurité)
-      // L'Edge Function gère l'auth, ici on sauvegarde juste l'image
       await supabase
         .from('pixora_creations')
         .insert({
           file_name: data.fileName,
-          user_id: null, // ✅ L'Edge Function lie l'user si besoin
+          user_id: null,
           expires_at: permanentDate.toISOString(),
-          prompt: prompt.substring(0, 1000), // ✅ Truncated
+          prompt: prompt.substring(0, 1000),
           created_at: new Date().toISOString()
         });
 
     } catch (dbError) {
-      // ✅ Pas de console.log en production
-      // Log vers un service externe (Sentry, etc.)
+      // Silencieux en production
     }
 
-    // ✅ 7. RÉPONSE
+    // ✅ 6. RÉPONSE
     return res.status(200).json({
       success: true,
       url: data.url,
@@ -103,7 +89,6 @@ export default async function handler(req, res) {
   } catch (error) {
     return res.status(500).json({ 
       error: 'Erreur serveur'
-      // ✅ Pas de details: error.message en production
     });
   }
 }
