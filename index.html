@@ -113,16 +113,27 @@
 <script src="ads-loader.js"></script>
 <script>
 window.onerror = function(msg, url, line, col, error) {
-  console.error('ERREUR JS:', msg, 'Ligne:', line, 'URL:', url);
+  // ✅ Masquer les erreurs en production
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    console.error('ERREUR JS:', msg, 'Ligne:', line, 'URL:', url);
+  }
   var n = document.getElementById('notif');
   if(n) {
-    document.getElementById('notif-text').textContent = '❌ ERREUR: ' + msg;
+    document.getElementById('notif-text').textContent = '❌ Une erreur est survenue. Réessayez.';
     n.className = 'notification show error';
     setTimeout(function(){ n.classList.remove('show'); }, 5000);
   }
 };
 
+// ✅ SUPPRESSION DES CONSOLE.LOG EN PRODUCTION
+if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  console.log = function(){};
+  console.warn = function(){};
+  console.error = function(){};
+}
+
 var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
+var isGenerating = false; // ✅ Verrou anti-spam
 function getAnonCount(){return parseInt(localStorage.getItem(PX_ANON_KEY)||'0')}
 function incrementAnonCount(){var c=getAnonCount()+1;localStorage.setItem(PX_ANON_KEY,c.toString());return c}
 function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}
@@ -237,16 +248,33 @@ var DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponso
 var CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
 var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
 
+// ✅ CORRIGÉ: Appel sécurisé via Edge Function Supabase
 async function generateImageViaProxy(prompt, width, height) {
-  console.log('[PROXY] Appel /api/generate...');
-  var response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt: prompt, width: width, height: height })
-  });  var data = await response.json();
-  console.log('[PROXY] Réponse:', data);
-  if (!response.ok) throw new Error(data.error || 'Erreur serveur: ' + response.status);
-  return { url: data.url, fileName: data.fileName, provider: 'IA Pixora Cloud' };
+  const { data: { session } } = await db.auth.getSession();
+
+  if (!session) {
+    throw new Error("Authentification requise");
+  }
+
+  const response = await fetch(
+    'https://cfwzilhetkclpytjsopu.supabase.co/functions/v1/generate-image',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ prompt, width, height }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Erreur serveur: ' + response.status);
+  }
+
+  return data;
 }
 
 async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value}catch(e){console.error('Load API keys error:',e)}}
@@ -327,6 +355,8 @@ async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-
 async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim(),pv=document.getElementById('r-pw').value,nv=document.getElementById('r-name').value.trim(),r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;var nid=sr.data.user?sr.data.user.id:null;if(nid){await ensureUserData(nid);await grantSignupBonus(nid);await processReferral(nid)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
 async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
+// ✅ DÉPRÉCIÉ: Les transactions sont gérées par l'Edge Function
+// Gardé pour compatibilité avec d'autres pages
 async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
 function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
 document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});
@@ -405,8 +435,23 @@ async function uploadToStorage(fileName, prompt) {
   console.log('[STORAGE] Ignoré - sauvegarde gérée par API:', fileName);
 }
 async function generate() {
+  // ✅ Verrou anti-spam
+  if (isGenerating) {
+    notify("⏳ Une génération est déjà en cours...", "error");
+    return;
+  }
+
+  isGenerating = true;
+  var btnGen = document.querySelector('.btn-gen');
+  if (btnGen) btnGen.disabled = true;
+
   console.log('[GEN] Démarrage...');
-  if (curType === 'video') { notifyVideoSoon(); return; }
+  if (curType === 'video') { 
+    isGenerating = false;
+    if (btnGen) btnGen.disabled = false;
+    notifyVideoSoon(); 
+    return; 
+  }
   var p = document.getElementById('prompt').value.trim();
   if (!p) { notify(t('notifications.enter_prompt'), 'error'); return; }
   
@@ -415,6 +460,7 @@ async function generate() {
     var allowed = await checkFreemiumBlock();
     if (!allowed) { notify(t('notifications.freemium_limit'), 'error'); return; }
   }
+  // ✅ La vérification des points est faite côté serveur par l'Edge Function
   if (logged) {
     await loadUserTier();
     var c = CONFIG_TIERS[currentTier] || DEFAULT_TIERS[1];
@@ -422,7 +468,7 @@ async function generate() {
     var baseCost = c.costs.image;
     isDiscounted = userData.discount_until && new Date(userData.discount_until) > new Date();
     cost = isDiscounted ? Math.ceil(baseCost / 2) : baseCost;
-    if (userData.points < cost) { notify(t('notifications.insufficient_points'), 'error'); return; }
+    // La vérification réelle est faite par l'Edge Function
   }
     console.log('[GEN] Prompt:', p);
   notify(t('notifications.generating'), 'success');
@@ -463,13 +509,12 @@ async function generate() {
       card.onclick = function() { openLB(url, 'image'); };
       card.setAttribute('data-prompt', p);
       // uploadToStorage(fileName, p); // DÉSACTIVÉ - l'API gère la sauvegarde
-      if (logged && currentUser && currentUser.id) {
-        saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
+      // ✅ Les points sont débités côté serveur par l'Edge Function
+      // Rafraîchir l'UI pour refléter le nouveau solde
+      if (logged) {
         validatePendingReferral(currentUser.id);
-        getUserData().then(function(fd) {
-          var ng = (fd.total_generated || 0) + 1;
-          db.from('user_data').update({ total_generated: ng }).eq('user_id', currentUser.id).catch(function() {});
-        });
+        updateUI();
+        loadMiniBadge();
       }
       var dm = isDiscounted ? t('notifications.discount_tag') : '';
       var cd = logged ? (' (-' + cost + ' ' + t('generator.cost_pts') + dm + ')') : '';
@@ -505,6 +550,11 @@ async function generate() {
     var to = card.querySelector('.timer-overlay');
     if (to) { to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur: ' + err.message + '</div>'; }
     notify('Erreur: ' + err.message, 'error');
+  } finally {
+    // ✅ Libérer le verrou
+    isGenerating = false;
+    var btnGen = document.querySelector('.btn-gen');
+    if (btnGen) btnGen.disabled = false;
   }
 }
 
