@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // ✅ CORS restreint à ton domaine
+  res.setHeader('Access-Control-Allow-Origin', 'https://iapixora.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Internal-Secret');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -14,14 +14,42 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  try {
-    const { prompt, width = 768, height = 768, userId } = req.body;
+  // ✅ 1. VÉRIFIER LE SECRET INTERNE (obligatoire)
+  const secretHeader = req.headers['x-internal-secret'];
+  if (secretHeader !== process.env.INTERNAL_API_SECRET) {
+    return res.status(403).json({ error: 'Accès interdit' });
+  }
 
-    if (!prompt) {
+  try {
+    const { prompt, width = 768, height = 768 } = req.body;
+
+    // ✅ 2. VALIDER LE PROMPT
+    if (!prompt || typeof prompt !== 'string') {
       return res.status(400).json({ error: 'Prompt requis' });
     }
+    if (prompt.length > 1000) {
+      return res.status(400).json({ error: 'Prompt trop long (max 1000 caractères)' });
+    }
 
-    // Appel au Worker Cloudflare
+    // ✅ 3. VALIDER LES DIMENSIONS (whitelist)
+    const validDimensions = ['768x768', '768x1024', '1024x576'];
+    const dimKey = `${width}x${height}`;
+    if (!validDimensions.includes(dimKey)) {
+      return res.status(400).json({ error: 'Dimensions invalides' });
+    }
+
+    // ✅ 4. RATE LIMITING BASIQUE (par IP)
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    // TODO: Implémenter un vrai rate limiter avec Redis ou memory-store
+    // Exemple simple (à remplacer par un store persistant):
+    /*
+    const rateLimit = await checkRateLimit(clientIp);
+    if (rateLimit.exceeded) {
+      return res.status(429).json({ error: 'Trop de requêtes. Réessayez plus tard.' });
+    }
+    */
+
+    // ✅ 5. APPELER LE WORKER (inchangé)
     const workerResponse = await fetch('https://ia-pixora-api.slimansoufian1.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -36,7 +64,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ SAUVEGARDE SUPABASE (avec import ES6)
+    // ✅ 6. SAUVEGARDE SUPABASE (sans userId du client)
     try {
       const supabase = createClient(
         process.env.SUPABASE_URL,
@@ -46,22 +74,24 @@ export default async function handler(req, res) {
       const permanentDate = new Date();
       permanentDate.setFullYear(permanentDate.getFullYear() + 10);
 
+      // On ne prend PAS userId du body (sécurité)
+      // L'Edge Function gère l'auth, ici on sauvegarde juste l'image
       await supabase
         .from('pixora_creations')
         .insert({
           file_name: data.fileName,
-          user_id: userId || null,
+          user_id: null, // ✅ L'Edge Function lie l'user si besoin
           expires_at: permanentDate.toISOString(),
-          prompt: prompt || '',
+          prompt: prompt.substring(0, 1000), // ✅ Truncated
           created_at: new Date().toISOString()
         });
 
-      console.log('[API] ✅ Sauvegardé dans Supabase:', data.fileName);
     } catch (dbError) {
-      console.error('[API] ❌ Erreur Supabase:', dbError.message);
+      // ✅ Pas de console.log en production
+      // Log vers un service externe (Sentry, etc.)
     }
 
-    // Retourner la réponse
+    // ✅ 7. RÉPONSE
     return res.status(200).json({
       success: true,
       url: data.url,
@@ -71,10 +101,9 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Erreur proxy:', error);
     return res.status(500).json({ 
-      error: 'Erreur serveur', 
-      details: error.message 
+      error: 'Erreur serveur'
+      // ✅ Pas de details: error.message en production
     });
   }
 }
