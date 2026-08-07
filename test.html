@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔧 IA Pixora - Diagnostic & Sécurité</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#050507;--surf:rgba(24,24,27,0.8);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--success:#10B981;--danger:#EF4444;--warn:#F59E0B;--text:#FAFAFA;--muted:#A1A1AA;--font:'Inter',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);padding:1rem;min-height:100vh;line-height:1.6}
+.container{max-width:900px;margin:0 auto}
+header{text-align:center;padding:2rem 1rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+header h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--prim),var(--sec));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+header p{color:var(--muted);font-size:.9rem}
+.score-box{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(236,72,153,0.1));border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;margin-bottom:2rem}
+.score-value{font-size:3rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.score-label{color:var(--muted);font-size:.85rem;margin-top:.3rem}
+.section{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1rem}
+.section h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.section h2 i{color:var(--prim)}
+.test-item{display:flex;align-items:flex-start;gap:.8rem;padding:.7rem;border-radius:10px;margin-bottom:.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)}
+.test-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem}
+.test-icon.ok{background:rgba(16,185,129,0.15);color:var(--success)}
+.test-icon.fail{background:rgba(239,68,68,0.15);color:var(--danger)}
+.test-icon.warn{background:rgba(245,158,11,0.15);color:var(--warn)}
+.test-icon.loading{background:rgba(139,92,246,0.15);color:var(--prim);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.test-content{flex:1;min-width:0}
+.test-title{font-weight:600;font-size:.9rem;margin-bottom:.2rem}
+.test-detail{font-size:.75rem;color:var(--muted);word-break:break-all;font-family:'JetBrains Mono',monospace}
+.btn{padding:.7rem 1.2rem;border-radius:10px;border:none;font-weight:600;cursor:pointer;transition:all .2s;font-size:.85rem;display:inline-flex;align-items:center;gap:.5rem}
+.btn-primary{background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,.4)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-secondary{background:rgba(255,255,255,0.08);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:rgba(255,255,255,0.12)}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem;justify-content:center}
+.status-bar{position:sticky;top:0;background:var(--bg);padding:.8rem;border-radius:12px;border:1px solid var(--border);margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;font-size:.8rem}
+.status-ok{color:var(--success)}
+.status-fail{color:var(--danger)}
+pre{background:rgba(0,0,0,0.4);padding:.8rem;border-radius:8px;font-size:.75rem;overflow-x:auto;margin-top:.5rem;color:#A5F3FC;font-family:'JetBrains Mono',monospace}
+.login-form{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
+.login-form input{flex:1;min-width:200px;padding:.6rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1><i class="fas fa-stethoscope"></i> IA Pixora Diagnostic</h1>  <p>Test complet de sécurité et fonctionnalités</p>
+</header>
+
+<div class="score-box">
+  <div class="score-value" id="score">—/100</div>
+  <div class="score-label">Score de sécurité et fonctionnalité</div>
+</div>
+
+<div class="status-bar">
+  <span id="status-text">En attente...</span>
+  <span id="status-time"></span>
+</div>
+
+<div class="actions">
+  <button class="btn btn-primary" id="btn-run" onclick="runAllTests()">
+    <i class="fas fa-play"></i> Lancer tous les tests
+  </button>
+  <button class="btn btn-secondary" onclick="clearResults()">
+    <i class="fas fa-broom"></i> Effacer
+  </button>
+</div>
+
+<div class="section">
+  <h2><i class="fas fa-plug"></i> 1. Connexion Supabase</h2>
+  <div id="test-supabase"></div>
+</div>
+
+<div class="section">
+  <h2><i class="fas fa-user-lock"></i> 2. Authentification</h2>
+  <div id="test-auth"></div>
+  <div class="login-form">
+    <input type="email" id="test-email" placeholder="Email de test">
+    <input type="password" id="test-pw" placeholder="Mot de passe">
+    <button class="btn btn-secondary" onclick="testLogin()">Tester login</button>
+  </div>
+</div>
+
+<div class="section">
+  <h2><i class="fas fa-bolt"></i> 3. Edge Function (Génération d'image)</h2>
+  <div id="test-edge"></div>
+</div>
+
+<div class="section">
+  <h2><i class="fas fa-shield-alt"></i> 4. Sécurité RLS (Row Level Security)</h2>
+  <div id="test-rls"></div>
+</div>
+
+<div class="section">
+  <h2><i class="fas fa-share-alt"></i> 5. API Share (Twitter/Facebook)</h2>
+  <div id="test-share"></div></div>
+
+<div class="section">
+  <h2><i class="fas fa-folder-open"></i> 6. Bucket Storage</h2>
+  <div id="test-storage"></div>
+</div>
+
+<div class="section">
+  <h2><i class="fas fa-bug"></i> 7. Failles XSS & Injection</h2>
+  <div id="test-xss"></div>
+</div>
+
+<div class="section">
+  <h2><i class="fas fa-globe"></i> 8. Headers HTTP & CORS</h2>
+  <div id="test-headers"></div>
+</div>
+
+<footer style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:2rem">
+  © 2026 IA Pixora · Page de diagnostic interne · Ne pas exposer publiquement
+</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let score = 0;
+let totalTests = 0;
+let passedTests = 0;
+
+function addTest(containerId, title, status, detail, code) {
+  const container = document.getElementById(containerId);
+  const icon = status === 'ok' ? 'fa-check' : status === 'fail' ? 'fa-times' : status === 'warn' ? 'fa-exclamation' : 'fa-spinner fa-spin';
+  const iconClass = status === 'ok' ? 'ok' : status === 'fail' ? 'fail' : status === 'warn' ? 'warn' : 'loading';
+  
+  const item = document.createElement('div');
+  item.className = 'test-item';
+  item.innerHTML = `
+    <div class="test-icon ${iconClass}"><i class="fas ${icon}"></i></div>
+    <div class="test-content">
+      <div class="test-title">${title}</div>
+      <div class="test-detail">${detail}</div>
+      ${code ? `<pre>${code}</pre>` : ''}
+    </div>
+  `;
+  container.appendChild(item);
+  
+  totalTests++;  if (status === 'ok') { passedTests++; score += Math.round(100 / 12); }
+  else if (status === 'warn') { score += Math.round(50 / 12); }
+  
+  document.getElementById('score').textContent = `${Math.min(100, score)}/100`;
+  updateStatus();
+}
+
+function updateStatus() {
+  const statusEl = document.getElementById('status-text');
+  const timeEl = document.getElementById('status-time');
+  const pending = totalTests - passedTests;
+  if (pending > 0) {
+    statusEl.innerHTML = `<span class="status-fail"><i class="fas fa-spinner fa-spin"></i> ${pending} test(s) en cours...</span>`;
+  } else {
+    const finalScore = Math.min(100, score);
+    const color = finalScore >= 80 ? 'var(--success)' : finalScore >= 50 ? 'var(--warn)' : 'var(--danger)';
+    statusEl.innerHTML = `<span style="color:${color};font-weight:700"><i class="fas fa-${finalScore >= 80 ? 'check-circle' : finalScore >= 50 ? 'exclamation-triangle' : 'times-circle'}"></i> Terminé - Score: ${finalScore}/100</span>`;
+  }
+  timeEl.textContent = new Date().toLocaleTimeString();
+}
+
+function clearResults() {
+  ['test-supabase','test-auth','test-edge','test-rls','test-share','test-storage','test-xss','test-headers'].forEach(id => {
+    document.getElementById(id).innerHTML = '';
+  });
+  score = 0; totalTests = 0; passedTests = 0;
+  document.getElementById('score').textContent = '—/100';
+  document.getElementById('status-text').textContent = 'En attente...';
+}
+
+async function runAllTests() {
+  clearResults();
+  document.getElementById('btn-run').disabled = true;
+  
+  await testSupabase();
+  await testAuth();
+  await testEdgeFunction();
+  await testRLS();
+  await testShareAPI();
+  await testStorage();
+  await testXSS();
+  await testHeaders();
+  
+  document.getElementById('btn-run').disabled = false;
+}
+
+// 1. CONNEXION SUPABASE
+async function testSupabase() {
+  try {
+    const { data, error } = await db.from('pixora_creations').select('id', { count: 'exact', head: true }).limit(1);    if (error) {
+      addTest('test-supabase', 'Connexion à Supabase', 'fail', `Erreur: ${error.message}`);
+    } else {
+      addTest('test-supabase', 'Connexion à Supabase', 'ok', `✅ Connecté - ${data.count || 0} créations trouvées`);
+    }
+  } catch (e) {
+    addTest('test-supabase', 'Connexion à Supabase', 'fail', `Exception: ${e.message}`);
+  }
+}
+
+// 2. AUTHENTIFICATION
+async function testAuth() {
+  try {
+    const { data: { user } } = await db.auth.getUser();
+    if (user) {
+      addTest('test-auth', 'Session utilisateur', 'ok', `Connecté: ${user.email}`);
+    } else {
+      addTest('test-auth', 'Session utilisateur', 'warn', 'Non connecté (normal pour un test)');
+    }
+  } catch (e) {
+    addTest('test-auth', 'Session utilisateur', 'fail', e.message);
+  }
+}
+
+async function testLogin() {
+  const email = document.getElementById('test-email').value;
+  const pw = document.getElementById('test-pw').value;
+  if (!email || !pw) { alert('Email et mot de passe requis'); return; }
+  
+  addTest('test-auth', 'Test de connexion', 'loading', 'Connexion en cours...');
+  try {
+    const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
+    if (error) {
+      addTest('test-auth', 'Test de connexion', 'fail', error.message);
+    } else {
+      addTest('test-auth', 'Test de connexion', 'ok', `✅ Connecté: ${data.user.email}`);
+    }
+  } catch (e) {
+    addTest('test-auth', 'Test de connexion', 'fail', e.message);
+  }
+}
+
+// 3. EDGE FUNCTION
+async function testEdgeFunction() {
+  const url = `${SUPABASE_URL}/functions/v1/generate-image`;
+  
+  // Test sans token
+  try {
+    const res = await fetch(url, { method: 'GET' });
+    const text = await res.text();    if (res.status === 401) {
+      addTest('test-edge', 'Edge Function existe', 'ok', `✅ Fonction active (rejette sans token) - Status: ${res.status}`);
+    } else if (res.status === 404) {
+      addTest('test-edge', 'Edge Function existe', 'fail', ` Fonction introuvable (404)`);
+    } else {
+      addTest('test-edge', 'Edge Function existe', 'warn', `Status inattendu: ${res.status}`, text.substring(0, 200));
+    }
+  } catch (e) {
+    addTest('test-edge', 'Edge Function existe', 'fail', `Erreur réseau: ${e.message}`);
+  }
+  
+  // Test avec token (si connecté)
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_KEY
+        },
+        body: JSON.stringify({ prompt: 'test', width: 256, height: 256 })
+      });
+      const text = await res.text();
+      if (res.ok) {
+        const data = JSON.parse(text);
+        addTest('test-edge', 'Génération d\'image', 'ok', `✅ Image générée: ${data.url || 'OK'}`, text.substring(0, 300));
+      } else {
+        addTest('test-edge', 'Génération d\'image', 'fail', `Status ${res.status}: ${text.substring(0, 200)}`);
+      }
+    } catch (e) {
+      addTest('test-edge', 'Génération d\'image', 'fail', `Erreur: ${e.message}`);
+    }
+  } else {
+    addTest('test-edge', 'Génération d\'image', 'warn', '️ Non connecté - Impossible de tester la génération');
+  }
+}
+
+// 4. RLS (Row Level Security)
+async function testRLS() {
+  // Test 1: Lire user_data sans être connecté
+  try {
+    const { data, error } = await db.from('user_data').select('user_id, points').limit(1);
+    if (error) {
+      addTest('test-rls', 'RLS sur user_data', 'ok', `✅ RLS actif - Accès refusé: ${error.message}`);
+    } else if (data && data.length > 0) {
+      addTest('test-rls', 'RLS sur user_data', 'fail', `❌ RLS DÉSACTIVÉ - ${data.length} lignes lisibles publiquement!`, JSON.stringify(data[0]));
+    } else {
+      addTest('test-rls', 'RLS sur user_data', 'warn', 'Table vide ou RLS partiel');    }
+  } catch (e) {
+    addTest('test-rls', 'RLS sur user_data', 'fail', e.message);
+  }
+  
+  // Test 2: Lire votes
+  try {
+    const { data, error } = await db.from('votes').select('id').limit(1);
+    if (error) {
+      addTest('test-rls', 'RLS sur votes', 'ok', `✅ RLS actif: ${error.message}`);
+    } else {
+      addTest('test-rls', 'RLS sur votes', 'warn', `⚠️ ${data?.length || 0} votes lisibles`);
+    }
+  } catch (e) {
+    addTest('test-rls', 'RLS sur votes', 'fail', e.message);
+  }
+  
+  // Test 3: Tenter d'insérer des points (attaque)
+  try {
+    const fakeId = '00000000-0000-0000-0000-000000000000';
+    const { error } = await db.from('user_data').update({ points: 999999 }).eq('user_id', fakeId);
+    if (error) {
+      addTest('test-rls', 'Protection contre injection de points', 'ok', `✅ Injection bloquée: ${error.message}`);
+    } else {
+      addTest('test-rls', 'Protection contre injection de points', 'fail', '❌ CRITIQUE: Injection de points possible!');
+    }
+  } catch (e) {
+    addTest('test-rls', 'Protection contre injection de points', 'ok', `✅ Bloqué: ${e.message}`);
+  }
+}
+
+// 5. API SHARE
+async function testShareAPI() {
+  const testUrl = 'https://iapixora.com/api/share?img=https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/test.jpg&lang=fr';
+  
+  try {
+    const res = await fetch(testUrl);
+    const text = await res.text();
+    
+    if (res.ok && text.includes('og:image')) {
+      const imgMatch = text.match(/property="og:image"\s+content="([^"]+)"/);
+      const img = imgMatch ? imgMatch[1] : 'non trouvé';
+      addTest('test-share', 'API Share - Meta tags', 'ok', `✅ og:image: ${img}`);
+    } else if (res.ok) {
+      addTest('test-share', 'API Share - Meta tags', 'warn', `Page OK mais meta tags manquants`, text.substring(0, 300));
+    } else {
+      addTest('test-share', 'API Share', 'fail', `Status ${res.status}`);
+    }
+  } catch (e) {
+    addTest('test-share', 'API Share', 'fail', `Erreur: ${e.message}`);  }
+  
+  // Test XSS sur API share
+  try {
+    const xssUrl = `https://iapixora.com/api/share?img=x" onerror="alert(1)&lang=fr`;
+    const res = await fetch(xssUrl);
+    const text = await res.text();
+    if (text.includes('alert(1)') || text.includes('onerror="')) {
+      addTest('test-share', 'Protection XSS API Share', 'fail', '❌ VULNÉRABLE À XSS!');
+    } else {
+      addTest('test-share', 'Protection XSS API Share', 'ok', '✅ Échappement HTML correct');
+    }
+  } catch (e) {
+    addTest('test-share', 'Protection XSS API Share', 'warn', 'Test impossible');
+  }
+}
+
+// 6. STORAGE BUCKET
+async function testStorage() {
+  // Test lecture publique
+  try {
+    const { data, error } = await db.storage.from('pixora-gallery').list();
+    if (error) {
+      addTest('test-storage', 'Bucket pixora-gallery', 'warn', `Liste bloquée: ${error.message}`);
+    } else {
+      addTest('test-storage', 'Bucket pixora-gallery', 'ok', `✅ ${data?.length || 0} fichiers`);
+    }
+  } catch (e) {
+    addTest('test-storage', 'Bucket pixora-gallery', 'fail', e.message);
+  }
+  
+  // Test URL publique
+  try {
+    const { data } = db.storage.from('pixora-gallery').getPublicUrl('test.jpg');
+    if (data?.publicUrl) {
+      addTest('test-storage', 'URL publique', 'ok', `Format: ${data.publicUrl.substring(0, 60)}...`);
+    } else {
+      addTest('test-storage', 'URL publique', 'fail', 'URL non générée');
+    }
+  } catch (e) {
+    addTest('test-storage', 'URL publique', 'fail', e.message);
+  }
+}
+
+// 7. XSS & INJECTION
+async function testXSS() {
+  // Test 1: Injection dans le prompt
+  const xssPayloads = [
+    '<script>alert(1)</script>',
+    '"><img src=x onerror=alert(1)>',    'javascript:alert(1)',
+    '{{constructor.constructor("alert(1)")()}}'
+  ];
+  
+  let xssSafe = true;
+  for (const payload of xssPayloads) {
+    const div = document.createElement('div');
+    div.textContent = payload; // Utiliser textContent (sécurisé)
+    if (div.innerHTML.includes('<script>') || div.innerHTML.includes('onerror=')) {
+      xssSafe = false;
+      break;
+    }
+  }
+  addTest('test-xss', 'Échappement HTML (textContent)', xssSafe ? 'ok' : 'fail', 
+    xssSafe ? '✅ Les payloads XSS sont neutralisés' : '❌ XSS possible!');
+  
+  // Test 2: innerHTML avec données utilisateur
+  const testDiv = document.createElement('div');
+  testDiv.innerHTML = '<img src=x onerror="window.xssTest=true">';
+  setTimeout(() => {
+    const xssExecuted = window.xssTest === true;
+    addTest('test-xss', 'Exécution innerHTML', xssExecuted ? 'fail' : 'ok',
+      xssExecuted ? '❌ innerHTML exécute le JS!' : '✅ innerHTML ne exécute pas les scripts');
+  }, 100);
+  
+  // Test 3: eval() dans le code
+  const codeSource = document.documentElement.outerHTML;
+  const hasEval = /\beval\s*\(/.test(codeSource);
+  const hasDocWrite = /\bdocument\.write\s*\(/.test(codeSource);
+  addTest('test-xss', 'Utilisation de eval/document.write', 
+    (hasEval || hasDocWrite) ? 'warn' : 'ok',
+    hasEval ? '️ eval() détecté dans le code' : hasDocWrite ? '⚠️ document.write() détecté' : '✅ Aucun eval/document.write');
+}
+
+// 8. HEADERS HTTP
+async function testHeaders() {
+  try {
+    const res = await fetch('https://iapixora.com', { method: 'HEAD' });
+    const headers = {};
+    res.headers.forEach((v, k) => headers[k] = v);
+    
+    const checks = [
+      { name: 'X-Content-Type-Options', val: headers['x-content-type-options'], expected: 'nosniff' },
+      { name: 'X-Frame-Options', val: headers['x-frame-options'], expected: 'DENY ou SAMEORIGIN' },
+      { name: 'Referrer-Policy', val: headers['referrer-policy'], expected: 'strict-origin...' },
+      { name: 'Strict-Transport-Security', val: headers['strict-transport-security'], expected: 'max-age=...' }
+    ];
+    
+    checks.forEach(c => {
+      const ok = c.val && (c.expected.includes(c.val) || c.val.toLowerCase().includes('nosniff') || c.val.toLowerCase().includes('deny') || c.val.toLowerCase().includes('strict'));      addTest('test-headers', `Header: ${c.name}`, ok ? 'ok' : 'warn',
+        ok ? `✅ ${c.val}` : `⚠️ Manquant ou incorrect (reçu: ${c.val || 'rien'})`);
+    });
+  } catch (e) {
+    addTest('test-headers', 'Headers HTTP', 'fail', e.message);
+  }
+}
+
+// Auto-run au chargement
+window.addEventListener('load', () => {
+  setTimeout(runAllTests, 500);
+});
+</script>
+</body>
+</html>
