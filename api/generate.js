@@ -1,3 +1,5 @@
+import { createClient } from '@supabase/supabase-js';
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -34,19 +36,16 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ ÉTAPE 3 AJOUTÉE : Sauvegarder les métadonnées dans Supabase
-    // Les images restent sur R2, Supabase ne garde que les infos
+    // ✅ SAUVEGARDE SUPABASE (avec import ES6)
     try {
-      const { createClient } = require('@supabase/supabase-js');
-
       const supabase = createClient(
         process.env.SUPABASE_URL,
         process.env.SUPABASE_SERVICE_ROLE_KEY
       );
-
+      
       const permanentDate = new Date();
       permanentDate.setFullYear(permanentDate.getFullYear() + 10);
-
+      
       await supabase
         .from('pixora_creations')
         .insert({
@@ -56,14 +55,13 @@ export default async function handler(req, res) {
           prompt: prompt || '',
           created_at: new Date().toISOString()
         });
-
-      console.log('[API] Métadonnées sauvegardées dans Supabase:', data.fileName);
+        
+      console.log('[API] ✅ Sauvegardé dans Supabase:', data.fileName);
     } catch (dbError) {
-      // Ne pas bloquer la réponse si Supabase échoue
-      console.error('[API] Erreur sauvegarde Supabase:', dbError.message);
+      console.error('[API] ❌ Erreur Supabase:', dbError.message);
     }
 
-    // ✅ Retourner TOUTES les infos (url, fileName, etc.)
+    // Retourner la réponse
     return res.status(200).json({
       success: true,
       url: data.url,
@@ -80,3 +78,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
