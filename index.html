@@ -379,10 +379,10 @@ async function loadStudio(){
       // ✅ STOCKE LE PROMPT DANS UN ATTRIBUT DATA
       if(promptText){card.setAttribute('data-prompt',promptText);}
       if(isVideo){
-        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy" crossorigin="anonymous"></video>'+buildColorOverlay();
+        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video>'+buildColorOverlay();
         (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'));
       }else{
-        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy" crossorigin="anonymous">'+buildColorOverlay();
+        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildColorOverlay();
       }
       (function(c,u,fn){var media=c.querySelector('img,video');if(media){media.onerror=function(){console.warn('Image échouée:',fn);c.style.opacity='0.3';c.title='Erreur: '+fn;};}})(card,url,rawName);
       card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
@@ -467,7 +467,6 @@ async function generate() {
       notify(t('notifications.via_provider') + ' ' + providerName, 'success');
     }
     
-    media.src = url;
     media.onload = function() {
       if (loaded) return;
       loaded = true;
@@ -477,18 +476,16 @@ async function generate() {
       if (to) to.remove();
       media.style.opacity = '1';
       card.onclick = function() { openLB(url, 'image'); };
-      
-      // ✅ SAUVEGARDE LE PROMPT
       card.setAttribute('data-prompt', p);
       uploadToStorage(fileName, p);
-      
       if (logged && currentUser && currentUser.id) {
         saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
         validatePendingReferral(currentUser.id);
         getUserData().then(function(fd) {
           var ng = (fd.total_generated || 0) + 1;
           db.from('user_data').update({ total_generated: ng }).eq('user_id', currentUser.id).catch(function() {});
-        });      }
+        });
+      }
       var dm = isDiscounted ? t('notifications.discount_tag') : '';
       var cd = logged ? (' (-' + cost + ' ' + t('generator.cost_pts') + dm + ')') : '';
       notify('✅ ' + t('results.generated_in') + ' ' + elapsed + 's !' + cd, 'success');
@@ -496,7 +493,27 @@ async function generate() {
       if (logged) loadMiniBadge();
       console.log('[GEN] ✅ Terminé');
     };
-    media.onerror = function() { clearInterval(iv); card.remove(); notify(t('results.failed'), 'error'); console.error('[GEN] Image onload error'); };
+    media.onerror = function() {
+      clearInterval(iv);
+      var to = card.querySelector('.timer-overlay');
+      if (to) {
+        to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur chargement image</div>';
+      }
+      notify(t('results.failed'), 'error');
+      console.error('[GEN] Image onload error');
+    };
+    media.src = url;
+    setTimeout(function() {
+      if (!loaded) {
+        console.warn('[GEN] Timeout fallback déclenché');
+        loaded = true;
+        clearInterval(iv);
+        var to = card.querySelector('.timer-overlay');
+        if (to) to.remove();
+        media.style.opacity = '1';
+        card.onclick = function() { openLB(url, 'image'); };
+      }
+    }, 15000);
   } catch (err) {
     clearInterval(iv);
     console.error('[GEN] ERREUR:', err);
