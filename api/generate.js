@@ -42,10 +42,10 @@ export default async function handler(req, res) {
         process.env.SUPABASE_URL,
         process.env.SUPABASE_SERVICE_ROLE_KEY
       );
-      
+
       const permanentDate = new Date();
       permanentDate.setFullYear(permanentDate.getFullYear() + 10);
-      
+
       await supabase
         .from('pixora_creations')
         .insert({
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
           prompt: prompt || '',
           created_at: new Date().toISOString()
         });
-        
+
       console.log('[API] ✅ Sauvegardé dans Supabase:', data.fileName);
     } catch (dbError) {
       console.error('[API] ❌ Erreur Supabase:', dbError.message);
