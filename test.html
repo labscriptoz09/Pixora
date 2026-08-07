@@ -3,193 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔍 Test IA Pixora</title>
+<title>Test Mobile IA Pixora</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#fff;font-family:system-ui,sans-serif;padding:1rem;min-height:100vh}
-.container{max-width:800px;margin:0 auto}
-h1{font-size:1.5rem;margin-bottom:1rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.test{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1rem;margin-bottom:1rem}
-.test h2{font-size:1rem;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem}
-.result{padding:0.8rem;background:rgba(0,0,0,0.3);border-radius:8px;margin-top:0.5rem;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;word-break:break-all}
-.ok{color:#10B981}
-.fail{color:#EF4444}
-.warn{color:#F59E0B}
-.loading{color:#8B5CF6}
-button{background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;padding:0.8rem 1.5rem;border-radius:8px;color:#fff;font-weight:600;cursor:pointer;margin:0.5rem 0.5rem 0.5rem 0}
-button:hover{opacity:0.9}
-.clear{background:rgba(255,255,255,0.1)}
-.status{display:inline-block;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:600;margin-left:0.5rem}
+  body { background: #0a0a0f; color: #fff; font-family: system-ui, sans-serif; padding: 20px; text-align: center; }
+  h1 { color: #8B5CF6; font-size: 1.5rem; }
+  .btn { background: linear-gradient(135deg, #8B5CF6, #EC4899); border: none; padding: 15px 30px; border-radius: 12px; color: white; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 20px 0; }
+  .result { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-top: 15px; text-align: left; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+  .ok { color: #10B981; }
+  .fail { color: #EF4444; }
+  .warn { color: #F59E0B; }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>🔍 Diagnostic IA Pixora</h1>
-<p style="color:#A1A1AA;margin-bottom:1.5rem">Tests rapides de sécurité et fonctionnalités</p>
+  <h1>📱 Test Mobile IA Pixora</h1>
+  <p style="color:#A1A1AA">Ce test affiche les résultats directement à l'écran.</p>
+  
+  <button class="btn" onclick="runTest()">▶️ LANCER LE TEST</button>
+  
+  <div id="output" class="result" style="display:none;"></div>
 
-<div style="margin-bottom:1.5rem">
-<button onclick="runAll()">▶️ Lancer tous les tests</button>
-<button class="clear" onclick="clearAll()">🗑️ Effacer</button>
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const out = document.getElementById('output');
 
-<div class="test">
-<h2>1️ Connexion Supabase <span class="status" id="s1">⏳</span></h2>
-<div id="r1" class="result" style="display:none"></div>
-</div>
-
-<div class="test">
-<h2>2️⃣ Edge Function <span class="status" id="s2"></span></h2>
-<div id="r2" class="result" style="display:none"></div>
-</div>
-
-<div class="test">
-<h2>3️⃣ Sécurité RLS <span class="status" id="s3">⏳</span></h2>
-<div id="r3" class="result" style="display:none"></div>
-</div>
-
-<div class="test"><h2>4️⃣ API Share <span class="status" id="s4">⏳</span></h2>
-<div id="r4" class="result" style="display:none"></div>
-</div>
-
-<div class="test">
-<h2>5️⃣ Storage Bucket <span class="status" id="s5">⏳</span></h2>
-<div id="r5" class="result" style="display:none"></div>
-</div>
-
-<div class="test">
-<h2>6️⃣ Test "Failed to fetch" <span class="status" id="s6">⏳</span></h2>
-<div id="r6" class="result" style="display:none"></div>
-</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-function show(id, text, status) {
-  const el = document.getElementById('r' + id);
-  const st = document.getElementById('s' + id);
-  el.style.display = 'block';
-  el.textContent = text;
-  el.className = 'result ' + status;
-  st.textContent = status === 'ok' ? '✅' : status === 'fail' ? '❌' : '⚠️';
-}
-
-function clearAll() {
-  for(let i=1; i<=6; i++) {
-    document.getElementById('r' + i).style.display = 'none';
-    document.getElementById('s' + i).textContent = '⏳';
-  }
-}
-
-async function runAll() {
-  await test1();
-  await test2();
-  await test3();
-  await test4();
-  await test5();
-  await test6();
-}
-
-async function test1() {
-  try {
-    const {data, error} = await db.from('pixora_creations').select('id', {count:'exact',head:true}).limit(1);
-    if(error) show(1, '❌ Erreur: ' + error.message, 'fail');    else show(1, '✅ Connecté\n' + (data.count||0) + ' créations en base', 'ok');
-  } catch(e) {
-    show(1, '❌ Exception: ' + e.message, 'fail');
-  }
-}
-
-async function test2() {
-  const url = SUPABASE_URL + '/functions/v1/generate-image';
-  try {
-    const res = await fetch(url, {method:'GET'});
-    const text = await res.text();
-    if(res.status === 401) show(2, '✅ Fonction existe (rejette sans token)\nStatus: 401', 'ok');
-    else if(res.status === 404) show(2, '❌ Fonction introuvable (404)', 'fail');
-    else show(2, '⚠️ Status: ' + res.status + '\n' + text.substring(0,200), 'warn');
-  } catch(e) {
-    show(2, '❌ Erreur réseau: ' + e.message, 'fail');
-  }
-}
-
-async function test3() {
-  try {
-    const {data, error} = await db.from('user_data').select('user_id,points').limit(1);
-    if(error) {
-      show(3, '✅ RLS ACTIF\nAccès refusé aux données utilisateurs', 'ok');
-    } else if(data && data.length > 0) {
-      show(3, '❌ RLS DÉSACTIVÉ!\n' + data.length + ' lignes lisibles publiquement\n' + JSON.stringify(data[0],null,2), 'fail');
-    } else {
-      show(3, '⚠️ Table vide', 'warn');
+    function log(text, type='normal') {
+      out.style.display = 'block';
+      const color = type === 'ok' ? 'ok' : type === 'fail' ? 'fail' : type === 'warn' ? 'warn' : '';
+      out.innerHTML += `<div class="${color}">${text}</div><br>`;
     }
-  } catch(e) {
-    show(3, '❌ Erreur: ' + e.message, 'fail');
-  }
-}
 
-async function test4() {
-  try {
-    const res = await fetch('https://iapixora.com/api/share?img=test.jpg&lang=fr');
-    const text = await res.text();
-    if(res.ok && text.includes('og:image')) {
-      const match = text.match(/property="og:image" content="([^"]+)"/);
-      show(4, '✅ API Share fonctionne\nog:image: ' + (match?match[1]:'trouvé'), 'ok');
-    } else {
-      show(4, '️ Status: ' + res.status + '\nMeta tags manquants', 'warn');
+    async function runTest() {
+      out.style.display = 'block';
+      out.innerHTML = '⏳ Test en cours... patiente 10 secondes...<br><br>';
+      
+      // 1. Test Session
+      const {data:{session}} = await db.auth.getSession();
+      if(!session) {
+        log('❌ Tu n\'es pas connecté sur ce site.', 'fail');
+        log('💡 Va sur iapixora.com, connecte-toi, puis reviens sur cette page.', 'warn');
+        return;
+      }
+      log('✅ 1. Tu es bien connecté.', 'ok');
+
+      // 2. Test Edge Function
+      log('⏳ 2. Test de la fonction de génération...');
+      try {
+        const res = await fetch(SUPABASE_URL + '/functions/v1/generate-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + session.access_token,
+            'apikey': SUPABASE_KEY
+          },
+          body: JSON.stringify({ prompt: 'test', width: 256, height: 256 })
+        });
+        
+        const text = await res.text();
+        if(res.ok) {
+          log('✅ 2. Edge Function répond ! (Status 200)', 'ok');
+          try {
+            const json = JSON.parse(text);
+            log('🖼️ URL de l\'image: ' + (json.url || 'Non fournie'), 'ok');
+            
+            // 3. Test si l'image est accessible
+            log('⏳ 3. Test d\'accès à l\'image R2...');
+            const imgRes = await fetch(json.url);
+            if(imgRes.ok) {
+              log('✅ 3. L\'image est accessible publiquement !', 'ok');
+              log('🎉 TOUT FONCTIONNE. Le problème vient peut-être de l\'affichage sur la page principale.', 'ok');
+            } else {
+              log('❌ 3. L\'image est générée mais BLOQUÉE (Status: ' + imgRes.status + ')', 'fail');
+              log('💡 Vérifie que ton bucket R2 est en "Public Access" sur Cloudflare.', 'warn');
+            }
+          } catch(e) {
+            log('⚠️ Réponse inattendue: ' + text.substring(0, 100), 'warn');
+          }
+        } else {
+          log('❌ 2. Erreur Edge Function (Status: ' + res.status + ')', 'fail');
+          log('Détail: ' + text.substring(0, 150), 'fail');
+        }
+      } catch(e) {
+        log('❌ 2. Erreur réseau (Failed to fetch)', 'fail');
+        log('Détail: ' + e.message, 'fail');
+        log('💡 Vérifie les logs de ta fonction sur le site Supabase.', 'warn');
+      }
     }
-  } catch(e) {
-    show(4, '❌ Erreur: ' + e.message, 'fail');
-  }
-}
-
-async function test5() {  try {
-    const {data, error} = await db.storage.from('pixora-gallery').list();
-    if(error) show(5, '⚠️ Bucket inaccessible: ' + error.message, 'warn');
-    else show(5, '✅ Bucket OK\n' + (data?data.length:0) + ' fichiers', 'ok');
-  } catch(e) {
-    show(5, ' Erreur: ' + e.message, 'fail');
-  }
-}
-
-async function test6() {
-  show(6, ' Test de connexion authentifiée...', 'loading');
-  try {
-    const {data:{session}} = await db.auth.getSession();
-    if(!session) {
-      show(6, '⚠️ Non connecté\nImpossible de tester la génération', 'warn');
-      return;
-    }
-    
-    const url = SUPABASE_URL + '/functions/v1/generate-image';
-    const res = await fetch(url, {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer ' + session.access_token,
-        'apikey':SUPABASE_KEY
-      },
-      body:JSON.stringify({prompt:'test',width:256,height:256})
-    });
-    
-    const text = await res.text();
-    if(res.ok) {
-      const json = JSON.parse(text);
-      show(6, '✅ Edge Function répond!\nStatus: ' + res.status + '\nURL: ' + (json.url||'OK'), 'ok');
-    } else {
-      show(6, '❌ Status: ' + res.status + '\n' + text.substring(0,300), 'fail');
-    }
-  } catch(e) {
-    show(6, '❌ Erreur: ' + e.message, 'fail');
-  }
-}
-
-// Auto-run au chargement
-window.onload = function() {
-  setTimeout(runAll, 500);
-};
-</script>
+  </script>
 </body>
 </html>
