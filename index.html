@@ -398,27 +398,12 @@ async function loadStudio(){
   }catch(err){console.error('[STUDIO] ERREUR:', err);grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);">Erreur: '+err.message+'</div>';}
 }
 
-// ✅ UPLOAD AVEC SAUVEGARDE DU PROMPT
+// ✅ UPLOAD DÉSACTIVÉ - L'API GÈRE LA SAUVEGARDE
 async function uploadToStorage(fileName, prompt) {
-  try {
-    var currentUser = await getUser();
-    var userId = currentUser ? currentUser.id : 'anonymous';
-    if (!fileName) { console.error('Aucun fileName reçu'); return; }
-    
-    var permanentDate = new Date();
-    permanentDate.setFullYear(permanentDate.getFullYear() + 10);
-    
-    await db.from('pixora_creations').insert({ 
-      file_name: fileName, 
-      user_id: userId, 
-      expires_at: permanentDate.toISOString(),
-      prompt: prompt || ''
-    });
-    console.log('[STORAGE] ✅ Sauvegardé définitivement:', fileName, 'Prompt:', prompt ? 'oui' : 'non');
-  } catch (err) { console.error('[STORAGE] ERREUR:', err); }
+  // NE RIEN FAIRE - La sauvegarde Supabase est gérée par l'API /api/generate
+  // Cela évite les doublons (API + frontend sauvegardent la même image)
+  console.log('[STORAGE] Ignoré - sauvegarde gérée par API:', fileName);
 }
-
-// ✅ GÉNÉRATEUR AVEC SAUVEGARDE DU PROMPT
 async function generate() {
   console.log('[GEN] Démarrage...');
   if (curType === 'video') { notifyVideoSoon(); return; }
@@ -477,7 +462,7 @@ async function generate() {
       media.style.opacity = '1';
       card.onclick = function() { openLB(url, 'image'); };
       card.setAttribute('data-prompt', p);
-      uploadToStorage(fileName, p);
+      // uploadToStorage(fileName, p); // DÉSACTIVÉ - l'API gère la sauvegarde
       if (logged && currentUser && currentUser.id) {
         saveTransaction('spent', 'Génération image' + (isDiscounted ? ' (-50%)' : ''), -cost).then(function() { updateUI(); });
         validatePendingReferral(currentUser.id);
