@@ -3,94 +3,190 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Mobile IA Pixora</title>
+<title>🔍 Debug Génération - IA Pixora</title>
 <style>
-  body { background: #0a0a0f; color: #fff; font-family: system-ui, sans-serif; padding: 20px; text-align: center; }
-  h1 { color: #8B5CF6; font-size: 1.5rem; }
-  .btn { background: linear-gradient(135deg, #8B5CF6, #EC4899); border: none; padding: 15px 30px; border-radius: 12px; color: white; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 20px 0; }
-  .result { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-top: 15px; text-align: left; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
-  .ok { color: #10B981; }
-  .fail { color: #EF4444; }
-  .warn { color: #F59E0B; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#fff;font-family:system-ui,sans-serif;padding:15px;line-height:1.6}
+h1{font-size:1.3rem;margin-bottom:1rem;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.step{background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:15px;margin-bottom:12px}
+.step h3{font-size:0.95rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.status{font-size:0.75rem;padding:3px 8px;border-radius:6px;font-weight:600}
+.ok{background:rgba(16,185,129,0.2);color:#10B981;border-color:#10B981}
+.fail{background:rgba(239,68,68,0.2);color:#EF4444;border-color:#EF4444}
+.loading{background:rgba(139,92,246,0.2);color:#8B5CF6;border-color:#8B5CF6}
+.detail{background:rgba(0,0,0,0.4);padding:10px;border-radius:8px;margin-top:8px;font-family:'Courier New',monospace;font-size:0.8rem;white-space:pre-wrap;word-break:break-all}
+.btn{background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;padding:15px 30px;border-radius:12px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin:15px 0}
+.btn:disabled{opacity:0.5}
+.clear{background:rgba(255,255,255,0.1)}
+.login-form{margin-bottom:15px}
+.login-form input{width:100%;padding:12px;margin-bottom:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#fff;font-size:0.95rem}
 </style>
 </head>
 <body>
-  <h1>📱 Test Mobile IA Pixora</h1>
-  <p style="color:#A1A1AA">Ce test affiche les résultats directement à l'écran.</p>
-  
-  <button class="btn" onclick="runTest()">▶️ LANCER LE TEST</button>
-  
-  <div id="output" class="result" style="display:none;"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const out = document.getElementById('output');
+<h1>🔍 Debug Génération IA</h1>
+<p style="color:#A1A1AA;margin-bottom:15px;font-size:0.9rem">Test complet de la chaîne de génération</p>
 
-    function log(text, type='normal') {
-      out.style.display = 'block';
-      const color = type === 'ok' ? 'ok' : type === 'fail' ? 'fail' : type === 'warn' ? 'warn' : '';
-      out.innerHTML += `<div class="${color}">${text}</div><br>`;
+<div class="login-form">
+<input type="email" id="email" placeholder="Ton email">
+<input type="password" id="password" placeholder="Ton mot de passe">
+<button class="btn" onclick="login()">🔐 Se connecter d'abord</button>
+</div>
+
+<button class="btn" id="testBtn" onclick="runFullTest()">▶️ LANCER LE TEST COMPLET</button>
+
+<div id="step1" class="step" style="display:none">
+<h3>1️⃣ Connexion Supabase <span class="status" id="s1"></span></h3>
+<div id="r1" class="detail" style="display:none"></div>
+</div>
+
+<div id="step2" class="step" style="display:none">
+<h3>2️⃣ Appel Edge Function <span class="status" id="s2"></span></h3>
+<div id="r2" class="detail" style="display:none"></div>
+</div>
+
+<div id="step3" class="step" style="display:none">
+<h3>3️⃣ Réponse de l'API <span class="status" id="s3"></span></h3>
+<div id="r3" class="detail" style="display:none"></div></div>
+
+<div id="step4" class="step" style="display:none">
+<h3>4️⃣ Accès Image R2 <span class="status" id="s4"></span></h3>
+<div id="r4" class="detail" style="display:none"></div>
+</div>
+
+<div id="step5" class="step" style="display:none">
+<h3>5️⃣ Diagnostic Final <span class="status" id="s5"></span></h3>
+<div id="r5" class="detail" style="display:none"></div>
+</div>
+
+<button class="btn clear" onclick="clearAll()">️ Effacer tout</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let userToken = null;
+
+function show(step, status, text, isError=false) {
+  document.getElementById('step'+step).style.display = 'block';
+  const s = document.getElementById('s'+step);
+  const r = document.getElementById('r'+step);
+  s.textContent = status;
+  s.className = 'status ' + (isError ? 'fail' : status === '' ? 'loading' : 'ok');
+  r.style.display = 'block';
+  r.textContent = text;
+}
+
+async function login() {
+  const email = document.getElementById('email').value;
+  const pw = document.getElementById('password').value;
+  if(!email || !pw) { alert('Email et mot de passe requis'); return; }
+  
+  show(1, '⏳', 'Connexion en cours...');
+  try {
+    const {data, error} = await db.auth.signInWithPassword({email, password:pw});
+    if(error) throw error;
+    userToken = data.session.access_token;
+    show(1, '✅', 'Connecté: '+email+'\nToken: '+userToken.substring(0,30)+'...');
+  } catch(e) {
+    show(1, '❌', 'Erreur: '+e.message, true);
+  }
+}
+
+async function runFullTest() {
+  document.getElementById('testBtn').disabled = true;
+    // ÉTAPE 1: Vérifier session
+  if(!userToken) {
+    const {data:{session}} = await db.auth.getSession();
+    if(!session) {
+      show(1, '❌', 'Non connecté !\nConnecte-toi avec le formulaire ci-dessus', true);
+      document.getElementById('testBtn').disabled = false;
+      return;
     }
-
-    async function runTest() {
-      out.style.display = 'block';
-      out.innerHTML = '⏳ Test en cours... patiente 10 secondes...<br><br>';
-      
-      // 1. Test Session
-      const {data:{session}} = await db.auth.getSession();
-      if(!session) {
-        log('❌ Tu n\'es pas connecté sur ce site.', 'fail');
-        log('💡 Va sur iapixora.com, connecte-toi, puis reviens sur cette page.', 'warn');
-        return;
-      }
-      log('✅ 1. Tu es bien connecté.', 'ok');
-
-      // 2. Test Edge Function
-      log('⏳ 2. Test de la fonction de génération...');
+    userToken = session.access_token;
+    show(1, '✅', 'Session active détectée');
+  }
+  
+  // ÉTAPE 2: Appel Edge Function
+  show(2, '⏳', 'Appel de l\'Edge Function...\nURL: https://cfwzilhetkclpytjsopu.supabase.co/functions/v1/generate-image');
+  
+  try {
+    const startTime = Date.now();
+    const response = await fetch(SUPABASE_URL+'/functions/v1/generate-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+userToken,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        prompt: 'test butterfly, photorealistic, 8k, detailed',
+        width: 512,
+        height: 512
+      })
+    });
+    
+    const duration = ((Date.now()-startTime)/1000).toFixed(2)+'s';
+    const responseText = await response.text();
+    
+    show(2, response.ok?'✅':'❌', 
+      'Status: '+response.status+'\n'+
+      'Temps: '+duration+'\n'+
+      'Headers reçus:\n'+JSON.stringify(Object.fromEntries(response.headers.entries()),null,2)+'\n\n'+
+      'Corps réponse:\n'+responseText.substring(0,500));
+    
+    // ÉTAPE 3: Analyser la réponse
+    if(response.ok) {
       try {
-        const res = await fetch(SUPABASE_URL + '/functions/v1/generate-image', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + session.access_token,
-            'apikey': SUPABASE_KEY
-          },
-          body: JSON.stringify({ prompt: 'test', width: 256, height: 256 })
-        });
+        const jsonData = JSON.parse(responseText);
+        show(3, '✅', 'JSON valide reçu:\n'+JSON.stringify(jsonData,null,2));
         
-        const text = await res.text();
-        if(res.ok) {
-          log('✅ 2. Edge Function répond ! (Status 200)', 'ok');
-          try {
-            const json = JSON.parse(text);
-            log('🖼️ URL de l\'image: ' + (json.url || 'Non fournie'), 'ok');
-            
-            // 3. Test si l'image est accessible
-            log('⏳ 3. Test d\'accès à l\'image R2...');
-            const imgRes = await fetch(json.url);
-            if(imgRes.ok) {
-              log('✅ 3. L\'image est accessible publiquement !', 'ok');
-              log('🎉 TOUT FONCTIONNE. Le problème vient peut-être de l\'affichage sur la page principale.', 'ok');
+        // ÉTAPE 4: Tester l'URL de l'image
+        if(jsonData.url) {
+          show(4, '⏳', 'Test de l\'URL R2:\n'+jsonData.url);
+          try {            const imgResponse = await fetch(jsonData.url);
+            if(imgResponse.ok) {
+              const blob = await imgResponse.blob();
+              show(4, '✅', 'Image accessible !\nTaille: '+(blob.size/1024).toFixed(2)+' KB\nType: '+blob.type);
+              show(5, '✅', '🎉 TOUT FONCTIONNE !\nLe problème vient de l\'affichage sur ta page principale.', false);
             } else {
-              log('❌ 3. L\'image est générée mais BLOQUÉE (Status: ' + imgRes.status + ')', 'fail');
-              log('💡 Vérifie que ton bucket R2 est en "Public Access" sur Cloudflare.', 'warn');
+              show(4, '❌', 'Image inaccessible\nStatus: '+imgResponse.status+'\n'+await imgResponse.text(), true);
+              show(5, '❌', 'Problème R2 : Le bucket n\'est peut-être pas public', true);
             }
           } catch(e) {
-            log('⚠️ Réponse inattendue: ' + text.substring(0, 100), 'warn');
+            show(4, '❌', 'Erreur accès R2: '+e.message, true);
+            show(5, '❌', 'Problème réseau ou CORS R2', true);
           }
         } else {
-          log('❌ 2. Erreur Edge Function (Status: ' + res.status + ')', 'fail');
-          log('Détail: ' + text.substring(0, 150), 'fail');
+          show(3, '⚠️', 'Pas d\'URL dans la réponse JSON', true);
+          show(5, '❌', 'L\'Edge Function ne renvoie pas l\'URL', true);
         }
       } catch(e) {
-        log('❌ 2. Erreur réseau (Failed to fetch)', 'fail');
-        log('Détail: ' + e.message, 'fail');
-        log('💡 Vérifie les logs de ta fonction sur le site Supabase.', 'warn');
+        show(3, '❌', 'JSON invalide !\nRéponse brute: '+responseText.substring(0,300), true);
+        show(5, '❌', 'L\'API ne renvoie pas du JSON valide', true);
       }
+    } else {
+      show(5, '❌', 'Échec Edge Function\nVérifie les logs Supabase', true);
     }
-  </script>
+    
+  } catch(e) {
+    show(2, '❌', 'ERREUR RÉSEAU: '+e.message+'\n\nCela signifie que:\n1. La fonction est down\n2. Problème CORS\n3. Token invalide', true);
+    show(5, '❌', 'Vérifie:\n- Les logs Supabase\n- Que la fonction est déployée\n- Que le CORS est bien configuré', true);
+  }
+  
+  document.getElementById('testBtn').disabled = false;
+}
+
+function clearAll() {
+  for(let i=1;i<=5;i++) {
+    document.getElementById('step'+i).style.display = 'none';
+    document.getElementById('r'+i).style.display = 'none';
+  }
+  userToken = null;
+  document.getElementById('testBtn').disabled = false;
+}
+</script>
+
 </body>
 </html>
