@@ -1,214 +1,96 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debug IA Pixora - Auto Test</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0a0a0f;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        .container { max-width: 1000px; margin: 0 auto; }
-        h1 {
-            text-align: center;
-            color: #8B5CF6;
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-        .test-result {
-            background: rgba(255,255,255,0.05);
-            border-left: 5px solid #666;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        .test-result.success { border-left-color: #10B981; background: rgba(16,185,129,0.1); }
-        .test-result.error { border-left-color: #EF4444; background: rgba(239,68,68,0.1); }
-        .test-result.warning { border-left-color: #F59E0B; background: rgba(245,158,11,0.1); }
-        .test-result.pending { border-left-color: #3B82F6; background: rgba(59,130,246,0.1); }
-        .test-title {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .status-icon {
-            font-size: 1.5rem;
-        }
-        .test-details {
-            background: rgba(0,0,0,0.5);
-            padding: 10px;
-            border-radius: 3px;
-            margin-top: 10px;            font-size: 0.85rem;
-            word-break: break-all;
-        }
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.5rem;
-            color: #8B5CF6;
-        }
-        .spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(139,92,246,0.3);
-            border-radius: 50%;
-            border-top-color: #8B5CF6;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 15px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Debug Rapide</title>
+<style>
+body { background: #000; color: #fff; font-family: monospace; padding: 20px; }
+.test { margin: 15px 0; padding: 15px; border-left: 5px solid #666; background: #111; }
+.ok { border-color: #0f0; background: #001100; }
+.fail { border-color: #f00; background: #110000; }
+.warn { border-color: #ff0; background: #111100; }
+h1 { color: #8B5CF6; text-align: center; }
+pre { background: #222; padding: 10px; overflow: auto; font-size: 12px; }
+button { background: #8B5CF6; color: #fff; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 16px; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔧 Debug IA Pixora - Tests Automatiques</h1>
+<h1> Debug IA Pixora</h1>
+<div id="results"></div>
+<button onclick="testEdge()">Tester Edge Function</button>
+<button onclick="testVercel()">Tester Vercel</button>
+<button onclick="testDB()">Tester DB</button>
+
+<script>
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const EDGE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co/functions/v1/generate-image';
+const VERCEL_URL = 'https://iapixora.com/api/generate';
+
+function addTest(title, status, data) {
+    const div = document.createElement('div');
+    div.className = 'test ' + status;
+    div.innerHTML = `<strong>${title}</strong><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+    document.getElementById('results').appendChild(div);
+}
+
+async function testEdge() {
+    addTest('Edge Function (sans token)', 'warn', 'Test en cours...');
+    try {
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), 5000);
         
-        <div id="results">
-            <div class="loading">
-                <div class="spinner"></div>
-                Tests en cours...
-            </div>
-        </div>
-    </div>
+        const res = await fetch(EDGE_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({prompt: 'test', width: 512, height: 512}),
+            signal: ctrl.signal
+        });
+        const text = await res.text();
+        addTest('Edge Function', res.ok ? 'ok' : 'fail', {
+            status: res.status,
+            response: text.substring(0, 200)
+        });
+    } catch(e) {
+        addTest('Edge Function', 'fail', {error: e.message});
+    }
+}
 
-    <script>
-        const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-        const EDGE_FUNCTION_URL = 'https://cfwzilhetkclpytjsopu.supabase.co/functions/v1/generate-image';
-        const VERCEL_API_URL = 'https://iapixora.com/api/generate';
+async function testVercel() {
+    addTest('Vercel API', 'warn', 'Test en cours...');
+    try {
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), 5000);
+        
+        const res = await fetch(VERCEL_URL, {signal: ctrl.signal});
+        const text = await res.text();
+        addTest('Vercel API', 'ok', {
+            status: res.status,
+            response: text.substring(0, 200)
+        });
+    } catch(e) {
+        addTest('Vercel API', 'fail', {error: e.message});
+    }
+}
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const resultsDiv = document.getElementById('results');
+async function testDB() {
+    addTest('Base de données', 'warn', 'Test en cours...');
+    try {
+        const supabase = window.supabase.createClient(SUPABASE_URL, 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU');
+        
+        const {data, error} = await supabase.from('pixora_creations').select('id').limit(1);
+        if (error) throw error;
+        addTest('Base de données', 'ok', {count: data ? data.length : 0});
+    } catch(e) {
+        addTest('Base de données', 'fail', {error: e.message});
+    }
+}
 
-        function addResult(title, status, details) {
-            const icons = { success: '✅', error: '', warning: '⚠️', pending: '⏳' };
-            const div = document.createElement('div');
-            div.className = `test-result ${status}`;
-            div.innerHTML = `                <div class="test-title">
-                    <span class="status-icon">${icons[status]}</span>
-                    ${title}
-                </div>
-                <div class="test-details">${details}</div>
-            `;
-            resultsDiv.appendChild(div);
-        }
-
-        async function runTests() {
-            resultsDiv.innerHTML = '';
-
-            // TEST 1: Configuration
-            addResult('Configuration Supabase', 'success', 
-                `URL: ${SUPABASE_URL}<br>Clé Anon: ${SUPABASE_ANON_KEY.substring(0, 30)}...`);
-
-            // TEST 2: Authentification
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    addResult('Authentification', 'success', 
-                        `Connecté - Token: ${session.access_token.substring(0, 50)}...`);
-                } else {
-                    addResult('Authentification', 'warning', 
-                        'Non connecté (normal pour test anonyme)');
-                }
-            } catch (error) {
-                addResult('Authentification', 'error', error.message);
-            }
-
-            // TEST 3: Edge Function SANS token
-            try {
-                const response = await fetch(EDGE_FUNCTION_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: 'test debug butterfly',
-                        width: 512,
-                        height: 512
-                    })
-                });
-                const text = await response.text();
-                
-                if (response.ok) {
-                    addResult('Edge Function (SANS token)', 'success', 
-                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
-                } else {
-                    addResult('Edge Function (SANS token)', 'error', 
-                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
-                }            } catch (error) {
-                addResult('Edge Function (SANS token)', 'error', error.message);
-            }
-
-            // TEST 4: Edge Function AVEC token
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                const headers = { 'Content-Type': 'application/json' };
-                if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
-                
-                const response = await fetch(EDGE_FUNCTION_URL, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        prompt: 'test debug with token',
-                        width: 512,
-                        height: 512
-                    })
-                });
-                const text = await response.text();
-                
-                if (response.ok) {
-                    addResult('Edge Function (AVEC token)', 'success', 
-                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
-                } else {
-                    addResult('Edge Function (AVEC token)', 'error', 
-                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
-                }
-            } catch (error) {
-                addResult('Edge Function (AVEC token)', 'error', error.message);
-            }
-
-            // TEST 5: API Vercel
-            try {
-                const response = await fetch(VERCEL_API_URL, { method: 'GET' });
-                const text = await response.text();
-                addResult('API Vercel /api/generate', 
-                    response.status === 405 ? 'success' : 'warning',
-                    `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
-            } catch (error) {
-                addResult('API Vercel /api/generate', 'error', error.message);
-            }
-
-            // TEST 6: Base de données
-            try {
-                const { data, error } = await supabase
-                    .from('pixora_creations')
-                    .select('id, file_name')
-                    .limit(3);
-                                if (error) {
-                    addResult('Base de données', 'error', JSON.stringify(error));
-                } else {
-                    addResult('Base de données', 'success', 
-                        `${data.length} créations trouvées`);
-                }
-            } catch (error) {
-                addResult('Base de données', 'error', error.message);
-            }
-
-            addResult('Tests terminés', 'success', 'Tous les tests sont terminés. Envoie une capture de cette page.');
-        }
-
-        // Lancer automatiquement au chargement
-        window.onload = runTests;
-    </script>
+// Lancer au chargement
+window.onload = () => {
+    addTest('Page chargée', 'ok', 'Clique sur les boutons pour tester');
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
