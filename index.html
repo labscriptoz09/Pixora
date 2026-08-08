@@ -53,7 +53,7 @@
 <div class="bg-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 <div class="notification" id="notif"><i class="fas fa-check-circle"></i><span id="notif-text"></span></div><div class="lightbox" id="lightbox"><div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div><div id="lb-container"></div><div class="lightbox-actions"><button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="results.download">Télécharger</span></button><button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="results.close">Fermer</span></button></div></div><div class="share-modal" id="share-modal"><div class="share-box"><div class="share-header"><h3><i class="fas fa-share-nodes"></i> <span data-i18n="share.title">Partager</span></h3><button class="share-close" onclick="closeShareModal()"><i class="fas fa-times"></i></button></div><div class="share-preview" id="share-preview"></div><div class="share-category" data-i18n="share.cat_messaging">💬 Messagerie</div><div class="share-grid"><a class="share-btn whatsapp" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i>WhatsApp</a><a class="share-btn telegram" onclick="shareTo('telegram')"><i class="fab fa-telegram"></i>Telegram</a><a class="share-btn email" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a><a class="share-btn copy" onclick="copyShareLink()"><i class="fas fa-link"></i><span data-i18n="share.copy">Copier</span></a></div><div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div><div class="share-grid"><a class="share-btn twitter" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a><a class="share-btn facebook" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a><a class="share-btn instagram" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a><a class="share-btn tiktok" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a><a class="share-btn linkedin" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a><a class="share-btn pinterest" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a><a class="share-btn reddit" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a><a class="share-btn threads" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a></div><div class="share-category" data-i18n="share.cat_community">👥 Communautés</div><div class="share-grid"><a class="share-btn discord" onclick="shareTo('discord')"><i class="fab fa-discord"></i>Discord</a><a class="share-btn snapchat" onclick="shareTo('snapchat')"><i class="fab fa-snapchat"></i>Snapchat</a><a class="share-btn bluesky" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a><a class="share-btn mastodon" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a></div><div class="share-category" data-i18n="share.cat_regional">🌍 Régionaux</div><div class="share-grid"><a class="share-btn wechat" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a><a class="share-btn line" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a><a class="share-btn kakao" onclick="shareTo('kakao')"><i class="fas fa-comment"></i>Kakao</a><a class="share-btn vk" onclick="shareTo('vk')"><i class="fab fa-vk"></i>VK</a></div></div></div>
 <div class="auth-overlay" id="auth-modal"><div class="auth-modal"><button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button><div class="auth-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span>IA Pixora</span></div><p class="auth-sub" data-i18n="auth.connect_to_generate">Connectez-vous pour générer et gagner des points</p><div class="auth-tabs"><button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_title">Connexion</button><button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button></div><div class="form-section active" id="sec-login"><form onsubmit="doLogin(event)"><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div><button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.login_btn">Se connecter</span></button></form></div><div class="form-section" id="sec-register"><form onsubmit="doRegister(event)"><div class="form-group"><label class="form-label" data-i18n="auth.username">Pseudo</label><input type="text" class="form-input" placeholder="Votre pseudo" required id="r-name"></div><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="r-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caractères" required minlength="8" id="r-pw"></div><button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Créer mon compte</span></button></form></div><div class="auth-divider" data-i18n="auth.or_continue">ou continuer avec</div><button class="social-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> <span data-i18n="auth.google">Continuer avec Google</span></button><button class="social-btn github" onclick="notify(t('auth.github_soon'),'success')"><i class="fab fa-github"></i> <span data-i18n="auth.github">Continuer avec GitHub</span></button><div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div></div></div>
-<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeLang(this.value)"><option value="fr">🇫 FR</option><option value="en">🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><a href="earn.html#badges" class="mini-badge-pill" id="mini-badge" title="Voir mes badges"><span class="mini-badge-icon" id="mini-badge-icon"></span><span class="mini-badge-text" id="mini-badge-name"></span><span class="mini-badge-next" id="mini-badge-next"></span></a><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
+<header class="site-header"><a href="index.html" class="header-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg><span class="logo-text">IA Pixora</span></a><div class="header-right"><select class="lang-select" id="lang-select" onchange="changeLang(this.value)"><option value="fr"> FR</option><option value="en">🇧 EN</option></select><div class="user-stats" id="user-stats"><i class="fas fa-bolt stat-icon"></i><span class="stat-points" id="header-points">0</span></div><a href="earn.html#badges" class="mini-badge-pill" id="mini-badge" title="Voir mes badges"><span class="mini-badge-icon" id="mini-badge-icon"></span><span class="mini-badge-text" id="mini-badge-name"></span><span class="mini-badge-next" id="mini-badge-next"></span></a><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span><div class="avatar-hamburger"><i class="fas fa-bars"></i></div></div><button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button><div class="user-menu" id="user-menu"><div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div><div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div><a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a><a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a><a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a><div class="menu-divider"></div><button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left;background:none;border:none;font-family:inherit"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button></div></div></header>
 <nav class="nav-mobile"><a href="index.html" class="nav-item active" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span data-i18n="nav.studio">Studio</span></a><a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a><a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span class="badge" id="nav-points-badge" style="display:none">0</span></a><a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i></a></nav>
 <main class="main-content">
 <div class="hero"><h1 data-i18n="hero.title">Générez l'impossible avec IA Pixora</h1><p data-i18n="hero.subtitle">Images IA professionnelles. Gratuit. Sans limite.</p></div>
@@ -73,9 +73,11 @@
     <select class="option-select" id="model-select"><option value="flux">⚡ Flux (Qualité PRO)</option><option value="turbo"> Turbo (Rapide)</option></select>
   </div>
   <div class="type-selector">
-    <button class="type-btn active" onclick="selType('image')" aria-pressed="true"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>    <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
+    <button class="type-btn active" onclick="selType('image')" aria-pressed="true"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
+    <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
   </div>  
-  <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem"><span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span><span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span></div>  <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
+  <div id="discount-banner" style="display:none;text-align:center;margin-top:0.6rem"><span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span><span style="font-size:0.65rem;color:var(--muted);margin-left:0.4rem" id="discount-timer"></span></div>
+  <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
 </div>
 
 <div id="sponsorised-container" style="margin-bottom:1.5rem;"></div>
@@ -93,10 +95,13 @@
     </div>
     <div style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 12px;">
       <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">2️⃣</div>
-      <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;" data-i18n="how.step2_title">Choisissez le format</h3>      <p style="font-size: 0.8rem; color: var(--muted);" data-i18n="how.step2_desc">Carré pour les réseaux, portrait pour les fonds d'écran, ou cinéma pour le réalisme.</p>
+      <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;" data-i18n="how.step2_title">Choisissez le format</h3>
+      <p style="font-size: 0.8rem; color: var(--muted);" data-i18n="how.step2_desc">Carré pour les réseaux, portrait pour les fonds d'écran, ou cinéma pour le réalisme.</p>    </div>
+    <div style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 12px;">
+      <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">3️⃣</div>
+      <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;" data-i18n="how.step3_title">Générez & Téléchargez</h3>
+      <p style="font-size: 0.8rem; color: var(--muted);" data-i18n="how.step3_desc">Obtenez votre image en quelques secondes. 3 essais gratuits, puis accès illimité.</p>
     </div>
-    <div style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 12px;">      <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">3️⃣</div>
-      <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;" data-i18n="how.step3_title">Générez & Téléchargez</h3>      <p style="font-size: 0.8rem; color: var(--muted);" data-i18n="how.step3_desc">Obtenez votre image en quelques secondes. 3 essais gratuits, puis accès illimité.</p>    </div>
   </div>
 </section>
 
@@ -133,19 +138,20 @@ function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup')
 function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=getAnonCount();if(c>=PX_FREE_LIMIT){showSoftSignupPrompt();return false}}else{localStorage.removeItem(PX_ANON_KEY)}return true})}
 function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
 
-var BADGES_CONFIG=[{id:'bronze',name:'Apprenti',icon:'🎨',threshold:5},{id:'silver',name:'Confirmé',icon:'',threshold:15},{id:'gold',name:'Maître',icon:'👑',threshold:20},{id:'diamond',name:'Légende',icon:'💎',threshold:50}];
+var BADGES_CONFIG=[{id:'bronze',name:'Apprenti',icon:'🎨',threshold:5},{id:'silver',name:'Confirmé',icon:'🥈',threshold:15},{id:'gold',name:'Maître',icon:'',threshold:20},{id:'diamond',name:'Légende',icon:'💎',threshold:50}];
 
 async function loadMiniBadge(){
   try{
     var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');
     if(!await isLogged()){el.classList.remove('show');return}
     var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;
-    for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}
-    for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}
+    for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}    for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}
     el.classList.add('show');
-    if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}    else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}
+    if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}
+    else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}
     else{ic.textContent='';nm.textContent='Badge';nx.textContent=''}
-  }catch(e){console.error('Mini badge error:',e)}}
+  }catch(e){console.error('Mini badge error:',e)}
+}
 
 var I18N={},currentLang='fr';
 var FR_TRANSLATIONS={
@@ -156,12 +162,12 @@ var FR_TRANSLATIONS={
   generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},
   results:{title:'Vos Créations',permanent:'Sauvegardé définitivement',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},
   stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},
-  auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:'⏳ GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:' Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:' Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},
+  auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:' GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'✅ Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},
   menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},
-  notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:' Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:'⚡ Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !',remix_success:'✨ Prompt remixé ! Modifiez-le et régénérez.',prompt_copied:'📋 Prompt copié dans le presse-papier !',view_gallery:'Voir toute la galerie'},
+  notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'⏳ Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:' Via',discount_tag:'🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !',remix_success:'✨ Prompt remixé ! Modifiez-le et régénérez.',prompt_copied:'📋 Prompt copié dans le presse-papier !',view_gallery:'Voir toute la galerie'},
   footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
   language:{label:'Language',fr:'Français',en:'English'},
-  share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:' Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:' Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},
+  share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:' Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},
   gallery:{reference_title:'Créations de référence'},
   faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'},
   how:{
@@ -184,17 +190,19 @@ var EN_TRANSLATIONS={
   generator:{prompt_title:'Describe your image',placeholder:'Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic 8k lighting',image:'Image',video:'Video',video_soon:'Coming Soon',generate:'Generate',discount_active:'-50% ACTIVE',expires_in:'Expires in',cost_pts:'pts'},
   results:{title:'Your Creations',permanent:'Saved permanently',auto_delete:'Auto-delete after 24h',download:'Download',close:'Close',generating:'AI Generating...',generated_in:'Generated in',failed:'Generation failed. Try again.',error:'Generation error. Try again.'},
   stats:{points:'Points',streak:'Streak',creations:'Creations',total_earned:'Total Earned'},
-  auth:{login_title:'Login',register_title:'Sign Up',email:'Email',password:'Password',password_min:'Min. 8 characters',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',google:'Continue with Google',github:'Continue with GitHub',github_soon:'⏳ GitHub coming soon...',footer:'By continuing, you accept our',conditions:'terms',welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'✅ Account created! +15 bonus pts',wrong_credentials:'❌ Incorrect credentials',email_exists:'❌ This email is already used',password_short:' Password too short',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:' Logged out',connect_to_generate:'Log in to generate and earn points'},
+  auth:{login_title:'Login',register_title:'Sign Up',email:'Email',password:'Password',password_min:'Min. 8 characters',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',google:'Continue with Google',github:'Continue with GitHub',github_soon:' GitHub coming soon...',footer:'By continuing, you accept our',conditions:'terms',welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'✅ Account created! +15 bonus pts',wrong_credentials:'❌ Incorrect credentials',email_exists:'❌ This email is already used',password_short:'❌ Password too short',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:'✅ Logged out',connect_to_generate:'Log in to generate and earn points'},
   menu:{my_profile:'My Profile',earn_points:'Earn Points',my_purchases:'My Purchases',logout:'Logout'},
-  notifications:{enter_prompt:'Please enter a prompt',insufficient_points:'Insufficient points! Visit the Points page.',generating:' Generating...',downloaded:'✅ Downloaded!',no_image:' No image found',via_provider:' Via',discount_tag:' 🔥 -50%',freemium_limit:'🔒 Free limit reached! Sign up to continue.',share_success:'✅ Link copied!',share_points:'+5 points for sharing!',remix_success:'✨ Prompt remixed! Edit it and regenerate.',prompt_copied:'📋 Prompt copied to clipboard!',view_gallery:'View full gallery'},
+  notifications:{enter_prompt:'Please enter a prompt',insufficient_points:'Insufficient points! Visit the Points page.',generating:'⏳ Generating...',downloaded:'✅ Downloaded!',no_image:'❌ No image found',via_provider:'⚡ Via',discount_tag:'🔥 -50%',freemium_limit:'🔒 Free limit reached! Sign up to continue.',share_success:'✅ Link copied!',share_points:'+5 points for sharing!',remix_success:'✨ Prompt remixed! Edit it and regenerate.',prompt_copied:' Prompt copied to clipboard!',view_gallery:'View full gallery'},
   footer:{earn_points:'Earn Points',gallery:'Gallery',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},
-  language:{label:'Language',fr:'Français',en:'English'},
-  share:{title:'Share',copy:'Copy',cat_messaging:' Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:' Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'},
+  language:{label:'Language',fr:'Français',en:'English'},  share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:' Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'},
   gallery:{reference_title:'Reference Creations'},
-  faq:{q1:'Is IA Pixora really free?',a1:'Yes, IA Pixora is 100% free for generating AI images and videos.',q2:'How to generate an image without signup?',a2:'3 free generations without account.',q3:'What is the difference between IA Pixora and Midjourney?',a3:'IA Pixora is completely free, no subscription required.',q4:'Can I use generated images commercially?',a4:'Yes, royalty-free.',q5:'How many free generations per day?',a5:'3 without signup, unlimited after.'},  how:{
+  faq:{q1:'Is IA Pixora really free?',a1:'Yes, IA Pixora is 100% free for generating AI images and videos.',q2:'How to generate an image without signup?',a2:'3 free generations without account.',q3:'What is the difference between IA Pixora and Midjourney?',a3:'IA Pixora is completely free, no subscription required.',q4:'Can I use generated images commercially?',a4:'Yes, royalty-free.',q5:'How many free generations per day?',a5:'3 without signup, unlimited after.'},
+  how:{
     title:'How to create AI images with IA Pixora?',
     step1_title:'Describe your idea',
-    step1_desc:'Write a detailed prompt. The more precise you are, the better the result.',    step2_title:'Choose the format',    step2_desc:'Square for social media, portrait for wallpapers, or cinema for realism.',
+    step1_desc:'Write a detailed prompt. The more precise you are, the better the result.',
+    step2_title:'Choose the format',
+    step2_desc:'Square for social media, portrait for wallpapers, or cinema for realism.',
     step3_title:'Generate & Download',
     step3_desc:'Get your image in seconds. 3 free trials, then unlimited access.'
   },
@@ -236,15 +244,15 @@ var BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image';
 var DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}};
 var CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
 var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
-
-// ✅ CORRIGÉ : Appel robuste, autorise les non-connectés + header apikey obligatoire
+// ✅ CORRIGÉ : Appel avec apikey pour contourner le 401 Supabase
 async function generateImageViaProxy(prompt, width, height) {
   const { data: { session } } = await db.auth.getSession();
   const headers = {
     'Content-Type': 'application/json',
-    'apikey': SUPABASE_KEY // ✅ OBLIGATOIRE pour que Supabase accepte la requête
+    'apikey': SUPABASE_KEY // ✅ OBLIGATOIRE pour Supabase Edge Function
   };
-  if (session) {
+
+  if (session && session.access_token) {
     headers['Authorization'] = `Bearer ${session.access_token}`;
   }
 
@@ -285,33 +293,22 @@ function buildColorOverlay(){
     '<button class="icon-btn icon-btn-share" onclick="event.stopPropagation();openShareModal(this.closest(\'.result-card\').querySelector(\'img,video\').src)" title="' + t('actions.share') + '"><i class="fas fa-share-nodes"></i></button>' +
     '</div>';
 }
-
 function remixPrompt(card){
   var prompt = card.getAttribute('data-prompt');
-  if(!prompt){    notify('⚠️ Prompt non disponible', 'error');
-    return;
-  }
+  if(!prompt){notify('⚠️ Prompt non disponible', 'error');return;}
   var promptField = document.getElementById('prompt');
-  promptField.value = prompt;  promptField.focus();
+  promptField.value = prompt;
+  promptField.focus();
   promptField.scrollIntoView({ behavior: 'smooth', block: 'center' });
   notify(t('notifications.remix_success'), 'success');
 }
 
 function copyPrompt(card){
   var prompt = card.getAttribute('data-prompt');
-  if(!prompt){
-    notify('⚠️ Prompt non disponible', 'error');
-    return;
-  }
+  if(!prompt){notify('⚠️ Prompt non disponible', 'error');return;}
   if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(prompt).then(function(){
-      notify(t('notifications.prompt_copied'), 'success');
-    }).catch(function(){
-      fallbackCopyPrompt(prompt);
-    });
-  } else {
-    fallbackCopyPrompt(prompt);
-  }
+    navigator.clipboard.writeText(prompt).then(function(){notify(t('notifications.prompt_copied'), 'success');}).catch(function(){fallbackCopyPrompt(prompt);});
+  } else {fallbackCopyPrompt(prompt);}
 }
 
 function fallbackCopyPrompt(text){
@@ -321,12 +318,7 @@ function fallbackCopyPrompt(text){
   ta.style.left = '-9999px';
   document.body.appendChild(ta);
   ta.select();
-  try{
-    document.execCommand('copy');
-    notify(t('notifications.prompt_copied'), 'success');
-  }catch(e){
-    notify('Copy failed', 'error');
-  }
+  try{document.execCommand('copy');notify(t('notifications.prompt_copied'), 'success');}catch(e){notify('Copy failed', 'error');}
   document.body.removeChild(ta);
 }
 
@@ -340,24 +332,16 @@ async function grantSignupBonus(uid){try{var br=await db.from('admin_config').se
 async function loadUserTier(){
   try{
     var u=await getUser();
-    if(!u){
-      currentTier=1;      currentDiscountUntil=null;
-      updateCostUI();
-      return;
-    }
+    if(!u){currentTier=1;currentDiscountUntil=null;updateCostUI();return;}
     var d=await getUserData();
-    // Si d est null, on utilise des valeurs par défaut au lieu de planter
     currentTier = (d && d.tier) ? d.tier : 1;
     currentDiscountUntil = (d && d.discount_until) ? d.discount_until : null;
-  }catch(e){
-    currentTier=1;
-    currentDiscountUntil=null;
-  }
+  }catch(e){currentTier=1;currentDiscountUntil=null;}
   updateCostUI();
 }
 
-function notify(m,t){t=t||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t;setTimeout(function(){n.classList.remove('show')},3000)}async function getUser(){var r=await db.auth.getUser();return r.data.user}
-async function isLogged(){return!!await getUser()}
+function notify(m,t){t=t||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t;setTimeout(function(){n.classList.remove('show')},3000)}
+async function getUser(){var r=await db.auth.getUser();return r.data.user}async function isLogged(){return!!await getUser()}
 function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeAuth(){document.getElementById('auth-modal').classList.remove('active');document.body.style.overflow=''}
 document.getElementById('auth-modal').addEventListener('click',function(e){if(e.target===this)closeAuth()});
@@ -372,7 +356,7 @@ function closeUserMenu(){document.getElementById('user-menu').classList.remove('
 document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});
 async function doLogout(){await db.auth.signOut();closeUserMenu();currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();notify(t('auth.logout'),'success');setTimeout(function(){location.reload()},800)}
 
-// ✅ CORRIGÉ : Sécurisation de l'affichage UI contre les valeurs nulles
+// ✅ CORRIGÉ : Sécurisation de l'affichage UI
 async function updateUI(){
   var logged=await isLogged(),user=await getUser();
   document.getElementById('user-stats').classList.toggle('show',logged);
@@ -383,14 +367,14 @@ async function updateUI(){
   
   if(logged){
     var d=await getUserData();
-    // ✅ Si 'd' est null, on force des valeurs par défaut pour éviter le crash
     if (!d) {
-      console.warn("Données utilisateur non trouvées, utilisation des valeurs par défaut.");
+      console.warn("Données utilisateur non trouvées, valeurs par défaut.");
       d = { points: 0, streak: 1, total_generated: 0, total_earned: 0, tier: 1 };
     }
     
     document.getElementById('header-points').textContent=d.points||0;
-    document.getElementById('nav-points-badge').textContent=d.points||0;    document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';
+    document.getElementById('nav-points-badge').textContent=d.points||0;
+    document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';
     document.getElementById('stat-points').textContent=d.points||0;
     document.getElementById('stat-streak').textContent=d.streak||1;
     document.getElementById('stat-generated').textContent=d.total_generated||0;
@@ -406,8 +390,7 @@ async function updateUI(){
 }
 
 function openLB(url,type){lbUrl=url;lbType=type||'image';var c=document.getElementById('lb-container');c.innerHTML='';if(lbType==='video'){var v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.loop=true;v.style.cssText='max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';c.appendChild(v)}else{var i=document.createElement('img');i.src=url;i.alt='Zoom';c.appendChild(i)}document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
-function closeLB(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';document.getElementById('lb-container').innerHTML='';lbUrl='';lbType='image'}
-document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
+function closeLB(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';document.getElementById('lb-container').innerHTML='';lbUrl='';lbType='image'}document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
 async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl),b=await r.blob(),ext=lbType==='video'?'.mp4':'.jpg',u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(lbUrl,'_blank')}}
 async function dlDirect(btn){var card=btn.closest('.result-card'),media=card.querySelector('img')||card.querySelector('video');if(!media||!media.src)return;try{var r=await fetch(media.src),b=await r.blob(),isV=media.tagName==='VIDEO',ext=isV?'.mp4':'.jpg',u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);notify(t('notifications.downloaded'),'success')}catch(e){window.open(media.src,'_blank')}}
 function selType(tp){curType=tp;document.querySelectorAll('.type-btn').forEach(function(c,i){var pressed=(tp==='image'&&i===0)||(tp==='video'&&i===1);c.classList.toggle('active',pressed);c.setAttribute('aria-pressed',pressed?'true':'false')})}
@@ -421,194 +404,108 @@ function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whats
 function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 
-// ✅ CORRIGÉ : Chargement robuste des créations, empêche les "images disparues"
 async function loadStudio() {
   var grid = document.getElementById('results-grid');
   try {
-    var result = await db.from('pixora_creations')
-      .select('file_name, created_at, expires_at, prompt')
-      .order('created_at', { ascending: false })
-      .limit(12);
-
+    var result = await db.from('pixora_creations').select('file_name, created_at, expires_at, prompt').order('created_at', { ascending: false }).limit(12);
     if (!result.data || result.data.length === 0) {
       grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création pour le moment. Générez votre première image !</div>';
       return;
     }
-
     var now = new Date().toISOString();
-    var validItems = result.data.filter(function(item) {
-      return !item.expires_at || item.expires_at > now;
-    });
-    if (validItems.length === 0) {      grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création valide</div>';
+    var validItems = result.data.filter(function(item) { return !item.expires_at || item.expires_at > now; });
+    if (validItems.length === 0) {
+      grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création valide</div>';
       return;
     }
-
     grid.innerHTML = '';
-
     for (var i = 0; i < validItems.length; i++) {
       var row = validItems[i];
       var rawName = row.file_name;
       var promptText = row.prompt || '';
       var url = '';
-      
       var isSupabase = (rawName.indexOf('supabase_') === 0);
       if (isSupabase) {
         var realName = rawName.replace('supabase_', '');
-        try {
-          var urlData = db.storage.from(BUCKET).getPublicUrl(realName);
-          url = urlData.data.publicUrl;
-        } catch (e) {
-          continue;
-        }
-      } else {
-        url = R2_PUBLIC_URL + '/' + rawName;
-      }
-
+        try { var urlData = db.storage.from(BUCKET).getPublicUrl(realName); url = urlData.data.publicUrl; } catch (e) { continue; }
+      } else { url = R2_PUBLIC_URL + '/' + rawName; }
       var isVideo = rawName.indexOf('_video_') !== -1;
       var card = document.createElement('div');
       card.className = 'result-card';
-      
-      if (promptText) {
-        card.setAttribute('data-prompt', promptText);
-      }
-
+      if (promptText) { card.setAttribute('data-prompt', promptText); }
       if (isVideo) {
         card.innerHTML = '<video src="' + url + '" muted loop playsinline loading="lazy"></video>' + buildColorOverlay();
-        (function(v) {
-          v.onmouseenter = function() { v.play(); };
-          v.onmouseleave = function() { v.pause(); v.currentTime = 0; };
-        })(card.querySelector('video'));
-      } else {
-        card.innerHTML = '<img src="' + url + '" alt="Creation" loading="lazy">' + buildColorOverlay();
-      }
-
-      (function(c, u, fn) {
-        var media = c.querySelector('img, video');
-        if (media) {
-          media.onerror = function() {
-            c.style.opacity = '0.3';            c.style.pointerEvents = 'none';
-          };
-        }      })(card, url, rawName);
-
-      card.onclick = (function(u, v) {
-        return function() { openLB(u, v ? 'video' : 'image'); };
-      })(url, isVideo);
-
-      grid.appendChild(card);
-    }
-    
+        (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'));
+      } else { card.innerHTML = '<img src="' + url + '" alt="Creation" loading="lazy">' + buildColorOverlay(); }
+      (function(c, u, fn){var media = c.querySelector('img, video');if(media){media.onerror=function(){c.style.opacity='0.3';c.style.pointerEvents='none';}}})(card, url, rawName);
+      card.onclick = (function(u, v){return function(){openLB(u, v ? 'video' : 'image');}})(url, isVideo);
+      grid.appendChild(card);    }
     var viewMoreDiv = document.createElement('div');
     viewMoreDiv.className = 'view-more-container';
     viewMoreDiv.innerHTML = '<a href="gallery.html" class="view-more-btn"><i class="fas fa-images"></i> <span data-i18n="notifications.view_gallery">' + t('notifications.view_gallery') + '</span> <i class="fas fa-arrow-right"></i></a>';
     grid.appendChild(viewMoreDiv);
-
   } catch (err) {
     console.error('[STUDIO] ERREUR:', err);
     grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--danger);grid-column:1/-1;">Erreur de chargement: ' + err.message + '</div>';
   }
 }
 
-async function uploadToStorage(fileName, prompt) {
-  console.log('[STORAGE] Ignoré - sauvegarde gérée par API:', fileName);
-}
+async function uploadToStorage(fileName, prompt) { console.log('[STORAGE] Ignoré - sauvegarde gérée par API:', fileName); }
 
-// ✅ CORRIGÉ : Gestion fluide de la génération et de l'affichage
 async function generate() {
-  if (isGenerating) {
-    notify("⏳ Une génération est déjà en cours...", "error");
-    return;
-  }
-
+  if (isGenerating) { notify("⏳ Une génération est déjà en cours...", "error"); return; }
   isGenerating = true;
   var btnGen = document.querySelector('.btn-gen');
   if (btnGen) btnGen.disabled = true;
-
-  if (curType === 'video') { 
-    isGenerating = false;
-    if (btnGen) btnGen.disabled = false;
-    notifyVideoSoon(); 
-    return; 
-  }
-
+  if (curType === 'video') { isGenerating = false; if (btnGen) btnGen.disabled = false; notifyVideoSoon(); return; }
   var p = document.getElementById('prompt').value.trim();
-  if (!p) { 
-    notify(t('notifications.enter_prompt'), 'error'); 
-    isGenerating = false;
-    if (btnGen) btnGen.disabled = false;    return; 
-  }
-  
-  var logged = await isLogged();  if (!logged) {
+  if (!p) { notify(t('notifications.enter_prompt'), 'error'); isGenerating = false; if (btnGen) btnGen.disabled = false; return; }
+  var logged = await isLogged();
+  if (!logged) {
     var allowed = await checkFreemiumBlock();
-    if (!allowed) { 
-      notify(t('notifications.freemium_limit'), 'error'); 
-      isGenerating = false;
-      if (btnGen) btnGen.disabled = false;
-      return; 
-    }
+    if (!allowed) { notify(t('notifications.freemium_limit'), 'error'); isGenerating = false; if (btnGen) btnGen.disabled = false; return; }
   }
-
   notify(t('notifications.generating'), 'success');
-  
   var grid = document.getElementById('results-grid');
   var card = document.createElement('div');
   card.className = 'result-card';
-  
   var format = document.getElementById('format-select').value;
   var dims = format.split('x');
   var w = parseInt(dims[0]);
   var h = parseInt(dims[1]);
   card.style.aspectRatio = w + '/' + h;
-  
   var tmrId = 'tmr_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
   card.innerHTML = '<div class="timer-overlay"><div class="timer-text" id="' + tmrId + '">0.0s</div><div class="timer-label">' + t('results.generating') + '</div></div><img alt="Generation" loading="lazy" style="opacity:0;transition:opacity 0.3s">' + buildColorOverlay();
-  
   grid.insertBefore(card, grid.firstChild);
-  
   var st = Date.now(), tmr = document.getElementById(tmrId);
-  var iv = setInterval(function() { 
-    if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; 
-  }, 100);
-  
+  var iv = setInterval(function() { if (tmr) tmr.textContent = ((Date.now() - st) / 1000).toFixed(1) + 's'; }, 100);
   var media = card.querySelector('img');
   var loaded = false;
   var currentUser = await getUser();
-  
   try {
     var result = await generateImageViaProxy(p, w, h);
     var url = result.url;
-    
     media.onload = function() {
       if (loaded) return;
       loaded = true;
-      clearInterval(iv);
-      
-      var to = card.querySelector('.timer-overlay');      if (to) to.remove();
+      clearInterval(iv);      var to = card.querySelector('.timer-overlay');
+      if (to) to.remove();
       media.style.opacity = '1';
       card.setAttribute('data-prompt', p);
       card.onclick = function() { openLB(url, 'image'); };
-            if (logged) {
-        validatePendingReferral(currentUser.id);
-        updateUI();
-        loadMiniBadge();
-      }
-      
+      if (logged) { validatePendingReferral(currentUser.id); updateUI(); loadMiniBadge(); }
       notify('✅ ' + t('results.generated_in') + ' ' + ((Date.now() - st) / 1000).toFixed(1) + 's !', 'success');
       if (!logged) incrementAndCheckFreemium();
     };
-
     media.onerror = function() {
       if (loaded) return;
       loaded = true;
       clearInterval(iv);
       var to = card.querySelector('.timer-overlay');
-      if (to) {
-        to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur chargement</div>';
-      }
+      if (to) { to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur chargement</div>'; }
       notify(t('results.failed'), 'error');
     };
-
     media.src = url;
-
     setTimeout(function() {
       if (!loaded) {
         loaded = true;
@@ -619,50 +516,38 @@ async function generate() {
         card.onclick = function() { openLB(url, 'image'); };
       }
     }, 15000);
-
   } catch (err) {
     clearInterval(iv);
     var to = card.querySelector('.timer-overlay');
-    if (to) { 
-      to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>' + err.message + '</div>'; 
-    }
+    if (to) { to.innerHTML = '<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>' + err.message + '</div>'; }
     notify('Erreur: ' + err.message, 'error');
-    
-    setTimeout(function() {
-      if(card.parentNode) card.parentNode.removeChild(card);
-    }, 3000);  } finally {
+    setTimeout(function() { if(card.parentNode) card.parentNode.removeChild(card); }, 3000);
+  } finally {
     isGenerating = false;
     var btnGenFinal = document.querySelector('.btn-gen');
     if (btnGenFinal) btnGenFinal.disabled = false;
   }
 }
+
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
 
-async function cleanupExpiredCreations() {
-  console.log('[Nettoyage] Désactivé : Stockage permanent activé.');
-  return;
-}
+async function cleanupExpiredCreations() { console.log('[Nettoyage] Désactivé : Stockage permanent activé.'); return; }
 
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('[INIT] Démarrage...');
   try {
-    await loadLang(detectLang());
-    detectReferral();
+    await loadLang(detectLang());    detectReferral();
     await loadApiKeys();
     await loadDynamicConfig();
     await loadUserTier();
     await updateUI();
     await cleanupExpiredCreations();
     await loadStudio();
-    
     setTimeout(function() {
       var sponsorBlock = document.getElementById('sponsorised-container');
-      if (sponsorBlock && sponsorBlock.children.length === 0) {
-        sponsorBlock.style.display = 'none';
-      }
+      if (sponsorBlock && sponsorBlock.children.length === 0) { sponsorBlock.style.display = 'none'; }
     }, 2000);
-    
     console.log('[INIT] ✅ Tout chargé');
   } catch(err) {
     console.error('[INIT] ERREUR FATALE:', err);
