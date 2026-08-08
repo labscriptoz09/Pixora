@@ -1,96 +1,311 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Debug Rapide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Isolé IA Pixora</title>
 <style>
-body { background: #000; color: #fff; font-family: monospace; padding: 20px; }
-.test { margin: 15px 0; padding: 15px; border-left: 5px solid #666; background: #111; }
-.ok { border-color: #0f0; background: #001100; }
-.fail { border-color: #f00; background: #110000; }
-.warn { border-color: #ff0; background: #111100; }
-h1 { color: #8B5CF6; text-align: center; }
-pre { background: #222; padding: 10px; overflow: auto; font-size: 12px; }
-button { background: #8B5CF6; color: #fff; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 16px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0f; color: #fff; font-family: 'Courier New', monospace; padding: 20px; line-height: 1.6; }
+h1 { color: #8B5CF6; text-align: center; margin-bottom: 20px; font-size: 1.5rem; }
+h2 { color: #06B6D4; margin: 20px 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 5px; }
+.test-box { background: #1a1a24; border-left: 4px solid #666; padding: 15px; margin: 10px 0; border-radius: 5px; }
+.test-box.ok { border-color: #10B981; background: #0a1f15; }
+.test-box.fail { border-color: #EF4444; background: #1f0a0a; }
+.test-box.warn { border-color: #F59E0B; background: #1f1a0a; }
+.test-box.pending { border-color: #3B82F6; background: #0a1520; }
+button { background: linear-gradient(135deg, #8B5CF6, #EC4899); color: #fff; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin: 5px; width: 100%; }
+button:hover { opacity: 0.9; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+pre { background: #000; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 12px; margin-top: 10px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+.status { display: inline-block; padding: 3px 10px; border-radius: 3px; font-weight: bold; font-size: 12px; margin-left: 10px; }
+.status.ok { background: #10B981; color: #000; }
+.status.fail { background: #EF4444; color: #fff; }
+.status.warn { background: #F59E0B; color: #000; }
+.status.pending { background: #3B82F6; color: #fff; }
+.chain { display: flex; flex-direction: column; gap: 5px; margin: 15px 0; }
+.chain-item { padding: 8px; background: #111; border-radius: 5px; font-size: 13px; }
+.chain-item.active { background: #8B5CF6; }
+.chain-item.done { background: #10B981; color: #000; }
+.chain-item.error { background: #EF4444; }
 </style>
 </head>
 <body>
-<h1> Debug IA Pixora</h1>
-<div id="results"></div>
-<button onclick="testEdge()">Tester Edge Function</button>
-<button onclick="testVercel()">Tester Vercel</button>
-<button onclick="testDB()">Tester DB</button>
+<h1>🔧 TEST ISOLÉ IA PIXORA</h1>
+
+<div class="chain" id="chain">
+  <div class="chain-item" id="step1">1️⃣ Frontend → Edge Function Supabase</div>
+  <div class="chain-item" id="step2">2️⃣ Edge Function → Vercel /api/generate</div>
+  <div class="chain-item" id="step3">3️⃣ Vercel → AI Worker Cloud</div>
+  <div class="chain-item" id="step4">4️ AI Worker → R2 (stockage image)</div>
+</div>
+
+<h2> Test 1 : AI Worker Cloud DIRECT</h2>
+<div class="test-box pending" id="box-worker">
+  <strong>Test : Appel direct à l'AI Worker Cloud</strong>
+  <span class="status pending" id="status-worker">EN ATTENTE</span>
+  <pre id="result-worker">Clique sur le bouton pour tester...</pre>
+</div>
+<button onclick="testWorker()">Tester AI Worker Cloud directement</button>
+<h2>🧪 Test 2 : Vercel /api/generate DIRECT</h2>
+<div class="test-box pending" id="box-vercel">
+  <strong>Test : Appel direct à Vercel avec secret</strong>
+  <span class="status pending" id="status-vercel">EN ATTENTE</span>
+  <pre id="result-vercel">Clique sur le bouton pour tester...</pre>
+</div>
+<button onclick="testVercel()">Tester Vercel /api/generate</button>
+
+<h2> Test 3 : Edge Function Supabase</h2>
+<div class="test-box pending" id="box-edge">
+  <strong>Test : Appel à l'Edge Function avec apikey</strong>
+  <span class="status pending" id="status-edge">EN ATTENTE</span>
+  <pre id="result-edge">Clique sur le bouton pour tester...</pre>
+</div>
+<button onclick="testEdge()">Tester Edge Function Supabase</button>
+
+<h2>🧪 Test 4 : Frontend complet (comme index.html)</h2>
+<div class="test-box pending" id="box-frontend">
+  <strong>Test : Simulation complète du frontend</strong>
+  <span class="status pending" id="status-frontend">EN ATTENTE</span>
+  <pre id="result-frontend">Clique sur le bouton pour tester...</pre>
+</div>
+<button onclick="testFrontend()">Tester le frontend complet</button>
+
+<h2> RÉSUMÉ FINAL</h2>
+<div class="test-box" id="box-summary">
+  <strong>Résultats :</strong>
+  <pre id="result-summary">En attente des tests...</pre>
+</div>
 
 <script>
-const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
-const EDGE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co/functions/v1/generate-image';
-const VERCEL_URL = 'https://iapixora.com/api/generate';
+const CONFIG = {
+  SUPABASE_URL: 'https://cfwzilhetkclpytjsopu.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU',
+  EDGE_FUNCTION_URL: 'https://cfwzilhetkclpytjsopu.supabase.co/functions/v1/generate-image',
+  VERCEL_API_URL: 'https://iapixora.com/api/generate',
+  WORKER_URL: 'https://ia-pixora-api.slimansoufian1.workers.dev',
+  // ⚠️ Remplace par ton vrai secret (temporairement pour le test)
+  INTERNAL_SECRET: 'pixora2026secret123'
+};
 
-function addTest(title, status, data) {
-    const div = document.createElement('div');
-    div.className = 'test ' + status;
-    div.innerHTML = `<strong>${title}</strong><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
-    document.getElementById('results').appendChild(div);
+const TEST_PROMPT = 'test butterfly, photorealistic, 8k';
+const TEST_WIDTH = 512;
+const TEST_HEIGHT = 512;
+
+const results = {
+  worker: null,
+  vercel: null,
+  edge: null,
+  frontend: null};
+
+function updateBox(id, status, message, result) {
+  const box = document.getElementById('box-' + id);
+  const statusEl = document.getElementById('status-' + id);
+  const resultEl = document.getElementById('result-' + id);
+  
+  box.className = 'test-box ' + status;
+  statusEl.className = 'status ' + status;
+  statusEl.textContent = status.toUpperCase();
+  resultEl.textContent = result || message;
 }
 
-async function testEdge() {
-    addTest('Edge Function (sans token)', 'warn', 'Test en cours...');
-    try {
-        const ctrl = new AbortController();
-        setTimeout(() => ctrl.abort(), 5000);
-        
-        const res = await fetch(EDGE_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({prompt: 'test', width: 512, height: 512}),
-            signal: ctrl.signal
-        });
-        const text = await res.text();
-        addTest('Edge Function', res.ok ? 'ok' : 'fail', {
-            status: res.status,
-            response: text.substring(0, 200)
-        });
-    } catch(e) {
-        addTest('Edge Function', 'fail', {error: e.message});
+function updateChain(step, status) {
+  const el = document.getElementById('step' + step);
+  el.className = 'chain-item ' + status;
+}
+
+function updateSummary() {
+  const summary = document.getElementById('result-summary');
+  const box = document.getElementById('box-summary');
+  
+  let html = 'RÉSULTATS DES TESTS :\n\n';
+  html += '1. AI Worker Cloud : ' + (results.worker ? '✅ OK' : '❌ FAIL') + '\n';
+  html += '2. Vercel /api/generate : ' + (results.vercel ? '✅ OK' : '❌ FAIL') + '\n';
+  html += '3. Edge Function Supabase : ' + (results.edge ? '✅ OK' : '❌ FAIL') + '\n';
+  html += '4. Frontend complet : ' + (results.frontend ? '✅ OK' : '❌ FAIL') + '\n\n';
+  
+  if (results.worker && results.vercel && results.edge && results.frontend) {
+    html += '🎯 DIAGNOSTIC :\n';
+    if (!results.frontend && results.edge) {
+      html += '→ Le problème est dans le FRONTEND (index.html)\n';
+      html += '→ L\'Edge Function fonctionne, c\'est le JS qui envoie mal la requête\n';
+    } else if (!results.edge && results.vercel) {
+      html += '→ Le problème est dans l\'EDGE FUNCTION SUPABASE\n';
+      html += '→ Vercel fonctionne, mais l\'Edge Function bloque\n';
+    } else if (!results.vercel && results.worker) {
+      html += '→ Le problème est dans VERCEL /api/generate\n';
+      html += '→ L\'AI Worker fonctionne, mais Vercel bloque\n';
+    } else if (!results.worker) {
+      html += '→ Le problème est dans l\'AI WORKER CLOUD\n';
+      html += '→ Le service IA lui-même ne répond pas\n';
+    } else {
+      html += '→ TOUT FONCTIONNE ! 🎉\n';
     }
+  }
+  
+  summary.textContent = html;
+  box.className = 'test-box ' + (results.frontend ? 'ok' : 'fail');
+}
+async function testWorker() {
+  updateBox('worker', 'pending', 'Test en cours...', 'Envoi de la requête à l\'AI Worker...');
+  updateChain(3, 'active');
+  
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 10000);
+    
+    const res = await fetch(CONFIG.WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: TEST_PROMPT,
+        width: TEST_WIDTH,
+        height: TEST_HEIGHT
+      }),
+      signal: ctrl.signal
+    });
+    
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { data = { raw: text }; }
+    
+    results.worker = res.ok;
+    updateBox('worker', res.ok ? 'ok' : 'fail', 
+      `Status: ${res.status}`, 
+      JSON.stringify(data, null, 2));
+    updateChain(3, res.ok ? 'done' : 'error');
+    
+  } catch(e) {
+    results.worker = false;
+    updateBox('worker', 'fail', 'Exception', e.message);
+    updateChain(3, 'error');
+  }
+  
+  updateSummary();
 }
 
 async function testVercel() {
-    addTest('Vercel API', 'warn', 'Test en cours...');
-    try {
-        const ctrl = new AbortController();
-        setTimeout(() => ctrl.abort(), 5000);
-        
-        const res = await fetch(VERCEL_URL, {signal: ctrl.signal});
-        const text = await res.text();
-        addTest('Vercel API', 'ok', {
-            status: res.status,
-            response: text.substring(0, 200)
-        });
-    } catch(e) {
-        addTest('Vercel API', 'fail', {error: e.message});
-    }
+  updateBox('vercel', 'pending', 'Test en cours...', 'Envoi de la requête à Vercel avec le secret...');
+  updateChain(2, 'active');
+  
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 10000);
+    
+    const res = await fetch(CONFIG.VERCEL_API_URL, {
+      method: 'POST',
+      headers: {        'Content-Type': 'application/json',
+        'X-Internal-Secret': CONFIG.INTERNAL_SECRET
+      },
+      body: JSON.stringify({
+        prompt: TEST_PROMPT,
+        width: TEST_WIDTH,
+        height: TEST_HEIGHT
+      }),
+      signal: ctrl.signal
+    });
+    
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { data = { raw: text }; }
+    
+    results.vercel = res.ok;
+    updateBox('vercel', res.ok ? 'ok' : 'fail', 
+      `Status: ${res.status}`, 
+      JSON.stringify(data, null, 2));
+    updateChain(2, res.ok ? 'done' : 'error');
+    
+  } catch(e) {
+    results.vercel = false;
+    updateBox('vercel', 'fail', 'Exception', e.message);
+    updateChain(2, 'error');
+  }
+  
+  updateSummary();
 }
 
-async function testDB() {
-    addTest('Base de données', 'warn', 'Test en cours...');
-    try {
-        const supabase = window.supabase.createClient(SUPABASE_URL, 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU');
-        
-        const {data, error} = await supabase.from('pixora_creations').select('id').limit(1);
-        if (error) throw error;
-        addTest('Base de données', 'ok', {count: data ? data.length : 0});
-    } catch(e) {
-        addTest('Base de données', 'fail', {error: e.message});
-    }
+async function testEdge() {
+  updateBox('edge', 'pending', 'Test en cours...', 'Envoi de la requête à l\'Edge Function avec apikey...');
+  updateChain(1, 'active');
+  
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 10000);
+    
+    const res = await fetch(CONFIG.EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': CONFIG.SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        prompt: TEST_PROMPT,
+        width: TEST_WIDTH,
+        height: TEST_HEIGHT
+      }),
+      signal: ctrl.signal    });
+    
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { data = { raw: text }; }
+    
+    results.edge = res.ok;
+    updateBox('edge', res.ok ? 'ok' : 'fail', 
+      `Status: ${res.status}`, 
+      JSON.stringify(data, null, 2));
+    updateChain(1, res.ok ? 'done' : 'error');
+    
+  } catch(e) {
+    results.edge = false;
+    updateBox('edge', 'fail', 'Exception', e.message);
+    updateChain(1, 'error');
+  }
+  
+  updateSummary();
 }
 
-// Lancer au chargement
-window.onload = () => {
-    addTest('Page chargée', 'ok', 'Clique sur les boutons pour tester');
-};
+async function testFrontend() {
+  updateBox('frontend', 'pending', 'Test en cours...', 'Simulation complète du frontend...');
+  updateChain(4, 'active');
+  
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 15000);
+    
+    // Simulation exacte de ce que fait index.html
+    const headers = {
+      'Content-Type': 'application/json',
+      'apikey': CONFIG.SUPABASE_ANON_KEY
+    };
+    
+    const res = await fetch(CONFIG.EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        prompt: TEST_PROMPT,
+        width: 768,
+        height: 768
+      }),
+      signal: ctrl.signal
+    });
+    
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { data = { raw: text }; }
+        results.frontend = res.ok;
+    updateBox('frontend', res.ok ? 'ok' : 'fail', 
+      `Status: ${res.status}`, 
+      JSON.stringify(data, null, 2));
+    updateChain(4, res.ok ? 'done' : 'error');
+    
+  } catch(e) {
+    results.frontend = false;
+    updateBox('frontend', 'fail', 'Exception', e.message);
+    updateChain(4, 'error');
+  }
+  
+  updateSummary();
+}
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
