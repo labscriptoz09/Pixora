@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debug IA Pixora</title>
+    <title>Debug IA Pixora - Auto Test</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,410 +20,195 @@
             color: #8B5CF6;
             margin-bottom: 30px;
             font-size: 2rem;
-            text-transform: uppercase;
-            border-bottom: 2px solid #8B5CF6;
-            padding-bottom: 10px;
         }
-        .test-section {
+        .test-result {
             background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .test-section h2 {
-            color: #06B6D4;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-        .test-item {
-            background: rgba(0,0,0,0.3);
+            border-left: 5px solid #666;
             padding: 15px;
             margin: 10px 0;
             border-radius: 5px;
-            border-left: 4px solid #666;
         }
-        .test-item.success { border-left-color: #10B981; }
-        .test-item.error { border-left-color: #EF4444; }
-        .test-item.warning { border-left-color: #F59E0B; }
-        .test-label {
-            font-weight: bold;            color: #A1A1AA;
-            margin-bottom: 5px;
+        .test-result.success { border-left-color: #10B981; background: rgba(16,185,129,0.1); }
+        .test-result.error { border-left-color: #EF4444; background: rgba(239,68,68,0.1); }
+        .test-result.warning { border-left-color: #F59E0B; background: rgba(245,158,11,0.1); }
+        .test-result.pending { border-left-color: #3B82F6; background: rgba(59,130,246,0.1); }
+        .test-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .test-value {
-            font-family: 'Courier New', monospace;
+        .status-icon {
+            font-size: 1.5rem;
+        }
+        .test-details {
             background: rgba(0,0,0,0.5);
-            padding: 8px;
+            padding: 10px;
             border-radius: 3px;
+            margin-top: 10px;            font-size: 0.85rem;
             word-break: break-all;
-            margin: 5px 0;
         }
-        .status {
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5rem;
+            color: #8B5CF6;
+        }
+        .spinner {
             display: inline-block;
-            padding: 3px 10px;
-            border-radius: 3px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin-left: 10px;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(139,92,246,0.3);
+            border-radius: 50%;
+            border-top-color: #8B5CF6;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 15px;
         }
-        .status.ok { background: #10B981; color: #000; }
-        .status.fail { background: #EF4444; color: #fff; }
-        .status.pending { background: #F59E0B; color: #000; }
-        button {
-            background: linear-gradient(135deg, #8B5CF6, #EC4899);
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 5px;
-            transition: transform 0.2s;
-        }
-        button:hover { transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
-        .btn-run { width: 100%; margin: 20px 0; }
-        pre {
-            background: rgba(0,0,0,0.7);
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            font-size: 0.85rem;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .log-entry {
-            margin: 5px 0;
-            padding: 5px;
-            border-left: 3px solid #666;            padding-left: 10px;
-        }
-        .log-entry.info { border-left-color: #3B82F6; }
-        .log-entry.success { border-left-color: #10B981; }
-        .log-entry.error { border-left-color: #EF4444; }
-        .log-entry.warn { border-left-color: #F59E0B; }
-        #console-output {
-            margin-top: 20px;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔧 Debug IA Pixora</h1>
+        <h1>🔧 Debug IA Pixora - Tests Automatiques</h1>
         
-        <button class="btn-run" onclick="runAllTests()"> Lancer Tous Les Tests</button>
-        
-        <div class="test-section">
-            <h2>📡 Configuration</h2>
-            <div class="test-item">
-                <div class="test-label">Supabase URL:</div>
-                <div class="test-value" id="supabase-url">-</div>
-            </div>
-            <div class="test-item">
-                <div class="test-label">Vercel API URL:</div>
-                <div class="test-value" id="vercel-url">-</div>
-            </div>
-            <div class="test-item">
-                <div class="test-label">Edge Function URL:</div>
-                <div class="test-value" id="edge-url">-</div>
-            </div>
-        </div>
-
-        <div class="test-section">
-            <h2>🔐 Authentification</h2>
-            <div class="test-item" id="test-auth-status">
-                <div class="test-label">Statut Connexion:</div>
-                <div class="test-value" id="auth-status">En attente...</div>
-            </div>
-            <div class="test-item" id="test-auth-token">
-                <div class="test-label">Token:</div>
-                <div class="test-value" id="auth-token">-</div>
-            </div>
-        </div>
-
-        <div class="test-section">
-            <h2>🌐 Test CORS & Accès</h2>
-            <div class="test-item" id="test-cors">
-                <div class="test-label">CORS Headers:</div>
-                <div class="test-value" id="cors-result">En test...</div>            </div>
-            <div class="test-item" id="test-edge-access">
-                <div class="test-label">Accès Edge Function:</div>
-                <div class="test-value" id="edge-access-result">En test...</div>
-            </div>
-        </div>
-
-        <div class="test-section">
-            <h2>⚡ Test Edge Function Supabase</h2>
-            <button onclick="testEdgeFunction(false)">Tester SANS Token (Anonyme)</button>
-            <button onclick="testEdgeFunction(true)">Tester AVEC Token (Connecté)</button>
-            <div class="test-item" id="test-edge-result" style="margin-top: 15px;">
-                <div class="test-label">Résultat:</div>
-                <div class="test-value" id="edge-result">En attente...</div>
-            </div>
-        </div>
-
-        <div class="test-section">
-            <h2>🔷 Test API Vercel</h2>
-            <button onclick="testVercelAPI()">Tester /api/generate</button>
-            <div class="test-item" id="test-vercel-result" style="margin-top: 15px;">
-                <div class="test-label">Résultat:</div>
-                <div class="test-value" id="vercel-result">En attente...</div>
-            </div>
-        </div>
-
-        <div class="test-section">
-            <h2>💾 Test Base de Données</h2>
-            <button onclick="testDatabase()">Tester pixora_creations</button>
-            <div class="test-item" id="test-db-result" style="margin-top: 15px;">
-                <div class="test-label">Résultat:</div>
-                <div class="test-value" id="db-result">En attente...</div>
-            </div>
-        </div>
-
-        <div class="test-section">
-            <h2>📋 Console Logs</h2>
-            <button onclick="clearConsole()">Effacer Console</button>
-            <div id="console-output">
-                <pre id="console-log"></pre>
+        <div id="results">
+            <div class="loading">
+                <div class="spinner"></div>
+                Tests en cours...
             </div>
         </div>
     </div>
 
     <script>
-        // Configuration
         const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
-        const VERCEL_API_URL = 'https://iapixora.com/api/generate';
         const EDGE_FUNCTION_URL = 'https://cfwzilhetkclpytjsopu.supabase.co/functions/v1/generate-image';
-        // Initialiser Supabase
+        const VERCEL_API_URL = 'https://iapixora.com/api/generate';
+
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const resultsDiv = document.getElementById('results');
 
-        // Affichage configuration
-        document.getElementById('supabase-url').textContent = SUPABASE_URL;
-        document.getElementById('vercel-url').textContent = VERCEL_API_URL;
-        document.getElementById('edge-url').textContent = EDGE_FUNCTION_URL;
-
-        // Console log personnalisé
-        function log(message, type = 'info') {
-            const consoleLog = document.getElementById('console-log');
-            const entry = document.createElement('div');
-            entry.className = `log-entry ${type}`;
-            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            consoleLog.appendChild(entry);
-            consoleLog.scrollTop = consoleLog.scrollHeight;
+        function addResult(title, status, details) {
+            const icons = { success: '✅', error: '', warning: '⚠️', pending: '⏳' };
+            const div = document.createElement('div');
+            div.className = `test-result ${status}`;
+            div.innerHTML = `                <div class="test-title">
+                    <span class="status-icon">${icons[status]}</span>
+                    ${title}
+                </div>
+                <div class="test-details">${details}</div>
+            `;
+            resultsDiv.appendChild(div);
         }
 
-        function clearConsole() {
-            document.getElementById('console-log').innerHTML = '';
-            log('Console effacée', 'info');
-        }
+        async function runTests() {
+            resultsDiv.innerHTML = '';
 
-        function updateTestItem(id, status, message, details = '') {
-            const item = document.getElementById(id);
-            const valueDiv = document.getElementById(id.replace('test-', '') + '-result') || 
-                            document.getElementById(id.replace('test-', '') + '-status');
-            
-            item.className = `test-item ${status}`;
-            valueDiv.innerHTML = `<span class="status ${status}">${status.toUpperCase()}</span> ${message}`;
-            if (details) {
-                valueDiv.innerHTML += `<div style="margin-top: 10px; font-size: 0.85rem;">${details}</div>`;
+            // TEST 1: Configuration
+            addResult('Configuration Supabase', 'success', 
+                `URL: ${SUPABASE_URL}<br>Clé Anon: ${SUPABASE_ANON_KEY.substring(0, 30)}...`);
+
+            // TEST 2: Authentification
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    addResult('Authentification', 'success', 
+                        `Connecté - Token: ${session.access_token.substring(0, 50)}...`);
+                } else {
+                    addResult('Authentification', 'warning', 
+                        'Non connecté (normal pour test anonyme)');
+                }
+            } catch (error) {
+                addResult('Authentification', 'error', error.message);
             }
-        }
 
-        async function runAllTests() {
-            log('=== DÉMARRAGE DES TESTS ===', 'info');
-            
-            // Test Auth
-            await testAuth();
-            
-            // Test CORS
-            await testCORS();
-            
-            // Test Edge Function
-            await testEdgeFunction(false);
-            
-            // Test Vercel
-            await testVercelAPI();            
-            // Test Database
-            await testDatabase();
-            
-            log('=== TESTS TERMINÉS ===', 'success');
-        }
-
-        async function testAuth() {
-            log('Test authentification...', 'info');
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            if (session) {
-                document.getElementById('auth-status').innerHTML = '<span class="status ok">CONNECTÉ</span>';
-                document.getElementById('auth-token').textContent = session.access_token.substring(0, 50) + '...';
-                log('Utilisateur connecté', 'success');
-            } else {
-                document.getElementById('auth-status').innerHTML = '<span class="status fail">NON CONNECTÉ</span>';
-                document.getElementById('auth-token').textContent = '-';
-                log('Aucun utilisateur connecté (normal pour test anonyme)', 'warn');
-            }
-        }
-
-        async function testCORS() {
-            log('Test CORS...', 'info');
+            // TEST 3: Edge Function SANS token
             try {
                 const response = await fetch(EDGE_FUNCTION_URL, {
-                    method: 'OPTIONS',
-                    headers: {
-                        'Origin': window.location.origin
-                    }
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: 'test debug butterfly',
+                        width: 512,
+                        height: 512
+                    })
                 });
+                const text = await response.text();
                 
-                const headers = {};
-                response.headers.forEach((value, key) => {
-                    if (key.includes('access-control')) {
-                        headers[key] = value;
-                    }
-                });
-                
-                updateTestItem('test-cors', 'success', 'CORS configurés', JSON.stringify(headers, null, 2));
-                log('CORS OK', 'success');
-            } catch (error) {
-                updateTestItem('test-cors', 'error', 'Erreur CORS', error.message);
-                log('Erreur CORS: ' + error.message, 'error');
+                if (response.ok) {
+                    addResult('Edge Function (SANS token)', 'success', 
+                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
+                } else {
+                    addResult('Edge Function (SANS token)', 'error', 
+                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
+                }            } catch (error) {
+                addResult('Edge Function (SANS token)', 'error', error.message);
             }
-        }
 
-        async function testEdgeFunction(withToken) {
-            log(`Test Edge Function (avec token: ${withToken})...`, 'info');
-            updateTestItem('test-edge-result', 'pending', 'Test en cours...');            
+            // TEST 4: Edge Function AVEC token
             try {
+                const { data: { session } } = await supabase.auth.getSession();
                 const headers = { 'Content-Type': 'application/json' };
+                if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
                 
-                if (withToken) {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (session) {
-                        headers['Authorization'] = `Bearer ${session.access_token}`;
-                        log('Token ajouté à la requête', 'info');
-                    } else {
-                        log('Pas de token disponible', 'warn');
-                    }
-                }
-                
-                const body = {
-                    prompt: 'debug test butterfly, photorealistic, 8k',
-                    width: 512,
-                    height: 512
-                };
-                
-                const startTime = Date.now();
                 const response = await fetch(EDGE_FUNCTION_URL, {
                     method: 'POST',
                     headers: headers,
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({
+                        prompt: 'test debug with token',
+                        width: 512,
+                        height: 512
+                    })
                 });
-                const duration = Date.now() - startTime;
-                
-                const responseText = await response.text();
-                let responseData;
-                try {
-                    responseData = JSON.parse(responseText);
-                } catch (e) {
-                    responseData = { raw: responseText };
-                }
-                
-                const result = {
-                    status: response.status,
-                    duration: duration + 'ms',
-                    headers: Object.fromEntries(response.headers.entries()),
-                    body: responseData
-                };
-                
-                if (response.ok) {
-                    updateTestItem('test-edge-result', 'success', 
-                        `✅ Succès (${response.status}) - ${duration}ms`, 
-                        JSON.stringify(result, null, 2));
-                    log(`Edge Function OK: ${response.status} en ${duration}ms`, 'success');
-                } else {
-                    updateTestItem('test-edge-result', 'error',                         `❌ Erreur (${response.status})`, 
-                        JSON.stringify(result, null, 2));
-                    log(`Edge Function erreur: ${response.status}`, 'error');
-                }
-                
-            } catch (error) {
-                updateTestItem('test-edge-result', 'error', 
-                    'Exception', 
-                    error.message + '\n' + error.stack);
-                log('Exception Edge Function: ' + error.message, 'error');
-            }
-        }
-
-        async function testVercelAPI() {
-            log('Test API Vercel...', 'info');
-            updateTestItem('test-vercel-result', 'pending', 'Test en cours...');
-            
-            try {
-                const response = await fetch(VERCEL_API_URL, {
-                    method: 'GET'
-                });
-                
                 const text = await response.text();
                 
-                if (response.status === 405 || response.status === 404) {
-                    updateTestItem('test-vercel-result', 'success', 
-                        `API existe (${response.status}) - Réponse attendue`, 
-                        text);
-                    log('API Vercel accessible', 'success');
+                if (response.ok) {
+                    addResult('Edge Function (AVEC token)', 'success', 
+                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
                 } else {
-                    updateTestItem('test-vercel-result', 'warning', 
-                        `Statut: ${response.status}`, 
-                        text);
-                    log(`API Vercel réponse inhabituelle: ${response.status}`, 'warn');
+                    addResult('Edge Function (AVEC token)', 'error', 
+                        `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
                 }
-                
             } catch (error) {
-                updateTestItem('test-vercel-result', 'error', 
-                    'Erreur de connexion', 
-                    error.message);
-                log('Erreur API Vercel: ' + error.message, 'error');
+                addResult('Edge Function (AVEC token)', 'error', error.message);
             }
-        }
 
-        async function testDatabase() {
-            log('Test base de données...', 'info');
-            updateTestItem('test-db-result', 'pending', 'Test en cours...');
-            
+            // TEST 5: API Vercel
             try {
-                const { data, error } = await supabase                    .from('pixora_creations')
-                    .select('id, file_name, created_at')
-                    .order('created_at', { ascending: false })
-                    .limit(5);
-                
-                if (error) {
-                    updateTestItem('test-db-result', 'error', 
-                        'Erreur requête', 
-                        JSON.stringify(error, null, 2));
-                    log('Erreur DB: ' + error.message, 'error');
-                } else {
-                    const result = {
-                        count: data ? data.length : 0,
-                        items: data
-                    };
-                    updateTestItem('test-db-result', 'success', 
-                        `${data.length} créations trouvées`, 
-                        JSON.stringify(result, null, 2));
-                    log(`Base de données OK: ${data.length} créations`, 'success');
-                }
-                
+                const response = await fetch(VERCEL_API_URL, { method: 'GET' });
+                const text = await response.text();
+                addResult('API Vercel /api/generate', 
+                    response.status === 405 ? 'success' : 'warning',
+                    `Status: ${response.status}<br>Réponse: ${text.substring(0, 200)}`);
             } catch (error) {
-                updateTestItem('test-db-result', 'error', 
-                    'Exception', 
-                    error.message);
-                log('Exception DB: ' + error.message, 'error');
+                addResult('API Vercel /api/generate', 'error', error.message);
             }
+
+            // TEST 6: Base de données
+            try {
+                const { data, error } = await supabase
+                    .from('pixora_creations')
+                    .select('id, file_name')
+                    .limit(3);
+                                if (error) {
+                    addResult('Base de données', 'error', JSON.stringify(error));
+                } else {
+                    addResult('Base de données', 'success', 
+                        `${data.length} créations trouvées`);
+                }
+            } catch (error) {
+                addResult('Base de données', 'error', error.message);
+            }
+
+            addResult('Tests terminés', 'success', 'Tous les tests sont terminés. Envoie une capture de cette page.');
         }
 
-        // Initialisation
-        window.onload = function() {
-            log('Page de debug chargée', 'info');
-            log('Clique sur "Lancer Tous Les Tests" pour commencer', 'info');
-        };
+        // Lancer automatiquement au chargement
+        window.onload = runTests;
     </script>
 </body>
 </html>
