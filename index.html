@@ -237,12 +237,12 @@ var DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponso
 var CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS)),currentTier=1,pendingReferrer=null,API_KEYS={},currentDiscountUntil=null,discountTimerInterval=null;
 var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
 
-// ✅ CORRIGÉ : Appel robuste, autorise les non-connectés (3 essais gratuits)
+// ✅ CORRIGÉ : Appel robuste, autorise les non-connectés + header apikey obligatoire
 async function generateImageViaProxy(prompt, width, height) {
   const { data: { session } } = await db.auth.getSession();
   const headers = {
     'Content-Type': 'application/json',
-    'apikey': SUPABASE_KEY // ✅ AJOUTÉ : Clé anon publique requise par Supabase
+    'apikey': SUPABASE_KEY // ✅ OBLIGATOIRE pour que Supabase accepte la requête
   };
   if (session) {
     headers['Authorization'] = `Bearer ${session.access_token}`;
@@ -335,13 +335,34 @@ async function processReferral(uid){var rid=pendingReferrer||localStorage.getIte
 async function validatePendingReferral(uid){try{var rs=await db.from('referrals').select('id').eq('referred_id',uid).eq('validated',false),refs=rs.data||[];for(var i=0;i<refs.length;i++)await db.from('referrals').update({validated:true}).eq('id',refs[i].id)}catch(e){console.error('Validate referral error:',e)}}
 async function ensureUserData(uid){try{var ex=await db.from('user_data').select('user_id').eq('user_id',uid).single();if(!ex.data)await db.from('user_data').insert({user_id:uid,points:0,streak:0,last_login:null,total_generated:0,total_earned:0,tier:1,badges_claimed:[]})}catch(e){console.error('Ensure user_data error:',e)}}
 async function grantSignupBonus(uid){try{var br=await db.from('admin_config').select('value').eq('key','signup_bonus').single(),bonus=(br.data&&br.data.value!==undefined)?br.data.value:15;if(bonus<=0)return;var ex=await db.from('transactions').select('id').eq('user_id',uid).eq('title','Bonus inscription').single();if(ex.data)return;var ud=await db.from('user_data').select('points,total_earned').eq('user_id',uid).single(),cp=(ud.data&&ud.data.points)||0,ce=(ud.data&&ud.data.total_earned)||0;await db.from('user_data').update({points:cp+bonus,total_earned:ce+bonus}).eq('user_id',uid);await db.from('transactions').insert({user_id:uid,type:'earned',title:'Bonus inscription',amount:bonus})}catch(e){console.error('Signup bonus error:',e)}}
-async function loadUserTier(){try{var u=await getUser();if(!u){currentTier=1;currentDiscountUntil=null;updateCostUI();return}var d=await getUserData();currentTier=d.tier||1;currentDiscountUntil=d.discount_until||null}catch(e){currentTier=1;currentDiscountUntil=null}updateCostUI()}
+
+// ✅ CORRIGÉ : Sécurisation contre les valeurs nulles
+async function loadUserTier(){
+  try{
+    var u=await getUser();
+    if(!u){
+      currentTier=1;      currentDiscountUntil=null;
+      updateCostUI();
+      return;
+    }
+    var d=await getUserData();
+    // Si d est null, on utilise des valeurs par défaut au lieu de planter
+    currentTier = (d && d.tier) ? d.tier : 1;
+    currentDiscountUntil = (d && d.discount_until) ? d.discount_until : null;
+  }catch(e){
+    currentTier=1;
+    currentDiscountUntil=null;
+  }
+  updateCostUI();
+}
+
 function notify(m,t){t=t||'success';var n=document.getElementById('notif');document.getElementById('notif-text').textContent=m;n.className='notification show '+t;setTimeout(function(){n.classList.remove('show')},3000)}async function getUser(){var r=await db.auth.getUser();return r.data.user}
 async function isLogged(){return!!await getUser()}
 function openAuth(){document.getElementById('auth-modal').classList.add('active');document.body.style.overflow='hidden'}
 function closeAuth(){document.getElementById('auth-modal').classList.remove('active');document.body.style.overflow=''}
 document.getElementById('auth-modal').addEventListener('click',function(e){if(e.target===this)closeAuth()});
-function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(t,i){t.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
+function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(t,i){t.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
+async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
 async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim(),pv=document.getElementById('r-pw').value,nv=document.getElementById('r-name').value.trim(),r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;var nid=sr.data.user?sr.data.user.id:null;if(nid){await ensureUserData(nid);await grantSignupBonus(nid);await processReferral(nid)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
 async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
@@ -350,7 +371,40 @@ function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user
 function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
 document.addEventListener('click',function(e){var m=document.getElementById('user-menu'),a=document.getElementById('user-avatar'),p=document.getElementById('mob-profile');if(!m.contains(e.target)&&!a.contains(e.target)&&!p.contains(e.target))closeUserMenu()});
 async function doLogout(){await db.auth.signOut();closeUserMenu();currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();notify(t('auth.logout'),'success');setTimeout(function(){location.reload()},800)}
-async function updateUI(){var logged=await isLogged(),user=await getUser();document.getElementById('user-stats').classList.toggle('show',logged);document.getElementById('user-avatar').classList.toggle('show',logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';var qs=document.getElementById('quick-stats');if(logged)qs.classList.add('show');else qs.classList.remove('show');if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('stat-points').textContent=d.points||0;document.getElementById('stat-streak').textContent=d.streak||1;document.getElementById('stat-generated').textContent=d.total_generated||0;document.getElementById('stat-earned').textContent=d.total_earned||0;var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur',ini=nm.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=ini;document.getElementById('menu-avatar').textContent=ini;document.getElementById('menu-name').textContent=nm;document.getElementById('menu-email').textContent=user.email;document.getElementById('menu-points').textContent=d.points||0}await loadMiniBadge()}
+
+// ✅ CORRIGÉ : Sécurisation de l'affichage UI contre les valeurs nulles
+async function updateUI(){
+  var logged=await isLogged(),user=await getUser();
+  document.getElementById('user-stats').classList.toggle('show',logged);
+  document.getElementById('user-avatar').classList.toggle('show',logged);
+  document.getElementById('auth-btn').style.display=logged?'none':'flex';
+  var qs=document.getElementById('quick-stats');
+  if(logged)qs.classList.add('show');else qs.classList.remove('show');
+  
+  if(logged){
+    var d=await getUserData();
+    // ✅ Si 'd' est null, on force des valeurs par défaut pour éviter le crash
+    if (!d) {
+      console.warn("Données utilisateur non trouvées, utilisation des valeurs par défaut.");
+      d = { points: 0, streak: 1, total_generated: 0, total_earned: 0, tier: 1 };
+    }
+    
+    document.getElementById('header-points').textContent=d.points||0;
+    document.getElementById('nav-points-badge').textContent=d.points||0;    document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';
+    document.getElementById('stat-points').textContent=d.points||0;
+    document.getElementById('stat-streak').textContent=d.streak||1;
+    document.getElementById('stat-generated').textContent=d.total_generated||0;
+    document.getElementById('stat-earned').textContent=d.total_earned||0;
+    var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur',ini=nm.charAt(0).toUpperCase();
+    document.getElementById('avatar-initial').textContent=ini;
+    document.getElementById('menu-avatar').textContent=ini;
+    document.getElementById('menu-name').textContent=nm;
+    document.getElementById('menu-email').textContent=user.email;
+    document.getElementById('menu-points').textContent=d.points||0;
+  }
+  await loadMiniBadge();
+}
+
 function openLB(url,type){lbUrl=url;lbType=type||'image';var c=document.getElementById('lb-container');c.innerHTML='';if(lbType==='video'){var v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.loop=true;v.style.cssText='max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.8)';c.appendChild(v)}else{var i=document.createElement('img');i.src=url;i.alt='Zoom';c.appendChild(i)}document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
 function closeLB(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';document.getElementById('lb-container').innerHTML='';lbUrl='';lbType='image'}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
@@ -385,12 +439,12 @@ async function loadStudio() {
     var validItems = result.data.filter(function(item) {
       return !item.expires_at || item.expires_at > now;
     });
-    if (validItems.length === 0) {
-      grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création valide</div>';
+    if (validItems.length === 0) {      grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création valide</div>';
       return;
     }
 
     grid.innerHTML = '';
+
     for (var i = 0; i < validItems.length; i++) {
       var row = validItems[i];
       var rawName = row.file_name;
@@ -434,12 +488,12 @@ async function loadStudio() {
           media.onerror = function() {
             c.style.opacity = '0.3';            c.style.pointerEvents = 'none';
           };
-        }
-      })(card, url, rawName);
+        }      })(card, url, rawName);
 
       card.onclick = (function(u, v) {
         return function() { openLB(u, v ? 'video' : 'image'); };
       })(url, isVideo);
+
       grid.appendChild(card);
     }
     
@@ -483,12 +537,12 @@ async function generate() {
     if (btnGen) btnGen.disabled = false;    return; 
   }
   
-  var logged = await isLogged();
-  if (!logged) {
+  var logged = await isLogged();  if (!logged) {
     var allowed = await checkFreemiumBlock();
     if (!allowed) { 
       notify(t('notifications.freemium_limit'), 'error'); 
-      isGenerating = false;      if (btnGen) btnGen.disabled = false;
+      isGenerating = false;
+      if (btnGen) btnGen.disabled = false;
       return; 
     }
   }
@@ -532,12 +586,12 @@ async function generate() {
       media.style.opacity = '1';
       card.setAttribute('data-prompt', p);
       card.onclick = function() { openLB(url, 'image'); };
-      
-      if (logged) {
+            if (logged) {
         validatePendingReferral(currentUser.id);
         updateUI();
         loadMiniBadge();
-      }      
+      }
+      
       notify('✅ ' + t('results.generated_in') + ' ' + ((Date.now() - st) / 1000).toFixed(1) + 's !', 'success');
       if (!logged) incrementAndCheckFreemium();
     };
@@ -582,11 +636,11 @@ async function generate() {
     if (btnGenFinal) btnGenFinal.disabled = false;
   }
 }
-
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
 
-async function cleanupExpiredCreations() {  console.log('[Nettoyage] Désactivé : Stockage permanent activé.');
+async function cleanupExpiredCreations() {
+  console.log('[Nettoyage] Désactivé : Stockage permanent activé.');
   return;
 }
 
