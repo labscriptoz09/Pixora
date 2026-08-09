@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { prompt, width = 768, height = 768 } = req.body;
+    const { prompt, width = 768, height = 768, user_id } = req.body;
 
     // ✅ 2. VALIDER LE PROMPT
     if (!prompt || typeof prompt !== 'string') {
@@ -38,7 +38,35 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Dimensions invalides' });
     }
 
-    // ✅ 4. APPELER LE WORKER (inchangé)
+    // ✅ 4. RATE LIMITING (par IP)
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+
+    const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
+    const { count } = await supabase      .from('rate_limits')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', ip)
+      .eq('endpoint', 'generate-image')
+      .gte('created_at', oneHourAgo);
+
+    if ((count || 0) >= 50) {
+      return res.status(429).json({ 
+        error: 'Limite horaire atteinte (50 générations/heure)' 
+      });
+    }
+
+    // Enregistrer la requête
+    await supabase.from('rate_limits').insert({
+      user_id: ip,
+      endpoint: 'generate-image',
+      created_at: new Date().toISOString()
+    });
+
+    // ✅ 5. APPELER LE WORKER (inchangé)
     const workerResponse = await fetch('https://ia-pixora-api.slimansoufian1.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -53,13 +81,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ 5. SAUVEGARDE SUPABASE (sans userId du client)
+    // ✅ 6. SAUVEGARDE SUPABASE (avec user_id maintenant)
     try {
-      const supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY
-      );
-
       const permanentDate = new Date();
       permanentDate.setFullYear(permanentDate.getFullYear() + 10);
 
@@ -67,17 +90,16 @@ export default async function handler(req, res) {
         .from('pixora_creations')
         .insert({
           file_name: data.fileName,
-          user_id: null,
+          user_id: user_id || null,
           expires_at: permanentDate.toISOString(),
           prompt: prompt.substring(0, 1000),
           created_at: new Date().toISOString()
         });
 
-    } catch (dbError) {
-      // Silencieux en production
+    } catch (dbError) {      console.error('DB save error:', dbError);
     }
 
-    // ✅ 6. RÉPONSE
+    // ✅ 7. RÉPONSE
     return res.status(200).json({
       success: true,
       url: data.url,
@@ -87,9 +109,9 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    console.error('Handler error:', error);
     return res.status(500).json({ 
       error: 'Erreur serveur'
     });
   }
 }
-
