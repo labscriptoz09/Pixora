@@ -1,4 +1,4 @@
-// api/niche.mjs — 1 fichier = toutes les pages niches SEO (FR, EN, + futures langues)
+// api/niche.mjs — 1 fichier = toutes les pages niches SEO
 var NICHES = {
   tatouage: {
     fr: {
@@ -81,7 +81,7 @@ var NICHES = {
       steps: ["Décrivez votre activité et votre style", "Choisissez un type (minimaliste, géométrique, vintage)", "Générez 4 propositions de logo", "Téléchargez votre logo"],
       h2b: "Exemples de prompts logo",
       prompts: ["Logo minimaliste café, tasse géométrique, vectoriel", "Logo vintage barbier, cercle, typographie rétro", "Logo géométrique montagne, lignes fines, moderne", "Logo abstract tech, dégradé bleu, forme simple"],
-      faq: [["Le logo IA est-il gratuit ?", "Oui, 3 essais sans inscription."], ["Puis-je utiliser le logo pour ma entreprise ?", "Oui, libre de droits commercial."], ["Le logo est-il haute résolution ?", "Oui, image haute résolution prête à l'emploi."]]
+      faq: [["Le logo IA est-il gratuit ?", "Oui, 3 essais sans inscription."], ["Puis-je utiliser le logo pour mon entreprise ?", "Oui, libre de droits commercial."], ["Le logo est-il haute résolution ?", "Oui, image haute résolution prête à l'emploi."]]
     },
     en: {
       title: "Free AI Logo: Create Your Professional Logo in 10 Seconds (2026)",
@@ -120,6 +120,65 @@ var NICHES = {
   }
 };
 
+// ===== ESPAGNOL (ES) =====
+var ES = {
+  tatouage: {
+    title: "Tatuaje IA Gratis: Crea tu diseño en 10 segundos (2026)",
+    meta: "Generador de tatuajes IA gratuito. 3 pruebas sin registro. Estilos realista, tribal, acuarela, geométrico. Imágenes libres de derechos.",
+    h1: "Tatuaje IA gratis: tu diseño en 10 segundos",
+    intro: "Encontrar el tatuaje perfecto lleva horas. Con IA Pixora, describe tu idea y obtén 4 diseños únicos en 10 segundos. Gratis, sin registro, libre de derechos.",
+    h2a: "¿Cómo crear un tatuaje con IA?",
+    steps: ["Describe tu idea en una frase", "Elige un estilo (realista, tribal, acuarela)", "Genera 4 variaciones al instante", "Descarga tu diseño favorito"],
+    h2b: "Ejemplos de prompts de tatuaje",
+    prompts: ["Lobo geométrico, estilo dotwork, negro y gris, fondo blanco", "Rosa acuarela con mariposa, colores vivos", "Calavera mexicana día de los muertos, colores vivos, detallada", "Dragón japonés tradicional, tinta negra, estilo irezumi"],
+    faq: [["¿Es gratis el generador de tatuajes IA?", "Sí, 3 pruebas gratis sin registro y luego acceso ilimitado."], ["¿Puedo usar el diseño en un estudio de tatuajes?", "Sí, las imágenes son libres de derechos."], ["¿Necesito crear una cuenta?", "No, 3 generaciones sin cuenta."]]
+  },
+  avatar: {
+    title: "Avatar Pro IA Gratis: Foto profesional en 10 segundos (2026)",
+    meta: "Crea tu avatar profesional con IA gratis. Ideal para LinkedIn, CV, WhatsApp. 3 pruebas sin registro.",
+    h1: "Avatar pro IA gratis: tu foto profesional",
+    intro: "Una foto profesional cuesta caro en estudio. La IA genera tu avatar profesional en 10 segundos. Gratis y sin registro.",
+    h2a: "¿Cómo crear un avatar profesional con IA?",
+    steps: ["Describe tu aspecto y tu estilo", "Elige un fondo (oficina, estudio, liso)", "Genera 4 retratos calidad estudio", "Descarga tu avatar pro"],
+    h2b: "Ejemplos de prompts de avatar",
+    prompts: ["Retrato profesional, traje oscuro, fondo de oficina desenfocado", "Avatar LinkedIn, sonrisa segura, fondo gris liso", "Foto profesional mujer, blazer azul, luz natural", "Retrato corporativo, camisa blanca, realista 8K"],
+    faq: [["¿Es gratis el avatar IA?", "Sí, 3 pruebas gratis sin registro."], ["¿Puedo usarlo en LinkedIn?", "Sí, libre de derechos para uso profesional."], ["¿La calidad sirve para un CV?", "Sí, calidad de estudio en alta resolución."]]
+  },
+  anime: {
+    title: "Anime IA Gratis: Crea tu personaje en 10 segundos (2026)",    meta: "Generador de anime IA gratuito. Estilos Ghibli, shonen, kawaii, cyberpunk. 3 pruebas sin registro.",
+    h1: "Anime IA gratis: tu personaje en 10 segundos",
+    intro: "Crea tu personaje de anime único en 10 segundos. Estilos Ghibli, shonen, kawaii o cyberpunk. Gratis, sin registro.",
+    h2a: "¿Cómo crear un personaje de anime con IA?",
+    steps: ["Describe tu personaje (pelo, ojos, estilo)", "Elige un ambiente (Ghibli, shonen, kawaii)", "Genera 4 variaciones al instante", "Descarga tu personaje"],
+    h2b: "Ejemplos de prompts de anime",
+    prompts: ["Personaje anime estilo Ghibli, colores pastel, cerezos en flor", "Héroe shonen, pelo plateado, aura eléctrica", "Personaje kawaii, ojos grandes, estilo chibi", "Anime cyberpunk, neones, ciudad nocturna"],
+    faq: [["¿Es gratis el generador de anime?", "Sí, 3 pruebas sin registro."], ["¿Puedo usar mi personaje comercialmente?", "Sí, libre de derechos."], ["¿Qué estilos de anime hay?", "Ghibli, shonen, kawaii, cyberpunk y más."]]
+  },
+  logo: {
+    title: "Logo IA Gratis: Crea tu logo profesional en 10 segundos (2026)",
+    meta: "Generador de logos IA gratuito para emprendedores. Minimalista, geométrico, vintage. 3 pruebas sin registro.",
+    h1: "Logo IA gratis: tu logo profesional",
+    intro: "Un logo profesional cuesta cientos de euros. La IA genera tu logo en 10 segundos. Gratis y libre de derechos.",
+    h2a: "¿Cómo crear un logo con IA?",
+    steps: ["Describe tu negocio y tu estilo", "Elige un tipo (minimalista, geométrico, vintage)", "Genera 4 propuestas de logo", "Descarga tu logo"],
+    h2b: "Ejemplos de prompts de logo",
+    prompts: ["Logo minimalista cafetería, taza geométrica, vectorial", "Logo vintage barbería, círculo, tipografía retro", "Logo geométrico montaña, líneas finas, moderno", "Logo abstracto tech, degradado azul, forma simple"],
+    faq: [["¿Es gratis el logo IA?", "Sí, 3 pruebas sin registro."], ["¿Puedo usar el logo para mi empresa?", "Sí, libre de derechos comerciales."], ["¿El logo es de alta resolución?", "Sí, imagen en alta resolución lista para usar."]]
+  },
+  animaux: {
+    title: "Animales IA Reales: Retrato majestuoso de tu mascota (2026)",
+    meta: "Convierte a tu mascota en un retrato real con IA. Gato, perro, caballo como rey o reina. Gratis, 3 pruebas sin registro.",
+    h1: "Animales IA reales: retrato majestuoso",
+    intro: "Convierte a tu gato o perro en un rey del Renacimiento. El estilo mascota real es viral en redes. Gratis, sin registro.",
+    h2a: "¿Cómo crear un retrato real de tu mascota?",
+    steps: ["Describe tu mascota (raza, colores)", "Elige un disfraz (rey, reina, general)", "Genera 4 retratos majestuosos", "Descarga y comparte"],
+    h2b: "Ejemplos de prompts de animales reales",
+    prompts: ["Gato como rey del Renacimiento, corona dorada, óleo", "Perro como general napoleónico, uniforme, dramático", "Caballo real, armadura dorada, palacio, épico", "Conejo como reina victoriana, vestido elegante"],
+    faq: [["¿Es gratis el retrato de mascota?", "Sí, 3 pruebas sin registro."], ["¿Es un buen regalo?", "Sí, muy popular para cumpleaños."], ["¿Qué animales funcionan?", "Gatos, perros, caballos, conejos, aves..."]]
+  }
+};
+for (var esKey in ES) { if (NICHES[esKey]) { NICHES[esKey].es = ES[esKey]; } }
+
 var UI = {
   fr: { back: "← IA Pixora", try: "Essayer gratuitement", create: "Créer mon image gratuite", gallery: "Voir la galerie publique", faq: "FAQ" },
   en: { back: "← IA Pixora", try: "Try for free", create: "Create my free image", gallery: "View public gallery", faq: "FAQ" },
@@ -127,7 +186,7 @@ var UI = {
   de: { back: "← IA Pixora", try: "Kostenlos testen", create: "Mein Bild erstellen", gallery: "Galerie ansehen", faq: "FAQ" },
   pt: { back: "← IA Pixora", try: "Testar grátis", create: "Criar minha imagem grátis", gallery: "Ver galeria pública", faq: "FAQ" }
 };
-var FLAGS = { fr: "🇫🇷", en: "🇬", es: "🇸", de: "🇩🇪", pt: "🇧🇷" };
+var FLAGS = { fr: "🇫🇷", en: "🇬🇧", es: "🇪🇸", de: "🇩🇪", pt: "🇧🇷" };
 
 function buildPage(d, lang, niche, allLangs) {
   var ui = UI[lang] || UI.en;
@@ -135,8 +194,7 @@ function buildPage(d, lang, niche, allLangs) {
   var langBar = "<p style='margin:12px 0'>";
   for (var i2 = 0; i2 < allLangs.length; i2++) {
     var ll = allLangs[i2];
-    langBar += "<a href='https://iapixora.com/niche/" + ll + "/" + niche + "' style='margin-right:14px;text-decoration:" + (ll === lang ? "underline" : "none") + ";font-weight:700'>" + (FLAGS[ll] || "🌐") + " " + ll.toUpperCase() + "</a>";
-  }
+    langBar += "<a href='https://iapixora.com/niche/" + ll + "/" + niche + "' style='margin-right:14px;text-decoration:" + (ll === lang ? "underline" : "none") + ";font-weight:700'>" + (FLAGS[ll] || "🌐") + " " + ll.toUpperCase() + "</a>";  }
   langBar += "</p>";
 
   var hreflang = "";
@@ -145,6 +203,7 @@ function buildPage(d, lang, niche, allLangs) {
     hreflang += '<link rel="alternate" hreflang="' + l + '" href="https://iapixora.com/niche/' + l + '/' + niche + '">';
   }
   hreflang += '<link rel="alternate" hreflang="x-default" href="https://iapixora.com/niche/en/' + niche + '">';
+
   var faqJson = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -184,8 +243,7 @@ function buildPage(d, lang, niche, allLangs) {
 
 export default function (req, res) {
   try {
-    var lang = String(req.query.lang || "fr").toLowerCase();
-    var niche = String(req.query.niche || "").toLowerCase();
+    var lang = String(req.query.lang || "fr").toLowerCase();    var niche = String(req.query.niche || "").toLowerCase();
     var n = NICHES[niche];
     var d = n && n[lang];
 
@@ -194,7 +252,8 @@ export default function (req, res) {
     if (!d) {
       res.statusCode = 404;
       res.end("<h1>404</h1><p>Page introuvable. <a href='https://iapixora.com'>Retour IA Pixora</a></p>");
-      return;    }
+      return;
+    }
 
     res.statusCode = 200;
     res.end(buildPage(d, lang, niche, Object.keys(n)));
