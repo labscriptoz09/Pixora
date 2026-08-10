@@ -1,4 +1,4 @@
-// api/niche.mjs — 1 fichier = 48 pages niches SEO (FR + EN + ES)
+// api/niche.mjs — 1 fichier = 48 pages niches SEO + page de partage universelle
 var NICHES = {
   tatouage: {
     fr: { title: "Tatouage IA Gratuit : Créez votre design en 10 secondes (2026)", meta: "Générateur de tatouages IA gratuit. 3 essais sans inscription. Styles réaliste, tribal, aquarelle, géométrique. Libres de droits.", h1: "Tatouage IA gratuit : votre design en 10 secondes", intro: "Trouver le tatouage parfait prend des heures. Avec IA Pixora, décrivez votre idée et obtenez 4 designs uniques en 10 secondes. Gratuit, sans inscription.", h2a: "Comment créer un tatouage avec l'IA ?", steps: ["Décrivez votre idée en une phrase", "Choisissez un style (réaliste, tribal, aquarelle)", "Générez 4 variations instantanément", "Téléchargez votre design favori"], h2b: "Exemples de prompts tatouage", prompts: ["Loup géométrique, dotwork, noir et gris, fond blanc", "Rose aquarelle avec papillon, couleurs vives", "Crâne mexicain jour des morts, détaillé", "Dragon japonais traditionnel, irezumi"], faq: [["Le générateur est-il gratuit ?", "Oui, 3 essais sans inscription."], ["Utilisable chez un tatoueur ?", "Oui, libres de droits."], ["Faut-il un compte ?", "Non, 3 générations sans compte."]] },
@@ -88,19 +88,72 @@ var UI = {
 };
 var FLAGS = { fr: "🇫🇷", en: "🇬🇧", es: "🇪🇸" };
 
+function buildSharePage(imgUrl) {
+  var shareUrl = "https://www.iapixora.com/share.html?img=" + encodeURIComponent(imgUrl);
+  var text = "Regarde cette image créée avec IA Pixora 🎨";
+  var e = encodeURIComponent;
+  var su = e(shareUrl), tx = e(text), im = e(imgUrl);
+  var nets = [
+    ["💬 WhatsApp", "https://wa.me/?text=" + tx + "%20" + su],
+    ["✈️ Telegram", "https://t.me/share/url?url=" + su + "&text=" + tx],
+    ["🐦 X / Twitter", "https://twitter.com/intent/tweet?text=" + tx + "&url=" + su],    ["📘 Facebook", "https://www.facebook.com/sharer/sharer.php?u=" + su],
+    ["💼 LinkedIn", "https://www.linkedin.com/sharing/share-offsite/?url=" + su],
+    ["📌 Pinterest", "https://www.pinterest.com/pin/create/button/?url=" + su + "&media=" + im + "&description=" + tx],
+    ["👽 Reddit", "https://www.reddit.com/submit?url=" + su + "&title=" + tx],
+    ["🧵 Threads", "https://www.threads.net/intent/post?text=" + tx + "%20" + su],
+    ["🦋 Bluesky", "https://bsky.app/intent/compose?text=" + tx + "%20" + su],
+    ["🐘 Mastodon", "https://mastodonshare.com/?text=" + tx + "&url=" + su],
+    ["🟢 LINE", "https://social-plugins.line.me/lineit/share?url=" + su],
+    ["🔵 VK", "https://vk.com/share.php?url=" + su],
+    ["🟠 Odnoklassniki", "https://connect.ok.ru/offer?url=" + su],
+    ["🔴 Weibo", "https://service.weibo.com/share/share.php?url=" + su + "&title=" + tx],
+    ["🟡 Qzone", "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=" + su + "&title=" + tx],
+    ["📓 Tumblr", "https://www.tumblr.com/share/link?url=" + su + "&name=" + tx],
+    ["🅱️ Blogger", "https://www.blogger.com/blog-this.g?u=" + su + "&n=" + tx],
+    ["📰 Flipboard", "https://share.flipboard.com/bookmarklet/popout?url=" + su + "&title=" + tx],
+    ["🗞️ Pocket", "https://getpocket.com/save?url=" + su],
+    ["✉️ Email", "mailto:?subject=" + tx + "&body=" + su],
+    ["📱 SMS", "sms:?&body=" + tx + "%20" + su]
+  ];
+  var btns = "<button class='net' data-u='" + shareUrl + "' onclick='navigator.clipboard.writeText(this.getAttribute(\"data-u\"))'>📋 Copier</button>";
+  for (var i = 0; i < nets.length; i++) {
+    btns += "<a class='net' target='_blank' rel='noopener' href='" + nets[i][1] + "'>" + nets[i][0] + "</a>";
+  }
+  return "<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'>" +
+    "<title>Image partagée | IA Pixora</title>" +
+    "<meta name='description' content='Image créée avec IA Pixora, générateur d’images IA gratuit. Créez la vôtre en 10 secondes.'>" +
+    "<meta property='og:type' content='website'>" +
+    "<meta property='og:title' content='Regarde cette image créée avec IA Pixora'>" +
+    "<meta property='og:description' content='Générateur d’images IA gratuit — 3 essais sans inscription. Crée la tienne !'>" +
+    "<meta property='og:image' content='" + imgUrl + "'>" +
+    "<meta property='og:image:width' content='1024'>" +
+    "<meta property='og:image:height' content='768'>" +
+    "<meta name='twitter:card' content='summary_large_image'>" +
+    "<meta name='twitter:title' content='Regarde cette image créée avec IA Pixora'>" +
+    "<meta name='twitter:description' content='Générateur d’images IA gratuit — 3 essais sans inscription.'>" +
+    "<meta name='twitter:image' content='" + imgUrl + "'>" +
+    "<style>body{background:#050507;color:#FAFAFA;font-family:Inter,sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}.card{max-width:560px;width:100%;text-align:center}.logo{font-weight:800;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}img{width:100%;border-radius:16px;border:1px solid rgba(139,92,246,.4);margin:16px 0}.btn{display:inline-block;margin:6px;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:700}.primary{background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff}.ghost{border:1px solid rgba(139,92,246,.5);color:#c4b5fd}.nets{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}.net{padding:10px 14px;border-radius:999px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;text-decoration:none;font-size:.85rem;cursor:pointer}</style>" +
+    "</head><body><div class='card'><div class='logo'>IA Pixora</div>" +
+    "<img src='" + imgUrl + "' alt='Image créée avec IA Pixora'>" +
+    "<div class='nets'>" + btns + "</div>" +
+    "<a class='btn primary' href='https://www.iapixora.com/'>Créer mon image gratuite</a>" +
+    "<a class='btn ghost' href='" + imgUrl + "' download>Télécharger</a>" +
+    "</div></body></html>";
+}
+
 function buildPage(d, lang, niche, allLangs) {
   var ui = UI[lang] || UI.en;
   var langBar = "<p style='margin:12px 0'>";
   for (var i2 = 0; i2 < allLangs.length; i2++) {
-    var ll = allLangs[i2];
-    langBar += "<a href='https://iapixora.com/niche/" + ll + "/" + niche + "' style='margin-right:14px;text-decoration:" + (ll === lang ? "underline" : "none") + ";font-weight:700'>" + (FLAGS[ll] || "🌐") + " " + ll.toUpperCase() + "</a>";
+    var ll = allLangs[i2];    langBar += "<a href='https://www.iapixora.com/niche/" + ll + "/" + niche + "' style='margin-right:14px;text-decoration:" + (ll === lang ? "underline" : "none") + ";font-weight:700'>" + (FLAGS[ll] || "🌐") + " " + ll.toUpperCase() + "</a>";
   }
   langBar += "</p>";
-  var hreflang = "";  for (var i = 0; i < allLangs.length; i++) {
+  var hreflang = "";
+  for (var i = 0; i < allLangs.length; i++) {
     var l = allLangs[i];
-    hreflang += '<link rel="alternate" hreflang="' + l + '" href="https://iapixora.com/niche/' + l + '/' + niche + '">';
+    hreflang += '<link rel="alternate" hreflang="' + l + '" href="https://www.iapixora.com/niche/' + l + '/' + niche + '">';
   }
-  hreflang += '<link rel="alternate" hreflang="x-default" href="https://iapixora.com/niche/en/' + niche + '">';
+  hreflang += '<link rel="alternate" hreflang="x-default" href="https://www.iapixora.com/niche/en/' + niche + '">';
   var faqJson = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": d.faq.map(function (f) { return { "@type": "Question", "name": f[0], "acceptedAnswer": { "@type": "Answer", "text": f[1] } }; }) };
   var stepsHtml = "";
   for (var s = 0; s < d.steps.length; s++) { stepsHtml += "<li><strong>" + (s + 1) + ".</strong> " + d.steps[s] + "</li>"; }
@@ -108,17 +161,23 @@ function buildPage(d, lang, niche, allLangs) {
   for (var p = 0; p < d.prompts.length; p++) { promptsHtml += "<li>" + d.prompts[p] + "</li>"; }
   var faqHtml = "";
   for (var f = 0; f < d.faq.length; f++) { faqHtml += "<h3>" + d.faq[f][0] + "</h3><p>" + d.faq[f][1] + "</p>"; }
-  return "<!DOCTYPE html><html lang='" + lang + "'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'><title>" + d.title + "</title><meta name='description' content='" + d.meta + "'><link rel='canonical' href='https://iapixora.com/niche/" + lang + "/" + niche + "'>" + hreflang + "<script type='application/ld+json'>" + JSON.stringify(faqJson) + "</script><style>body{background:#050507;color:#FAFAFA;font-family:Inter,sans-serif;line-height:1.6;margin:0;padding:20px;max-width:800px;margin:0 auto}h1{color:#8B5CF6}h2{color:#EC4899;margin-top:32px}a{color:#8B5CF6}li{margin:8px 0}.cta{display:inline-block;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:700;margin:20px 0}</style></head><body>" + langBar + "<p><a href='https://iapixora.com'>" + ui.back + "</a></p><h1>" + d.h1 + "</h1><p>" + d.intro + "</p><a class='cta' href='https://iapixora.com'>" + ui.try + "</a><h2>" + d.h2a + "</h2><ol>" + stepsHtml + "</ol><h2>" + d.h2b + "</h2><ul>" + promptsHtml + "</ul><h2>" + ui.faq + "</h2>" + faqHtml + "<a class='cta' href='https://iapixora.com'>" + ui.create + "</a><p><a href='https://iapixora.com/gallery.html'>" + ui.gallery + "</a></p></body></html>";
+  return "<!DOCTYPE html><html lang='" + lang + "'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'><title>" + d.title + "</title><meta name='description' content='" + d.meta + "'><link rel='canonical' href='https://www.iapixora.com/niche/" + lang + "/" + niche + "'>" + hreflang + "<script type='application/ld+json'>" + JSON.stringify(faqJson) + "</script><style>body{background:#050507;color:#FAFAFA;font-family:Inter,sans-serif;line-height:1.6;margin:0;padding:20px;max-width:800px;margin:0 auto}h1{color:#8B5CF6}h2{color:#EC4899;margin-top:32px}a{color:#8B5CF6}li{margin:8px 0}.cta{display:inline-block;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:700;margin:20px 0}</style></head><body>" + langBar + "<p><a href='https://www.iapixora.com'>" + ui.back + "</a></p><h1>" + d.h1 + "</h1><p>" + d.intro + "</p><a class='cta' href='https://www.iapixora.com'>" + ui.try + "</a><h2>" + d.h2a + "</h2><ol>" + stepsHtml + "</ol><h2>" + d.h2b + "</h2><ul>" + promptsHtml + "</ul><h2>" + ui.faq + "</h2>" + faqHtml + "<a class='cta' href='https://www.iapixora.com'>" + ui.create + "</a><p><a href='https://www.iapixora.com/gallery.html'>" + ui.gallery + "</a></p></body></html>";
 }
 
 export default function (req, res) {
   try {
+    if (req.query.img) {
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.statusCode = 200;
+      res.end(buildSharePage(String(req.query.img)));
+      return;
+    }
     var lang = String(req.query.lang || "fr").toLowerCase();
     var niche = String(req.query.niche || "").toLowerCase();
     var n = NICHES[niche];
     var d = n && n[lang];
     res.setHeader("Content-Type", "text/html; charset=utf-8");
-    if (!d) { res.statusCode = 404; res.end("<h1>404</h1><p>Page introuvable. <a href='https://iapixora.com'>Retour IA Pixora</a></p>"); return; }
+    if (!d) { res.statusCode = 404; res.end("<h1>404</h1><p>Page introuvable. <a href='https://www.iapixora.com'>Retour IA Pixora</a></p>"); return; }
     res.statusCode = 200;
     res.end(buildPage(d, lang, niche, Object.keys(n)));
   } catch (e) { res.statusCode = 500; res.end("Erreur"); }
