@@ -105,8 +105,11 @@
 
     <div class="results-grid" id="gallery-grid"><div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i><p data-i18n="common.loading">Chargement...</p></div></div>
 
-    <div id="gallery-loader" style="display:none;text-align:center;padding:1rem;color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
-    <div id="gallery-end" style="display:none;text-align:center;padding:1rem;color:var(--dim);font-size:0.8rem;">✔️ Tout est affiché</div>
+    <div style="text-align:center;margin-top:1.2rem;">
+      <div id="gallery-loader" style="display:none;color:var(--muted);padding:0.6rem;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+      <button id="gallery-more" onclick="loadGallery()" style="display:none;padding:0.8rem 1.6rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border:none;border-radius:12px;font-weight:700;font-size:0.9rem;cursor:pointer;box-shadow:0 4px 15px rgba(139,92,246,0.4);">Voir plus d'images <i class="fas fa-chevron-down"></i></button>
+      <div id="gallery-end" style="display:none;color:var(--dim);font-size:0.8rem;padding:0.6rem;">✔️ Tout est affiché</div>
+    </div>
 
     <div id="permanent-gallery" style="margin-top:32px;"><h2 style="font-size:1.25rem;font-weight:700;margin:0 0 16px 0;color:var(--text);display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-star" style="color:#F59E0B;"></i><span data-i18n="gallery.permanent_title">Créations de référence</span></h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem;"><img src="/assets/gallery/sample-01.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-01.jpg')"><img src="/assets/gallery/sample-02.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-02.jpg')"><img src="/assets/gallery/sample-03.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-03.jpg')"><img src="/assets/gallery/sample-04.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-04.jpg')"><img src="/assets/gallery/sample-05.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-05.jpg')"><img src="/assets/gallery/sample-06.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-06.jpg')"><img src="/assets/gallery/sample-07.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-07.jpg')"><img src="/assets/gallery/sample-08.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-08.jpg')"><img src="/assets/gallery/sample-09.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-09.jpg')"><img src="/assets/gallery/sample-10.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-10.jpg')"><img src="/assets/gallery/sample-11.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-11.jpg')"><img src="/assets/gallery/sample-12.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-12.jpg')"><img src="/assets/gallery/sample-13.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-13.jpg')"><img src="/assets/gallery/sample-14.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-14.jpg')"><img src="/assets/gallery/sample-15.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-15.jpg')"><img src="/assets/gallery/sample-16.jpg" alt="IA Art Reference" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openLB('/assets/gallery/sample-16.jpg')"></div></div>
 
@@ -142,10 +145,10 @@ var GALLERY_I18N = {
         common:{loading:'Loading...'},
         footer:{studio:'Studio',points:'Points',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},
         toast:{vote_error:'VOTE ERROR: ',comment_error:'COMMENT ERROR: ',gallery_error:'GALLERY ERROR: '},
-        actions:{remix:'Remix',prompt:'Copy Prompt',remix_success:'✨ Prompt remixed! Redirecting to Studio...',prompt_copied:'📋 Prompt copied to clipboard!',prompt_unavailable:'⚠️ Prompt not available'},
-        share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:'🌍 Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'}
+        actions:{remix:'Remix',prompt:'Copy Prompt',remix_success:'✨ Prompt remixed! Redirecting to Studio...',prompt_copied:'📋 Prompt copied to clipboard!',prompt_unavailable:'⚠️ Prompt not available'},        share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:'🌍 Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'}
     }
 };
+
 var currentGalleryLang = 'fr';
 function tGallery(key){var keys=key.split('.');var val=GALLERY_I18N[currentGalleryLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
 function applyGalleryTranslations(){document.querySelectorAll('[data-i18n]').forEach(function(el){var key=el.getAttribute('data-i18n');var val=tGallery(key);if(val!==key)el.textContent=val});document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){var key=el.getAttribute('data-i18n-placeholder');var val=tGallery(key);if(val!==key)el.placeholder=val})}
@@ -191,10 +194,10 @@ document.getElementById('share-modal').addEventListener('click',function(e){if(e
 
 function shareTo(network){
     var shareUrl='https://iapixora.com/api/share?img='+encodeURIComponent(currentShareUrl)+'&lang='+currentGalleryLang;
-    var text=currentGalleryLang==='fr'?'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :':'Check out this AI image created with IA Pixora! Create yours for free:';
-    var links={
+    var text=currentGalleryLang==='fr'?'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :':'Check out this AI image created with IA Pixora! Create yours for free:';    var links={
         whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+shareUrl),
-        telegram:'https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent(text),        twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(shareUrl),
+        telegram:'https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent(text),
+        twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(shareUrl),
         facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),
         instagram:'https://www.instagram.com/',
         tiktok:'https://www.tiktok.com/',
@@ -233,20 +236,22 @@ document.getElementById('comment-input').addEventListener('input',function(){var
 async function submitComment(){var user=await getUser();if(!user){showToast(tGallery('comment.login_required'),'error');return}var content=document.getElementById('comment-input').value.trim();if(content.length<10){showToast(tGallery('comment.too_short'),'error');return}var btn=document.getElementById('btn-submit-comment');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var startOfDay=new Date();startOfDay.setHours(0,0,0,0);var todayComments=await db.from('comments').select('*',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',startOfDay.toISOString());if(todayComments.error)throw new Error(todayComments.error.message);if(todayComments.count>=COMMENT_LIMIT){showToast(tGallery('comment.already_today')+' ('+COMMENT_LIMIT+'/jour)','error');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>';return}var insertRes=await db.from('comments').insert({user_id:user.id,creation_id:currentCommentFile,content:content});if(insertRes.error)throw new Error(insertRes.error.message);var ud=await getUserData();var newPts=(ud.points||0)+2;var newEarned=(ud.total_earned||0)+2;await Promise.all([db.from('user_data').update({points:newPts,total_earned:newEarned}).eq('user_id',user.id),db.from('transactions').insert({user_id:user.id,type:'earned',title:'Commenter une création',amount:2}),db.from('task_completions').insert({user_id:user.id,task_name:'Commenter une création',task_type:'comment',points:2})]);document.getElementById('header-points').textContent=newPts;document.getElementById('menu-points').textContent=newPts;document.getElementById('nav-points-badge').textContent=newPts;closeCommentModal();showToast(tGallery('comment.success'),'success');setTimeout(function(){window.location.href='earn.html?validated=comment'},1500)}catch(e){console.error('Comment error:',e);showToast(tGallery('toast.comment_error')+e.message,'error')}btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>'}
 
 // =====================================================
-// ✅ GALERIE AVEC SCROLL INFINI (20 par 20, TOUT affiché)
+// ✅ GALERIE PAGINÉE + BOUTON "VOIR PLUS" (20 par 20)
 // =====================================================
 var PAGE_SIZE = 20;
 var galleryOffset = 0;
 var galleryLoading = false;
 var galleryDone = false;
 
-async function loadGallery() {
-  if (galleryLoading || galleryDone) return;
+async function loadGallery() {  if (galleryLoading || galleryDone) return;
   galleryLoading = true;
-  var grid = document.getElementById('gallery-grid');  var loader = document.getElementById('gallery-loader');
+  var grid = document.getElementById('gallery-grid');
+  var loader = document.getElementById('gallery-loader');
   var end = document.getElementById('gallery-end');
+  var more = document.getElementById('gallery-more');
   var firstLoad = (galleryOffset === 0);
   if (loader) loader.style.display = 'block';
+  if (more) more.style.display = 'none';
 
   try {
     var result = await db.from('pixora_creations')
@@ -287,12 +292,12 @@ async function loadGallery() {
           } catch (e) {
             return null;
           }
-        } else {
-          url = R2_PUBLIC_URL + '/' + rawName;
+        } else {          url = R2_PUBLIC_URL + '/' + rawName;
         }
         var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('creation_id', rawName);
         var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('creation_id', rawName);
-        var pUserVoted = userId ? db.from('votes').select('id').eq('user_id', userId).eq('creation_id', rawName).limit(1) : Promise.resolve({ data: [] });        return Promise.all([pVotes, pComments, pUserVoted]).then(function (results) {
+        var pUserVoted = userId ? db.from('votes').select('id').eq('user_id', userId).eq('creation_id', rawName).limit(1) : Promise.resolve({ data: [] });
+        return Promise.all([pVotes, pComments, pUserVoted]).then(function (results) {
           return {
             name: rawName,
             prompt: promptText,
@@ -333,7 +338,11 @@ async function loadGallery() {
       grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>' + tGallery('gallery.empty') + '<br>' + tGallery('gallery.empty_cta') + '</p></div>';
     }
 
-    if (galleryDone && end) end.style.display = 'block';
+    if (galleryDone) {
+      if (end) end.style.display = 'block';
+      if (more) more.style.display = 'none';
+    } else {      if (more) more.style.display = 'inline-block';
+    }
 
     if (!galleryDone && validItems.length === 0) {
       galleryLoading = false;
@@ -341,7 +350,8 @@ async function loadGallery() {
       loadGallery();
       return;
     }
-  } catch (err) {    console.error('[GALLERY] ERREUR:', err);
+  } catch (err) {
+    console.error('[GALLERY] ERREUR:', err);
     showToast(tGallery('toast.gallery_error') + err.message, 'error');
     if (firstLoad) {
       grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur: ' + err.message + '</p></div>';
@@ -351,14 +361,6 @@ async function loadGallery() {
   galleryLoading = false;
   if (loader) loader.style.display = 'none';
 }
-
-// ✅ Chargement automatique au scroll (600px avant le bas)
-window.addEventListener('scroll', function () {
-  if (galleryLoading || galleryDone) return;
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
-    loadGallery();
-  }
-});
 
 document.addEventListener('DOMContentLoaded',async function(){console.log('[INIT] Démarrage...');var lang=detectGalleryLang();currentGalleryLang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;document.documentElement.lang=lang;applyGalleryTranslations();await loadTaskLimits();await updateUI();await loadGallery()});
 </script>
