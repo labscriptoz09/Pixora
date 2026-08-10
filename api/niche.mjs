@@ -1,4 +1,4 @@
-// api/niche.js — 1 fichier = toutes les pages niches SEO
+// api/niche.mjs — 1 fichier = toutes les pages niches SEO
 var NICHES = {
   tatouage: {
     fr: {
@@ -163,7 +163,7 @@ function buildPage(d, lang, niche, allLangs) {
     "</body></html>";
 }
 
-module.exports = function (req, res) {
+export default function (req, res) {
   try {
     var lang = String(req.query.lang || "fr").toLowerCase();
     var niche = String(req.query.niche || "").toLowerCase();
@@ -184,4 +184,4 @@ module.exports = function (req, res) {
     res.statusCode = 500;
     res.end("Erreur");
   }
-};
+}
