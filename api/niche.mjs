@@ -1,4 +1,4 @@
-// api/niche.mjs — 1 fichier = toutes les pages niches SEO
+// api/niche.mjs — 1 fichier = toutes les pages niches SEO (FR, EN, + futures langues)
 var NICHES = {
   tatouage: {
     fr: {
@@ -120,14 +120,31 @@ var NICHES = {
   }
 };
 
+var UI = {
+  fr: { back: "← IA Pixora", try: "Essayer gratuitement", create: "Créer mon image gratuite", gallery: "Voir la galerie publique", faq: "FAQ" },
+  en: { back: "← IA Pixora", try: "Try for free", create: "Create my free image", gallery: "View public gallery", faq: "FAQ" },
+  es: { back: "← IA Pixora", try: "Probar gratis", create: "Crear mi imagen gratis", gallery: "Ver galería pública", faq: "FAQ" },
+  de: { back: "← IA Pixora", try: "Kostenlos testen", create: "Mein Bild erstellen", gallery: "Galerie ansehen", faq: "FAQ" },
+  pt: { back: "← IA Pixora", try: "Testar grátis", create: "Criar minha imagem grátis", gallery: "Ver galeria pública", faq: "FAQ" }
+};
+var FLAGS = { fr: "🇫🇷", en: "🇬", es: "🇸", de: "🇩🇪", pt: "🇧🇷" };
+
 function buildPage(d, lang, niche, allLangs) {
+  var ui = UI[lang] || UI.en;
+
+  var langBar = "<p style='margin:12px 0'>";
+  for (var i2 = 0; i2 < allLangs.length; i2++) {
+    var ll = allLangs[i2];
+    langBar += "<a href='https://iapixora.com/niche/" + ll + "/" + niche + "' style='margin-right:14px;text-decoration:" + (ll === lang ? "underline" : "none") + ";font-weight:700'>" + (FLAGS[ll] || "🌐") + " " + ll.toUpperCase() + "</a>";
+  }
+  langBar += "</p>";
+
   var hreflang = "";
   for (var i = 0; i < allLangs.length; i++) {
     var l = allLangs[i];
     hreflang += '<link rel="alternate" hreflang="' + l + '" href="https://iapixora.com/niche/' + l + '/' + niche + '">';
   }
   hreflang += '<link rel="alternate" hreflang="x-default" href="https://iapixora.com/niche/en/' + niche + '">';
-
   var faqJson = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -145,21 +162,23 @@ function buildPage(d, lang, niche, allLangs) {
 
   return "<!DOCTYPE html><html lang='" + lang + "'><head>" +
     "<meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'>" +
-    "<title>" + d.title + "</title>" +    "<meta name='description' content='" + d.meta + "'>" +
+    "<title>" + d.title + "</title>" +
+    "<meta name='description' content='" + d.meta + "'>" +
     "<link rel='canonical' href='https://iapixora.com/niche/" + lang + "/" + niche + "'>" +
     hreflang +
     "<script type='application/ld+json'>" + JSON.stringify(faqJson) + "</script>" +
     "<style>body{background:#050507;color:#FAFAFA;font-family:Inter,sans-serif;line-height:1.6;margin:0;padding:20px;max-width:800px;margin:0 auto}h1{color:#8B5CF6}h2{color:#EC4899;margin-top:32px}a{color:#8B5CF6}li{margin:8px 0}.cta{display:inline-block;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:700;margin:20px 0}</style>" +
     "</head><body>" +
-    "<p><a href='https://iapixora.com'>← IA Pixora</a></p>" +
+    langBar +
+    "<p><a href='https://iapixora.com'>" + ui.back + "</a></p>" +
     "<h1>" + d.h1 + "</h1>" +
     "<p>" + d.intro + "</p>" +
-    "<a class='cta' href='https://iapixora.com'>Essayer gratuitement</a>" +
+    "<a class='cta' href='https://iapixora.com'>" + ui.try + "</a>" +
     "<h2>" + d.h2a + "</h2><ol>" + stepsHtml + "</ol>" +
     "<h2>" + d.h2b + "</h2><ul>" + promptsHtml + "</ul>" +
-    "<h2>FAQ</h2>" + faqHtml +
-    "<a class='cta' href='https://iapixora.com'>Créer mon image gratuite</a>" +
-    "<p><a href='https://iapixora.com/gallery.html'>Voir la galerie publique</a></p>" +
+    "<h2>" + ui.faq + "</h2>" + faqHtml +
+    "<a class='cta' href='https://iapixora.com'>" + ui.create + "</a>" +
+    "<p><a href='https://iapixora.com/gallery.html'>" + ui.gallery + "</a></p>" +
     "</body></html>";
 }
 
@@ -175,8 +194,7 @@ export default function (req, res) {
     if (!d) {
       res.statusCode = 404;
       res.end("<h1>404</h1><p>Page introuvable. <a href='https://iapixora.com'>Retour IA Pixora</a></p>");
-      return;
-    }
+      return;    }
 
     res.statusCode = 200;
     res.end(buildPage(d, lang, niche, Object.keys(n)));
