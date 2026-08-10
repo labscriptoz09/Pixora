@@ -31,7 +31,7 @@ export default function handler(req, res) {
     <meta property="og:description" content="${t.desc}">
     <meta property="og:image" content="${imgUrl}">
     
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="${t.title}">
     <meta name="twitter:description" content="${t.desc}">
     <meta name="twitter:image" content="${imgUrl}">
@@ -96,4 +96,5 @@ export default function handler(req, res) {
 </html>`;
 
   res.setHeader('Content-Type', 'text/html');
-  res.status(200).send(html);}
+  res.status(200).send(html);
+}
