@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/niche/:lang/:niche", "destination": "/api/niche?lang=:lang&niche=:niche" }
+  ]
+}
