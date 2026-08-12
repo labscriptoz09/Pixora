@@ -11,14 +11,14 @@
 <meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://iapixora.com/"><meta property="twitter:title" content="IA Pixora — Générateur d'Images et Vidéos IA Gratuit"><meta property="twitter:description" content="Générez des images IA de qualité professionnelle. Gratuit. Sans limite."><meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
 <meta name="robots" content="index,follow"><meta name="author" content="IA Pixora">
 <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--bg:#08080a;--card:#141419;--card2:#1b1b22;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--border2:rgba(255,255,255,.14);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--cyan:#22d3ee;--gold:#FBBF24;--gold-dim:rgba(251,191,36,0.1);--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif}
+:root{--bg:#08080a;--card:#141419;--card2:#1b1b22;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--border2:rgba(255,255,255,.14);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--cyan:#22d3ee;--gold:#FBBF24;--gold-dim:rgba(251,191,36,0.1);--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;padding-bottom:160px;-webkit-font-smoothing:antialiased}
 
-/* ===== PUBS BLOQUÉES (ads-loader.js) ===== */
+/* ===== PUBS BLOQUÉES ===== */
 #sponsorised-container{display:none!important}
 .pxr-wrapper{display:none!important}
 
@@ -28,7 +28,7 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 .header-logo{display:flex;align-items:center;gap:7px;flex:1;min-width:0;text-decoration:none}
 .header-logo svg{width:24px;height:24px;flex-shrink:0}
 .logo-text{font-size:.92rem;font-weight:800;letter-spacing:.08em;white-space:nowrap;background:linear-gradient(90deg,#c4b5fd,#8B5CF6 45%,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.header-right{display:flex;align-items:center;gap:6px;margin-left:auto;position:relative;flex-shrink:0}
+.header-right{display:flex;align-items:center;gap:6px;margin-left:auto;position:relative;flex-shrink:0;min-width:120px}
 .badge-trial{font-size:.55rem;font-weight:700;padding:5px 9px;border-radius:100px;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;white-space:nowrap;box-shadow:0 0 12px rgba(139,92,246,.35);cursor:pointer}
 body.logged .badge-trial{display:none}
 .user-stats{display:none;align-items:center;gap:.3rem;padding:.3rem .6rem;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:20px;font-size:.72rem;font-weight:700;color:var(--gold)}
@@ -271,7 +271,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <button class="m-item" onclick="openAuth();closeMenu()"><i>🔐</i>Connexion / Inscription</button>
   <a class="m-item" href="earn.html" onclick="closeMenu()"><i>💰</i>Gagner des points</a>
   <a class="m-item" href="shop.html" onclick="closeMenu()"><i>🛍️</i>Boutique</a>
-  <a class="m-item" href="profile.html" onclick="closeMenu()"><i>👤</i>Mon profil</a>
+  <a class="m-item" href="profile.html" onclick="closeMenu()"><i></i>Mon profil</a>
   <div class="m-sep"></div>
   <button class="m-item" onclick="alert('FAQ - À ajouter');closeMenu()"><i>❓</i>Questions fréquentes</button>
   <button class="m-item" onclick="alert('Guide - À ajouter');closeMenu()"><i>📖</i>Comment créer</button>
@@ -279,7 +279,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <div class="m-lang">
     <select id="lang-select" onchange="changeLang(this.value)">
       <option value="fr">🇫🇷 Français</option>
-      <option value="en">🇬 English</option>
+      <option value="en">🇧 English</option>
     </select>
   </div>
   <div class="m-sep"></div>
@@ -313,7 +313,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
       <a class="share-btn" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a>
       <a class="share-btn" onclick="copyShareLink()"><i class="fas fa-link"></i>Copier</a>
     </div>
-    <div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div>
+    <div class="share-category" data-i18n="share.cat_social"> Réseaux sociaux</div>
     <div class="share-grid">
       <a class="share-btn" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a>
       <a class="share-btn" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a>
@@ -413,7 +413,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <div class="hero-overlay">
     <h2>Création du jour</h2>
     <p>Générée par le robot IA Pixora</p>
-    <button class="hero-btn" onclick="openSheet()">Essayer ↗</button>
+    <button class="hero-btn" onclick="openSheet()">Essayer </button>
   </div>
   <div class="dots"><span class="dot on" onclick="goSlide(0)"></span><span class="dot" onclick="goSlide(1)"></span><span class="dot" onclick="goSlide(2)"></span></div>
 </section>
@@ -421,7 +421,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 <!-- NICHES -->
 <div class="chips">
   <button class="chip" onclick="pickNiche(this,'Tatouage minimaliste ligne fine, fleur de lotus, encre noire')">🎯 Tatouage</button>
-  <button class="chip" onclick="pickNiche(this,'Avatar 3D style Pixar, personnage souriant, lumière douce')">👤 Avatar</button>
+  <button class="chip" onclick="pickNiche(this,'Avatar 3D style Pixar, personnage souriant, lumière douce')"> Avatar</button>
   <button class="chip" onclick="pickNiche(this,'Personnage anime héroïque, cheveux argentés, yeux lumineux, style studio ghibli')">🌸 Anime</button>
   <button class="chip" onclick="pickNiche(this,'Logo moderne minimaliste, renard géométrique, dégradé violet')">💼 Logo</button>
   <button class="chip" onclick="pickNiche(this,'Chat roux mignon, photo professionnelle, fond flou')">🐾 Animaux</button>
@@ -461,7 +461,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 <div class="generator">
   <textarea class="prompt-field" id="prompt" data-i18n-placeholder="generator.placeholder" placeholder="Décrivez votre vision..."></textarea>
   <select class="option-select" id="format-select"><option value="768x768" selected>📐 Carré (1:1)</option><option value="768x1024">📱 Portrait (3:4)</option><option value="1024x576">🎬 Cinéma (16:9)</option></select>
-  <select class="option-select" id="model-select"><option value="flux">⚡ Flux PRO</option><option value="turbo">⚡ Turbo</option></select>
+  <select class="option-select" id="model-select"><option value="flux"> Flux PRO</option><option value="turbo">⚡ Turbo</option></select>
   <div class="type-selector">
     <button class="type-btn active" onclick="selType('image')" aria-pressed="true"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
     <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
@@ -482,7 +482,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <div class="recent-row" id="recent-row"></div>
 </section>
 
-<!-- SPONSOR CACHÉ (mais présent pour ads-loader.js) -->
+<!-- SPONSOR CACHÉ -->
 <div id="sponsorised-container" style="display:none"></div>
 
 <!-- SHEET -->
@@ -544,19 +544,19 @@ function render(){imgs.forEach((im,i)=>im.classList.toggle('on',i===slideIdx));d
 function goSlide(i){slideIdx=i;render();}
 
 // ========== TON JS EXACT ==========
-window.onerror=function(msg,url,line,col,error){var n=document.getElementById('notif');if(n){document.getElementById('notif-text').textContent='❌ Une erreur est survenue. Réessayez.';n.className='notification show error';setTimeout(function(){n.classList.remove('show');},5000);}};
+window.onerror=function(msg,url,line,col,error){var n=document.getElementById('notif');if(n){document.getElementById('notif-text').textContent=' Une erreur est survenue. Réessayez.';n.className='notification show error';setTimeout(function(){n.classList.remove('show');},5000);}};
 if(window.location.hostname!=='localhost'&&window.location.hostname!=='127.0.0.1'){console.log=function(){};console.warn=function(){};console.error=function(){};}
 var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
 var isGenerating=false;
 function getAnonCount(){return parseInt(localStorage.getItem(PX_ANON_KEY)||'0')}
 function incrementAnonCount(){var c=getAnonCount()+1;localStorage.setItem(PX_ANON_KEY,c.toString());return c}
-function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon">🎁</div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}
+function showSoftSignupPrompt(){var e=document.getElementById('pxr-soft-signup');if(e)e.remove();var o=document.createElement('div');o.id='pxr-soft-signup';o.className='pxr-soft-signup';o.innerHTML='<div class="pxr-soft-modal"><div class="pxr-soft-icon"></div><div class="pxr-soft-title">Vous avez adoré IA Pixora ?</div><div class="pxr-soft-desc">Vous avez utilisé vos 3 générations gratuites.<br>Inscrivez-vous pour continuer :</div><div class="pxr-soft-benefits"><div class="pxr-soft-benefit"><i class="fas fa-check"></i> <strong>+15 points</strong> offerts</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Images illimitées</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Badges, streak & parrainage</div><div class="pxr-soft-benefit"><i class="fas fa-check"></i> Galerie personnelle permanente</div></div><button class="pxr-soft-cta" onclick="document.getElementById(\'pxr-soft-signup\').remove();openAuth()">S\'inscrire gratuitement</button></div>';document.body.appendChild(o)}
 function checkFreemiumBlock(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=getAnonCount();if(c>=PX_FREE_LIMIT){showSoftSignupPrompt();return false}}else{localStorage.removeItem(PX_ANON_KEY)}return true})}
 function incrementAndCheckFreemium(){return db.auth.getUser().then(function(r){if(!r.data.user){var c=incrementAnonCount();if(c>=PX_FREE_LIMIT)showSoftSignupPrompt()}else{localStorage.removeItem(PX_ANON_KEY)}})}
 var BADGES_CONFIG=[{id:'bronze',name:'Apprenti',icon:'🎨',threshold:5},{id:'silver',name:'Confirmé',icon:'🥈',threshold:15},{id:'gold',name:'Maître',icon:'',threshold:20},{id:'diamond',name:'Légende',icon:'💎',threshold:50}];
 async function loadMiniBadge(){try{var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!await isLogged()){el.classList.remove('show');return}var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}else{ic.textContent='';nm.textContent='Badge';nx.textContent=''}}catch(e){}}
 var I18N={},currentLang='fr';
-var FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Accueil',gallery:'Galerie',shop:'Shop',earn:'Gagner',profile:'Profil'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',permanent:'Sauvegardé définitivement',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:' GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'✅ Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'⏳ Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:' Via',discount_tag:'🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !',remix_success:'✨ Prompt remixé ! Modifiez-le et régénérez.',prompt_copied:'📋 Prompt copié dans le presse-papier !',view_gallery:'Voir toute la galerie'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:' Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},gallery:{reference_title:'Créations de référence'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'},how:{title:'Comment créer des images IA avec IA Pixora ?',step1_title:'Décrivez votre idée',step1_desc:'Écrivez un prompt détaillé. Plus vous êtes précis, meilleur sera le résultat.',step2_title:'Choisissez le format',step2_desc:'Carré pour les réseaux, portrait pour les fonds d\'écran, ou cinéma pour le réalisme.',step3_title:'Générez & Téléchargez',step3_desc:'Obtenez votre image en quelques secondes. 3 essais gratuits, puis accès illimité.'},actions:{remix:'Remix',prompt:'Prompt',download:'Télécharger',share:'Partager'}};
+var FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Accueil',gallery:'Galerie',shop:'Shop',earn:'Gagner',profile:'Profil'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',permanent:'Sauvegardé définitivement',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:' GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'✅ Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:' Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:' Via',discount_tag:' -50%',freemium_limit:' Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !',remix_success:'✨ Prompt remixé ! Modifiez-le et régénérez.',prompt_copied:' Prompt copié dans le presse-papier !',view_gallery:'Voir toute la galerie'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:' Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},gallery:{reference_title:'Créations de référence'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'},how:{title:'Comment créer des images IA avec IA Pixora ?',step1_title:'Décrivez votre idée',step1_desc:'Écrivez un prompt détaillé. Plus vous êtes précis, meilleur sera le résultat.',step2_title:'Choisissez le format',step2_desc:'Carré pour les réseaux, portrait pour les fonds d\'écran, ou cinéma pour le réalisme.',step3_title:'Générez & Téléchargez',step3_desc:'Obtenez votre image en quelques secondes. 3 essais gratuits, puis accès illimité.'},actions:{remix:'Remix',prompt:'Prompt',download:'Télécharger',share:'Partager'}};
 var EN_TRANSLATIONS={meta:{title:'IA Pixora — Free AI Image Studio',description:'IA Pixora: Create professional AI images and videos for free.'},header:{login:'Login',points:'points'},nav:{studio:'Home',gallery:'Gallery',shop:'Shop',earn:'Earn',profile:'Profile'},hero:{title:'Generate the impossible with IA Pixora',subtitle:'Professional AI images. Free. No limits.'},generator:{prompt_title:'Describe your image',placeholder:'Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic 8k lighting',image:'Image',video:'Video',video_soon:'Coming Soon',generate:'Generate',discount_active:'-50% ACTIVE',expires_in:'Expires in',cost_pts:'pts'},results:{title:'Your Creations',permanent:'Saved permanently',auto_delete:'Auto-delete after 24h',download:'Download',close:'Close',generating:'AI Generating...',generated_in:'Generated in',failed:'Generation failed. Try again.',error:'Generation error. Try again.'},stats:{points:'Points',streak:'Streak',creations:'Creations',total_earned:'Total Earned'},auth:{login_title:'Login',register_title:'Sign Up',email:'Email',password:'Password',password_min:'Min. 8 characters',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',google:'Continue with Google',github:'Continue with GitHub',github_soon:' GitHub coming soon...',footer:'By continuing, you accept our',conditions:'terms',welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'✅ Account created! +15 bonus pts',wrong_credentials:'❌ Incorrect credentials',email_exists:'❌ This email is already used',password_short:'❌ Password too short',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:'✅ Logged out',connect_to_generate:'Log in to generate and earn points'},menu:{my_profile:'My Profile',earn_points:'Earn Points',my_purchases:'My Purchases',logout:'Logout'},notifications:{enter_prompt:'Please enter a prompt',insufficient_points:'Insufficient points! Visit the Points page.',generating:'⏳ Generating...',downloaded:'✅ Downloaded!',no_image:'❌ No image found',via_provider:'⚡ Via',discount_tag:'🔥 -50%',freemium_limit:'🔒 Free limit reached! Sign up to continue.',share_success:'✅ Link copied!',share_points:'+5 points for sharing!',remix_success:'✨ Prompt remixed! Edit it and regenerate.',prompt_copied:' Prompt copied to clipboard!',view_gallery:'View full gallery'},footer:{earn_points:'Earn Points',gallery:'Gallery',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:' Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'},gallery:{reference_title:'Reference Creations'},faq:{q1:'Is IA Pixora really free?',a1:'Yes, IA Pixora is 100% free for generating AI images and videos.',q2:'How to generate an image without signup?',a2:'3 free generations without account.',q3:'What is the difference between IA Pixora and Midjourney ?',a3:'IA Pixora is completely free, no subscription required.',q4:'Can I use generated images commercially?',a4:'Yes, royalty-free.',q5:'How many free generations per day?',a5:'3 without signup, unlimited after.'},how:{title:'How to create AI images with IA Pixora?',step1_title:'Describe your idea',step1_desc:'Write a detailed prompt. The more precise you are, the better the result.',step2_title:'Choose the format',step2_desc:'Square for social media, portrait for wallpapers, or cinema for realism.',step3_title:'Generate & Download',step3_desc:'Get your image in seconds. 3 free trials, then unlimited access.'},actions:{remix:'Remix',prompt:'Prompt',download:'Download',share:'Share'}};
 function t(k){var p=k.split('.'),v=I18N;for(var i=0;i<p.length;i++){if(v&&typeof v==='object')v=v[p[i]];else return k}return v||k}
 async function loadLang(l){currentLang=l;I18N=(l==='en')?JSON.parse(JSON.stringify(EN_TRANSLATIONS)):JSON.parse(JSON.stringify(FR_TRANSLATIONS));applyTranslations();document.documentElement.lang=l;document.title=t('meta.title');var md=document.querySelector('meta[name="description"]');if(md)md.content=t('meta.description');var sel=document.getElementById('lang-select');if(sel)sel.value=l;localStorage.setItem('pixora_lang',l)}
@@ -575,8 +575,8 @@ async function loadDynamicConfig(){try{var r=await db.from('admin_config').selec
 function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1],disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date(),ic=c.costs.image,ie=document.getElementById('cost-image'),bn=document.getElementById('discount-banner'),te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s'},1000)}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}}}
 function notifyVideoSoon(){notify('🎥 '+t('generator.video_soon'),'success')}
 function buildColorOverlay(){return '<div class="result-overlay">'+'<button class="icon-btn icon-btn-remix" onclick="event.stopPropagation();remixPrompt(this.closest(\'.result-card\'))" title="'+t('actions.remix')+'"><i class="fas fa-wand-magic-sparkles"></i></button>'+'<button class="icon-btn icon-btn-prompt" onclick="event.stopPropagation();copyPrompt(this.closest(\'.result-card\'))" title="'+t('actions.prompt')+'"><i class="fas fa-copy"></i></button>'+'<button class="icon-btn icon-btn-download" onclick="event.stopPropagation();dlDirect(this)" title="'+t('actions.download')+'"><i class="fas fa-download"></i></button>'+'<button class="icon-btn icon-btn-share" onclick="event.stopPropagation();openShareModal(this.closest(\'.result-card\').querySelector(\'img,video\').src)" title="'+t('actions.share')+'"><i class="fas fa-share-nodes"></i></button>'+'</div>'}
-function remixPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){notify('⚠️ Prompt non disponible','error');return}var promptField=document.getElementById('prompt-sheet')||document.getElementById('prompt');promptField.value=prompt;promptField.focus();openSheet();notify(t('notifications.remix_success'),'success')}
-function copyPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){notify('⚠️ Prompt non disponible','error');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(function(){notify(t('notifications.prompt_copied'),'success')}).catch(function(){fallbackCopyPrompt(prompt)})}else{fallbackCopyPrompt(prompt)}}
+function remixPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){notify('️ Prompt non disponible','error');return}var promptField=document.getElementById('prompt-sheet')||document.getElementById('prompt');promptField.value=prompt;promptField.focus();openSheet();notify(t('notifications.remix_success'),'success')}
+function copyPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){notify('️ Prompt non disponible','error');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(function(){notify(t('notifications.prompt_copied'),'success')}).catch(function(){fallbackCopyPrompt(prompt)})}else{fallbackCopyPrompt(prompt)}}
 function fallbackCopyPrompt(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.prompt_copied'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 function detectReferral(){var p=new URLSearchParams(window.location.search),r=p.get('ref');if(r&&r.length>10){pendingReferrer=r;localStorage.setItem('pixora_ref',r)}else pendingReferrer=localStorage.getItem('pixora_ref')}
 async function processReferral(uid){var rid=pendingReferrer||localStorage.getItem('pixora_ref');if(!rid||rid===uid)return;try{var rc=await db.from('admin_config').select('value').eq('key','referral_config').single(),cfg=(rc.data&&rc.data.value)?rc.data.value:{enabled:true,points:10};if(!cfg.enabled)return;var ex=await db.from('referrals').select('id').eq('sponsor_id',rid).eq('referred_id',uid).single();if(ex.data)return;await db.from('referrals').insert({sponsor_id:rid,referred_id:uid,points:cfg.points||10,validated:false});localStorage.removeItem('pixora_ref');pendingReferrer=null}catch(e){}}
@@ -617,7 +617,98 @@ function getShareText(){return t('share.text')}
 function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}
 function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
-async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.from('pixora_creations').select('file_name, created_at, expires_at, prompt').order('created_at',{ascending:false}).limit(12);if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création pour le moment. Générez votre première image !</div>';return}var now=new Date().toISOString();var validItems=result.data.filter(function(item){return!item.expires_at||item.expires_at>now});if(validItems.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création valide</div>';return}grid.innerHTML='';for(var i=0;i<validItems.length;i++){var row=validItems[i];var rawName=row.file_name;var promptText=row.prompt||'';var url='';var isSupabase=(rawName.indexOf('supabase_')===0);if(isSupabase){var realName=rawName.replace('supabase_','');try{var urlData=db.storage.from(BUCKET).getPublicUrl(realName);url=urlData.data.publicUrl}catch(e){continue}}else{url=R2_PUBLIC_URL+'/'+rawName}var isVideo=rawName.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(promptText){card.setAttribute('data-prompt',promptText)}if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video>'+buildColorOverlay();(function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildColorOverlay()}(function(c,u,fn){var media=c.querySelector('img, video');if(media){media.onerror=function(){c.style.opacity='0.3';c.style.pointerEvents='none'}}})(card,url,rawName);card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);grid.appendChild(card)}var viewMoreDiv=document.createElement('div');viewMoreDiv.className='view-more-container';viewMoreDiv.innerHTML='<a href="gallery.html" class="view-more-btn"><i class="fas fa-images"></i> <span data-i18n="notifications.view_gallery">'+t('notifications.view_gallery')+'</span> <i class="fas fa-arrow-right"></i></a>';grid.appendChild(viewMoreDiv)}catch(err){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);grid-column:1/-1;">Erreur de chargement: '+err.message+'</div>'}}
+
+// ========== loadStudio AMÉLIORÉ (avec logs debug) ==========
+async function loadStudio(){
+  var grid=document.getElementById('results-grid');
+  try{
+    console.log('[STUDIO] Chargement créations...');
+    var result=await db.from('pixora_creations').select('file_name, created_at, expires_at, prompt').order('created_at',{ascending:false}).limit(12);
+    
+    if(result.error){
+      console.error('[STUDIO] Erreur Supabase:',result.error);
+      grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);grid-column:1/-1;"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur: '+result.error.message+'</p></div>';
+      return;
+    }
+    
+    console.log('[STUDIO] '+result.data.length+' créations reçues');
+    
+    if(!result.data||result.data.length===0){
+      grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>Aucune création pour le moment.<br>Générez votre première image !</p></div>';
+      return;    }
+    
+    var now=new Date().toISOString();
+    var validItems=result.data.filter(function(item){return !item.expires_at||item.expires_at>now});
+    console.log('[STUDIO] '+validItems.length+' créations valides (non expirées)');
+    
+    if(validItems.length===0){
+      grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création valide</div>';
+      return;
+    }
+    
+    grid.innerHTML='';
+    
+    for(var i=0;i<validItems.length;i++){
+      var row=validItems[i];
+      var rawName=row.file_name;
+      var promptText=row.prompt||'';
+      var url='';
+      var isSupabase=(rawName.indexOf('supabase_')===0);
+      
+      if(isSupabase){
+        var realName=rawName.replace('supabase_','');
+        try{
+          var urlData=db.storage.from(BUCKET).getPublicUrl(realName);
+          url=urlData.data.publicUrl;
+          console.log('[STUDIO] URL Supabase:',url);
+        }catch(e){
+          console.error('[STUDIO] Erreur URL Supabase:',e);
+          continue;
+        }
+      }else{
+        url=R2_PUBLIC_URL+'/'+rawName;
+        console.log('[STUDIO] URL R2:',url);
+      }
+      
+      var isVideo=rawName.indexOf('_video_')!==-1;
+      var card=document.createElement('div');
+      card.className='result-card';
+      if(promptText)card.setAttribute('data-prompt',promptText);
+      
+      if(isVideo){
+        card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video>'+buildColorOverlay();
+        (function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'));
+      }else{
+        card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy" onerror="console.error(\'[STUDIO] Erreur chargement image:\',\''+url+'\')">';
+      }
+      
+      (function(c,u,fn){
+        var media=c.querySelector('img, video');
+        if(media){          media.onerror=function(){
+            console.error('[STUDIO] Erreur chargement:',u);
+            c.style.opacity='0.3';
+            c.style.pointerEvents='none';
+          }
+        }
+      })(card,url,rawName);
+      
+      card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);
+      grid.appendChild(card);
+    }
+    
+    var viewMoreDiv=document.createElement('div');
+    viewMoreDiv.className='view-more-container';
+    viewMoreDiv.innerHTML='<a href="gallery.html" class="view-more-btn"><i class="fas fa-images"></i> <span data-i18n="notifications.view_gallery">'+t('notifications.view_gallery')+'</span> <i class="fas fa-arrow-right"></i></a>';
+    grid.appendChild(viewMoreDiv);
+    
+    console.log('[STUDIO] ✅ Chargement terminé');
+    
+  }catch(err){
+    console.error('[STUDIO] ERREUR:',err);
+    grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);grid-column:1/-1;"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur de chargement: '+err.message+'</p></div>';
+  }
+}
+
 async function loadRecent(){var row=document.getElementById('recent-row');if(!row)return;try{var result=await db.from('pixora_creations').select('file_name').order('created_at',{ascending:false}).limit(6);if(!result.data||result.data.length===0){row.parentElement.style.display='none';return}row.innerHTML='';result.data.forEach(function(item){if(item.file_name.indexOf('_video_')!==-1)return;var url='';if(item.file_name.indexOf('supabase_')===0){try{url=db.storage.from(BUCKET).getPublicUrl(item.file_name.replace('supabase_','')).data.publicUrl}catch(e){return}}else{url=R2_PUBLIC_URL+'/'+item.file_name}var im=document.createElement('img');im.src=url;im.loading='lazy';im.alt='';im.onclick=function(){openLB(url,'image')};row.appendChild(im)})}catch(e){}}
 async function uploadToStorage(fileName,prompt){}
 async function generate(){if(isGenerating){notify("⏳ Une génération est déjà en cours...","error");return}isGenerating=true;var btnGen=document.querySelector('.btn-gen');if(btnGen)btnGen.disabled=true;if(curType==='video'){isGenerating=false;if(btnGen)btnGen.disabled=false;notifyVideoSoon();return}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');isGenerating=false;if(btnGen)btnGen.disabled=false;return}var logged=await isLogged();if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');isGenerating=false;if(btnGen)btnGen.disabled=false;return}}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid');var card=document.createElement('div');card.className='result-card';var format=document.getElementById('format-select').value;var dims=format.split('x');var w=parseInt(dims[0]);var h=parseInt(dims[1]);card.style.aspectRatio=w+'/'+h;var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="Generation" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildColorOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now(),tmr=document.getElementById(tmrId);var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);var media=card.querySelector('img');var loaded=false;var currentUser=await getUser();try{var result=await generateImageViaProxy(p,w,h);var url=result.url;media.onload=function(){if(loaded)return;loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.setAttribute('data-prompt',p);card.onclick=function(){openLB(url,'image')};if(logged){validatePendingReferral(currentUser.id);updateUI();loadMiniBadge()}notify('✅ '+t('results.generated_in')+' '+((Date.now()-st)/1000).toFixed(1)+'s !','success');if(!logged)incrementAndCheckFreemium()};media.onerror=function(){if(loaded)return;loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur chargement</div>'}notify(t('results.failed'),'error')};media.src=url;setTimeout(function(){if(!loaded){loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image')}}},15000)}catch(err){clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>'+err.message+'</div>'}notify('Erreur: '+err.message,'error');setTimeout(function(){if(card.parentNode)card.parentNode.removeChild(card)},3000)}finally{isGenerating=false;var btnGenFinal=document.querySelector('.btn-gen');if(btnGenFinal)btnGenFinal.disabled=false}}
