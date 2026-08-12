@@ -2,6 +2,13 @@
 (function() {
     'use strict';
 
+    // 🛑 INTERRUPTEUR DES PUBS : false = DÉSACTIVÉ | true = ACTIVÉ
+    var ADS_ENABLED = false;
+    if (!ADS_ENABLED) {
+        console.log('[ADS] Système de pubs DÉSACTIVÉ (ADS_ENABLED = false)');
+        return; // Arrête le script immédiatement
+    }
+
     console.log('[ADS] v36.3 START');
 
     var SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
@@ -40,7 +47,6 @@
     var rwDailyLimit = 5;
     var rwClicked = false;
     var rwOfferOpened = false;
-
     function showStatusMessage(type, title, message) {
         var bodyContent = document.getElementById('pxr-rw-body-content');
         if (!bodyContent) return;
@@ -91,7 +97,6 @@
 
             var res = await fetch('/api/rewarded-ad?action=get&user_id=' + rwCurrentUserId);
             var data = await res.json();
-
             if (!data.available) {
                 if (data.reason === 'daily_limit_reached') {
                     rwDailyLimit = data.daily_limit || 5;
@@ -140,8 +145,7 @@
             rwTimerInterval = setInterval(function() {
                 remaining--;
                 if (remaining <= 0) {
-                    clearInterval(rwTimerInterval);
-                    rwTimerInterval = null;
+                    clearInterval(rwTimerInterval);                    rwTimerInterval = null;
                     timerDisplay.textContent = '✅ Terminé !';
                     timerDisplay.classList.add('done');
 
@@ -173,7 +177,7 @@
             if (!rwCurrentToken || !rwCurrentUserId) return;
             var claimBtn = document.getElementById('pxr-rw-claim-btn');
             if (claimBtn.disabled) {
-                pxrNotify('⚠️ Vous devez cliquer sur l\'offre avant de réclamer.', 'error');
+                pxrNotify('️ Vous devez cliquer sur l\'offre avant de réclamer.', 'error');
                 return;
             }
             claimBtn.disabled = true;
@@ -190,8 +194,7 @@
                 pxrNotify('+' + data.points_earned + ' points ! Solde : ' + data.new_balance, 'success');
                 var limitEl = document.getElementById('pxr-rw-limit-info');
                 if (limitEl) {
-                    var parts = limitEl.textContent.split('/');
-                    var currentViews = parseInt(parts[0]) || 0;
+                    var parts = limitEl.textContent.split('/');                    var currentViews = parseInt(parts[0]) || 0;
                     limitEl.textContent = (currentViews + 1) + '/' + rwDailyLimit + ' vues aujourd\'hui';
                 }
                 window.pxrCloseRewarded();                if (typeof updateUI === 'function') updateUI();
@@ -240,8 +243,7 @@
         wrapper.id = id + '-wrapper';
         wrapper.className = 'pxr-wrapper';
         var label = document.createElement('div');
-        label.className = 'pxr-label';
-        label.textContent = '⭐ SPONSORISÉ ⭐';
+        label.className = 'pxr-label';        label.textContent = '⭐ SPONSORISÉ ⭐';
         wrapper.appendChild(label);
         var adBox = document.createElement('div');        adBox.id = id;
         adBox.className = 'pxr-ad-box';
@@ -290,8 +292,7 @@
             }
 
             // ✅ Insérer midSlot AVANT "Créations de référence" (ou après le générateur en fallback)
-            var refEl = null;
-            var allNodes = main.querySelectorAll('*');
+            var refEl = null;            var allNodes = main.querySelectorAll('*');
             for (var i = 0; i < allNodes.length; i++) {                var txt = allNodes[i].textContent.trim().toLowerCase();
                 if (txt.includes('créations de référence') || txt.includes('reference creations')) {
                     refEl = allNodes[i];
@@ -339,4 +340,4 @@
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(init, 300);
     else document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 300); });
-})();
+})()
