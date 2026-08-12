@@ -34,8 +34,7 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 .btn-auth{padding:.4rem .9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:10px;font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:.4rem;border:none;cursor:pointer}
 
 /* ===== HERO CAROUSEL ===== */
-.hero{margin:14px 16px 0;border-radius:20px;overflow:hidden;position:relative;height:330px;border:1px solid var(--border);display:none}
-.hero.has-data{display:block}
+.hero{margin:14px 16px 0;border-radius:20px;overflow:hidden;position:relative;height:330px;border:1px solid var(--border)}
 .hero img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
 .hero img.on{opacity:1}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:20px;gap:6px;text-align:center}
@@ -47,8 +46,8 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 .dot.on{background:#fff;width:16px;border-radius:4px}
 
 /* ===== NICHES CHIPS ===== */
-.chips{display:flex;gap:8px;overflow-x:auto;padding:14px 16px 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
-.chip{flex-shrink:0;padding:9px 16px;border-radius:100px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid rgba(139,92,246,.4);color:#d8c9ff;background:rgba(139,92,246,.08);transition:all .2s;font-family:inherit}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:14px 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}.chip{flex-shrink:0;padding:9px 16px;border-radius:100px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid rgba(139,92,246,.4);color:#d8c9ff;background:rgba(139,92,246,.08);transition:all .2s;font-family:inherit}
 .chip:active{background:var(--prim);color:#fff}
 
 /* ===== VIDEO CARD ===== */
@@ -67,7 +66,7 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 .tag{position:absolute;top:12px;right:12px;font-size:.6rem;font-weight:700;padding:4px 10px;border-radius:100px;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
 .hot{position:absolute;top:-8px;left:12px;font-size:.6rem;font-weight:800;padding:3px 10px;border-radius:100px;background:linear-gradient(135deg,#f97316,#ef4444);color:#fff}
 
-/* ===== GENERATOR (dans sheet mais aussi ici pour compat) ===== */
+/* ===== GENERATOR (caché, compat JS) ===== */
 .generator{display:none}
 .prompt-field{width:100%;min-height:80px;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;color:#fff;font-family:inherit;font-size:.9rem;resize:none;outline:none}
 .prompt-field:focus{border-color:var(--prim)}
@@ -95,9 +94,9 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 .section-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.8rem;display:flex;justify-content:space-between;align-items:center}
 .results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
 .result-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;cursor:pointer;min-height:150px}
-.result-card img,.result-card video{width:100%;flex:1;object-fit:cover;display:block;min-height:120px;aspect-ratio:1}
-.result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:center;padding:.6rem;gap:.4rem;opacity:0;transition:opacity .3s}.result-card:hover .result-overlay{opacity:1}
-@media(hover:none){.result-overlay{opacity:1}}
+.result-card img,.result-card video{width:100%;object-fit:cover;display:block;aspect-ratio:1}
+.result-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 60%);display:flex;align-items:flex-end;justify-content:center;padding:.6rem;gap:.4rem;opacity:0;transition:opacity .3s}
+.result-card:hover .result-overlay{opacity:1}@media(hover:none){.result-overlay{opacity:1}}
 .icon-btn{width:34px;height:34px;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:.8rem}
 .icon-btn-remix{background:rgba(139,92,246,.2);color:#C4B5FD}
 .icon-btn-prompt{background:rgba(6,182,212,.2);color:#67E8F9}
@@ -124,7 +123,7 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 
 /* ===== BOTTOM NAV ===== */
 nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;background:rgba(10,10,13,.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding:8px 6px calc(10px + env(safe-area-inset-bottom))}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--dim);font-size:.6rem;font-weight:600;padding:6px 0;border-radius:12px}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--dim);font-size:.6rem;font-weight:600;padding:6px 0;border-radius:12px;position:relative}
 .nav-item i{font-size:1.15rem}
 .nav-item[data-nav="studio"].active{color:var(--prim)}
 .nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,.7))}
@@ -145,8 +144,8 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 .sheet .result.show{display:block}
 .sheet .result img{width:100%;display:block}
 .sheet .result .dl{position:absolute;bottom:10px;right:10px;padding:9px 16px;border:none;border-radius:100px;cursor:pointer;background:rgba(255,255,255,.92);color:#000;font-size:.72rem;font-weight:700}
-.spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}.spin div{width:30px;height:30px;border:3px solid rgba(255,255,255,.15);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
+.spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
+.spin div{width:30px;height:30px;border:3px solid rgba(255,255,255,.15);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
 
 /* ===== MENU ===== */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:75;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -162,7 +161,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 .m-lang{display:flex;gap:6px;padding:6px 10px}
 .m-lang select{flex:1;padding:10px 0;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit}
 
-/* ===== LIGHTBOX / MODALS / NOTIF (préservés) ===== */
+/* ===== LIGHTBOX / MODALS / NOTIF ===== */
 .notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:.8rem 1.2rem;font-size:.85rem;font-weight:600;z-index:10000;transition:transform .4s;display:flex;align-items:center;gap:.7rem;box-shadow:0 10px 40px rgba(0,0,0,.5)}
 .notification.show{transform:translateX(-50%) translateY(0)}
 .notification.success{border-color:var(--success)}
@@ -194,8 +193,8 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 .btn-submit{width:100%;padding:1rem;margin-top:.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:12px;font-weight:700;font-size:1rem;border:none;cursor:pointer}
 .auth-divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:var(--dim);font-size:.72rem}
 .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.social-btn{width:100%;padding:.85rem;border-radius:12px;font-weight:600;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer;border:none}.social-btn.google{background:#fff;color:#1f1f1f;border:1.5px solid #e0e0e0}
-.social-btn.github{background:#24292F;color:#fff;border:1.5px solid #444c56}
+.social-btn{width:100%;padding:.85rem;border-radius:12px;font-weight:600;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer;border:none}
+.social-btn.google{background:#fff;color:#1f1f1f;border:1.5px solid #e0e0e0}.social-btn.github{background:#24292F;color:#fff;border:1.5px solid #444c56}
 .auth-footer{margin-top:1.2rem;font-size:.72rem;color:var(--dim)}
 .auth-footer a{color:var(--prim)}
 .share-modal{position:fixed;inset:0;z-index:10004;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
@@ -232,6 +231,27 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 .pxr-soft-benefit{display:flex;align-items:center;gap:.6rem;padding:.4rem 0;font-size:.82rem}
 .pxr-soft-benefit i{color:var(--success);width:16px}
 .pxr-soft-cta{display:block;width:100%;padding:.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:12px;font-weight:700;font-size:.95rem;margin-bottom:.8rem;border:none;cursor:pointer}
+
+/* ===== FIX DESKTOP ===== */
+@media(min-width:768px){
+  .hero,.chips,.video-card,.models,.quick-stats,.results-section,.recent,.site-footer{max-width:900px;margin-left:auto;margin-right:auto}
+  .hero{height:440px}
+  .chips{flex-wrap:wrap;justify-content:center}
+  .quick-stats{grid-template-columns:repeat(4,1fr)}
+  .results-grid{grid-template-columns:repeat(4,1fr)}
+  .recent-row img{width:150px;height:150px}
+  .float-bar{max-width:560px}
+  nav.nav-mobile{left:50%;right:auto;transform:translateX(-50%);max-width:900px}
+  .sheet{left:50%;right:auto;transform:translate(-50%,105%);max-width:620px}
+  .sheet.open{transform:translate(-50%,0)}}
+@media(min-width:1200px){
+  .hero,.chips,.video-card,.models,.quick-stats,.results-section,.recent,.site-footer{max-width:1080px}
+  .hero{height:520px}
+  .results-grid{grid-template-columns:repeat(5,1fr)}
+  .recent-row img{width:170px;height:170px}
+  .float-bar{max-width:640px}
+  nav.nav-mobile{max-width:1080px}
+}
 </style>
 </head>
 <body>
@@ -243,7 +263,8 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <svg viewBox="0 0 100 100"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs><polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g2)"/><text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text></svg>
     <span class="logo-text">PIXORA</span>
   </div>
-  <button class="m-item" onclick="openAuth();closeMenu()"><i>🔐</i>Connexion / Inscription</button>  <a class="m-item" href="earn.html" onclick="closeMenu()"><i>💰</i>Gagner des points</a>
+  <button class="m-item" onclick="openAuth();closeMenu()"><i>🔐</i>Connexion / Inscription</button>
+  <a class="m-item" href="earn.html" onclick="closeMenu()"><i>💰</i>Gagner des points</a>
   <a class="m-item" href="shop.html" onclick="closeMenu()"><i>🛍️</i>Boutique</a>
   <a class="m-item" href="profile.html" onclick="closeMenu()"><i>👤</i>Mon profil</a>
   <div class="m-sep"></div>
@@ -272,7 +293,6 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="results.close">Fermer</span></button>
   </div>
 </div>
-
 <!-- SHARE MODAL -->
 <div class="share-modal" id="share-modal">
   <div class="share-box">
@@ -292,7 +312,8 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <div class="share-grid">
       <a class="share-btn" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a>
       <a class="share-btn" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a>
-      <a class="share-btn" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a>      <a class="share-btn" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a>
+      <a class="share-btn" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a>
+      <a class="share-btn" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a>
       <a class="share-btn" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a>
       <a class="share-btn" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a>
       <a class="share-btn" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a>
@@ -320,8 +341,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_title">Connexion</button>
       <button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button>
-    </div>
-    <div class="form-section active" id="sec-login">
+    </div>    <div class="form-section active" id="sec-login">
       <form onsubmit="doLogin(event)">
         <div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="votre@email.com" required id="l-email"></div>
         <div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="••••••••" required id="l-pw"></div>
@@ -342,7 +362,8 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <div class="auth-footer"><span data-i18n="auth.footer">En continuant, vous acceptez nos</span> <a href="privacy.html" data-i18n="auth.conditions">conditions</a>.</div>
   </div>
 </div>
-<!-- USER MENU (dropdown avatar) -->
+
+<!-- USER MENU -->
 <div class="user-menu" id="user-menu">
   <div class="menu-header">
     <div class="menu-avatar" id="menu-avatar">U</div>
@@ -369,8 +390,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
       <polygon points="50,4 96,38 50,48" fill="rgba(255,255,255,.18)"/>
       <polygon points="4,38 50,48 22,96" fill="rgba(0,0,0,.18)"/>
       <text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text>
-    </svg>
-    <span class="logo-text">PIXORA</span>
+    </svg>    <span class="logo-text">PIXORA</span>
   </a>
   <div class="user-stats" id="user-stats"><i class="fas fa-bolt"></i><span id="header-points">0</span></div>
   <a href="earn.html#badges" class="mini-badge-pill" id="mini-badge"><span id="mini-badge-icon"></span><span id="mini-badge-name"></span><span id="mini-badge-next"></span></a>
@@ -380,7 +400,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 </header>
 
 <!-- HERO CAROUSEL -->
-<section class="hero has-data" id="hero">
+<section class="hero" id="hero">
   <img class="on" src="https://image.pollinations.ai/prompt/majestic%20samurai%20cat%20golden%20armor%20cherry%20blossoms%20ukiyo-e?width=800&height=700&nologo=true&model=flux&enhance=true&seed=11" alt="">
   <img src="https://image.pollinations.ai/prompt/cinematic%20portrait%20woman%20bioluminescent%20tattoos%20neon%20tokyo%20rain?width=800&height=700&nologo=true&model=flux&enhance=true&seed=22" alt="">
   <img src="https://image.pollinations.ai/prompt/cosmic%20whale%20swimming%20aurora%20nebula%20stars?width=800&height=700&nologo=true&model=flux&enhance=true&seed=33" alt="">
@@ -391,6 +411,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   </div>
   <div class="dots"><span class="dot on" onclick="goSlide(0)"></span><span class="dot" onclick="goSlide(1)"></span><span class="dot" onclick="goSlide(2)"></span></div>
 </section>
+
 <!-- NICHES -->
 <div class="chips">
   <button class="chip" onclick="pickNiche(this,'Tatouage minimaliste ligne fine, fleur de lotus, encre noire')">🎯 Tatouage</button>
@@ -418,12 +439,11 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <h4>Flux PRO</h4><p>Ultra détaillée</p>
   </div>
   <div class="model" onclick="selModel(this)">
-    <span class="tag">Image</span>
-    <h4>Turbo</h4><p>Génération rapide</p>
+    <span class="tag">Image</span>    <h4>Turbo</h4><p>Génération rapide</p>
   </div>
 </div>
 
-<!-- QUICK STATS (hidden by default, shown when logged) -->
+<!-- QUICK STATS -->
 <div class="quick-stats" id="quick-stats">
   <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt" style="color:var(--gold)"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl" data-i18n="stats.points">Points</div></div>
   <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire" style="color:#F97316"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl" data-i18n="stats.streak">Streak</div></div>
@@ -431,15 +451,16 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-coins" style="color:var(--success)"></i></div><div class="stat-val" id="stat-earned">0</div><div class="stat-lbl" data-i18n="stats.total_earned">Total</div></div>
 </div>
 
-<!-- HIDDEN GENERATOR (pour compat avec JS existant) -->
-<div class="generator" style="display:none">
+<!-- GENERATOR CACHÉ (compat JS) -->
+<div class="generator">
   <textarea class="prompt-field" id="prompt" data-i18n-placeholder="generator.placeholder" placeholder="Décrivez votre vision..."></textarea>
   <select class="option-select" id="format-select"><option value="768x768" selected>📐 Carré (1:1)</option><option value="768x1024">📱 Portrait (3:4)</option><option value="1024x576">🎬 Cinéma (16:9)</option></select>
   <select class="option-select" id="model-select"><option value="flux">⚡ Flux PRO</option><option value="turbo">⚡ Turbo</option></select>
   <div class="type-selector">
     <button class="type-btn active" onclick="selType('image')" aria-pressed="true"><i class="fas fa-image"></i><span class="type-name" data-i18n="generator.image">Image</span><span class="type-cost" id="cost-image">4 pts</span></button>
     <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
-  </div>  <div id="discount-banner" style="display:none"><span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span><span id="discount-timer"></span></div>
+  </div>
+  <div id="discount-banner" style="display:none"><span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span><span id="discount-timer"></span></div>
   <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
 </div>
 
@@ -457,7 +478,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 
 <div id="sponsorised-container" style="margin:16px 16px 0"></div>
 
-<!-- SHEET GENERATOR (nouveau) -->
+<!-- SHEET -->
 <div class="sheet" id="sheet">
   <div class="grab"></div>
   <textarea class="prompt-field" id="prompt-sheet" placeholder="Décris ta scène... ex: un chat samouraï sous les cerisiers"></textarea>
@@ -467,8 +488,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <button class="fmt" onclick="selFmt(this,'1024x576')">16:9</button>
   </div>
   <button class="btn-gen" onclick="generateFromSheet()">GÉNÉRER</button>
-  <div class="result" id="result-sheet">
-    <img id="resultImg-sheet" src="" alt="">
+  <div class="result" id="result-sheet">    <img id="resultImg-sheet" src="" alt="">
     <div class="spin" id="spin-sheet" style="display:none"><div></div></div>
     <button class="dl" onclick="window.open(document.getElementById('resultImg-sheet').src,'_blank')">Télécharger</button>
   </div>
@@ -489,6 +509,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span data-i18n="nav.earn">Gagner</span><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
   <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i><span>Profil</span></a>
 </nav>
+
 <footer class="site-footer">
   <a href="earn.html" data-i18n="footer.earn_points">Gagner des Points</a>
   <a href="gallery.html" data-i18n="footer.gallery">Galerie</a>
@@ -510,16 +531,13 @@ document.getElementById('sheet').addEventListener('click',e=>{if(e.target.id==='
 function pickNiche(el,txt){document.getElementById('prompt-sheet').value=txt;document.getElementById('prompt').value=txt;openSheet();}
 function selModel(el){document.querySelectorAll('.model').forEach(m=>m.classList.remove('sel'));el.classList.add('sel');}
 function selFmt(el,f){document.querySelectorAll('.fmt').forEach(x=>x.classList.remove('on'));el.classList.add('on');document.getElementById('format-select').value=f;}
-
-// Carousel
 let slideIdx=0;
 const imgs=document.querySelectorAll('.hero img'),dots=document.querySelectorAll('.dot');
 setInterval(()=>{slideIdx=(slideIdx+1)%imgs.length;render();},5000);
 function render(){imgs.forEach((im,i)=>im.classList.toggle('on',i===slideIdx));dots.forEach((d,i)=>d.classList.toggle('on',i===slideIdx));}
 function goSlide(i){slideIdx=i;render();}
 
-// ========== TON JS EXACT (inchangé) ==========
-window.onerror=function(msg,url,line,col,error){var n=document.getElementById('notif');if(n){document.getElementById('notif-text').textContent='❌ Une erreur est survenue. Réessayez.';n.className='notification show error';setTimeout(function(){n.classList.remove('show');},5000);}};
+// ========== TON JS EXACT ==========window.onerror=function(msg,url,line,col,error){var n=document.getElementById('notif');if(n){document.getElementById('notif-text').textContent='❌ Une erreur est survenue. Réessayez.';n.className='notification show error';setTimeout(function(){n.classList.remove('show');},5000);}};
 if(window.location.hostname!=='localhost'&&window.location.hostname!=='127.0.0.1'){console.log=function(){};console.warn=function(){};console.error=function(){};}
 var PX_ANON_KEY='pxr_anon_gen_count',PX_FREE_LIMIT=3;
 var isGenerating=false;
@@ -532,12 +550,13 @@ var BADGES_CONFIG=[{id:'bronze',name:'Apprenti',icon:'🎨',threshold:5},{id:'si
 async function loadMiniBadge(){try{var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!await isLogged()){el.classList.remove('show');return}var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'→ '+(nxt.threshold-gc)+' img':'✨ Max'}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='→ '+(nxt.threshold-gc)}else{ic.textContent='';nm.textContent='Badge';nx.textContent=''}}catch(e){}}
 var I18N={},currentLang='fr';
 var FR_TRANSLATIONS={meta:{title:'IA Pixora — Studio IA Gratuit',description:'IA Pixora : Créez des images et vidéos IA professionnelles gratuitement.'},header:{login:'Connexion',points:'points'},nav:{studio:'Studio',gallery:'Galerie',earn:'Gagner',profile:'Profile'},hero:{title:'Générez l\'impossible avec IA Pixora',subtitle:'Images IA professionnelles. Gratuit. Sans limite.'},generator:{prompt_title:'Décrivez votre image',placeholder:'Décrivez votre vision... ex: Flacon parfum cristal, marbre noir, éclairage cinématique 8k',image:'Image',video:'Vidéo',video_soon:'Bientôt',generate:'Générer',discount_active:'-50% ACTIF',expires_in:'Expire dans',cost_pts:'pts'},results:{title:'Vos Créations',permanent:'Sauvegardé définitivement',auto_delete:'Auto-effacement après 24h',download:'Télécharger',close:'Fermer',generating:'Génération IA...',generated_in:'Générée en',failed:'Génération échouée. Réessayez.',error:'Erreur génération. Réessayez.'},stats:{points:'Points',streak:'Streak',creations:'Créations',total_earned:'Total Gagné'},auth:{login_title:'Connexion',register_title:'Inscription',email:'Email',password:'Mot de passe',password_min:'Min. 8 caractères',username:'Pseudo',login_btn:'Se connecter',register_btn:'Créer mon compte',or_continue:'ou continuer avec',google:'Continuer avec Google',github:'Continuer avec GitHub',github_soon:' GitHub bientôt disponible...',footer:'En continuant, vous acceptez nos',conditions:'conditions',welcome:'✅ Bienvenue !',connected:'✅ Connecté !',account_created:'✅ Compte créé ! +15 pts bonus',wrong_credentials:'❌ Identifiants incorrects',email_exists:'❌ Cet email est déjà utilisé',password_short:'❌ Mot de passe trop court',signup_error:'❌ Erreur inscription',google_error:'❌ Erreur Google Login',logout:'✅ Déconnecté',connect_to_generate:'Connectez-vous pour générer et gagner des points'},menu:{my_profile:'Mon profil',earn_points:'Gagner des points',my_purchases:'Mes achats',logout:'Déconnexion'},notifications:{enter_prompt:'Veuillez entrer un prompt',insufficient_points:'Points insuffisants ! Visitez la page Points.',generating:'⏳ Génération en cours...',downloaded:'✅ Téléchargé !',no_image:'❌ Aucune image trouvée',via_provider:' Via',discount_tag:'🔥 -50%',freemium_limit:'🔒 Limite gratuite atteinte ! Inscrivez-vous pour continuer.',share_success:'✅ Lien copié !',share_points:'+5 points pour le partage !',remix_success:'✨ Prompt remixé ! Modifiez-le et régénérez.',prompt_copied:'📋 Prompt copié dans le presse-papier !',view_gallery:'Voir toute la galerie'},footer:{earn_points:'Gagner des Points',gallery:'Galerie',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:' Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'},gallery:{reference_title:'Créations de référence'},faq:{q1:'Est-ce que IA Pixora est vraiment gratuit ?',a1:'Oui, IA Pixora est 100% gratuit.',q2:'Comment générer une image sans inscription ?',a2:'3 générations gratuites sans compte.',q3:'Quelle est la différence entre IA Pixora et Midjourney ?',a3:'IA Pixora est entièrement gratuit.',q4:'Puis-je utiliser les images commercialement ?',a4:'Oui, libres de droits.',q5:'Combien de générations gratuites par jour ?',a5:'3 sans inscription, illimité après.'},how:{title:'Comment créer des images IA avec IA Pixora ?',step1_title:'Décrivez votre idée',step1_desc:'Écrivez un prompt détaillé. Plus vous êtes précis, meilleur sera le résultat.',step2_title:'Choisissez le format',step2_desc:'Carré pour les réseaux, portrait pour les fonds d\'écran, ou cinéma pour le réalisme.',step3_title:'Générez & Téléchargez',step3_desc:'Obtenez votre image en quelques secondes. 3 essais gratuits, puis accès illimité.'},actions:{remix:'Remix',prompt:'Prompt',download:'Télécharger',share:'Partager'}};
-var EN_TRANSLATIONS={meta:{title:'IA Pixora — Free AI Image Studio',description:'IA Pixora: Create professional AI images and videos for free.'},header:{login:'Login',points:'points'},nav:{studio:'Studio',gallery:'Gallery',earn:'Earn',profile:'Profile'},hero:{title:'Generate the impossible with IA Pixora',subtitle:'Professional AI images. Free. No limits.'},generator:{prompt_title:'Describe your image',placeholder:'Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic 8k lighting',image:'Image',video:'Video',video_soon:'Coming Soon',generate:'Generate',discount_active:'-50% ACTIVE',expires_in:'Expires in',cost_pts:'pts'},results:{title:'Your Creations',permanent:'Saved permanently',auto_delete:'Auto-delete after 24h',download:'Download',close:'Close',generating:'AI Generating...',generated_in:'Generated in',failed:'Generation failed. Try again.',error:'Generation error. Try again.'},stats:{points:'Points',streak:'Streak',creations:'Creations',total_earned:'Total Earned'},auth:{login_title:'Login',register_title:'Sign Up',email:'Email',password:'Password',password_min:'Min. 8 characters',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',google:'Continue with Google',github:'Continue with GitHub',github_soon:' GitHub coming soon...',footer:'By continuing, you accept our',conditions:'terms',welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'✅ Account created! +15 bonus pts',wrong_credentials:'❌ Incorrect credentials',email_exists:'❌ This email is already used',password_short:'❌ Password too short',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:'✅ Logged out',connect_to_generate:'Log in to generate and earn points'},menu:{my_profile:'My Profile',earn_points:'Earn Points',my_purchases:'My Purchases',logout:'Logout'},notifications:{enter_prompt:'Please enter a prompt',insufficient_points:'Insufficient points! Visit the Points page.',generating:'⏳ Generating...',downloaded:'✅ Downloaded!',no_image:'❌ No image found',via_provider:'⚡ Via',discount_tag:'🔥 -50%',freemium_limit:'🔒 Free limit reached! Sign up to continue.',share_success:'✅ Link copied!',share_points:'+5 points for sharing!',remix_success:'✨ Prompt remixed! Edit it and regenerate.',prompt_copied:' Prompt copied to clipboard!',view_gallery:'View full gallery'},footer:{earn_points:'Earn Points',gallery:'Gallery',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:' Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'},gallery:{reference_title:'Reference Creations'},faq:{q1:'Is IA Pixora really free?',a1:'Yes, IA Pixora is 100% free for generating AI images and videos.',q2:'How to generate an image without signup?',a2:'3 free generations without account.',q3:'What is the difference between IA Pixora and Midjourney?',a3:'IA Pixora is completely free, no subscription required.',q4:'Can I use generated images commercially?',a4:'Yes, royalty-free.',q5:'How many free generations per day?',a5:'3 without signup, unlimited after.'},how:{title:'How to create AI images with IA Pixora?',step1_title:'Describe your idea',step1_desc:'Write a detailed prompt. The more precise you are, the better the result.',step2_title:'Choose the format',step2_desc:'Square for social media, portrait for wallpapers, or cinema for realism.',step3_title:'Generate & Download',step3_desc:'Get your image in seconds. 3 free trials, then unlimited access.'},actions:{remix:'Remix',prompt:'Prompt',download:'Download',share:'Share'}};
+var EN_TRANSLATIONS={meta:{title:'IA Pixora — Free AI Image Studio',description:'IA Pixora: Create professional AI images and videos for free.'},header:{login:'Login',points:'points'},nav:{studio:'Studio',gallery:'Gallery',earn:'Earn',profile:'Profile'},hero:{title:'Generate the impossible with IA Pixora',subtitle:'Professional AI images. Free. No limits.'},generator:{prompt_title:'Describe your image',placeholder:'Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic 8k lighting',image:'Image',video:'Video',video_soon:'Coming Soon',generate:'Generate',discount_active:'-50% ACTIVE',expires_in:'Expires in',cost_pts:'pts'},results:{title:'Your Creations',permanent:'Saved permanently',auto_delete:'Auto-delete after 24h',download:'Download',close:'Close',generating:'AI Generating...',generated_in:'Generated in',failed:'Generation failed. Try again.',error:'Generation error. Try again.'},stats:{points:'Points',streak:'Streak',creations:'Creations',total_earned:'Total Earned'},auth:{login_title:'Login',register_title:'Sign Up',email:'Email',password:'Password',password_min:'Min. 8 characters',username:'Username',login_btn:'Log In',register_btn:'Create Account',or_continue:'or continue with',google:'Continue with Google',github:'Continue with GitHub',github_soon:' GitHub coming soon...',footer:'By continuing, you accept our',conditions:'terms',welcome:'✅ Welcome!',connected:'✅ Connected!',account_created:'✅ Account created! +15 bonus pts',wrong_credentials:'❌ Incorrect credentials',email_exists:'❌ This email is already used',password_short:'❌ Password too short',signup_error:'❌ Signup error',google_error:'❌ Google Login error',logout:'✅ Logged out',connect_to_generate:'Log in to generate and earn points'},menu:{my_profile:'My Profile',earn_points:'Earn Points',my_purchases:'My Purchases',logout:'Logout'},notifications:{enter_prompt:'Please enter a prompt',insufficient_points:'Insufficient points! Visit the Points page.',generating:'⏳ Generating...',downloaded:'✅ Downloaded!',no_image:'❌ No image found',via_provider:'⚡ Via',discount_tag:'🔥 -50%',freemium_limit:'🔒 Free limit reached! Sign up to continue.',share_success:'✅ Link copied!',share_points:'+5 points for sharing!',remix_success:'✨ Prompt remixed! Edit it and regenerate.',prompt_copied:' Prompt copied to clipboard!',view_gallery:'View full gallery'},footer:{earn_points:'Earn Points',gallery:'Gallery',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},language:{label:'Language',fr:'Français',en:'English'},share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:' Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'},gallery:{reference_title:'Reference Creations'},faq:{q1:'Is IA Pixora really free?',a1:'Yes, IA Pixora is 100% free for generating AI images and videos.',q2:'How to generate an image without signup?',a2:'3 free generations without account.',q3:'What is the difference between IA Pixora and Midjourney ?',a3:'IA Pixora is completely free, no subscription required.',q4:'Can I use generated images commercially?',a4:'Yes, royalty-free.',q5:'How many free generations per day?',a5:'3 without signup, unlimited after.'},how:{title:'How to create AI images with IA Pixora?',step1_title:'Describe your idea',step1_desc:'Write a detailed prompt. The more precise you are, the better the result.',step2_title:'Choose the format',step2_desc:'Square for social media, portrait for wallpapers, or cinema for realism.',step3_title:'Generate & Download',step3_desc:'Get your image in seconds. 3 free trials, then unlimited access.'},actions:{remix:'Remix',prompt:'Prompt',download:'Download',share:'Share'}};
 function t(k){var p=k.split('.'),v=I18N;for(var i=0;i<p.length;i++){if(v&&typeof v==='object')v=v[p[i]];else return k}return v||k}
 async function loadLang(l){currentLang=l;I18N=(l==='en')?JSON.parse(JSON.stringify(EN_TRANSLATIONS)):JSON.parse(JSON.stringify(FR_TRANSLATIONS));applyTranslations();document.documentElement.lang=l;document.title=t('meta.title');var md=document.querySelector('meta[name="description"]');if(md)md.content=t('meta.description');var sel=document.getElementById('lang-select');if(sel)sel.value=l;localStorage.setItem('pixora_lang',l)}
 function applyTranslations(){document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n'),v=t(k);if(v!==k)el.textContent=v});document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){var k=el.getAttribute('data-i18n-placeholder'),v=t(k);if(v!==k)el.placeholder=v})}
 function changeLang(l){loadLang(l)}
-function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+function detectLang(){var s=localStorage.getItem('pixora_lang');if(s&&(s==='fr'||s==='en'))return s;var n=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return n.indexOf('en')!==-1?'en':'fr'}
+var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 var db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 var BUCKET='pixora-gallery',curType='image',lbUrl='',lbType='image';
 var DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}};
@@ -567,8 +586,7 @@ document.getElementById('auth-modal').addEventListener('click',function(e){if(e.
 function switchTab(m){document.querySelectorAll('.auth-tab').forEach(function(t,i){t.classList.toggle('active',i===(m==='login'?0:1))});document.getElementById('sec-login').classList.toggle('active',m==='login');document.getElementById('sec-register').classList.toggle('active',m!=='login')}
 async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();await loadUserTier();updateUI();notify(t('auth.welcome'),'success')}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> <span>'+t('auth.login_btn')+'</span>'}}
 async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim(),pv=document.getElementById('r-pw').value,nv=document.getElementById('r-name').value.trim(),r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;var nid=sr.data.user?sr.data.user.id:null;if(nid){await ensureUserData(nid);await grantSignupBonus(nid);await processReferral(nid)}closeAuth();await loadUserTier();updateUI();notify(t('auth.account_created'),'success')}catch(err){var msg=t('auth.signup_error');if(err.message){if(err.message.indexOf('already registered')!==-1)msg=t('auth.email_exists');else if(err.message.indexOf('password')!==-1)msg=t('auth.password_short');else msg='❌ '+err.message}notify(msg,'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> <span>'+t('auth.register_btn')+'</span>'}}
-async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}
-async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
+async function loginWithGoogle(){try{await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://iapixora.com'}})}catch(e){notify(t('auth.google_error'),'error')}}async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,total_generated:0,total_earned:0,user_id:null,discount_until:null,tier:1,badges_claimed:[]};var r=await db.from('user_data').select('*').eq('user_id',u.id).single(),d=r.data||{points:0,streak:1,total_generated:0,total_earned:0,tier:1,badges_claimed:[]};d.user_id=u.id;d.discount_until=d.discount_until||null;d.tier=d.tier||1;d.badges_claimed=d.badges_claimed||[];return d}
 async function saveTransaction(type,title,amount){var u=await getUser();if(!u)return;await db.from('transactions').insert({user_id:u.id,type:type,title:title,amount:amount});var d=await getUserData(),up={points:d.points+amount};if(amount>0)up.total_earned=(d.total_earned||0)+amount;if(type==='spent')up.total_generated=(d.total_generated||0)+1;await db.from('user_data').upsert(Object.assign({user_id:u.id},up),{onConflict:'user_id'})}
 function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
 function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
@@ -586,18 +604,19 @@ function openShareModal(imgUrl){currentShareUrl=imgUrl;document.getElementById('
 function closeShareModal(){document.getElementById('share-modal').classList.remove('active');document.body.style.overflow='';currentShareUrl=''}
 document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});
 function getShareUrl(){return'https://iapixora.com/share.html?img='+encodeURIComponent(currentShareUrl)}
-function getShareText(){return t('share.text')}function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}
+function getShareText(){return t('share.text')}
+function shareTo(network){var url=getShareUrl(),text=getShareText(),links={whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+url),telegram:'https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url),instagram:'https://www.instagram.com/',tiktok:'https://www.tiktok.com/',linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text),pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(url)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),discord:'https://discord.com/',snapchat:'https://www.snapchat.com/',threads:'https://www.threads.net/',bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+url),mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+url),wechat:'',line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(url),vk:'https://vk.com/share.php?url='+encodeURIComponent(url)+'&title='+encodeURIComponent(text),email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+url)},link=links[network];if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');else copyShareLink()}
 function copyShareLink(){var url=getShareUrl();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){notify(t('notifications.share_success'),'success')}).catch(function(){fallbackCopy(url)});else fallbackCopy(url)}
 function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.share_success'),'success')}catch(e){notify('Copy failed','error')}document.body.removeChild(ta)}
 async function loadStudio(){var grid=document.getElementById('results-grid');try{var result=await db.from('pixora_creations').select('file_name, created_at, expires_at, prompt').order('created_at',{ascending:false}).limit(12);if(!result.data||result.data.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création pour le moment. Générez votre première image !</div>';return}var now=new Date().toISOString();var validItems=result.data.filter(function(item){return!item.expires_at||item.expires_at>now});if(validItems.length===0){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1;">Aucune création valide</div>';return}grid.innerHTML='';for(var i=0;i<validItems.length;i++){var row=validItems[i];var rawName=row.file_name;var promptText=row.prompt||'';var url='';var isSupabase=(rawName.indexOf('supabase_')===0);if(isSupabase){var realName=rawName.replace('supabase_','');try{var urlData=db.storage.from(BUCKET).getPublicUrl(realName);url=urlData.data.publicUrl}catch(e){continue}}else{url=R2_PUBLIC_URL+'/'+rawName}var isVideo=rawName.indexOf('_video_')!==-1;var card=document.createElement('div');card.className='result-card';if(promptText){card.setAttribute('data-prompt',promptText)}if(isVideo){card.innerHTML='<video src="'+url+'" muted loop playsinline loading="lazy"></video>'+buildColorOverlay();(function(v){v.onmouseenter=function(){v.play()};v.onmouseleave=function(){v.pause();v.currentTime=0}})(card.querySelector('video'))}else{card.innerHTML='<img src="'+url+'" alt="Creation" loading="lazy">'+buildColorOverlay()}(function(c,u,fn){var media=c.querySelector('img, video');if(media){media.onerror=function(){c.style.opacity='0.3';c.style.pointerEvents='none'}}})(card,url,rawName);card.onclick=(function(u,v){return function(){openLB(u,v?'video':'image')}})(url,isVideo);grid.appendChild(card)}var viewMoreDiv=document.createElement('div');viewMoreDiv.className='view-more-container';viewMoreDiv.innerHTML='<a href="gallery.html" class="view-more-btn"><i class="fas fa-images"></i> <span data-i18n="notifications.view_gallery">'+t('notifications.view_gallery')+'</span> <i class="fas fa-arrow-right"></i></a>';grid.appendChild(viewMoreDiv)}catch(err){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);grid-column:1/-1;">Erreur de chargement: '+err.message+'</div>'}}
+async function loadRecent(){var row=document.getElementById('recent-row');if(!row)return;try{var result=await db.from('pixora_creations').select('file_name').order('created_at',{ascending:false}).limit(6);if(!result.data||result.data.length===0){row.parentElement.style.display='none';return}row.innerHTML='';result.data.forEach(function(item){if(item.file_name.indexOf('_video_')!==-1)return;var url='';if(item.file_name.indexOf('supabase_')===0){try{url=db.storage.from(BUCKET).getPublicUrl(item.file_name.replace('supabase_','')).data.publicUrl}catch(e){return}}else{url=R2_PUBLIC_URL+'/'+item.file_name}var im=document.createElement('img');im.src=url;im.loading='lazy';im.alt='';im.onclick=function(){openLB(url,'image')};row.appendChild(im)})}catch(e){}}
 async function uploadToStorage(fileName,prompt){}
 async function generate(){if(isGenerating){notify("⏳ Une génération est déjà en cours...","error");return}isGenerating=true;var btnGen=document.querySelector('.btn-gen');if(btnGen)btnGen.disabled=true;if(curType==='video'){isGenerating=false;if(btnGen)btnGen.disabled=false;notifyVideoSoon();return}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');isGenerating=false;if(btnGen)btnGen.disabled=false;return}var logged=await isLogged();if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');isGenerating=false;if(btnGen)btnGen.disabled=false;return}}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid');var card=document.createElement('div');card.className='result-card';var format=document.getElementById('format-select').value;var dims=format.split('x');var w=parseInt(dims[0]);var h=parseInt(dims[1]);card.style.aspectRatio=w+'/'+h;var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="Generation" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildColorOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now(),tmr=document.getElementById(tmrId);var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s'},100);var media=card.querySelector('img');var loaded=false;var currentUser=await getUser();try{var result=await generateImageViaProxy(p,w,h);var url=result.url;media.onload=function(){if(loaded)return;loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.setAttribute('data-prompt',p);card.onclick=function(){openLB(url,'image')};if(logged){validatePendingReferral(currentUser.id);updateUI();loadMiniBadge()}notify('✅ '+t('results.generated_in')+' '+((Date.now()-st)/1000).toFixed(1)+'s !','success');if(!logged)incrementAndCheckFreemium()};media.onerror=function(){if(loaded)return;loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur chargement</div>'}notify(t('results.failed'),'error')};media.src=url;setTimeout(function(){if(!loaded){loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image')}}},15000)}catch(err){clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>'+err.message+'</div>'}notify('Erreur: '+err.message,'error');setTimeout(function(){if(card.parentNode)card.parentNode.removeChild(card)},3000)}finally{isGenerating=false;var btnGenFinal=document.querySelector('.btn-gen');if(btnGenFinal)btnGenFinal.disabled=false}}
-// NOUVEAU : générer depuis le sheet
-async function generateFromSheet(){var p=document.getElementById('prompt-sheet').value.trim();document.getElementById('prompt').value=p;if(!p){document.getElementById('prompt-sheet').focus();return}var logged=await isLogged();if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}notify(t('notifications.generating'),'success');var res=document.getElementById('result-sheet'),img=document.getElementById('resultImg-sheet'),spin=document.getElementById('spin-sheet');res.classList.add('show');spin.style.display='flex';var format=document.getElementById('format-select').value;var dims=format.split('x');var w=parseInt(dims[0]),h=parseInt(dims[1]);var seed=Math.floor(Math.random()*999999);try{var result=await generateImageViaProxy(p,w,h);var url=result.url;var pre=new Image();pre.onload=()=>{img.src=url;spin.style.display='none';notify('✅ Image générée !','success');if(!logged){incrementAndCheckFreemium();var c=3-getAnonCount();document.getElementById('count-trials').textContent=Math.max(0,c)}else{updateUI();loadMiniBadge()}};pre.onerror=()=>{spin.style.display='none';notify('Erreur, réessaie.','error')};pre.src=url}catch(err){spin.style.display='none';notify('Erreur: '+err.message,'error')}}
+async function generateFromSheet(){var p=document.getElementById('prompt-sheet').value.trim();document.getElementById('prompt').value=p;if(!p){document.getElementById('prompt-sheet').focus();return}var logged=await isLogged();if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return}}notify(t('notifications.generating'),'success');var res=document.getElementById('result-sheet'),img=document.getElementById('resultImg-sheet'),spin=document.getElementById('spin-sheet');res.classList.add('show');spin.style.display='flex';var format=document.getElementById('format-select').value;var dims=format.split('x');var w=parseInt(dims[0]),h=parseInt(dims[1]);try{var result=await generateImageViaProxy(p,w,h);var url=result.url;var pre=new Image();pre.onload=function(){img.src=url;spin.style.display='none';notify('✅ Image générée !','success');if(!logged){incrementAndCheckFreemium();var c=3-getAnonCount();document.getElementById('count-trials').textContent=Math.max(0,c)}else{updateUI();loadMiniBadge()}};pre.onerror=function(){spin.style.display='none';notify('Erreur, réessaie.','error')};pre.src=url}catch(err){spin.style.display='none';notify('Erreur: '+err.message,'error')}}
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false},3000)}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null}updateCostUI();updateUI();authNotified=false}else if(event==='TOKEN_REFRESHED')updateUI()});
 async function cleanupExpiredCreations(){return}
-document.addEventListener('DOMContentLoaded',async function(){try{await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await cleanupExpiredCreations();await loadStudio();setTimeout(function(){var sponsorBlock=document.getElementById('sponsorised-container');if(sponsorBlock&&sponsorBlock.children.length===0){sponsorBlock.style.display='none'}},2000)}catch(err){notify('Erreur init: '+err.message,'error')}});
+document.addEventListener('DOMContentLoaded',async function(){try{await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await cleanupExpiredCreations();await loadStudio();await loadRecent();setTimeout(function(){var sponsorBlock=document.getElementById('sponsorised-container');if(sponsorBlock&&sponsorBlock.children.length===0){sponsorBlock.style.display='none'}},2000)}catch(err){notify('Erreur init: '+err.message,'error')}});
 </script>
 </body>
 </html>
