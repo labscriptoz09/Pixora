@@ -24,6 +24,10 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 .header-right{display:flex;align-items:center;gap:6px;margin-left:auto;position:relative;flex-shrink:0}
 .badge-trial{font-size:.55rem;font-weight:700;padding:5px 9px;border-radius:100px;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;white-space:nowrap;box-shadow:0 0 12px rgba(139,92,246,.35);cursor:pointer}
 body.logged .badge-trial{display:none}
+/* 🆕 #55 - Badge modèle actif dans le header */
+.model-badge{display:flex;align-items:center;gap:.35rem;padding:6px 11px;border-radius:100px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);color:var(--text);font-size:.65rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit}
+.model-badge:active{background:var(--prim);transform:scale(.96)}
+.model-badge i{font-size:.7rem}
 .mini-badge-pill{display:none;align-items:center;gap:.3rem;padding:.25rem .5rem;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:20px;text-decoration:none;font-size:.58rem;font-weight:600;color:var(--text)}
 .mini-badge-pill.show{display:flex}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;cursor:pointer;color:#fff}
@@ -43,15 +47,12 @@ body.logged .badge-trial{display:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex-shrink:0;padding:9px 16px;border-radius:100px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid rgba(139,92,246,.4);color:#d8c9ff;background:rgba(139,92,246,.08);transition:all .2s;font-family:inherit}
 .chip:active{background:var(--prim);color:#fff}
-.video-card{margin:12px 16px;border-radius:18px;padding:18px;position:relative;overflow:hidden;background:linear-gradient(120deg,#1a1030 0%,#2a1548 50%,#0e2a3a 100%);border:1px solid var(--border)}
-.video-card h3{font-size:1.1rem;font-weight:800}
+.video-card{margin:12px 16px;border-radius:18px;padding:18px;position:relative;overflow:hidden;background:linear-gradient(120deg,#1a1030 0%,#2a1548 50%,#0e2a3a 100%);border:1px solid var(--border)}.video-card h3{font-size:1.1rem;font-weight:800}
 .video-card p{font-size:.72rem;color:var(--muted);margin-top:4px}
 .video-card .robot{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:52px;filter:drop-shadow(0 0 20px rgba(34,211,238,.5))}
-.video-card .hero-btn{position:absolute;right:14px;bottom:14px;margin:0;padding:8px 18px;font-size:.7rem}.models{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 16px 0}
-.model{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px 8px;position:relative;cursor:pointer;transition:all .2s;text-align:center}
-.model.sel{border-color:var(--prim);box-shadow:0 0 0 1px var(--prim),0 0 24px rgba(139,92,246,.2)}
-.model h4{font-size:.75rem;font-weight:800;margin-bottom:2px}
-.model p{font-size:.6rem;color:var(--muted)}
+.video-card .hero-btn{position:absolute;right:14px;bottom:14px;margin:0;padding:8px 18px;font-size:.7rem}
+/* 🆕 #55 - Section .models SUPPRIMÉE (cachée) */
+.models{display:none!important}
 .generator{display:none}
 .prompt-field{width:100%;min-height:80px;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;color:#fff;font-family:inherit;font-size:.9rem;resize:none;outline:none}
 .prompt-field:focus{border-color:var(--prim)}
@@ -63,8 +64,17 @@ body.logged .badge-trial{display:none}
 .type-btn .type-cost{font-size:.68rem;background:rgba(0,0,0,.25);padding:2px 8px;border-radius:6px;font-weight:600}
 .discount-badge{display:inline-flex;align-items:center;gap:.3rem;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(249,115,22,0.2));border:1px solid rgba(251,191,36,0.4);color:var(--gold);font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:6px}
 .cost-original{text-decoration:line-through;opacity:.5;font-size:.6rem;margin-right:4px}
-.btn-gen{width:100%;margin-top:.8rem;padding:.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:12px;font-weight:700;font-size:.95rem;display:flex;align-items:center;justify-content:center;gap:.6rem;box-shadow:0 4px 15px rgba(139,92,246,.4);border:none;cursor:pointer}
-.btn-gen:disabled{opacity:.4}
+.btn-gen{width:100%;margin-top:.8rem;padding:.9rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:12px;font-weight:700;font-size:.95rem;display:flex;align-items:center;justify-content:center;gap:.6rem;box-shadow:0 4px 15px rgba(139,92,246,.4);border:none;cursor:pointer;position:relative}
+.btn-gen:disabled{opacity:.65;cursor:not-allowed}
+/* 🆕 #53 - Message patientez + spinner */
+.gen-status{text-align:center;margin-top:.6rem;font-size:.75rem;color:var(--muted);min-height:1.2rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.gen-status.active{color:var(--cyan)}
+.gen-status .mini-spin{width:14px;height:14px;border:2px solid rgba(34,211,238,.3);border-top-color:var(--cyan);border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+.gen-status .progress-dots{display:inline-flex;gap:3px}
+.gen-status .progress-dots span{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:bounce 1.4s infinite}
+.gen-status .progress-dots span:nth-child(2){animation-delay:.2s}
+.gen-status .progress-dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1);opacity:1}}
 .quick-stats{display:none;grid-template-columns:repeat(2,1fr);gap:.6rem;margin:16px}
 .quick-stats.show{display:grid}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.8rem;text-align:center}
@@ -86,8 +96,7 @@ body.logged .badge-trial{display:none}
 .icon-btn-share{background:rgba(236,72,153,.2);color:#F9A8D4}
 .timer-overlay{position:absolute;inset:0;background:rgba(0,0,0,.75);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10}
 .timer-text{font-size:1.5rem;font-weight:700;color:var(--prim)}
-.timer-label{font-size:.7rem;color:var(--muted);margin-top:.3rem}
-.view-more-container{text-align:center;margin-top:1rem;grid-column:1/-1}
+.timer-label{font-size:.7rem;color:var(--muted);margin-top:.3rem}.view-more-container{text-align:center;margin-top:1rem;grid-column:1/-1}
 .view-more-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.5rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;text-decoration:none;border-radius:12px;font-weight:600;font-size:.9rem}
 .recent{margin:20px 16px 0}
 .recent h5{font-size:.68rem;font-weight:700;letter-spacing:.15em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
@@ -113,10 +122,21 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 .fmts{display:flex;gap:8px;margin:12px 0}
 .fmt{padding:8px 16px;border-radius:100px;border:1px solid var(--border);background:none;color:var(--muted);font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit}
 .fmt.on{background:var(--prim);border-color:var(--prim);color:#fff}
-.sheet .result{margin-top:14px;border-radius:16px;overflow:hidden;display:none;position:relative;border:1px solid var(--border)}
+.sheet .result{margin-top:14px;border-radius:16px;overflow:visible;display:none;position:relative;border:1px solid var(--border)}
 .sheet .result.show{display:block}
-.sheet .result img{width:100%;display:block}
-.sheet .result .dl{position:absolute;bottom:10px;right:10px;padding:9px 16px;border:none;border-radius:100px;cursor:pointer;background:rgba(255,255,255,.92);color:#000;font-size:.72rem;font-weight:700}
+.sheet .result img{width:100%;display:block;border-radius:16px 16px 0 0}
+/* 🆕 #54 - Barre d'actions du résultat */
+.sheet-result-actions{display:flex;gap:6px;padding:10px;background:var(--card2);border-top:1px solid var(--border);border-radius:0 0 16px 16px}
+.sheet-result-actions .sr-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.35rem;padding:9px 4px;border-radius:10px;font-size:.7rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;color:var(--text);background:rgba(255,255,255,.06);transition:all .15s}
+.sheet-result-actions .sr-btn:active{transform:scale(.95)}
+.sheet-result-actions .sr-btn i{font-size:.85rem}
+.sr-btn.sr-close{background:rgba(239,68,68,.12);color:#FCA5A5}
+.sr-btn.sr-download{background:rgba(16,185,129,.15);color:#6EE7B7}
+.sr-btn.sr-share{background:rgba(236,72,153,.15);color:#F9A8D4}
+.sr-btn.sr-remix{background:rgba(139,92,246,.15);color:#C4B5FD}
+.sheet-result-meta{padding:6px 12px;background:var(--card2);color:var(--muted);font-size:.65rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:.5rem;border-top:1px solid var(--border)}
+.sheet-result-meta .dot-sep{width:3px;height:3px;border-radius:50%;background:var(--dim)}
+.sheet .result .dl{display:none}
 .spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5)}
 .spin div{width:30px;height:30px;border:3px solid rgba(255,255,255,.15);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -125,8 +145,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 .menu{position:fixed;top:0;left:0;bottom:0;width:290px;max-width:82%;z-index:80;background:rgba(15,15,20,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-right:1px solid var(--border2);transform:translateX(-105%);transition:transform .3s cubic-bezier(.2,.9,.3,1);padding:18px 12px;display:flex;flex-direction:column;gap:2px}
 .menu.open{transform:translateX(0)}
 .menu-head{display:flex;align-items:center;gap:8px;padding:8px 12px 16px;border-bottom:1px solid var(--border);margin-bottom:10px}
-.menu-head svg{width:24px;height:24px}
-.m-item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;color:var(--text);font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit;text-align:left}
+.menu-head svg{width:24px;height:24px}.m-item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;color:var(--text);font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit;text-align:left}
 .m-item:active{background:rgba(139,92,246,.12);color:#c4b5fd}
 .m-item i{font-style:normal;width:22px;text-align:center}
 .m-sep{height:1px;background:var(--border);margin:8px 6px}
@@ -175,8 +194,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 .share-category{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin:.8rem 0 .4rem}
 .share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
 .share-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem .3rem;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:.6rem;font-weight:600;cursor:pointer;text-decoration:none}
-.share-preview{width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;margin-bottom:.8rem;border:1px solid var(--border)}
-.share-preview img{width:100%;height:100%;object-fit:cover}
+.share-preview{width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;margin-bottom:.8rem;border:1px solid var(--border)}.share-preview img{width:100%;height:100%;object-fit:cover}
 .user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:.6rem;box-shadow:0 20px 60px rgba(0,0,0,.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .25s;z-index:1001}
 .user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
 .menu-header{display:flex;align-items:center;gap:.7rem;padding:.5rem .3rem .7rem;border-bottom:1px solid var(--border)}
@@ -225,8 +243,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   .float-bar{max-width:640px}
   nav.nav-mobile{max-width:1080px}
 }
-</style>
-</head>
+</style></head>
 <body>
 <div class="scrim" id="scrim" onclick="closeMenu()"></div>
 <div class="menu" id="menu">
@@ -275,8 +292,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
       <a class="share-btn" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a>
       <a class="share-btn" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a>
       <a class="share-btn" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a>
-      <a class="share-btn" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a>
-      <a class="share-btn" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a>
+      <a class="share-btn" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a>      <a class="share-btn" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a>
       <a class="share-btn" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a>
     </div>
     <div class="share-category" data-i18n="share.cat_community">👥 Communautés</div>
@@ -325,14 +341,19 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <a href="index.html" class="header-logo">
     <svg viewBox="0 0 100 100">
       <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs>
-      <polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g)"/>
-      <polygon points="50,4 96,38 50,48" fill="rgba(255,255,255,.18)"/>
+      <polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g)"/>      <polygon points="50,4 96,38 50,48" fill="rgba(255,255,255,.18)"/>
       <polygon points="4,38 50,48 22,96" fill="rgba(0,0,0,.18)"/>
       <text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text>
     </svg>
     <span class="logo-text">IAPIXORA</span>
   </a>
   <div class="header-right">
+    <!-- 🆕 #55 - Badge modèle actif (tap = ouvre panneau) -->
+    <button class="model-badge" id="model-badge" onclick="openModelsPanel()">
+      <i id="model-badge-icon">⚡</i>
+      <span id="model-badge-name">IA Pixora Fast</span>
+      <span style="opacity:.5">▾</span>
+    </button>
     <span class="badge-trial">3 essais gratuits</span>
     <a href="earn.html#badges" class="mini-badge-pill" id="mini-badge"><span id="mini-badge-icon"></span><span id="mini-badge-name"></span><span id="mini-badge-next"></span></a>
     <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span></div>
@@ -369,8 +390,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <button class="chip" onclick="pickNiche(this,'Avatar 3D style Pixar, personnage souriant, lumière douce')">🎭 Avatar</button>
   <button class="chip" onclick="pickNiche(this,'Personnage anime héroïque, cheveux argentés, yeux lumineux, style studio ghibli')">🌸 Anime</button>
   <button class="chip" onclick="pickNiche(this,'Logo moderne minimaliste, renard géométrique, dégradé violet')">💼 Logo</button>
-  <button class="chip" onclick="pickNiche(this,'Chat roux mignon, photo professionnelle, fond flou')">🐾 Animaux</button>
-  <button class="chip" onclick="pickNiche(this,'Paysage montagne au coucher de soleil, fond écran 4k ultra détaillé')">📱 Fond d\'écran</button>
+  <button class="chip" onclick="pickNiche(this,'Chat roux mignon, photo professionnelle, fond flou')">🐾 Animaux</button>  <button class="chip" onclick="pickNiche(this,'Paysage montagne au coucher de soleil, fond écran 4k ultra détaillé')">📱 Fond d\'écran</button>
   <button class="chip" onclick="pickNiche(this,'Couple mariage romantique, pétales de roses, lumière dorée')">💍 Mariage</button>
   <button class="chip" onclick="pickNiche(this,'Couverture livre fantastique, dragon majestueux, artbook')">📚 Livre</button>
 </div>
@@ -380,11 +400,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <span class="robot">🤖</span>
   <button class="hero-btn" onclick="notifyVideoSoon()">Essayer ↗</button>
 </section>
-<div class="models">
-  <div class="model sel" onclick="selModelCard('lightning')"><h4>⚡ IA Pixora Fast</h4><p>Génération instantanée</p></div>
-  <div class="model" onclick="selModelCard('flux')"><h4>✨ Flux PRO</h4><p>Qualité maximum</p></div>
-  <div class="model" onclick="selModelCard('dreamshaper')"><h4>🎨 Artistique</h4><p>Style créatif</p></div>
-</div>
+<!-- 🆕 #55 - Section .models SUPPRIMÉE de l'accueil -->
 <div class="quick-stats" id="quick-stats">
   <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-bolt" style="color:var(--gold)"></i></div><div class="stat-val" id="stat-points">0</div><div class="stat-lbl" data-i18n="stats.points">Points</div></div>
   <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-fire" style="color:#F97316"></i></div><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl" data-i18n="stats.streak">Streak</div></div>
@@ -399,7 +415,9 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <button class="type-btn disabled" onclick="notifyVideoSoon()" aria-pressed="false"><i class="fas fa-video"></i><span class="type-name" data-i18n="generator.video">Vidéo</span><span class="type-cost" id="cost-video" data-i18n="generator.video_soon">Bientôt</span></button>
   </div>
   <div id="discount-banner" style="display:none"><span class="discount-badge"><i class="fas fa-fire"></i> <span data-i18n="generator.discount_active">-50% ACTIF</span></span><span id="discount-timer"></span></div>
-  <button class="btn-gen" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
+  <button class="btn-gen" id="btn-gen-main" onclick="generate()"><i class="fas fa-sparkles"></i> <span data-i18n="generator.generate">Générer</span></button>
+  <!-- 🆕 #53 - Status + message patientez -->
+  <div class="gen-status" id="gen-status-main"></div>
 </div>
 <section class="results-section">
   <div class="section-label"><h2 data-i18n="results.title">Vos Créations</h2><span style="color:var(--success);font-size:0.7rem;display:flex;align-items:center;gap:0.3rem;"><i class="fas fa-infinity"></i> <span data-i18n="results.permanent">Sauvegardé définitivement</span></span></div>
@@ -415,11 +433,23 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <button class="fmt" onclick="selFmt(this,'768x1024')">3:4</button>
     <button class="fmt" onclick="selFmt(this,'1024x576')">16:9</button>
   </div>
-  <button class="btn-gen" onclick="generateFromSheet()">GÉNÉRER</button>
+  <button class="btn-gen" id="btn-gen-sheet" onclick="generateFromSheet()">GÉNÉRER</button>
+  <!-- 🆕 #53 - Status + message patientez (sheet) -->
+  <div class="gen-status" id="gen-status-sheet"></div>
   <div class="result" id="result-sheet">
     <img id="resultImg-sheet" src="" alt="">
     <div class="spin" id="spin-sheet" style="display:none"><div></div></div>
-    <button class="dl" onclick="window.open(document.getElementById('resultImg-sheet').src,'_blank')">Télécharger</button>
+    <!-- 🆕 #54 - Barre meta + actions complètes -->    <div class="sheet-result-meta" id="sheet-result-meta" style="display:none">
+      <span id="sr-model">⚡ IA Pixora Fast</span>
+      <span class="dot-sep"></span>
+      <span id="sr-time">0.0s</span>
+    </div>
+    <div class="sheet-result-actions" id="sheet-result-actions" style="display:none">
+      <button class="sr-btn sr-remix" onclick="remixSheetResult()"><i class="fas fa-wand-magic-sparkles"></i>Remix</button>
+      <button class="sr-btn sr-share" onclick="shareSheetResult()"><i class="fas fa-share-nodes"></i>Partager</button>
+      <button class="sr-btn sr-download" onclick="downloadSheetResult()"><i class="fas fa-download"></i>Télécharger</button>
+      <button class="sr-btn sr-close" onclick="closeSheetResult()"><i class="fas fa-times"></i>Fermer</button>
+    </div>
   </div>
 </div>
 <div class="sheet models-sheet" id="models-sheet">
@@ -458,9 +488,12 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <div style="margin-top:.5rem" data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="ads-loader.js"></script>
-<script>
+<script src="ads-loader.js"></script><script>
 var selectedModel = localStorage.getItem('pixora_model') || 'lightning';
+var lastSheetPrompt = '';
+var lastSheetModel = 'lightning';
+var lastSheetTime = '0.0';
+
 function openMenu(){document.getElementById('menu').classList.add('open');document.getElementById('scrim').classList.add('on');}
 function closeMenu(){document.getElementById('menu').classList.remove('open');document.getElementById('scrim').classList.remove('on');}
 function openSheet(){document.getElementById('sheet').classList.add('open');setTimeout(function(){document.getElementById('prompt-sheet').focus();},300);}
@@ -470,14 +503,23 @@ function closeModelsPanel(){document.getElementById('models-sheet').classList.re
 document.getElementById('sheet').addEventListener('click',function(e){if(e.target.id==='sheet')closeSheet();});
 document.getElementById('models-sheet').addEventListener('click',function(e){if(e.target.id==='models-sheet')closeModelsPanel();});
 function pickNiche(el,txt){document.getElementById('prompt-sheet').value=txt;document.getElementById('prompt').value=txt;openSheet();}
+
+// 🆕 #55 - Mise à jour du badge modèle dans le header
+function updateModelBadge(){
+  var icon = document.getElementById('model-badge-icon');
+  var name = document.getElementById('model-badge-name');
+  if(!icon || !name) return;
+  if(selectedModel==='lightning'){icon.textContent='⚡';name.textContent='IA Pixora Fast';}
+  else if(selectedModel==='flux'){icon.textContent='✨';name.textContent='Flux PRO';}
+  else if(selectedModel==='dreamshaper'){icon.textContent='🎨';name.textContent='Artistique';}
+}
+
 function selModelCard(model){
   selectedModel=model;
   localStorage.setItem('pixora_model',model);
-  document.querySelectorAll('.model').forEach(function(m,i){
-    m.classList.toggle('sel',(model==='lightning'&&i===0)||(model==='flux'&&i===1)||(model==='dreamshaper'&&i===2));
-  });
   document.getElementById('model-select').value=model;
   updateModelsSheetUI();
+  updateModelBadge();
 }
 function selModelSheet(model){
   selModelCard(model);
@@ -489,13 +531,19 @@ function getModelName(model){
   if(model==='flux')return 'Flux PRO';
   if(model==='dreamshaper')return 'Artistique';
   return 'IA Pixora Fast';}
-function updateModelsSheetUI(){
-  document.querySelectorAll('.model-option').forEach(function(opt,i){
+function getModelIcon(model){
+  if(model==='lightning')return '⚡';
+  if(model==='flux')return '✨';
+  if(model==='dreamshaper')return '🎨';
+  return '⚡';
+}
+function updateModelsSheetUI(){  document.querySelectorAll('.model-option').forEach(function(opt,i){
     var isSel=(selectedModel==='lightning'&&i===0)||(selectedModel==='flux'&&i===1)||(selectedModel==='dreamshaper'&&i===2);
     opt.classList.toggle('sel',isSel);
     var check=opt.querySelector('.check');
     if(check)check.style.display=isSel?'inline':'none';
   });
+  updateModelBadge();
 }
 function selFmt(el,f){document.querySelectorAll('.fmt').forEach(function(x){x.classList.remove('on');});el.classList.add('on');document.getElementById('format-select').value=f;}
 var slideIdx=0;
@@ -538,8 +586,27 @@ var currentTier=1;
 var pendingReferrer=null;
 var API_KEYS={};
 var currentDiscountUntil=null;var discountTimerInterval=null;
-var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
-var WORKER_GEN_URL='https://iapixora-gen.slimansoufian1.workers.dev';
+var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';var WORKER_GEN_URL='https://iapixora-gen.slimansoufian1.workers.dev';
+
+// 🆕 #53 - Helpers pour status de génération
+function setGenStatus(target, state, text){
+  var el = document.getElementById(target);
+  if(!el) return;
+  if(state==='idle'){el.className='gen-status';el.innerHTML='';}
+  else if(state==='loading'){
+    el.className='gen-status active';
+    el.innerHTML='<span class="mini-spin"></span> '+text;
+  }
+  else if(state==='done'){
+    el.className='gen-status';
+    el.innerHTML='<i class="fas fa-check-circle" style="color:var(--success)"></i> '+text;
+  }
+  else if(state==='error'){
+    el.className='gen-status';
+    el.innerHTML='<i class="fas fa-exclamation-circle" style="color:var(--danger)"></i> '+text;
+  }
+}
+
 async function generateImageViaProxy(prompt,width,height,model){
   if(model==='flux'){
     var sessionData=await db.auth.getSession();
@@ -568,13 +635,61 @@ async function generateImageViaProxy(prompt,width,height,model){
   }
 }
 async function loadApiKeys(){try{var r=await db.from('admin_config').select('value').eq('key','api_keys').single();if(r.data&&r.data.value)API_KEYS=r.data.value;}catch(e){}}
-async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value;}catch(e){}updateCostUI();}
-function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];var disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date();var ic=c.costs.image;var ie=document.getElementById('cost-image');var bn=document.getElementById('discount-banner');var te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return;}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s';},1000);}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null;}}}
+async function loadDynamicConfig(){try{var r=await db.from('admin_config').select('*').eq('key','tiers').single();if(r.data&&r.data.value)CONFIG_TIERS=r.data.value;}catch(e){}updateCostUI();}function updateCostUI(){var c=CONFIG_TIERS[currentTier]||DEFAULT_TIERS[1];var disc=currentDiscountUntil&&new Date(currentDiscountUntil)>new Date();var ic=c.costs.image;var ie=document.getElementById('cost-image');var bn=document.getElementById('discount-banner');var te=document.getElementById('discount-timer');if(disc){var di=Math.ceil(ic/2);ie.innerHTML='<span class="cost-original">'+ic+'</span>'+di+' '+t('generator.cost_pts');bn.style.display='block';if(!discountTimerInterval)discountTimerInterval=setInterval(function(){var rem=new Date(currentDiscountUntil)-new Date();if(rem<=0){clearInterval(discountTimerInterval);discountTimerInterval=null;currentDiscountUntil=null;updateCostUI();return;}te.textContent=t('generator.expires_in')+' '+Math.floor(rem/3600000)+'h '+Math.floor((rem%3600000)/60000)+'min '+Math.floor((rem%60000)/1000)+'s';},1000);}else{ie.textContent=ic+' '+t('generator.cost_pts');bn.style.display='none';te.textContent='';if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null;}}}
 function notifyVideoSoon(){notify('🎥 '+t('generator.video_soon'),'success');}
 function buildColorOverlay(){return '<div class="result-overlay">'+'<button class="icon-btn icon-btn-remix" onclick="event.stopPropagation();remixPrompt(this.closest(\'.result-card\'))" title="'+t('actions.remix')+'"><i class="fas fa-wand-magic-sparkles"></i></button>'+'<button class="icon-btn icon-btn-prompt" onclick="event.stopPropagation();copyPrompt(this.closest(\'.result-card\'))" title="'+t('actions.prompt')+'"><i class="fas fa-copy"></i></button>'+'<button class="icon-btn icon-btn-download" onclick="event.stopPropagation();dlDirect(this)" title="'+t('actions.download')+'"><i class="fas fa-download"></i></button>'+'<button class="icon-btn icon-btn-share" onclick="event.stopPropagation();openShareModal(this.closest(\'.result-card\').querySelector(\'img,video\').src)" title="'+t('actions.share')+'"><i class="fas fa-share-nodes"></i></button>'+'</div>';}
 function remixPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){notify('⚠️ Prompt non disponible','error');return;}var promptField=document.getElementById('prompt-sheet')||document.getElementById('prompt');promptField.value=prompt;promptField.focus();openSheet();notify(t('notifications.remix_success'),'success');}
 function copyPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){notify('⚠️ Prompt non disponible','error');return;}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(function(){notify(t('notifications.prompt_copied'),'success');}).catch(function(){fallbackCopyPrompt(prompt);});}else{fallbackCopyPrompt(prompt);}}
 function fallbackCopyPrompt(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify(t('notifications.prompt_copied'),'success');}catch(e){notify('Copy failed','error');}document.body.removeChild(ta);}
+
+// 🆕 #54 - Actions du résultat sheet
+function remixSheetResult(){
+  if(!lastSheetPrompt){notify('⚠️ Prompt non disponible','error');return;}
+  document.getElementById('prompt-sheet').value=lastSheetPrompt;
+  document.getElementById('prompt-sheet').focus();
+  closeSheetResult();
+  notify(t('notifications.remix_success'),'success');
+}
+function shareSheetResult(){
+  var url=document.getElementById('resultImg-sheet').src;
+  if(!url){notify('⚠️ Aucune image','error');return;}
+  openShareModal(url);
+}
+async function downloadSheetResult(){
+  var url=document.getElementById('resultImg-sheet').src;
+  if(!url){notify('⚠️ Aucune image','error');return;}
+  try{
+    var r=await fetch(url);
+    var b=await r.blob();
+    var u=URL.createObjectURL(b);
+    var a=document.createElement('a');
+    a.href=u;a.download='ia-pixora-'+Date.now()+'.png';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(u);
+    notify(t('notifications.downloaded'),'success');
+  }catch(e){window.open(url,'_blank');}
+}
+function closeSheetResult(){
+  var res=document.getElementById('result-sheet');
+  var actions=document.getElementById('sheet-result-actions');
+  var meta=document.getElementById('sheet-result-meta');
+  res.classList.remove('show');
+  actions.style.display='none';
+  meta.style.display='none';
+  document.getElementById('resultImg-sheet').src='';
+}
+function showSheetResult(url, model, time){
+  var img=document.getElementById('resultImg-sheet');
+  var res=document.getElementById('result-sheet');
+  var actions=document.getElementById('sheet-result-actions');
+  var meta=document.getElementById('sheet-result-meta');
+  img.src=url;
+  res.classList.add('show');  actions.style.display='flex';
+  meta.style.display='flex';
+  document.getElementById('sr-model').textContent=getModelIcon(model)+' '+getModelName(model);
+  document.getElementById('sr-time').textContent=time;
+}
+
 function detectReferral(){var p=new URLSearchParams(window.location.search);var r=p.get('ref');if(r&&r.length>10){pendingReferrer=r;localStorage.setItem('pixora_ref',r);}else{pendingReferrer=localStorage.getItem('pixora_ref');}}
 async function processReferral(uid){var rid=pendingReferrer||localStorage.getItem('pixora_ref');if(!rid||rid===uid)return;try{var rc=await db.from('admin_config').select('value').eq('key','referral_config').single();var cfg=(rc.data&&rc.data.value)?rc.data.value:{enabled:true,points:10};if(!cfg.enabled)return;var ex=await db.from('referrals').select('id').eq('sponsor_id',rid).eq('referred_id',uid).single();if(ex.data)return;await db.from('referrals').insert({sponsor_id:rid,referred_id:uid,points:cfg.points||10,validated:false});localStorage.removeItem('pixora_ref');pendingReferrer=null;}catch(e){}}
 async function validatePendingReferral(uid){try{var rs=await db.from('referrals').select('id').eq('referred_id',uid).eq('validated',false);var refs=rs.data||[];for(var i=0;i<refs.length;i++)await db.from('referrals').update({validated:true}).eq('id',refs[i].id);}catch(e){}}
@@ -618,8 +733,7 @@ async function updateUI(){
     var sp=document.getElementById('stat-points');
     if(sp)sp.textContent=d.points||0;
     var ss=document.getElementById('stat-streak');
-    if(ss)ss.textContent=d.streak||1;
-    var sg=document.getElementById('stat-generated');
+    if(ss)ss.textContent=d.streak||1;    var sg=document.getElementById('stat-generated');
     if(sg)sg.textContent=d.total_generated||0;
     var se=document.getElementById('stat-earned');
     if(se)se.textContent=d.total_earned||0;
@@ -668,8 +782,7 @@ async function loadStudio(){
       var promptText=row.prompt||'';
       var url='';
       var isSupabase=(rawName.indexOf('supabase_')===0);
-      if(isSupabase){var realName=rawName.replace('supabase_','');try{var urlData=db.storage.from(BUCKET).getPublicUrl(realName);url=urlData.data.publicUrl;}catch(e){continue;}}
-      else{url=R2_PUBLIC_URL+'/'+rawName;}
+      if(isSupabase){var realName=rawName.replace('supabase_','');try{var urlData=db.storage.from(BUCKET).getPublicUrl(realName);url=urlData.data.publicUrl;}catch(e){continue;}}      else{url=R2_PUBLIC_URL+'/'+rawName;}
       var isVideo=rawName.indexOf('_video_')!==-1;
       var card=document.createElement('div');
       card.className='result-card';
@@ -687,12 +800,152 @@ async function loadStudio(){
   }catch(err){grid.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);grid-column:1/-1;"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur de chargement: '+err.message+'</p></div>';}}
 async function loadRecent(){var row=document.getElementById('recent-row');if(!row)return;try{var result=await db.from('pixora_creations').select('file_name').order('created_at',{ascending:false}).limit(6);if(!result.data||result.data.length===0){row.parentElement.style.display='none';return;}row.innerHTML='';result.data.forEach(function(item){if(item.file_name.indexOf('_video_')!==-1)return;var url='';if(item.file_name.indexOf('supabase_')===0){try{url=db.storage.from(BUCKET).getPublicUrl(item.file_name.replace('supabase_','')).data.publicUrl;}catch(e){return;}}else{url=R2_PUBLIC_URL+'/'+item.file_name;}var im=document.createElement('img');im.src=url;im.loading='lazy';im.alt='';im.onclick=function(){openLB(url,'image');};row.appendChild(im);});}catch(e){}}
 async function uploadToStorage(fileName,prompt){}
-async function generate(){if(isGenerating){notify('⏳ Une génération est déjà en cours...','error');return;}isGenerating=true;var btnGen=document.querySelector('.btn-gen');if(btnGen)btnGen.disabled=true;if(curType==='video'){isGenerating=false;if(btnGen)btnGen.disabled=false;notifyVideoSoon();return;}var p=document.getElementById('prompt').value.trim();if(!p){notify(t('notifications.enter_prompt'),'error');isGenerating=false;if(btnGen)btnGen.disabled=false;return;}var logged=await isLogged();if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');isGenerating=false;if(btnGen)btnGen.disabled=false;return;}}notify(t('notifications.generating'),'success');var grid=document.getElementById('results-grid');var card=document.createElement('div');card.className='result-card';var format=document.getElementById('format-select').value;var dims=format.split('x');var w=parseInt(dims[0]);var h=parseInt(dims[1]);card.style.aspectRatio=w+'/'+h;var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="Generation" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildColorOverlay();grid.insertBefore(card,grid.firstChild);var st=Date.now();var tmr=document.getElementById(tmrId);var iv=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s';},100);var media=card.querySelector('img');var loaded=false;var currentUser=await getUser();var model=selectedModel;try{var result=await generateImageViaProxy(p,w,h,model);var url=result.url;media.onload=function(){if(loaded)return;loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.setAttribute('data-prompt',p);card.onclick=function(){openLB(url,'image');};if(logged){validatePendingReferral(currentUser.id);updateUI();loadMiniBadge();}notify('✅ '+t('results.generated_in')+' '+((Date.now()-st)/1000).toFixed(1)+'s ! ('+getModelName(model)+')','success');if(!logged)incrementAndCheckFreemium();};media.onerror=function(){if(loaded)return;loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur chargement</div>';}notify(t('results.failed'),'error');};media.src=url;setTimeout(function(){if(!loaded){loaded=true;clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image');};}},15000);}catch(err){clearInterval(iv);var to=card.querySelector('.timer-overlay');if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>'+err.message+'</div>';}notify('Erreur: '+err.message,'error');setTimeout(function(){if(card.parentNode)card.parentNode.removeChild(card);},3000);}finally{isGenerating=false;var btnGenFinal=document.querySelector('.btn-gen');if(btnGenFinal)btnGenFinal.disabled=false;}}
-async function generateFromSheet(){var p=document.getElementById('prompt-sheet').value.trim();document.getElementById('prompt').value=p;if(!p){document.getElementById('prompt-sheet').focus();return;}var logged=await isLogged();if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');return;}}notify(t('notifications.generating'),'success');var res=document.getElementById('result-sheet');var img=document.getElementById('resultImg-sheet');var spin=document.getElementById('spin-sheet');res.classList.add('show');spin.style.display='flex';var format=document.getElementById('format-select').value;var dims=format.split('x');var w=parseInt(dims[0]);var h=parseInt(dims[1]);var model=selectedModel;try{var result=await generateImageViaProxy(p,w,h,model);var url=result.url;var pre=new Image();pre.onload=function(){img.src=url;spin.style.display='none';notify('✅ Image générée ! ('+getModelName(model)+')','success');if(!logged){incrementAndCheckFreemium();var c=3-getAnonCount();document.getElementById('count-trials').textContent=Math.max(0,c);}else{updateUI();loadMiniBadge();}};pre.onerror=function(){spin.style.display='none';notify('Erreur, réessaie.','error');};pre.src=url;}catch(err){spin.style.display='none';notify('Erreur: '+err.message,'error');}}
+
+// 🆕 #53 - generate() avec UX feedback
+async function generate(){
+  if(isGenerating){notify('⏳ Une génération est déjà en cours...','error');return;}
+  isGenerating=true;
+  var btnGen=document.getElementById('btn-gen-main');
+  var originalHTML=btnGen.innerHTML;
+  btnGen.disabled=true;
+  if(curType==='video'){isGenerating=false;btnGen.disabled=false;notifyVideoSoon();return;}
+  var p=document.getElementById('prompt').value.trim();
+  if(!p){notify(t('notifications.enter_prompt'),'error');isGenerating=false;btnGen.disabled=false;return;}
+  var logged=await isLogged();
+  if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');isGenerating=false;btnGen.disabled=false;return;}}
+  
+  var model=selectedModel;
+  var st=Date.now();
+  
+  // 🆕 #53 - Bouton + status actifs
+  btnGen.innerHTML='<span class="mini-spin" style="display:inline-block"></span> Génération... 0s';
+  setGenStatus('gen-status-main','loading','Patientez ~10-20 secondes, votre image arrive avec '+getModelName(model));
+  
+  var timerInt=setInterval(function(){
+    var elapsed=((Date.now()-st)/1000).toFixed(1);
+    btnGen.innerHTML='<span class="mini-spin" style="display:inline-block"></span> Génération... '+elapsed+'s';
+  },100);
+  
+  var grid=document.getElementById('results-grid');
+  var card=document.createElement('div');
+  card.className='result-card';
+  var format=document.getElementById('format-select').value;
+  var dims=format.split('x');
+  var w=parseInt(dims[0]);var h=parseInt(dims[1]);  card.style.aspectRatio=w+'/'+h;
+  var tmrId='tmr_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+  card.innerHTML='<div class="timer-overlay"><div class="timer-text" id="'+tmrId+'">0.0s</div><div class="timer-label">'+t('results.generating')+'</div></div><img alt="Generation" loading="lazy" style="opacity:0;transition:opacity 0.3s">'+buildColorOverlay();
+  grid.insertBefore(card,grid.firstChild);
+  var tmr=document.getElementById(tmrId);
+  var iv2=setInterval(function(){if(tmr)tmr.textContent=((Date.now()-st)/1000).toFixed(1)+'s';},100);
+  var media=card.querySelector('img');
+  var loaded=false;
+  var currentUser=await getUser();
+  
+  try{
+    var result=await generateImageViaProxy(p,w,h,model);
+    var url=result.url;
+    media.onload=function(){
+      if(loaded)return;loaded=true;
+      clearInterval(iv2);clearInterval(timerInt);
+      var to=card.querySelector('.timer-overlay');if(to)to.remove();
+      media.style.opacity='1';
+      card.setAttribute('data-prompt',p);
+      card.onclick=function(){openLB(url,'image');};
+      var elapsed=((Date.now()-st)/1000).toFixed(1);
+      if(logged){validatePendingReferral(currentUser.id);updateUI();loadMiniBadge();}
+      btnGen.disabled=false;
+      btnGen.innerHTML=originalHTML;
+      setGenStatus('gen-status-main','done','Générée en '+elapsed+'s avec '+getModelName(model));
+      notify('✅ '+t('results.generated_in')+' '+elapsed+'s ! ('+getModelName(model)+')','success');
+      if(!logged)incrementAndCheckFreemium();
+      setTimeout(function(){setGenStatus('gen-status-main','idle','');},5000);
+    };
+    media.onerror=function(){
+      if(loaded)return;loaded=true;
+      clearInterval(iv2);clearInterval(timerInt);
+      var to=card.querySelector('.timer-overlay');
+      if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>Erreur chargement</div>';}
+      btnGen.disabled=false;btnGen.innerHTML=originalHTML;
+      setGenStatus('gen-status-main','error','Erreur chargement image');
+      notify(t('results.failed'),'error');
+    };
+    media.src=url;
+    setTimeout(function(){if(!loaded){loaded=true;clearInterval(iv2);clearInterval(timerInt);var to=card.querySelector('.timer-overlay');if(to)to.remove();media.style.opacity='1';card.onclick=function(){openLB(url,'image');};btnGen.disabled=false;btnGen.innerHTML=originalHTML;setGenStatus('gen-status-main','idle','');}},20000);
+  }catch(err){
+    clearInterval(iv2);clearInterval(timerInt);
+    var to=card.querySelector('.timer-overlay');
+    if(to){to.innerHTML='<div style="color:var(--danger);text-align:center;padding:1rem;"><i class="fas fa-exclamation-triangle" style="font-size:1.5rem;margin-bottom:0.5rem;"></i><br>'+err.message+'</div>';}
+    btnGen.disabled=false;btnGen.innerHTML=originalHTML;
+    setGenStatus('gen-status-main','error',err.message);
+    notify('Erreur: '+err.message,'error');
+    setTimeout(function(){if(card.parentNode)card.parentNode.removeChild(card);setGenStatus('gen-status-main','idle','');},4000);
+  }finally{isGenerating=false;}
+}
+// 🆕 #53 + #54 - generateFromSheet() avec UX feedback + actions résultat
+async function generateFromSheet(){
+  if(isGenerating){notify('⏳ Une génération est déjà en cours...','error');return;}
+  isGenerating=true;
+  var btnGen=document.getElementById('btn-gen-sheet');
+  var originalHTML=btnGen.innerHTML;
+  btnGen.disabled=true;
+  var p=document.getElementById('prompt-sheet').value.trim();
+  if(!p){document.getElementById('prompt-sheet').focus();isGenerating=false;btnGen.disabled=false;return;}
+  var logged=await isLogged();
+  if(!logged){var allowed=await checkFreemiumBlock();if(!allowed){notify(t('notifications.freemium_limit'),'error');isGenerating=false;btnGen.disabled=false;return;}}
+  
+  // 🆕 #53 - Status actif
+  var st=Date.now();
+  btnGen.innerHTML='<span class="mini-spin" style="display:inline-block"></span> Génération... 0s';
+  setGenStatus('gen-status-sheet','loading','Patientez ~10-20 secondes, votre image arrive avec '+getModelName(selectedModel));
+  
+  var timerInt=setInterval(function(){
+    var elapsed=((Date.now()-st)/1000).toFixed(1);
+    btnGen.innerHTML='<span class="mini-spin" style="display:inline-block"></span> Génération... '+elapsed+'s';
+  },100);
+  
+  var format=document.getElementById('format-select').value;
+  var dims=format.split('x');
+  var w=parseInt(dims[0]);var h=parseInt(dims[1]);
+  var model=selectedModel;
+  
+  try{
+    var result=await generateImageViaProxy(p,w,h,model);
+    var url=result.url;
+    var pre=new Image();
+    pre.onload=function(){
+      clearInterval(timerInt);
+      var elapsed=((Date.now()-st)/1000).toFixed(1);
+      btnGen.disabled=false;btnGen.innerHTML=originalHTML;
+      setGenStatus('gen-status-sheet','idle','');
+      
+      // 🆕 #54 - Afficher résultat avec actions
+      lastSheetPrompt=p;
+      lastSheetModel=model;
+      lastSheetTime=elapsed+'s';
+      showSheetResult(url, model, elapsed+'s');
+      
+      notify('✅ Image générée en '+elapsed+'s ! ('+getModelName(model)+')','success');
+      if(!logged){incrementAndCheckFreemium();var c=3-getAnonCount();document.getElementById('count-trials').textContent=Math.max(0,c);}
+      else{updateUI();loadMiniBadge();}
+    };
+    pre.onerror=function(){
+      clearInterval(timerInt);      btnGen.disabled=false;btnGen.innerHTML=originalHTML;
+      setGenStatus('gen-status-sheet','error','Erreur chargement');
+      notify('Erreur, réessaie.','error');
+    };
+    pre.src=url;
+  }catch(err){
+    clearInterval(timerInt);
+    btnGen.disabled=false;btnGen.innerHTML=originalHTML;
+    setGenStatus('gen-status-sheet','error',err.message);
+    notify('Erreur: '+err.message,'error');
+  }finally{isGenerating=false;}
+}
+
 var authNotified=false;
 db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await loadUserTier();updateUI();closeAuth();localStorage.removeItem(PX_ANON_KEY);var ss=document.getElementById('pxr-soft-signup');if(ss)ss.remove();if(!authNotified){notify(t('auth.connected'),'success');authNotified=true;setTimeout(function(){authNotified=false;},3000);}}else if(event==='SIGNED_OUT'){currentTier=1;currentDiscountUntil=null;if(discountTimerInterval){clearInterval(discountTimerInterval);discountTimerInterval=null;}updateCostUI();updateUI();authNotified=false;}else if(event==='TOKEN_REFRESHED')updateUI();});
 async function cleanupExpiredCreations(){return;}
-document.addEventListener('DOMContentLoaded',async function(){try{await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await cleanupExpiredCreations();await loadStudio();await loadRecent();selModelCard(selectedModel);setTimeout(function(){var sponsorBlock=document.getElementById('sponsorised-container');if(sponsorBlock&&sponsorBlock.children.length===0){sponsorBlock.style.display='none';}},2000);}catch(err){notify('Erreur init: '+err.message,'error');}});
+document.addEventListener('DOMContentLoaded',async function(){try{await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await cleanupExpiredCreations();await loadStudio();await loadRecent();selModelCard(selectedModel);updateModelBadge();setTimeout(function(){var sponsorBlock=document.getElementById('sponsorised-container');if(sponsorBlock&&sponsorBlock.children.length===0){sponsorBlock.style.display='none';}},2000);}catch(err){notify('Erreur init: '+err.message,'error');}});
 </script>
 </body>
 </html>
