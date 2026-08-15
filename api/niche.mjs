@@ -121,16 +121,16 @@ function buildSharePage(imgUrl) {
   }
   return "<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'>" +
     "<title>Image partagée | IA Pixora</title>" +
-    "<meta name='description' content='Image créée avec IA Pixora, générateur d’images IA gratuit. Créez la vôtre en 10 secondes.'>" +
+    "<meta name='description' content='Image créée avec IA Pixora, générateur d'images IA gratuit. Créez la vôtre en 10 secondes.'>" +
     "<meta property='og:type' content='website'>" +
     "<meta property='og:title' content='Regarde cette image créée avec IA Pixora'>" +
-    "<meta property='og:description' content='Générateur d’images IA gratuit — 3 essais sans inscription. Crée la tienne !'>" +
+    "<meta property='og:description' content='Générateur d'images IA gratuit — 3 essais sans inscription. Crée la tienne !'>" +
     "<meta property='og:image' content='" + imgUrl + "'>" +
     "<meta property='og:image:width' content='1024'>" +
     "<meta property='og:image:height' content='768'>" +
     "<meta name='twitter:card' content='summary_large_image'>" +
     "<meta name='twitter:title' content='Regarde cette image créée avec IA Pixora'>" +
-    "<meta name='twitter:description' content='Générateur d’images IA gratuit — 3 essais sans inscription.'>" +
+    "<meta name='twitter:description' content='Générateur d'images IA gratuit — 3 essais sans inscription.'>" +
     "<meta name='twitter:image' content='" + imgUrl + "'>" +
     "<style>body{background:#050507;color:#FAFAFA;font-family:Inter,sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}.card{max-width:560px;width:100%;text-align:center}.logo{font-weight:800;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}img{width:100%;border-radius:16px;border:1px solid rgba(139,92,246,.4);margin:16px 0}.btn{display:inline-block;margin:6px;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:700}.primary{background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff}.ghost{border:1px solid rgba(139,92,246,.5);color:#c4b5fd}.nets{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}.net{padding:10px 14px;border-radius:999px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;text-decoration:none;font-size:.85rem;cursor:pointer}</style>" +
     "</head><body><div class='card'><div class='logo'>IA Pixora</div>" +
@@ -166,6 +166,20 @@ function buildPage(d, lang, niche, allLangs) {
 
 export default function (req, res) {
   try {
+    // 🤖 ROUTE ROBOT SEO : liste des niches + prompts (non-indexée)
+    if (req.query.list) {
+      var out = {};
+      for (var k in NICHES) {
+        var e2 = NICHES[k].en || NICHES[k].fr || {};
+        out[k] = (e2.prompts || []).slice(0, 3);
+      }
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("X-Robots-Tag", "noindex");
+      res.setHeader("Cache-Control", "public, max-age=60");
+      res.statusCode = 200;
+      res.end(JSON.stringify(out));
+      return;
+    }
     if (req.query.img) {
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       res.statusCode = 200;
@@ -180,5 +194,4 @@ export default function (req, res) {
     if (!d) { res.statusCode = 404; res.end("<h1>404</h1><p>Page introuvable. <a href='https://www.iapixora.com'>Retour IA Pixora</a></p>"); return; }
     res.statusCode = 200;
     res.end(buildPage(d, lang, niche, Object.keys(n)));
-  } catch (e) { res.statusCode = 500; res.end("Erreur"); }
-}
+  } catch (e) { res.statusCode = 500; res.end("Erreur"); }}
