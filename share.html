@@ -96,8 +96,7 @@
         </div>
         <a href="https://www.iapixora.com/gallery.html" class="btn-secondary" id="btn-gallery">
             <i class="fas fa-images"></i> <span id="btn-gallery-text">Voir la galerie</span>
-        </a>
-        <div class="footer">
+        </a>        <div class="footer">
             © 2026 IA Pixora · <a href="https://www.iapixora.com/privacy.html">Confidentialité</a> · <a href="https://www.iapixora.com/share.html">Partage</a>
         </div>
     </div>
@@ -134,8 +133,8 @@
                 download: 'Télécharger',
                 gallery: 'Voir la galerie',
                 badge: 'Générée gratuitement',
-                error_title: 'Image expirée ou introuvable',
-                error_sub: 'Les images partagées expirent après 1 heure.<br>Crée ta propre image maintenant !',
+                error_title: 'Image introuvable',
+                error_sub: 'Cette image n\'existe plus ou a été supprimée.<br>Crée ta propre image maintenant !',
                 meta_title: 'Regarde cette image IA créée avec IA Pixora 🎨',
                 meta_desc: 'Cette image a été générée gratuitement avec IA Pixora. Crée la tienne en quelques secondes, sans inscription !',
                 zoom_hint: '🔍 Cliquer pour agrandir'
@@ -145,9 +144,9 @@
                 sub: 'Free. No signup. No limits.<br>Create your own AI image in seconds.',
                 btn: 'Create my image for free',
                 download: 'Download',
-                gallery: 'View gallery',                badge: 'Generated for free',
-                error_title: 'Image expired or not found',
-                error_sub: 'Shared images expire after 1 hour.<br>Create your own image now!',
+                gallery: 'View gallery',
+                badge: 'Generated for free',                error_title: 'Image not found',
+                error_sub: 'This image no longer exists or has been removed.<br>Create your own image now!',
                 meta_title: 'Check out this AI image made with IA Pixora 🎨',
                 meta_desc: 'This image was generated for free with IA Pixora. Create yours in seconds, no signup required!',
                 zoom_hint: '🔍 Click to enlarge'
@@ -195,8 +194,7 @@
         img.src = imgUrl;
         img.alt = 'AI Generated Image - IA Pixora';
         function showError(title, sub) {
-            container.className = 'image-wrapper error';
-            container.innerHTML = '<i class="fas fa-clock"></i><p>' + title + '</p>';
+            container.className = 'image-wrapper error';            container.innerHTML = '<i class="fas fa-clock"></i><p>' + title + '</p>';
             container.onclick = null;
             container.style.cursor = 'default';
             ctaTitle.textContent = title;
