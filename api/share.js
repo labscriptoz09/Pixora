@@ -1,16 +1,26 @@
 // api/share.js
 export default function handler(req, res) {
-  const imgUrl = req.query.img || 'https://iapixora.com/og-image.jpg';
+  const imgUrl = req.query.img || 'https://www.iapixora.com/favicon.png';
   const lang = req.query.lang === 'en' ? 'en' : 'fr';
 
   const texts = {
     fr: {
       title: 'Regarde cette image IA créée avec IA Pixora 🎨',
-      desc: 'Cette image a été générée gratuitement avec IA Pixora. Crée la tienne en quelques secondes, sans inscription !'
+      desc: 'Cette image a été générée gratuitement avec IA Pixora. Crée la tienne en quelques secondes, sans inscription !',
+      btn: 'Créer mon image',
+      download: 'Télécharger',
+      gallery: 'Voir la galerie',
+      badge: 'Générée gratuitement',
+      error: 'Image non disponible'
     },
     en: {
       title: 'Check out this AI image made with IA Pixora 🎨',
-      desc: 'This image was generated for free with IA Pixora. Create yours in seconds, no signup required!'
+      desc: 'This image was generated for free with IA Pixora. Create yours in seconds, no signup required!',
+      btn: 'Create my image',
+      download: 'Download',
+      gallery: 'View gallery',
+      badge: 'Generated for free',
+      error: 'Image not available'
     }
   };
 
@@ -23,17 +33,21 @@ export default function handler(req, res) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${t.title}</title>
     <meta name="description" content="${t.desc}">
+    <link rel="canonical" href="https://www.iapixora.com/api/share">
+    <link rel="icon" type="image/png" href="https://www.iapixora.com/favicon.png">
+    <link rel="apple-touch-icon" href="https://www.iapixora.com/favicon.png">
     
-    <!-- Meta tags pour Twitter/Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="IA Pixora">
+    <meta property="og:url" content="https://www.iapixora.com/api/share">
     <meta property="og:title" content="${t.title}">
     <meta property="og:description" content="${t.desc}">
     <meta property="og:image" content="${imgUrl}">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
     
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="${t.title}">
-    <meta name="twitter:description" content="${t.desc}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${t.title}">    <meta name="twitter:description" content="${t.desc}">
     <meta name="twitter:image" content="${imgUrl}">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +61,8 @@ export default function handler(req, res) {
         .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);margin-bottom:0.3rem}
         .logo svg{width:32px;height:32px}
         .logo span{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .badge-free{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px}        .image-wrapper{width:100%;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.25);position:relative;background:var(--surf)}
+        .badge-free{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10B981;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
+        .image-wrapper{width:100%;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.25);position:relative;background:var(--surf)}
         .image-wrapper img{width:100%;height:auto;display:block}
         .actions{display:flex;gap:0.8rem;width:100%;flex-wrap:wrap;justify-content:center}
         .btn-create{display:inline-flex;align-items:center;gap:0.6rem;padding:1rem 2rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;text-decoration:none;box-shadow:0 8px 30px rgba(139,92,246,0.4);transition:all 0.3s;border:none;cursor:pointer;flex:1;justify-content:center;min-width:200px}
@@ -65,29 +80,28 @@ export default function handler(req, res) {
 </head>
 <body>
     <div class="container">
-        <a href="https://iapixora.com" class="logo">
+        <a href="https://www.iapixora.com" class="logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#sg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
             <span>IA Pixora</span>
         </a>
-        <div class="badge-free"><i class="fas fa-check-circle"></i> ${lang === 'fr' ? 'Générée gratuitement' : 'Generated for free'}</div>
+        <div class="badge-free"><i class="fas fa-check-circle"></i> ${t.badge}</div>
         <div class="image-wrapper">
-            <img src="${imgUrl}" alt="AI Generated Image" onerror="this.parentElement.innerHTML='<p style=padding:2rem;color:var(--muted)>Image non disponible</p>'">
+            <img src="${imgUrl}" alt="AI Generated Image" onerror="this.parentElement.innerHTML='<p style=padding:2rem;color:var(--muted)>${t.error}</p>'">
         </div>
         <h1 class="cta-title">${t.title}</h1>
         <p class="cta-sub">${t.desc}</p>
         <div class="actions">
-            <a href="https://iapixora.com" class="btn-create"><i class="fas fa-sparkles"></i> ${lang === 'fr' ? 'Créer mon image' : 'Create my image'}</a>
-            <button class="btn-download" onclick="downloadImage('${imgUrl}')"><i class="fas fa-download"></i> ${lang === 'fr' ? 'Télécharger' : 'Download'}</button>
+            <a href="https://www.iapixora.com" class="btn-create"><i class="fas fa-sparkles"></i> ${t.btn}</a>
+            <button class="btn-download" onclick="downloadImage('${imgUrl}')"><i class="fas fa-download"></i> ${t.download}</button>
         </div>
-        <a href="https://iapixora.com/gallery.html" class="btn-secondary"><i class="fas fa-images"></i> ${lang === 'fr' ? 'Voir la galerie' : 'View gallery'}</a>
-        <div class="footer">© 2026 IA Pixora · <a href="https://iapixora.com/privacy.html">Confidentialité</a></div>
-    </div>
-    <script>
+        <a href="https://www.iapixora.com/gallery.html" class="btn-secondary"><i class="fas fa-images"></i> ${t.gallery}</a>
+        <div class="footer">© 2026 IA Pixora · <a href="https://www.iapixora.com/privacy.html">${lang === 'fr' ? 'Confidentialité' : 'Privacy'}</a></div>
+    </div>    <script>
         function downloadImage(url) {
             fetch(url).then(r=>r.blob()).then(blob=>{
                 const u = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = u; a.download = 'ia-pixora.jpg';
+                a.href = u; a.download = 'ia-pixora-' + Date.now() + '.jpg';
                 document.body.appendChild(a); a.click(); document.body.removeChild(a);
             }).catch(()=> window.open(url, '_blank'));
         }
@@ -96,5 +110,6 @@ export default function handler(req, res) {
 </html>`;
 
   res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
   res.status(200).send(html);
 }
