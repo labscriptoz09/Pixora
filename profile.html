@@ -119,6 +119,27 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   .page-title{font-size:2.2rem}
   nav.nav-mobile{left:50%;right:auto;transform:translateX(-50%);max-width:900px}
 }
+
+.badge-trial{font-size:.55rem;font-weight:700;padding:5px 9px;border-radius:100px;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;white-space:nowrap;box-shadow:0 0 12px rgba(139,92,246,.35);cursor:pointer}
+body.logged .badge-trial{display:none}
+.mini-badge-pill{display:none;align-items:center;gap:.3rem;padding:.25rem .5rem;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:20px;text-decoration:none;font-size:.58rem;font-weight:600;color:var(--text)}
+.mini-badge-pill.show{display:flex}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;cursor:pointer;color:#fff}
+.user-avatar.show{display:flex}
+.btn-auth{padding:.4rem .7rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:10px;font-size:.68rem;font-weight:600;display:flex;align-items:center;gap:.35rem;border:none;cursor:pointer;white-space:nowrap}
+.user-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;width:220px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:8px;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.user-menu.open{display:block}
+.menu-header{display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.menu-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff}
+.menu-name{font-size:.78rem;font-weight:700}
+.menu-email{font-size:.6rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
+.menu-points-bar{display:flex;align-items:center;gap:6px;padding:6px 8px;font-size:.72rem;font-weight:700;color:var(--gold)}
+.menu-points-bar small{color:var(--muted);font-weight:500}
+.menu-item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;font-size:.75rem;font-weight:600;color:var(--text);text-decoration:none;transition:background .15s}
+.menu-item:hover{background:rgba(139,92,246,.1)}
+.menu-item.danger{color:var(--danger)}
+.menu-item.danger:hover{background:rgba(239,68,68,.1)}
+.menu-sep{height:1px;background:var(--border);margin:4px 0}
 </style>
 </head>
 <body>
@@ -159,12 +180,20 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <span class="logo-text">IAPIXORA</span>
   </a>
   <div class="header-right">
-    <div class="balance-pill">
-      <i class="fas fa-coins"></i>
-      <span id="header-points">---</span>
-    </div>
-    <div class="user-avatar" id="header-avatar"><span id="header-initial">U</span></div>
-  </div>
+<span class="badge-trial" data-i18n="hero.featured_trial">10 essais gratuits</span>
+<a href="earn.html#badges" class="mini-badge-pill" id="mini-badge"><span id="mini-badge-icon"></span><span id="mini-badge-name"></span><span id="mini-badge-next"></span></a>
+<div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span></div>
+<button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button>
+<div class="user-menu" id="user-menu">
+<div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
+<div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div>
+<a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a>
+<a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a>
+<a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a>
+<div class="menu-sep"></div>
+<button class="menu-item danger" onclick="doLogout();closeUserMenu()"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
+</div>
+</div>
 </header>
 
 <!-- MAIN -->
@@ -261,6 +290,17 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <a href="profile.html" class="nav-item active" data-nav="profile"><i class="fas fa-user"></i><span>Profil</span></a>
 </nav>
 
+<script>
+// ========== HEADER FUNCTIONS (from index) ==========
+function openAuth(){var m=document.getElementById('auth-modal');if(m){m.classList.add('active');document.body.style.overflow='hidden';}}
+function toggleUserMenu(e){if(e)e.preventDefault();var m=document.getElementById('user-menu');if(m)m.classList.toggle('open');}
+function closeUserMenu(){var m=document.getElementById('user-menu');if(m)m.classList.remove('open');}
+async function doLogout(){try{await db.auth.signOut();}catch(e){}closeUserMenu();notify(t('auth.logout'),'success');setTimeout(function(){location.reload();},800);}
+async function updateHeaderUI(){var logged=await isLogged();document.body.classList.toggle('logged',logged);var ua=document.getElementById('user-avatar');if(ua)ua.classList.toggle('show',logged);var ab=document.getElementById('auth-btn');if(ab)ab.style.display=logged?'none':'flex';if(logged){var user=await getUser();var d=await getUserData();if(!d)d={points:0};var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur';var ini=nm.charAt(0).toUpperCase();var ai=document.getElementById('avatar-initial');if(ai)ai.textContent=ini;var ma=document.getElementById('menu-avatar');if(ma)ma.textContent=ini;var mn=document.getElementById('menu-name');if(mn)mn.textContent=nm;var me=document.getElementById('menu-email');if(me)me.textContent=user.email;var mp=document.getElementById('menu-points');if(mp)mp.textContent=d.points||0;}await loadMiniBadge();}
+async function loadMiniBadge(){try{var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!el)return;if(!await isLogged()){el.classList.remove('show');return;}var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;if(typeof BADGES_CONFIG!=='undefined'){for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break;}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break;}}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'-> '+(nxt.threshold-gc)+' img':'Max';}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='-> '+(nxt.threshold-gc);}else{ic.textContent='';nm.textContent='Badge';nx.textContent='';}}catch(e){}}
+// Init header on load
+document.addEventListener('DOMContentLoaded',function(){if(typeof updateHeaderUI==='function')updateHeaderUI();});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
 <script>
