@@ -300,7 +300,7 @@ function closeUserMenu(){var m=document.getElementById('user-menu');if(m)m.class
 async function updateHeaderUI(){var logged=await isLogged();document.body.classList.toggle('logged',logged);var ua=document.getElementById('user-avatar');if(ua)ua.classList.toggle('show',logged);var ab=document.getElementById('auth-btn');if(ab)ab.style.display=logged?'none':'flex';if(logged){var user=await getUser();var d=await getUserData();if(!d)d={points:0};var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur';var ini=nm.charAt(0).toUpperCase();var ai=document.getElementById('avatar-initial');if(ai)ai.textContent=ini;var ma=document.getElementById('menu-avatar');if(ma)ma.textContent=ini;var mn=document.getElementById('menu-name');if(mn)mn.textContent=nm;var me=document.getElementById('menu-email');if(me)me.textContent=user.email;var mp=document.getElementById('menu-points');if(mp)mp.textContent=(d.points||0).toLocaleString();var hp=document.getElementById('header-points');if(hp)hp.textContent=(d.points||0).toLocaleString();var hpw=document.getElementById('header-points-wrap');if(hpw)hpw.style.display=logged?'flex':'none';}await loadMiniBadge();}
 async function loadMiniBadge(){try{var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!el)return;if(!await isLogged()){el.classList.remove('show');return;}var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;if(typeof BADGES_CONFIG!=='undefined'){for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break;}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break;}}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'-> '+(nxt.threshold-gc)+' img':'Max';}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='-> '+(nxt.threshold-gc);}else{ic.textContent='';nm.textContent='Badge';nx.textContent='';}}catch(e){}}
 // Init header on load
-document.addEventListener('DOMContentLoaded',function(){if(typeof updateHeaderUI==='function')updateHeaderUI();});
+// DOMContentLoaded gere par init()
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
@@ -380,7 +380,7 @@ async function loadProfileData(user) {
   document.getElementById('stat-generated').textContent = gen;
   document.getElementById('stat-earned').textContent = earned.toLocaleString();
   
-  const tierNames = tProfile('tier_names');
+  const tierNames = tProfile('tier_names') || ['Niveau 1','Niveau 2','Niveau 3'];
   document.getElementById('profile-tier-name').textContent = tierNames[tier - 1] || tierNames[0];
 
   // 3. Badge Logic
