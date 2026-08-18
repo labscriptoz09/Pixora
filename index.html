@@ -436,7 +436,7 @@ setInterval(function(){slideIdx=(slideIdx+1)%imgs.length;render();},5000);
 function render(){imgs.forEach(function(im,i){im.classList.toggle('on',i===slideIdx);});dots.forEach(function(d,i){d.classList.toggle('on',i===slideIdx);});}
 function goSlide(i){slideIdx=i;render();}
 // 🎯 CARROUSEL DYNAMIQUE — fetch Supabase/R2 (3 dernières créations)
-function tryHero(){var im=document.querySelector('.hero img.on')||document.querySelector('.hero img');var p=im?im.alt:'';if(!p||p.indexOf('Création')===0){openSheet();notify('💡 Décris ton idée puis clique Générer','info');return;}var pf=document.getElementById('prompt-sheet');if(pf){pf.value=p;}openSheet();notify('✨ Création du jour lancée ! ⚡','success');setTimeout(function(){if(!isGenerating&&document.getElementById('prompt-sheet')&&document.getElementById('prompt-sheet').value)generateFromSheet();},300);}
+async function tryHero(){var im=document.querySelector('.hero img.on')||document.querySelector('.hero img');var p=im?im.alt:'';if(!p||p.indexOf('Création')===0){openSheet();return;}var pf=document.getElementById('prompt-sheet');if(pf)pf.value=p;var logged=await isLogged();var magic=localStorage.getItem('pxr_hero_magic_used');if(logged||!magic){if(!logged)localStorage.setItem('pxr_hero_magic_used','1');openSheet();notify('✨ Essai magique lancé ! ⚡','success');setTimeout(function(){if(!isGenerating)generateFromSheet();},300);}else{openSheet();notify('💡 Prompt chargé — clique Générer !','success');}}
 async function loadHeroImages(){
   try{
     var result = await db.from('pixora_creations')
