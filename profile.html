@@ -295,7 +295,7 @@ body.logged .badge-trial{display:none}
 function openAuth(){var m=document.getElementById('auth-modal');if(m){m.classList.add('active');document.body.style.overflow='hidden';}}
 function toggleUserMenu(e){if(e)e.preventDefault();var m=document.getElementById('user-menu');if(m)m.classList.toggle('open');}
 function closeUserMenu(){var m=document.getElementById('user-menu');if(m)m.classList.remove('open');}
-async function doLogout(){try{await db.auth.signOut();}catch(e){}closeUserMenu();notify(t('auth.logout'),'success');setTimeout(function(){location.reload();},800);}
+// doLogout defini plus bas dans le fichier
 async function updateHeaderUI(){var logged=await isLogged();document.body.classList.toggle('logged',logged);var ua=document.getElementById('user-avatar');if(ua)ua.classList.toggle('show',logged);var ab=document.getElementById('auth-btn');if(ab)ab.style.display=logged?'none':'flex';if(logged){var user=await getUser();var d=await getUserData();if(!d)d={points:0};var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur';var ini=nm.charAt(0).toUpperCase();var ai=document.getElementById('avatar-initial');if(ai)ai.textContent=ini;var ma=document.getElementById('menu-avatar');if(ma)ma.textContent=ini;var mn=document.getElementById('menu-name');if(mn)mn.textContent=nm;var me=document.getElementById('menu-email');if(me)me.textContent=user.email;var mp=document.getElementById('menu-points');if(mp)mp.textContent=d.points||0;}await loadMiniBadge();}
 async function loadMiniBadge(){try{var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!el)return;if(!await isLogged()){el.classList.remove('show');return;}var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;if(typeof BADGES_CONFIG!=='undefined'){for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break;}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break;}}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'-> '+(nxt.threshold-gc)+' img':'Max';}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='-> '+(nxt.threshold-gc);}else{ic.textContent='';nm.textContent='Badge';nx.textContent='';}}catch(e){}}
 // Init header on load
@@ -313,15 +313,21 @@ var PROFILE_I18N = {
   fr: { tier_names: ['Niveau 1', 'Niveau 2', 'Niveau 3'], badge_names: { bronze: 'Apprenti Créateur', silver: 'Créateur Confirmé', gold: 'Maître Créateur', diamond: 'Légende IA Pixora' }, next_badge: 'images pour le prochain badge', no_badge: 'Commencez à générer pour débloquer votre premier badge !', ref_count: 'filleul(s)' },
   en: { tier_names: ['Level 1', 'Level 2', 'Level 3'], badge_names: { bronze: 'Apprentice Creator', silver: 'Confirmed Creator', gold: 'Master Creator', diamond: 'IA Pixora Legend' }, next_badge: 'images for next badge', no_badge: 'Start generating to unlock your first badge!', ref_count: 'referral(s)' }
 };
-var currentProfileLang = 'fr';
-function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentProfileLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
-function changeProfileLang(lang){currentProfileLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;loadProfileData();}
-function detectProfileLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return nav.indexOf('en')!==-1?'en':'fr'}
+var currentLang = 'fr';
+function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
+function changeProfileLang(lang){currentLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;loadProfileData();}
+function detectLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return nav.indexOf('en')!==-1?'en':'fr'}
 
 // ========== SUPABASE ==========
 const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ========== SUPABASE HELPERS (header) ==========
+async function isLogged(){try{var r=await db.auth.getUser();return !!r.data.user;}catch(e){return false;}}
+async function getUser(){try{var r=await db.auth.getUser();return r.data.user;}catch(e){return null;}}
+async function getUserData(){try{var u=await getUser();if(!u)return null;var r=await db.from('user_data').select('*').eq('user_id',u.id).single();return r.data||null;}catch(e){return null;}}
+
 
 const BADGES_CONFIG = [
   { id: 'bronze', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
@@ -331,8 +337,8 @@ const BADGES_CONFIG = [
 ];
 
 async function init() {
-  var lang = detectProfileLang();
-  currentProfileLang = lang;  var sel = document.getElementById('lang-select');
+  var lang = detectLang();
+  currentLang = lang;  var sel = document.getElementById('lang-select');
   if (sel) sel.value = lang;
   document.documentElement.lang = lang;
 
