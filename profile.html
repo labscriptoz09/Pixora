@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<meta name="theme-color" content="#8B5CF6">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZXXYQRBQ"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TDZXXYQRBQ');</script>
 <meta charset="UTF-8">
@@ -10,6 +11,7 @@
 <link rel="canonical" href="https://iapixora.com/profile.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="IA Pixora"><meta property="og:url" content="https://iapixora.com/profile.html"><meta property="og:title" content="Mon Profil | IA Pixora"><meta property="og:description" content="Gérez votre compte IA Pixora."><meta property="og:image" content="https://iapixora.com/og-image.jpg">
 <meta name="robots" content="noindex, follow">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -126,7 +128,7 @@ body.logged .badge-trial{display:none}
 .mini-badge-pill.show{display:flex}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;cursor:pointer;color:#fff}
 .user-avatar.show{display:flex}
-.btn-auth{padding:.4rem .7rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:10px;font-size:.68rem;font-weight:600;display:flex;align-items:center;gap:.35rem;border:none;cursor:pointer;white-space:nowrap}
+.btn-auth{padding:.4rem .7rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:10px;font-size:.68rem;font-weight:600;display:flex;align-items:center;gap:.35rem;border:none;cursor:pointer;white-space:nowrap}body.logged .btn-auth{display:none}
 .user-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;width:220px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:8px;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .user-menu.open{display:block}
 .menu-header{display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid var(--border);margin-bottom:4px}
@@ -140,25 +142,7 @@ body.logged .badge-trial{display:none}
 .menu-item.danger{color:var(--danger)}
 .menu-item.danger:hover{background:rgba(239,68,68,.1)}
 .menu-sep{height:1px;background:var(--border);margin:4px 0}
-
-.auth-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-.auth-overlay.active{display:flex}
-.auth-modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;width:90%;max-width:380px;position:relative}
-.auth-close{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer}
-.auth-logo{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.auth-logo svg{width:32px;height:32px}
-.auth-logo span{font-size:1.1rem;font-weight:800;background:linear-gradient(90deg,#c4b5fd,#8B5CF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.auth-sub{font-size:.78rem;color:var(--muted);margin-bottom:1.2rem}
-.auth-tabs{display:flex;gap:0;margin-bottom:1.2rem;border-bottom:1px solid var(--border)}
-.auth-tab{flex:1;padding:10px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit}
-.auth-tab.active{color:var(--prim);border-bottom-color:var(--prim)}
-.form-section{display:none}
-.form-section.active{display:block}
-.form-group{margin-bottom:1rem}
-.form-label{display:block;font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
-.form-input{width:100%;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:.85rem;outline:none}
-.form-input:focus{border-color:var(--prim)}
-.btn-submit{width:100%;padding:12px;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border:none;border-radius:10px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;margin-top:4px}</style>
+</style>
 </head>
 <body>
 
@@ -198,21 +182,20 @@ body.logged .badge-trial{display:none}
     <span class="logo-text">IAPIXORA</span>
   </a>
   <div class="header-right">
-<span class="badge-trial" data-i18n="hero.featured_trial">10 essais gratuits</span>
-<a href="earn.html#badges" class="mini-badge-pill" id="mini-badge"><span id="mini-badge-icon"></span><span id="mini-badge-name"></span><span id="mini-badge-next"></span></a>
-<div class="balance-pill" id="header-points-wrap" style="display:none"><i class="fas fa-coins"></i><span id="header-points">0</span></div>
-<div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span></div>
-<button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button>
-<div class="user-menu" id="user-menu">
-<div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
-<div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div>
-<a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.my_profile">Mon profil</span></a>
-<a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn_points">Gagner des points</span></a>
-<a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.my_purchases">Mes achats</span></a>
-<div class="menu-sep"></div>
-<button class="menu-item danger" onclick="doLogout();closeUserMenu()"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
-</div>
-</div>
+    <span class="badge-trial">10 essais gratuits</span>
+    <a href="earn.html#badges" class="mini-badge-pill" id="mini-badge"><span id="mini-badge-icon"></span><span id="mini-badge-name"></span><span id="mini-badge-next"></span></a>
+    <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span></div>
+    <button class="btn-auth" id="auth-btn" onclick="openAuth()"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+    <div class="user-menu" id="user-menu">
+      <div class="menu-header"><div class="menu-avatar" id="menu-avatar">U</div><div class="menu-info"><div class="menu-name" id="menu-name">Utilisateur</div><div class="menu-email" id="menu-email">email@example.com</div></div></div>
+      <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small>points</small></div>
+      <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i>Mon profil</a>
+      <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i>Gagner des points</a>
+      <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i>Mes achats</a>
+      <div class="menu-sep"></div>
+      <button class="menu-item danger" onclick="doLogout();closeUserMenu()"><i class="fas fa-sign-out-alt"></i>Déconnexion</button>
+    </div>
+  </div>
 </header>
 
 <!-- MAIN -->
@@ -309,17 +292,6 @@ body.logged .badge-trial{display:none}
   <a href="profile.html" class="nav-item active" data-nav="profile"><i class="fas fa-user"></i><span>Profil</span></a>
 </nav>
 
-<script>
-// ========== HEADER FUNCTIONS (from index) ==========
-function openAuth(){var m=document.getElementById('auth-modal');if(m){m.classList.add('active');document.body.style.overflow='hidden';}}
-function toggleUserMenu(e){if(e)e.preventDefault();var m=document.getElementById('user-menu');if(m)m.classList.toggle('open');}
-function closeUserMenu(){var m=document.getElementById('user-menu');if(m)m.classList.remove('open');}
-// doLogout defini plus bas dans le fichier
-async function updateHeaderUI(){var logged=await isLogged();document.body.classList.toggle('logged',logged);var ua=document.getElementById('user-avatar');if(ua)ua.classList.toggle('show',logged);var ab=document.getElementById('auth-btn');if(ab)ab.style.display=logged?'none':'flex';if(logged){var user=await getUser();var d=await getUserData();if(!d)d={points:0};var nm=user.user_metadata&&user.user_metadata.name?user.user_metadata.name:'Utilisateur';var ini=nm.charAt(0).toUpperCase();var ai=document.getElementById('avatar-initial');if(ai)ai.textContent=ini;var ma=document.getElementById('menu-avatar');if(ma)ma.textContent=ini;var mn=document.getElementById('menu-name');if(mn)mn.textContent=nm;var me=document.getElementById('menu-email');if(me)me.textContent=user.email;var mp=document.getElementById('menu-points');if(mp)mp.textContent=(d.points||0).toLocaleString();var hp=document.getElementById('header-points');if(hp)hp.textContent=(d.points||0).toLocaleString();var hpw=document.getElementById('header-points-wrap');if(hpw)hpw.style.display=logged?'flex':'none';}await loadMiniBadge();}
-async function loadMiniBadge(){try{var el=document.getElementById('mini-badge'),ic=document.getElementById('mini-badge-icon'),nm=document.getElementById('mini-badge-name'),nx=document.getElementById('mini-badge-next');if(!el)return;if(!await isLogged()){el.classList.remove('show');return;}var u=await getUserData(),gc=u.total_generated||0,cb=u.badges_claimed||[],cur=null,nxt=null;if(typeof BADGES_CONFIG!=='undefined'){for(var i=BADGES_CONFIG.length-1;i>=0;i--)if(cb.indexOf(BADGES_CONFIG[i].id)!==-1){cur=BADGES_CONFIG[i];break;}for(var j=0;j<BADGES_CONFIG.length;j++)if(cb.indexOf(BADGES_CONFIG[j].id)===-1){nxt=BADGES_CONFIG[j];break;}}el.classList.add('show');if(cur){ic.textContent=cur.icon;nm.textContent=cur.name;nx.textContent=nxt?'-> '+(nxt.threshold-gc)+' img':'Max';}else if(nxt){ic.textContent=nxt.icon;nm.textContent=nxt.threshold+' img';nx.textContent='-> '+(nxt.threshold-gc);}else{ic.textContent='';nm.textContent='Badge';nx.textContent='';}}catch(e){}}
-// Init header on load
-// DOMContentLoaded gere par init()
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="ads-loader.js"></script>
 <script>
@@ -332,21 +304,15 @@ var PROFILE_I18N = {
   fr: { tier_names: ['Niveau 1', 'Niveau 2', 'Niveau 3'], badge_names: { bronze: 'Apprenti Créateur', silver: 'Créateur Confirmé', gold: 'Maître Créateur', diamond: 'Légende IA Pixora' }, next_badge: 'images pour le prochain badge', no_badge: 'Commencez à générer pour débloquer votre premier badge !', ref_count: 'filleul(s)' },
   en: { tier_names: ['Level 1', 'Level 2', 'Level 3'], badge_names: { bronze: 'Apprentice Creator', silver: 'Confirmed Creator', gold: 'Master Creator', diamond: 'IA Pixora Legend' }, next_badge: 'images for next badge', no_badge: 'Start generating to unlock your first badge!', ref_count: 'referral(s)' }
 };
-var currentLang = 'fr';
-function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
-// changeLang fourni par i18n.js
-// detectLang fourni par i18n.js
+var currentProfileLang = 'fr';
+function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentProfileLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
+function changeProfileLang(lang){currentProfileLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;loadProfileData();}
+function detectProfileLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return nav.indexOf('en')!==-1?'en':'fr'}
 
 // ========== SUPABASE ==========
 const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ========== SUPABASE HELPERS (header) ==========
-async function isLogged(){try{var r=await db.auth.getUser();return !!r.data.user;}catch(e){return false;}}
-async function getUser(){try{var r=await db.auth.getUser();return r.data.user;}catch(e){return null;}}
-async function getUserData(){try{var u=await getUser();if(!u)return null;var r=await db.from('user_data').select('*').eq('user_id',u.id).single();return r.data||null;}catch(e){return null;}}
-
 
 const BADGES_CONFIG = [
   { id: 'bronze', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
@@ -356,114 +322,113 @@ const BADGES_CONFIG = [
 ];
 
 
-function closeAuth(){var m=document.getElementById('auth-modal');if(m)m.classList.remove('active');document.body.style.overflow='';}
-function switchTab(tab){document.querySelectorAll('.auth-tab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.form-section').forEach(function(s){s.classList.remove('active');});if(tab==='login'){document.querySelector('.auth-tab:first-child').classList.add('active');document.getElementById('sec-login').classList.add('active');}else{document.querySelector('.auth-tab:last-child').classList.add('active');document.getElementById('sec-register').classList.add('active');}}
-async function doLogin(e){e.preventDefault();var b=document.getElementById('btn-login');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var r=await db.auth.signInWithPassword({email:document.getElementById('l-email').value.trim(),password:document.getElementById('l-pw').value});if(r.error)throw r.error;closeAuth();init();notify(t('auth.welcome'),'success');}catch(err){notify(t('auth.wrong_credentials'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-sign-in-alt"></i> '+t('auth.login_btn');}}
-async function doRegister(e){e.preventDefault();var b=document.getElementById('btn-reg');b.disabled=true;b.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var ev=document.getElementById('r-email').value.trim();var pv=document.getElementById('r-pw').value;var nv=document.getElementById('r-name').value.trim();var r=await db.auth.signUp({email:ev,password:pv,options:{data:{name:nv}}});if(r.error)throw r.error;var sr=await db.auth.signInWithPassword({email:ev,password:pv});if(sr.error)throw sr.error;closeAuth();init();notify(t('auth.account_created'),'success');}catch(err){notify(t('auth.signup_error'),'error');b.disabled=false;b.innerHTML='<i class="fas fa-user-plus"></i> '+t('auth.register_btn');}}
+// ========== HEADER FUNCTIONS ==========
+function openAuth(){window.location.href='index.html';}
+function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('open');}
+function closeUserMenu(){document.getElementById('user-menu').classList.remove('open');}
 
 async function init() {
-  var lang = detectLang();
-  currentLang = lang;  var sel = document.getElementById('lang-select');
+  var lang = detectProfileLang();
+  currentProfileLang = lang;  var sel = document.getElementById('lang-select');
   if (sel) sel.value = lang;
   document.documentElement.lang = lang;
 
   const { data: { user }, error } = await db.auth.getUser();
   if (error || !user) { window.location.href = 'index.html'; return; }
   
-  await updateHeaderUI();
   await loadProfileData(user);
 }
 
 async function loadProfileData(user) {
-  if (!user) return;
+  if (!user) {
+    const { data: { user: u } } = await db.auth.getUser();
+    user = u;
+  }
+  if (!user) { window.location.href = 'index.html'; return; }
 
-  // === DONNÉES (même logique que index updateUI) ===
-  var d = await getUserData();
-  if (!d) d = {points:0, streak:1, total_generated:0, total_earned:0, tier:1, badges_claimed:[]};
-  var pts = d.points || 0;
-  var streak = d.streak || 1;
-  var gen = d.total_generated || 0;
-  var earned = d.total_earned || 0;
-  var tier = d.tier || 1;
-  var claimedBadges = d.badges_claimed || [];
+  // 1. User Data
+  const { data: userData } = await db.from('user_data').select('*').eq('user_id', user.id).single();
+  const pts = userData?.points || 0;
+  const streak = userData?.streak || 0;
+  const gen = userData?.total_generated || 0;
+  const earned = userData?.total_earned || 0;
+  const tier = userData?.tier || 1;
+  const claimedBadges = userData?.badges_claimed || [];
 
-  // === NOM + EMAIL (même logique que index) ===
-  var nm = user.user_metadata && user.user_metadata.name ? user.user_metadata.name : (user.email || 'Utilisateur');
-  var ini = nm.charAt(0).toUpperCase();
-
-  // === HEADER (copié de index updateUI) ===
+  // 2. UI Updates
+  const name = user.user_metadata?.name || user.email || 'Utilisateur';
+  const initial = name.charAt(0).toUpperCase();
+  
+  document.getElementById('profile-name').textContent = name;
+  document.getElementById('profile-email').textContent = user.email;
+  document.getElementById('profile-avatar').textContent = initial;
+  document.getElementById('avatar-initial').textContent = initial;
+  document.getElementById('header-points').textContent = pts.toLocaleString();
+  
+  // Header style index
   document.body.classList.add('logged');
-  var ua = document.getElementById('user-avatar');
-  if (ua) ua.classList.add('show');
-  var ab = document.getElementById('auth-btn');
-  if (ab) ab.style.display = 'none';
-  var ai = document.getElementById('avatar-initial');
-  if (ai) ai.textContent = ini;
-  var ma = document.getElementById('menu-avatar');
-  if (ma) ma.textContent = ini;
-  var mn = document.getElementById('menu-name');  if (mn) mn.textContent = nm;
-  var me = document.getElementById('menu-email');
-  if (me) me.textContent = user.email;
-  var mp = document.getElementById('menu-points');
-  if (mp) mp.textContent = pts.toLocaleString();
-  var hp = document.getElementById('header-points');
-  if (hp) hp.textContent = pts.toLocaleString();
-  var hpw = document.getElementById('header-points-wrap');
-  if (hpw) hpw.style.display = 'flex';
+  var ua=document.getElementById('user-avatar');if(ua)ua.classList.add('show');
+  var ab=document.getElementById('auth-btn');if(ab)ab.style.display='none';
+  var mp=document.getElementById('menu-points');if(mp)mp.textContent=pts.toLocaleString();
+  var mn=document.getElementById('menu-name');if(mn)mn.textContent=name;
+  var me=document.getElementById('menu-email');if(me)me.textContent=user.email;
+  var ma=document.getElementById('menu-avatar');if(ma)ma.textContent=initial;
+  
+  document.getElementById('stat-points').textContent = pts.toLocaleString();
+  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('stat-generated').textContent = gen;
+  document.getElementById('stat-earned').textContent = earned.toLocaleString();
+  
+  const tierNames = tProfile('tier_names');
+  document.getElementById('profile-tier-name').textContent = tierNames[tier - 1] || tierNames[0];
 
-  // === STATS PROFILE (simple, sans tProfile) ===
-  var el;
-  el = document.getElementById('profile-name'); if (el) el.textContent = nm;
-  el = document.getElementById('profile-email'); if (el) el.textContent = user.email;
-  el = document.getElementById('profile-avatar'); if (el) el.textContent = ini;
-  el = document.getElementById('stat-points'); if (el) el.textContent = pts.toLocaleString();
-  el = document.getElementById('stat-streak'); if (el) el.textContent = streak;
-  el = document.getElementById('stat-generated'); if (el) el.textContent = gen;
-  el = document.getElementById('stat-earned'); if (el) el.textContent = earned.toLocaleString();
-
-  // === TIER (fallback safe) ===
-  var tierNames = ['Niveau 1','Niveau 2','Niveau 3'];
-  try { var tn = t('profile.tier_names'); if (Array.isArray(tn)) tierNames = tn; } catch(e){}
-  el = document.getElementById('profile-tier-name');
-  if (el) el.textContent = tierNames[Math.min(tier-1, tierNames.length-1)] || tierNames[0];
-
-  // === BADGES (logique existante, sécurisée) ===
-  var currentBadge = null, nextBadge = null;
-  if (typeof BADGES_CONFIG !== 'undefined') {
-    for (var i = BADGES_CONFIG.length-1; i >= 0; i--) {
-      if (claimedBadges.indexOf(BADGES_CONFIG[i].id) !== -1) { currentBadge = BADGES_CONFIG[i]; break; }
-    }
-    for (var j = 0; j < BADGES_CONFIG.length; j++) {
-      if (claimedBadges.indexOf(BADGES_CONFIG[j].id) === -1) { nextBadge = BADGES_CONFIG[j]; break; }
-    }
+  // 3. Badge Logic
+  let currentBadge = null;
+  let nextBadge = null;
+  for (let i = BADGES_CONFIG.length - 1; i >= 0; i--) {
+    if (claimedBadges.includes(BADGES_CONFIG[i].id)) { currentBadge = BADGES_CONFIG[i]; break; }
+  }  for (let j = 0; j < BADGES_CONFIG.length; j++) {
+    if (!claimedBadges.includes(BADGES_CONFIG[j].id)) { nextBadge = BADGES_CONFIG[j]; break; }
   }
-  var bIcon = document.getElementById('badge-icon');
-  var bName = document.getElementById('badge-name');
-  var bDesc = document.getElementById('badge-desc');
-  var bBar = document.getElementById('badge-bar');
+
+  const badgeIcon = document.getElementById('badge-icon');
+  const badgeName = document.getElementById('badge-name');
+  const badgeDesc = document.getElementById('badge-desc');
+  const badgeBar = document.getElementById('badge-bar');
+
   if (currentBadge) {
-    if (bIcon) bIcon.textContent = currentBadge.icon;
-    if (bName) { try { bName.textContent = t('profile.badge_names.'+currentBadge.id); } catch(e) { bName.textContent = currentBadge.id; } }
-    if (nextBadge && bDesc) { var rem = Math.max(nextBadge.threshold - gen, 0); bDesc.textContent = rem + ' images pour le prochain badge'; }
-    else if (bDesc) bDesc.textContent = 'Niveau maximum !';
-    if (bBar && nextBadge) { bBar.style.width = Math.min((gen/nextBadge.threshold)*100,100)+'%'; }
-    else if (bBar) bBar.style.width = '100%';
+    badgeIcon.textContent = currentBadge.icon;
+    badgeName.textContent = tProfile('badge_names.' + currentBadge.id);
+    if (nextBadge) {
+      const remaining = nextBadge.threshold - gen;
+      badgeDesc.textContent = (remaining > 0 ? remaining : 0) + ' ' + tProfile('next_badge');
+      const progress = Math.min((gen / nextBadge.threshold) * 100, 100);
+      badgeBar.style.width = progress + '%';
+      badgeBar.className = 'badge-progress-bar ' + nextBadge.colorClass;
+    } else {
+      badgeDesc.textContent = ' Niveau maximum atteint !';
+      badgeBar.style.width = '100%';
+    }
   } else if (nextBadge) {
-    if (bIcon) bIcon.textContent = nextBadge.icon;
-    if (bName) { try { bName.textContent = t('profile.badge_names.'+nextBadge.id); } catch(e) { bName.textContent = nextBadge.id; } }    if (bDesc) bDesc.textContent = gen + ' / ' + nextBadge.threshold + ' images';
-    if (bBar) bBar.style.width = Math.min((gen/nextBadge.threshold)*100,100)+'%';
+    badgeIcon.textContent = nextBadge.icon;
+    badgeName.textContent = tProfile('badge_names.' + nextBadge.id);
+    badgeDesc.textContent = gen + ' / ' + nextBadge.threshold + ' ' + tProfile('next_badge');
+    const progress = Math.min((gen / nextBadge.threshold) * 100, 100);
+    badgeBar.style.width = progress + '%';
+    badgeBar.className = 'badge-progress-bar ' + nextBadge.colorClass;
+  } else {
+    badgeIcon.textContent = '';
+    badgeName.textContent = 'Aucun badge';
+    badgeDesc.textContent = tProfile('no_badge');
+    badgeBar.style.width = '0%';
   }
 
-  // === REFERRAL ===
+  // 4. Referral Count
   try {
-    var refs = await db.from('referrals').select('id').eq('sponsor_id', user.id).eq('validated', true);
-    var rc = refs.data ? refs.data.length : 0;
-    el = document.getElementById('ref-count-title');
-    if (el) el.textContent = rc + ' filleul(s)';
-  } catch(e) {}
-
-  // === MINI BADGE ===
-  if (typeof loadMiniBadge === 'function') await loadMiniBadge();
+    const { data: refs } = await db.from('referrals').select('id').eq('sponsor_id', user.id).eq('validated', true);
+    const refCount = refs ? refs.length : 0;
+    document.getElementById('ref-count-title').textContent = refCount + ' ' + tProfile('ref_count');
+  } catch(e) { console.error('Referral count error:', e); }
 }
 
 async function doLogout() {
@@ -473,16 +438,5 @@ async function doLogout() {
 }
 init();
 </script>
-
-<div class="auth-overlay" id="auth-modal">
-  <div class="auth-modal">
-    <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
-    <div class="auth-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#ag)"/><text x="16" y="20" font-size="12" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text></svg><span>IA Pixora</span></div>
-    <p class="auth-sub" data-i18n="auth.connect_to_generate">Connectez-vous pour generer et gagner des points</p>
-    <div class="auth-tabs"><button class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_title">Connexion</button><button class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_title">Inscription</button></div>
-    <div class="form-section active" id="sec-login"><form onsubmit="doLogin(event)"><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="your@email.com" required id="l-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="********" required id="l-pw"></div><button type="submit" class="btn-submit" id="btn-login"><i class="fas fa-sign-in-alt"></i> <span data-i18n="auth.login_btn">Se connecter</span></button></form></div>
-    <div class="form-section" id="sec-register"><form onsubmit="doRegister(event)"><div class="form-group"><label class="form-label" data-i18n="auth.username">Pseudo</label><input type="text" class="form-input" placeholder="MonPseudo" required id="r-name"></div><div class="form-group"><label class="form-label" data-i18n="auth.email">Email</label><input type="email" class="form-input" placeholder="your@email.com" required id="r-email"></div><div class="form-group"><label class="form-label" data-i18n="auth.password">Mot de passe</label><input type="password" class="form-input" placeholder="Min. 8 caracteres" required id="r-pw" minlength="8"></div><button type="submit" class="btn-submit" id="btn-reg"><i class="fas fa-user-plus"></i> <span data-i18n="auth.register_btn">Creer mon compte</span></button></form></div>
-  </div>
-</div>
 </body>
 </html>
