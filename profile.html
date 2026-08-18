@@ -153,11 +153,11 @@ body.logged .badge-trial{display:none}
     <svg viewBox="0 0 100 100"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs><polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g2)"/><text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text></svg>
     <span class="logo-text">IAPIXORA</span>
   </div>
-  <a class="m-item" href="index.html" onclick="closeMenu()"><i></i>Accueil</a>
-  <a class="m-item" href="gallery.html" onclick="closeMenu()"><i>🖼️</i>Galerie</a>
-  <a class="m-item" href="shop.html" onclick="closeMenu()"><i>🛍️</i>Boutique</a>
-  <a class="m-item" href="earn.html" onclick="closeMenu()"><i>💰</i>Gagner des points</a>
-  <a class="m-item" href="profile.html" onclick="closeMenu()"><i>👤</i>Mon profil</a>
+  <a class="m-item" href="index.html" onclick="closeMenu()"><i></i><span data-i18n="nav.studio">Accueil</span></a>
+  <a class="m-item" href="gallery.html" onclick="closeMenu()"><i>🖼️</i><span data-i18n="nav.gallery">Galerie</span></a>
+  <a class="m-item" href="shop.html" onclick="closeMenu()"><i>🛍️</i><span data-i18n="nav.shop">Boutique</span></a>
+  <a class="m-item" href="earn.html" onclick="closeMenu()"><i>💰</i><span data-i18n="nav.earn">Gagner des points</span></a>
+  <a class="m-item" href="profile.html" onclick="closeMenu()"><i>👤</i><span data-i18n="nav.profile">Mon profil</span></a>
   <div class="m-sep"></div>
   <div class="m-lang">
     <select id="lang-select" onchange="changeProfileLang(this.value)">
@@ -166,7 +166,7 @@ body.logged .badge-trial{display:none}
     </select>
   </div>
   <div class="m-sep"></div>
-  <a class="m-item" href="privacy.html" onclick="closeMenu()"><i>🔒</i>Confidentialité</a>
+  <a class="m-item" href="privacy.html" onclick="closeMenu()"><i>🔒</i><span data-i18n="footer.privacy">Confidentialité</span></a>
 </div>
 <!-- HEADER -->
 <header class="site-header">
@@ -301,12 +301,12 @@ function closeMenu(){document.getElementById('menu').classList.remove('open');do
 
 // ========== I18N SIMPLE ==========
 var PROFILE_I18N = {
-  fr: { tier_names: ['Niveau 1', 'Niveau 2', 'Niveau 3'], badge_names: { bronze: 'Apprenti Créateur', silver: 'Créateur Confirmé', gold: 'Maître Créateur', diamond: 'Légende IA Pixora' }, next_badge: 'images pour le prochain badge', no_badge: 'Commencez à générer pour débloquer votre premier badge !', ref_count: 'filleul(s)' },
-  en: { tier_names: ['Level 1', 'Level 2', 'Level 3'], badge_names: { bronze: 'Apprentice Creator', silver: 'Confirmed Creator', gold: 'Master Creator', diamond: 'IA Pixora Legend' }, next_badge: 'images for next badge', no_badge: 'Start generating to unlock your first badge!', ref_count: 'referral(s)' }
+  fr: { nav: { studio: 'Accueil', gallery: 'Galerie', shop: 'Boutique', earn: 'Gagner des points', profile: 'Mon profil' }, footer: { privacy: 'Confidentialite' }, tier_names: ['Niveau 1', 'Niveau 2', 'Niveau 3'], badge_names: { bronze: 'Apprenti Créateur', silver: 'Créateur Confirmé', gold: 'Maître Créateur', diamond: 'Légende IA Pixora' }, next_badge: 'images pour le prochain badge', no_badge: 'Commencez à générer pour débloquer votre premier badge !', ref_count: 'filleul(s)' },
+  en: { nav: { studio: 'Home', gallery: 'Gallery', shop: 'Shop', earn: 'Earn points', profile: 'My profile' }, footer: { privacy: 'Privacy' }, tier_names: ['Level 1', 'Level 2', 'Level 3'], badge_names: { bronze: 'Apprentice Creator', silver: 'Confirmed Creator', gold: 'Master Creator', diamond: 'IA Pixora Legend' }, next_badge: 'images for next badge', no_badge: 'Start generating to unlock your first badge!', ref_count: 'referral(s)' }
 };
 var currentProfileLang = 'fr';
 function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentProfileLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
-function changeProfileLang(lang){currentProfileLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;loadProfileData();}
+function changeProfileLang(lang){currentProfileLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');var v=tProfile(k);if(v&&v!==k)el.textContent=v;});loadProfileData();}
 function detectProfileLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return nav.indexOf('en')!==-1?'en':'fr'}
 
 // ========== SUPABASE ==========
