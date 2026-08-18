@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/niche/:lang/:niche", "destination": "/api/niche?lang=:lang&niche=:niche" },
-    { "source": "/share.html", "destination": "/api/niche" }
+    { "source": "/share", "destination": "/api/share" },
+    { "source": "/share.html", "destination": "/api/share" }
   ]
 }
