@@ -319,7 +319,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   <img class="on" src="" alt="Création du jour IA Pixora">
   <img src="" alt="Création du jour IA Pixora">
   <img src="" alt="Création du jour IA Pixora">
-  <div class="hero-overlay"><h2 style="background:linear-gradient(90deg,#FDE68A,#FBBF24,#F59E0B);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 10px rgba(0,0,0,.55));">Création du jour</h2><button class="hero-btn" onclick="openSheet()">Essayer ↗</button></div>
+  <div class="hero-overlay"><h2 style="background:linear-gradient(90deg,#FDE68A,#FBBF24,#F59E0B);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 10px rgba(0,0,0,.55));">Création du jour</h2><button class="hero-btn" onclick="tryHero()">Essayer ↗</button></div>
   <div class="dots"><span class="dot on" onclick="goSlide(0)"></span><span class="dot" onclick="goSlide(1)"></span><span class="dot" onclick="goSlide(2)"></span></div>
 </section>
 
@@ -436,6 +436,7 @@ setInterval(function(){slideIdx=(slideIdx+1)%imgs.length;render();},5000);
 function render(){imgs.forEach(function(im,i){im.classList.toggle('on',i===slideIdx);});dots.forEach(function(d,i){d.classList.toggle('on',i===slideIdx);});}
 function goSlide(i){slideIdx=i;render();}
 // 🎯 CARROUSEL DYNAMIQUE — fetch Supabase/R2 (3 dernières créations)
+function tryHero(){var im=document.querySelector('.hero img.on')||document.querySelector('.hero img');var p=im?im.alt:'';if(!p||p.indexOf('Création')===0){openSheet();notify('💡 Décris ton idée puis clique Générer','info');return;}var pf=document.getElementById('prompt-sheet');if(pf){pf.value=p;}openSheet();notify('✨ Création du jour lancée ! ⚡','success');setTimeout(function(){if(!isGenerating&&document.getElementById('prompt-sheet')&&document.getElementById('prompt-sheet').value)generateFromSheet();},300);}
 async function loadHeroImages(){
   try{
     var result = await db.from('pixora_creations')
