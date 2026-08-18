@@ -375,86 +375,95 @@ async function init() {
 }
 
 async function loadProfileData(user) {
-  if (!user) {
-    const { data: { user: u } } = await db.auth.getUser();
-    user = u;
-  }
-  if (!user) { window.location.href = 'index.html'; return; }
+  if (!user) return;
 
-  // 1. User Data
-  const { data: userData } = await db.from('user_data').select('*').eq('user_id', user.id).single();
-  const pts = userData?.points || 0;
-  const streak = userData?.streak || 0;
-  const gen = userData?.total_generated || 0;
-  const earned = userData?.total_earned || 0;
-  const tier = userData?.tier || 1;
-  const claimedBadges = userData?.badges_claimed || [];
+  // === DONNÉES (même logique que index updateUI) ===
+  var d = await getUserData();
+  if (!d) d = {points:0, streak:1, total_generated:0, total_earned:0, tier:1, badges_claimed:[]};
+  var pts = d.points || 0;
+  var streak = d.streak || 1;
+  var gen = d.total_generated || 0;
+  var earned = d.total_earned || 0;
+  var tier = d.tier || 1;
+  var claimedBadges = d.badges_claimed || [];
 
-  // 2. UI Updates
-  const name = user.user_metadata?.name || user.email || 'Utilisateur';
-  const initial = name.charAt(0).toUpperCase();
-  
-  document.getElementById('profile-name').textContent = name;
-  document.getElementById('profile-email').textContent = user.email;
-  document.getElementById('profile-avatar').textContent = initial;
-  document.getElementById('avatar-initial').textContent = initial;
-  document.getElementById('header-points').textContent = pts.toLocaleString();
-  
-  document.getElementById('stat-points').textContent = pts.toLocaleString();
-  document.getElementById('stat-streak').textContent = streak;
-  document.getElementById('stat-generated').textContent = gen;
-  document.getElementById('stat-earned').textContent = earned.toLocaleString();
-  
-  const tierNames = tProfile('tier_names') || ['Niveau 1','Niveau 2','Niveau 3'];
-  document.getElementById('profile-tier-name').textContent = tierNames[tier - 1] || tierNames[0];
+  // === NOM + EMAIL (même logique que index) ===
+  var nm = user.user_metadata && user.user_metadata.name ? user.user_metadata.name : (user.email || 'Utilisateur');
+  var ini = nm.charAt(0).toUpperCase();
 
-  // 3. Badge Logic
-  let currentBadge = null;
-  let nextBadge = null;
-  for (let i = BADGES_CONFIG.length - 1; i >= 0; i--) {
-    if (claimedBadges.includes(BADGES_CONFIG[i].id)) { currentBadge = BADGES_CONFIG[i]; break; }
-  }  for (let j = 0; j < BADGES_CONFIG.length; j++) {
-    if (!claimedBadges.includes(BADGES_CONFIG[j].id)) { nextBadge = BADGES_CONFIG[j]; break; }
-  }
+  // === HEADER (copié de index updateUI) ===
+  document.body.classList.add('logged');
+  var ua = document.getElementById('user-avatar');
+  if (ua) ua.classList.add('show');
+  var ab = document.getElementById('auth-btn');
+  if (ab) ab.style.display = 'none';
+  var ai = document.getElementById('avatar-initial');
+  if (ai) ai.textContent = ini;
+  var ma = document.getElementById('menu-avatar');
+  if (ma) ma.textContent = ini;
+  var mn = document.getElementById('menu-name');  if (mn) mn.textContent = nm;
+  var me = document.getElementById('menu-email');
+  if (me) me.textContent = user.email;
+  var mp = document.getElementById('menu-points');
+  if (mp) mp.textContent = pts.toLocaleString();
+  var hp = document.getElementById('header-points');
+  if (hp) hp.textContent = pts.toLocaleString();
+  var hpw = document.getElementById('header-points-wrap');
+  if (hpw) hpw.style.display = 'flex';
 
-  const badgeIcon = document.getElementById('badge-icon');
-  const badgeName = document.getElementById('badge-name');
-  const badgeDesc = document.getElementById('badge-desc');
-  const badgeBar = document.getElementById('badge-bar');
+  // === STATS PROFILE (simple, sans tProfile) ===
+  var el;
+  el = document.getElementById('profile-name'); if (el) el.textContent = nm;
+  el = document.getElementById('profile-email'); if (el) el.textContent = user.email;
+  el = document.getElementById('profile-avatar'); if (el) el.textContent = ini;
+  el = document.getElementById('stat-points'); if (el) el.textContent = pts.toLocaleString();
+  el = document.getElementById('stat-streak'); if (el) el.textContent = streak;
+  el = document.getElementById('stat-generated'); if (el) el.textContent = gen;
+  el = document.getElementById('stat-earned'); if (el) el.textContent = earned.toLocaleString();
 
-  if (currentBadge) {
-    badgeIcon.textContent = currentBadge.icon;
-    badgeName.textContent = (tProfile('badge_names.'+currentBadge.id) || currentBadge.id);
-    if (nextBadge) {
-      const remaining = nextBadge.threshold - gen;
-      badgeDesc.textContent = (remaining > 0 ? remaining : 0) + ' ' + tProfile('next_badge');
-      const progress = Math.min((gen / nextBadge.threshold) * 100, 100);
-      badgeBar.style.width = progress + '%';
-      badgeBar.className = 'badge-progress-bar ' + nextBadge.colorClass;
-    } else {
-      badgeDesc.textContent = ' Niveau maximum atteint !';
-      badgeBar.style.width = '100%';
+  // === TIER (fallback safe) ===
+  var tierNames = ['Niveau 1','Niveau 2','Niveau 3'];
+  try { var tn = t('profile.tier_names'); if (Array.isArray(tn)) tierNames = tn; } catch(e){}
+  el = document.getElementById('profile-tier-name');
+  if (el) el.textContent = tierNames[Math.min(tier-1, tierNames.length-1)] || tierNames[0];
+
+  // === BADGES (logique existante, sécurisée) ===
+  var currentBadge = null, nextBadge = null;
+  if (typeof BADGES_CONFIG !== 'undefined') {
+    for (var i = BADGES_CONFIG.length-1; i >= 0; i--) {
+      if (claimedBadges.indexOf(BADGES_CONFIG[i].id) !== -1) { currentBadge = BADGES_CONFIG[i]; break; }
     }
+    for (var j = 0; j < BADGES_CONFIG.length; j++) {
+      if (claimedBadges.indexOf(BADGES_CONFIG[j].id) === -1) { nextBadge = BADGES_CONFIG[j]; break; }
+    }
+  }
+  var bIcon = document.getElementById('badge-icon');
+  var bName = document.getElementById('badge-name');
+  var bDesc = document.getElementById('badge-desc');
+  var bBar = document.getElementById('badge-bar');
+  if (currentBadge) {
+    if (bIcon) bIcon.textContent = currentBadge.icon;
+    if (bName) { try { bName.textContent = t('profile.badge_names.'+currentBadge.id); } catch(e) { bName.textContent = currentBadge.id; } }
+    if (nextBadge && bDesc) { var rem = Math.max(nextBadge.threshold - gen, 0); bDesc.textContent = rem + ' images pour le prochain badge'; }
+    else if (bDesc) bDesc.textContent = 'Niveau maximum !';
+    if (bBar && nextBadge) { bBar.style.width = Math.min((gen/nextBadge.threshold)*100,100)+'%'; }
+    else if (bBar) bBar.style.width = '100%';
   } else if (nextBadge) {
-    badgeIcon.textContent = nextBadge.icon;
-    badgeName.textContent = (tProfile('badge_names.'+nextBadge.id) || nextBadge.id);
-    badgeDesc.textContent = gen + ' / ' + nextBadge.threshold + ' ' + tProfile('next_badge');
-    const progress = Math.min((gen / nextBadge.threshold) * 100, 100);
-    badgeBar.style.width = progress + '%';
-    badgeBar.className = 'badge-progress-bar ' + nextBadge.colorClass;
-  } else {
-    badgeIcon.textContent = '';
-    badgeName.textContent = 'Aucun badge';
-    badgeDesc.textContent = tProfile('no_badge');
-    badgeBar.style.width = '0%';
+    if (bIcon) bIcon.textContent = nextBadge.icon;
+    if (bName) { try { bName.textContent = t('profile.badge_names.'+nextBadge.id); } catch(e) { bName.textContent = nextBadge.id; } }    if (bDesc) bDesc.textContent = gen + ' / ' + nextBadge.threshold + ' images';
+    if (bBar) bBar.style.width = Math.min((gen/nextBadge.threshold)*100,100)+'%';
   }
 
-  // 4. Referral Count
+  // === REFERRAL ===
   try {
-    const { data: refs } = await db.from('referrals').select('id').eq('sponsor_id', user.id).eq('validated', true);
-    const refCount = refs ? refs.length : 0;
-    document.getElementById('ref-count-title').textContent = refCount + ' ' + tProfile('ref_count');
-  } catch(e) { console.error('Referral count error:', e); }
+    var refs = await db.from('referrals').select('id').eq('sponsor_id', user.id).eq('validated', true);
+    var rc = refs.data ? refs.data.length : 0;
+    el = document.getElementById('ref-count-title');
+    if (el) el.textContent = rc + ' filleul(s)';
+  } catch(e) {}
+
+  // === MINI BADGE ===
+  if (typeof loadMiniBadge === 'function') await loadMiniBadge();
 }
 
 async function doLogout() {
