@@ -315,8 +315,8 @@ var PROFILE_I18N = {
 };
 var currentLang = 'fr';
 function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
-function changeProfileLang(lang){currentLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;loadProfileData();}
-function detectLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return nav.indexOf('en')!==-1?'en':'fr'}
+// changeLang fourni par i18n.js
+// detectLang fourni par i18n.js
 
 // ========== SUPABASE ==========
 const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
