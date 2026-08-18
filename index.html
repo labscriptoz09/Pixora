@@ -440,14 +440,14 @@ async function loadHeroImages(){
         url = R2_PUBLIC_URL + '/' + rawName;
       }
       imgs[i].src = url;
+      (function(im,fb){im.onerror=function(){im.onerror=null;im.src=fb;};})(imgs[i],'https://iapixora-gen.slimansoufian1.workers.dev/img/'+rawName);
       imgs[i].alt = row.prompt || 'Création IA Pixora';
       imgs[i].title = (row.niche ? row.niche + ' — ' : '') + (row.prompt || '');
       imgs[i].onclick = function(){ openLB(url, 'image'); };
     });
   }catch(e){ console.warn('Hero load failed:', e); }
 }
-loadHeroImages();
-setInterval(loadHeroImages, 300000); // refresh 5 min
+window.addEventListener('load',function(){loadHeroImages();setInterval(loadHeroImages,300000);});
 window.onerror=function(msg,url,line,col,error){var n=document.getElementById('notif');if(n){document.getElementById('notif-text').textContent='❌ Une erreur est survenue.';n.className='notification show error';setTimeout(function(){n.classList.remove('show');},5000);}};
 if(window.location.hostname!=='localhost'&&window.location.hostname!=='127.0.0.1'){console.log=function(){};console.warn=function(){};console.error=function(){};}
 var PX_ANON_KEY='pxr_anon_gen_count';
