@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "title": "IA Pixora — Générateur d'Images et Vidéos IA Gratuit",
+    "description": "Générez des images et vidéos IA professionnelles en 2 clics. 10 créations gratuites sans carte bancaire."
+  },
+  "header": {
+    "login": "Connexion",
+    "points": "points"
+  },
+  "nav": {
+    "studio": "Accueil",
+    "gallery": "Galerie",
+    "shop": "Shop",
+    "earn": "Gagner",
+    "profile": "Profil"
+  },
+  "hero": {
+    "title": "Générez l'impossible avec IA Pixora",
+    "subtitle": "Images IA professionnelles. Gratuit. Sans limite.",
+    "featured": "Création du jour",
+    "univers_title": "Explorez nos univers IA"
+  },
+  "generator": {
+    "prompt_title": "Décrivez votre image",
+    "placeholder": "Décrivez votre vision...",
+    "placeholder_sheet": "Décris ta scène... ex: un chat samouraï sous les cerisiers",
+    "float_prompt": "Décris ta scène...",
+    "image": "Image",
+    "video": "Vidéo",
+    "video_soon": "Bientôt",
+    "generate": "Générer",
+    "discount_active": "-50% ACTIF",
+    "expires_in": "Expire dans",
+    "cost_pts": "pts"
+  },
+  "results": {
+    "title": "Vos Créations",
+    "permanent": "Sauvegardé définitivement",
+    "download": "Télécharger",
+    "close": "Fermer",
+    "generating": "Génération IA...",
+    "generated_in": "Générée en",
+    "failed": "Génération échouée.",
+    "error": "Erreur génération."
+  },
+  "stats": {    "points": "Points",
+    "streak": "Streak",
+    "creations": "Créations",
+    "total_earned": "Total Gagné"
+  },
+  "auth": {
+    "login_title": "Connexion",
+    "register_title": "Inscription",
+    "email": "Email",
+    "email_placeholder": "votre@email.com",
+    "password": "Mot de passe",
+    "pw_placeholder": "••••••••",
+    "username": "Pseudo",
+    "login_btn": "Se connecter",
+    "register_btn": "Créer mon compte",
+    "or_continue": "ou continuer avec",
+    "google": "Continuer avec Google",
+    "github": "Continuer avec GitHub",
+    "github_soon": "GitHub bientôt disponible...",
+    "footer": "En continuant, vous acceptez nos",
+    "conditions": "conditions",
+    "welcome": "✅ Bienvenue !",
+    "connected": "✅ Connecté !",
+    "account_created": "✅ Compte créé ! +40 pts bonus",
+    "wrong_credentials": "❌ Identifiants incorrects",
+    "email_exists": "❌ Cet email est déjà utilisé",
+    "password_short": "❌ Mot de passe trop court",
+    "signup_error": "❌ Erreur inscription",
+    "google_error": "❌ Erreur Google Login",
+    "logout": "✅ Déconnecté",
+    "connect_to_generate": "Connectez-vous pour générer et gagner des points"
+  },
+  "menu": {
+    "my_profile": "Mon profil",
+    "earn_points": "Gagner des points",
+    "my_purchases": "Mes achats",
+    "logout": "Déconnexion",
+    "login_signup": "Connexion / Inscription",
+    "ai_models": "Modèles IA",
+    "shop": "Boutique",
+    "profile": "Mon profil",
+    "faq": "Questions fréquentes",
+    "how_to": "Comment créer",
+    "privacy": "Confidentialité"
+  },
+  "notifications": {
+    "enter_prompt": "Veuillez entrer un prompt",
+    "insufficient_points": "Points insuffisants !",
+    "generating": "⏳ Génération en cours...",
+    "downloaded": "✅ Téléchargé !",    "no_image": "❌ Aucune image trouvée",
+    "freemium_limit": "🎁 Vous avez adoré IA Pixora ? Inscrivez-vous pour continuer !",
+    "share_success": "✅ Lien copié !",
+    "share_points": "+5 points pour le partage !",
+    "remix_success": "✨ Prompt remixé !",
+    "prompt_copied": "📋 Prompt copié !",
+    "view_gallery": "Voir toute la galerie"
+  },
+  "footer": {
+    "earn_points": "Gagner des Points",
+    "gallery": "Galerie",
+    "shop": "Boutique",
+    "profile": "Profil",
+    "privacy": "Confidentialité",
+    "copyright": "© 2026 IA Pixora. Tous droits réservés."
+  },
+  "language": {
+    "label": "Language",
+    "fr": "Français",
+    "en": "English"
+  },
+  "share": {
+    "title": "Partager",
+    "copy": "Copier",
+    "cat_messaging": "💬 Messagerie",
+    "cat_social": "Réseaux sociaux",
+    "cat_community": "Communautés",
+    "cat_regional": "Régionaux",
+    "text": "Regarde cette image IA créée avec IA Pixora !"
+  },
+  "gallery": {
+    "reference_title": "Créations de référence"
+  },
+  "faq": {
+    "q1": "Est-ce que IA Pixora est vraiment gratuit ?",
+    "a1": "Oui, IA Pixora est 100% gratuit.",
+    "q2": "Comment générer une image sans inscription ?",
+    "a2": "10 générations gratuites sans compte.",
+    "q3": "Quelle est la différence entre IA Pixora et Midjourney ?",
+    "a3": "IA Pixora est entièrement gratuit.",
+    "q4": "Puis-je utiliser les images commercialement ?",
+    "a4": "Oui, libres de droits.",
+    "q5": "Combien de générations gratuites par jour ?",
+    "a5": "10 sans inscription, illimité après."
+  },
+  "how": {
+    "title": "Comment créer des images IA avec IA Pixora ?",
+    "step1_title": "Décrivez votre idée",
+    "step1_desc": "Écrivez un prompt détaillé.",
+    "step2_title": "Choisissez le format",    "step2_desc": "Carré, portrait ou cinéma.",
+    "step3_title": "Générez & Téléchargez",
+    "step3_desc": "Obtenez votre image en quelques secondes."
+  },
+  "actions": {
+    "remix": "Remix",
+    "prompt": "Prompt",
+    "download": "Télécharger",
+    "share": "Partager"
+  }
+}

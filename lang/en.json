@@ -1,125 +1,154 @@
 {
-    "meta": {
-        "title": "Pixora — AI Studio",
-        "description": "Generate professional AI images. Free. No limits. No credit card."
-    },
-    "header": {
-        "login": "Login",
-        "points": "Points"
-    },
-    "nav": {
-        "studio": "Studio",
-        "gallery": "Gallery",
-        "earn": "Earn",
-        "profile": "Profile"
-    },
-    "hero": {
-        "title": "Generate the impossible",
-        "subtitle": "Professional AI images. Free. No limits."
-    },
-    "generator": {
-        "prompt_title": "Describe your image",
-        "placeholder": "Describe your vision... e.g.: Crystal perfume bottle, black marble, cinematic lighting 8k",
-        "image": "Image",
-        "video": "Video",
-        "video_soon": "Coming Soon",
-        "generate": "Generate",
-        "discount_active": "-50% ACTIVE",
-        "expires_in": "Expires in",
-        "cost_pts": "pts"
-    },
-    "results": {
-        "title": "Your Creations",
-        "auto_delete": "Auto-delete after 1h",
-        "download": "Download",
-        "generating": "Generating...",
-        "generated_in": "Generated in",
-        "failed": "Generation failed. Try again.",
-        "error": "Generation error. Try again."
-    },
-    "stats": {
-        "points": "Points",
-        "streak": "Streak",
-        "creations": "Creations",
-        "total_earned": "Total Earned"
-    },
-    "auth": {
-        "login_title": "Login",
-        "register_title": "Sign Up",
-        "email": "Email",
-        "password": "Password",        "password_min": "Min. 8 characters",
-        "username": "Username",
-        "login_btn": "Log In",
-        "register_btn": "Create Account",
-        "or_continue": "or continue with",
-        "google": "Continue with Google",
-        "github": "Continue with GitHub",
-        "github_soon": "GitHub coming soon...",
-        "footer": "By continuing, you accept our",
-        "conditions": "terms",
-        "welcome": "Welcome!",
-        "connected": "Connected!",
-        "account_created": "Account created! +40 pts bonus",
-        "wrong_credentials": "Wrong credentials",
-        "email_exists": "This email is already registered",
-        "password_short": "Password too short",
-        "signup_error": "Registration error",
-        "google_error": "Google Login error",
-        "logout": "Logged out",
-        "connect_to_generate": "Log in to generate and earn points"
-    },
-    "menu": {
-        "my_profile": "My Profile",
-        "earn_points": "Earn Points",
-        "my_purchases": "My Purchases",
-        "logout": "Log Out"
-    },
-    "notifications": {
-        "enter_prompt": "Please enter a prompt",
-        "insufficient_points": "Not enough points! Visit the Earn page.",
-        "generating": "🎨 Generating...",
-        "downloaded": "📥 Downloaded!",
-        "no_image": "❌ No image found",
-        "via_provider": "⚡ Via",
-        "discount_tag": " 🔥 -50%",
-        "freemium_limit": "🔒 Free limit reached! Sign up to continue.",
-        "share_success": "🔗 Link copied!",
-        "share_points": "+5 points for sharing!"
-    },
-    "footer": {
-        "earn_points": "Earn Points",
-        "gallery": "Gallery",
-        "shop": "Shop",
-        "profile": "Profile",
-        "privacy": "Privacy",
-        "copyright": "© 2026 Pixora. All rights reserved."
-    },
-    "language": {
-        "label": "Language",
-        "fr": "Français",        "en": "English",
-        "es": "Español",
-        "pt": "Português",
-        "ar": "العربية"
-    },
-    "share": {
-        "title": "Share",
-        "copy": "Copy",
-        "cat_messaging": "💬 Messaging",
-        "cat_social": "🌐 Social Networks",
-        "cat_community": "👥 Communities",
-        "cat_regional": "🌍 Regional",
-        "text": "Check out this AI image made with IA Pixora! Create yours for free:"
-    },
-    "faq": {
-        "q1": "Is IA Pixora really free?",
-        "a1": "Yes, IA Pixora is 100% free for generating AI images and videos. You get 3 free generations without signup. After that, a free account gives you unlimited access + 15 bonus points.",
-        "q2": "How to generate an image without signup?",
-        "a2": "You can generate up to 3 images for free without creating an account. Just enter a prompt in the studio and click Generate. After 3 generations, a popup offers you to sign up to continue.",
-        "q3": "What's the difference between IA Pixora and Midjourney?",
-        "a3": "IA Pixora is completely free, no subscription or credit card required. Midjourney requires a paid subscription. IA Pixora also offers badges, a referral system and points to reward engagement.",
-        "q4": "Can I use generated images commercially?",
-        "a4": "Yes, images generated with IA Pixora are royalty-free for personal or commercial use, as long as you comply with the terms of service.",
-        "q5": "How many free generations per day?",
-        "a5": "You get 3 free generations without signup. Once registered, you receive +15 bonus points and can generate as many images as you want. Points can be earned through voting, commenting, referrals and streaks."
-    }
+  "meta": {
+    "title": "IA Pixora — Free AI Image & Video Generator",
+    "description": "Generate professional AI images and videos in 2 clicks. 10 free creations, no credit card."
+  },
+  "header": {
+    "login": "Login",
+    "points": "points"
+  },
+  "nav": {
+    "studio": "Home",
+    "gallery": "Gallery",
+    "shop": "Shop",
+    "earn": "Earn",
+    "profile": "Profile"
+  },
+  "hero": {
+    "title": "Generate the impossible with IA Pixora",
+    "subtitle": "Professional AI images. Free. No limits.",
+    "featured": "Featured creation",
+    "univers_title": "Explore our AI universes"
+  },
+  "generator": {
+    "prompt_title": "Describe your image",
+    "placeholder": "Describe your vision...",
+    "placeholder_sheet": "Describe your scene... ex: a samurai cat under cherry blossoms",
+    "float_prompt": "Describe your scene...",
+    "image": "Image",
+    "video": "Video",
+    "video_soon": "Coming Soon",
+    "generate": "Generate",
+    "discount_active": "-50% ACTIVE",
+    "expires_in": "Expires in",
+    "cost_pts": "pts"  },
+  "results": {
+    "title": "Your Creations",
+    "permanent": "Saved permanently",
+    "download": "Download",
+    "close": "Close",
+    "generating": "AI Generating...",
+    "generated_in": "Generated in",
+    "failed": "Generation failed.",
+    "error": "Generation error."
+  },
+  "stats": {
+    "points": "Points",
+    "streak": "Streak",
+    "creations": "Creations",
+    "total_earned": "Total Earned"
+  },
+  "auth": {
+    "login_title": "Login",
+    "register_title": "Sign Up",
+    "email": "Email",
+    "email_placeholder": "your@email.com",
+    "password": "Password",
+    "pw_placeholder": "••••••••",
+    "username": "Username",
+    "login_btn": "Log In",
+    "register_btn": "Create Account",
+    "or_continue": "or continue with",
+    "google": "Continue with Google",
+    "github": "Continue with GitHub",
+    "github_soon": "GitHub coming soon...",
+    "footer": "By continuing, you accept our",
+    "conditions": "terms",
+    "welcome": "✅ Welcome!",
+    "connected": "✅ Connected!",
+    "account_created": "✅ Account created! +40 pts bonus",
+    "wrong_credentials": "❌ Incorrect credentials",
+    "email_exists": "❌ This email is already used",
+    "password_short": "❌ Password too short",
+    "signup_error": "❌ Signup error",
+    "google_error": "❌ Google Login error",
+    "logout": "✅ Logged out",
+    "connect_to_generate": "Log in to generate and earn points"
+  },
+  "menu": {
+    "my_profile": "My Profile",
+    "earn_points": "Earn Points",
+    "my_purchases": "My Purchases",
+    "logout": "Logout",
+    "login_signup": "Login / Sign up",    "ai_models": "AI Models",
+    "shop": "Shop",
+    "profile": "My profile",
+    "faq": "FAQ",
+    "how_to": "How to create",
+    "privacy": "Privacy"
+  },
+  "notifications": {
+    "enter_prompt": "Please enter a prompt",
+    "insufficient_points": "Insufficient points!",
+    "generating": "⏳ Generating...",
+    "downloaded": "✅ Downloaded!",
+    "no_image": "❌ No image found",
+    "freemium_limit": "🎁 You loved IA Pixora? Sign up to continue!",
+    "share_success": "✅ Link copied!",
+    "share_points": "+5 points for sharing!",
+    "remix_success": "✨ Prompt remixed!",
+    "prompt_copied": "📋 Prompt copied!",
+    "view_gallery": "View full gallery"
+  },
+  "footer": {
+    "earn_points": "Earn Points",
+    "gallery": "Gallery",
+    "shop": "Shop",
+    "profile": "Profile",
+    "privacy": "Privacy",
+    "copyright": "© 2026 IA Pixora. All rights reserved."
+  },
+  "language": {
+    "label": "Language",
+    "fr": "Français",
+    "en": "English"
+  },
+  "share": {
+    "title": "Share",
+    "copy": "Copy",
+    "cat_messaging": "💬 Messaging",
+    "cat_social": "Social Networks",
+    "cat_community": "Communities",
+    "cat_regional": "Regional",
+    "text": "Check out this AI image created with IA Pixora!"
+  },
+  "gallery": {
+    "reference_title": "Reference Creations"
+  },
+  "faq": {
+    "q1": "Is IA Pixora really free?",
+    "a1": "Yes, IA Pixora is 100% free.",
+    "q2": "How to generate an image without signup?",
+    "a2": "10 free generations without account.",    "q3": "What's the difference between IA Pixora and Midjourney?",
+    "a3": "IA Pixora is completely free.",
+    "q4": "Can I use generated images commercially?",
+    "a4": "Yes, royalty-free.",
+    "q5": "How many free generations per day?",
+    "a5": "10 without signup, unlimited after."
+  },
+  "how": {
+    "title": "How to create AI images with IA Pixora?",
+    "step1_title": "Describe your idea",
+    "step1_desc": "Write a detailed prompt.",
+    "step2_title": "Choose the format",
+    "step2_desc": "Square, portrait or cinema.",
+    "step3_title": "Generate & Download",
+    "step3_desc": "Get your image in seconds."
+  },
+  "actions": {
+    "remix": "Remix",
+    "prompt": "Prompt",
+    "download": "Download",
+    "share": "Share"
+  }
 }
