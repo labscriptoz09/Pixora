@@ -314,9 +314,9 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   </div>
 </header>
 <section class="hero" id="hero">
-  <img class="on" src="https://image.pollinations.ai/prompt/majestic%20samurai%20cat%20golden%20armor%20cherry%20blossoms%20ukiyo-e?width=800&height=700&nologo=true&model=flux&enhance=true&seed=11" alt="">
-  <img src="https://image.pollinations.ai/prompt/cinematic%20portrait%20woman%20bioluminescent%20tattoos%20neon%20tokyo%20rain?width=800&height=700&nologo=true&model=flux&enhance=true&seed=22" alt="">
-  <img src="https://image.pollinations.ai/prompt/cosmic%20whale%20swimming%20aurora%20nebula%20stars?width=800&height=700&nologo=true&model=flux&enhance=true&seed=33" alt="">
+  <img class="on" src="" alt="Création du jour IA Pixora" alt="">
+  <img src="" alt="Création du jour IA Pixora" alt="">
+  <img src="" alt="Création du jour IA Pixora" alt="">
   <div class="hero-overlay"><h2>Création du jour</h2><p>Générée par le robot IA Pixora</p><button class="hero-btn" onclick="openSheet()">Essayer ↗</button></div>
   <div class="dots"><span class="dot on" onclick="goSlide(0)"></span><span class="dot" onclick="goSlide(1)"></span><span class="dot" onclick="goSlide(2)"></span></div>
 </section>
@@ -420,6 +420,34 @@ var slideIdx=0;var imgs=document.querySelectorAll('.hero img');var dots=document
 setInterval(function(){slideIdx=(slideIdx+1)%imgs.length;render();},5000);
 function render(){imgs.forEach(function(im,i){im.classList.toggle('on',i===slideIdx);});dots.forEach(function(d,i){d.classList.toggle('on',i===slideIdx);});}
 function goSlide(i){slideIdx=i;render();}
+// 🎯 CARROUSEL DYNAMIQUE — fetch Supabase/R2 (3 dernières créations)
+async function loadHeroImages(){
+  try{
+    var result = await db.from('pixora_creations')
+      .select('file_name,prompt,niche')
+      .order('created_at',{ascending:false})
+      .limit(3);
+    if(result.error || !result.data || !result.data.length) return;
+    var imgs = document.querySelectorAll('.hero img');
+    result.data.forEach(function(row, i){
+      if(!imgs[i]) return;
+      var rawName = row.file_name;
+      var url = '';
+      var isSupabase = (rawName.indexOf('supabase_') === 0);
+      if(isSupabase){
+        try{ url = db.storage.from(BUCKET).getPublicUrl(rawName.replace('supabase_','')).data.publicUrl; }catch(e){ return; }
+      }else{
+        url = R2_PUBLIC_URL + '/' + rawName;
+      }
+      imgs[i].src = url;
+      imgs[i].alt = row.prompt || 'Création IA Pixora';
+      imgs[i].title = (row.niche ? row.niche + ' — ' : '') + (row.prompt || '');
+      imgs[i].onclick = function(){ openLB(url, 'image'); };
+    });
+  }catch(e){ console.warn('Hero load failed:', e); }
+}
+loadHeroImages();
+setInterval(loadHeroImages, 300000); // refresh 5 min
 window.onerror=function(msg,url,line,col,error){var n=document.getElementById('notif');if(n){document.getElementById('notif-text').textContent='❌ Une erreur est survenue.';n.className='notification show error';setTimeout(function(){n.classList.remove('show');},5000);}};
 if(window.location.hostname!=='localhost'&&window.location.hostname!=='127.0.0.1'){console.log=function(){};console.warn=function(){};console.error=function(){};}
 var PX_ANON_KEY='pxr_anon_gen_count';
