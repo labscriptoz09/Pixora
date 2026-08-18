@@ -43,7 +43,8 @@
     "failed": "Génération échouée.",
     "error": "Erreur génération."
   },
-  "stats": {    "points": "Points",
+  "stats": {
+    "points": "Points",
     "streak": "Streak",
     "creations": "Créations",
     "total_earned": "Total Gagné"
@@ -92,7 +93,8 @@
     "enter_prompt": "Veuillez entrer un prompt",
     "insufficient_points": "Points insuffisants !",
     "generating": "⏳ Génération en cours...",
-    "downloaded": "✅ Téléchargé !",    "no_image": "❌ Aucune image trouvée",
+    "downloaded": "✅ Téléchargé !",
+    "no_image": "❌ Aucune image trouvée",
     "freemium_limit": "🎁 Vous avez adoré IA Pixora ? Inscrivez-vous pour continuer !",
     "share_success": "✅ Lien copié !",
     "share_points": "+5 points pour le partage !",
@@ -141,7 +143,8 @@
     "title": "Comment créer des images IA avec IA Pixora ?",
     "step1_title": "Décrivez votre idée",
     "step1_desc": "Écrivez un prompt détaillé.",
-    "step2_title": "Choisissez le format",    "step2_desc": "Carré, portrait ou cinéma.",
+    "step2_title": "Choisissez le format",
+    "step2_desc": "Carré, portrait ou cinéma.",
     "step3_title": "Générez & Téléchargez",
     "step3_desc": "Obtenez votre image en quelques secondes."
   },
@@ -150,5 +153,31 @@
     "prompt": "Prompt",
     "download": "Télécharger",
     "share": "Partager"
+  },
+  "profile": {
+    "title": "Mon Profil | IA Pixora",
+    "description": "Gérez votre compte IA Pixora, vos points, vos badges et vos paramètres.",
+    "og_description": "Gérez votre compte IA Pixora.",
+    "tier": "Niveau",
+    "points": "Points",
+    "creations": "Créations",
+    "total_earned": "Total Gagné",
+    "badge_title": "Mon Badge Créateur",
+    "referral": "Parrainage",
+    "logout": "Déconnexion",
+    "tier_names": [
+      "Niveau 1",
+      "Niveau 2",
+      "Niveau 3"
+    ],
+    "badge_names": {
+      "bronze": "Apprenti Créateur",
+      "silver": "Créateur Confirmé",
+      "gold": "Maître Créateur",
+      "diamond": "Légende IA Pixora"
+    },
+    "next_badge": "images pour le prochain badge",
+    "no_badge": "Commencez à générer pour débloquer votre premier badge !",
+    "ref_count": "filleul(s)"
   }
 }

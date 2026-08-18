@@ -31,7 +31,8 @@
     "generate": "Generate",
     "discount_active": "-50% ACTIVE",
     "expires_in": "Expires in",
-    "cost_pts": "pts"  },
+    "cost_pts": "pts"
+  },
   "results": {
     "title": "Your Creations",
     "permanent": "Saved permanently",
@@ -80,7 +81,8 @@
     "earn_points": "Earn Points",
     "my_purchases": "My Purchases",
     "logout": "Logout",
-    "login_signup": "Login / Sign up",    "ai_models": "AI Models",
+    "login_signup": "Login / Sign up",
+    "ai_models": "AI Models",
     "shop": "Shop",
     "profile": "My profile",
     "faq": "FAQ",
@@ -129,7 +131,8 @@
     "q1": "Is IA Pixora really free?",
     "a1": "Yes, IA Pixora is 100% free.",
     "q2": "How to generate an image without signup?",
-    "a2": "10 free generations without account.",    "q3": "What's the difference between IA Pixora and Midjourney?",
+    "a2": "10 free generations without account.",
+    "q3": "What's the difference between IA Pixora and Midjourney?",
     "a3": "IA Pixora is completely free.",
     "q4": "Can I use generated images commercially?",
     "a4": "Yes, royalty-free.",
@@ -150,5 +153,31 @@
     "prompt": "Prompt",
     "download": "Download",
     "share": "Share"
+  },
+  "profile": {
+    "title": "My Profile | IA Pixora",
+    "description": "Manage your IA Pixora account, points, badges and settings.",
+    "og_description": "Manage your IA Pixora account.",
+    "tier": "Tier",
+    "points": "Points",
+    "creations": "Creations",
+    "total_earned": "Total Earned",
+    "badge_title": "My Creator Badge",
+    "referral": "Referral",
+    "logout": "Logout",
+    "tier_names": [
+      "Tier 1",
+      "Tier 2",
+      "Tier 3"
+    ],
+    "badge_names": {
+      "bronze": "Apprentice Creator",
+      "silver": "Confirmed Creator",
+      "gold": "Master Creator",
+      "diamond": "IA Pixora Legend"
+    },
+    "next_badge": "images for next badge",
+    "no_badge": "Start generating to unlock your first badge!",
+    "ref_count": "referral(s)"
   }
 }

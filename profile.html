@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta name="theme-color" content="#8B5CF6">
+<script src="/i18n.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZXXYQRBQ"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TDZXXYQRBQ');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Mon Profil | IA Pixora</title>
-<meta name="description" content="Gérez votre compte IA Pixora, vos points, vos badges et vos paramètres.">
+<title data-i18n="profile.title">My Profile | IA Pixora</title>
+<meta name="description" data-i18n="profile.description" data-i18n-attr="content" content="Manage your IA Pixora account, points, badges and settings.">
 <link rel="canonical" href="https://iapixora.com/profile.html">
-<meta property="og:type" content="website"><meta property="og:site_name" content="IA Pixora"><meta property="og:url" content="https://iapixora.com/profile.html"><meta property="og:title" content="Mon Profil | IA Pixora"><meta property="og:description" content="Gérez votre compte IA Pixora."><meta property="og:image" content="https://iapixora.com/og-image.jpg">
+<meta property="og:type" content="website"><meta property="og:site_name" content="IA Pixora"><meta property="og:url" content="https://iapixora.com/profile.html"><meta property="og:title" data-i18n="profile.title" data-i18n-attr="content" content="My Profile | IA Pixora"><meta property="og:description" data-i18n="profile.og_description" data-i18n-attr="content" content="Manage your IA Pixora account."><meta property="og:image" content="https://iapixora.com/og-image.jpg">
 <meta name="robots" content="noindex, follow">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
@@ -179,7 +180,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <div class="profile-email" id="profile-email">email@example.com</div>
     <div class="profile-tier">
       <i class="fas fa-crown"></i>
-      <span id="profile-tier-name">Niveau 1</span>
+      <span id="profile-tier-name" data-i18n="profile.tier">Tier</span> 1
     </div>
   </div>
 
@@ -188,7 +189,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     <div class="stat-card">
       <div class="stat-icon" style="color:var(--gold)"><i class="fas fa-bolt"></i></div>
       <div class="stat-val" id="stat-points">0</div>
-      <div class="stat-lbl">Points</div>
+      <div class="stat-lbl"data-i18n="profile.points">Points</div>
     </div>
     <div class="stat-card">
       <div class="stat-icon" style="color:#F97316"><i class="fas fa-fire"></i></div>
@@ -197,18 +198,18 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
     </div>
     <div class="stat-card">
       <div class="stat-icon" style="color:var(--prim)"><i class="fas fa-image"></i></div>      <div class="stat-val" id="stat-generated">0</div>
-      <div class="stat-lbl">Créations</div>
+      <div class="stat-lbl"data-i18n="profile.creations">Creations</div>
     </div>
     <div class="stat-card">
       <div class="stat-icon" style="color:var(--success)"><i class="fas fa-coins"></i></div>
       <div class="stat-val" id="stat-earned">0</div>
-      <div class="stat-lbl">Total Gagné</div>
+      <div class="stat-lbl"data-i18n="profile.total_earned">Total Earned</div>
     </div>
   </div>
 
   <!-- BADGE SECTION -->
   <div class="profile-section">
-    <div class="section-title"><i class="fas fa-trophy"></i> <span>Mon Badge Créateur</span></div>
+    <div class="section-title"><i class="fas fa-trophy"></i> <span data-i18n="profile.badge_title">My Creator Badge</span></div>
     <div class="badge-display" id="badge-display">
       <div class="badge-icon-large" id="badge-icon">🎨</div>
       <div class="badge-info">
@@ -223,7 +224,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
 
   <!-- REFERRAL MINI -->
   <div class="profile-section">
-    <div class="section-title"><i class="fas fa-user-friends"></i> <span>Parrainage</span></div>
+    <div class="section-title"><i class="fas fa-user-friends"></i> <span data-i18n="profile.referral">Referral</span></div>
     <div class="ref-mini">
       <div class="ref-mini-icon"><i class="fas fa-gift"></i></div>
       <div class="ref-mini-info">
@@ -241,7 +242,7 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
       <a href="earn.html" class="profile-menu-item"><i class="fas fa-coins"></i>Gagner des points</a>
       <a href="shop.html" class="profile-menu-item"><i class="fas fa-shopping-bag"></i>Boutique</a>
       <a href="gallery.html" class="profile-menu-item"><i class="fas fa-images"></i>Mes créations (Galerie)</a>
-      <button class="profile-menu-item danger" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Déconnexion</button>
+      <button class="profile-menu-item danger" onclick="doLogout()"><i class="fas fa-sign-out-alt"></idata-i18n="profile.logout">Logout</button>
     </div>
   </div>
 
@@ -271,10 +272,7 @@ function openMenu(){document.getElementById('menu').classList.add('open');docume
 function closeMenu(){document.getElementById('menu').classList.remove('open');document.getElementById('scrim').classList.remove('on');}
 
 // ========== I18N SIMPLE ==========
-var PROFILE_I18N = {
-  fr: { tier_names: ['Niveau 1', 'Niveau 2', 'Niveau 3'], badge_names: { bronze: 'Apprenti Créateur', silver: 'Créateur Confirmé', gold: 'Maître Créateur', diamond: 'Légende IA Pixora' }, next_badge: 'images pour le prochain badge', no_badge: 'Commencez à générer pour débloquer votre premier badge !', ref_count: 'filleul(s)' },
-  en: { tier_names: ['Level 1', 'Level 2', 'Level 3'], badge_names: { bronze: 'Apprentice Creator', silver: 'Confirmed Creator', gold: 'Master Creator', diamond: 'IA Pixora Legend' }, next_badge: 'images for next badge', no_badge: 'Start generating to unlock your first badge!', ref_count: 'referral(s)' }
-};
+var // i18n géré par i18n.js + lang/*.json
 var currentProfileLang = 'fr';
 function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentProfileLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
 function changeProfileLang(lang){currentProfileLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;loadProfileData();}
