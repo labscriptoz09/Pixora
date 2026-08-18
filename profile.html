@@ -363,7 +363,7 @@ async function loadProfileData(user) {
   document.getElementById('profile-email').textContent = user.email;
   document.getElementById('profile-avatar').textContent = initial;
   document.getElementById('avatar-initial').textContent = initial;
-  document.getElementById('header-points').textContent = pts.toLocaleString();
+  var hp=document.getElementById('header-points');if(hp)hp.textContent=pts.toLocaleString();
   
   // Header style index
   document.body.classList.add('logged');
