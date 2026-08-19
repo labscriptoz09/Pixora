@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Guide | IA Pixora</title>
+<meta name="description" content="Comment créer votre image IA en 4 étapes simples avec IA Pixora. Conseils prompts inclus.">
+<link rel="canonical" href="https://iapixora.com/guide.html">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#050507;--surf:rgba(24,24,27,0.6);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--gold:#FBBF24;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--hdr:rgba(20,20,23,0.85)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100dvh;padding-bottom:90px;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+.site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.header-logo{display:flex;align-items:center;gap:0.5rem}
+.header-logo svg{width:28px;height:28px}
+.logo-text{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer}
+.main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px}
+.page-title{font-size:2rem;font-weight:800;margin-bottom:0.3rem}
+.page-sub{font-size:0.85rem;color:var(--muted);margin-bottom:2rem}
+.step{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:0.8rem;display:flex;gap:1rem}
+.step-num{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.3rem}
+.step p{font-size:0.85rem;color:var(--muted)}
+.step .ex{display:block;margin-top:0.5rem;padding:0.6rem 0.8rem;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:10px;font-size:0.78rem;color:var(--text);font-style:italic}
+.tips-box{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:16px;padding:1.2rem;margin-top:1.5rem}
+.tips-box h2{font-size:1rem;font-weight:800;margin-bottom:0.8rem}
+.tips-box li{font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem;margin-left:1.2rem}
+.cta{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;margin-top:1.5rem;padding:1rem;border-radius:14px;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;font-weight:800;font-size:0.95rem;box-shadow:0 4px 20px rgba(139,92,246,0.4)}
+.site-footer{text-align:center;padding:1.5rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
+.site-footer a{color:var(--muted);margin:0 0.5rem}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a href="index.html" class="header-logo">
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)"/></svg>
+    <span class="logo-text">IA Pixora</span>
+  </a>
+  <select class="lang-select" id="lang-select" onchange="changeGuideLang(this.value)">
+    <option value="fr">🇫🇷 FR</option>
+    <option value="en">🇬🇧 EN</option>
+  </select></header>
+<main class="main-content">
+  <h1 class="page-title" data-i18n="page.title">Comment créer votre image IA</h1>
+  <p class="page-sub" data-i18n="page.sub">4 étapes simples, 30 secondes.</p>
+  <div id="steps"></div>
+  <div class="tips-box">
+    <h2 data-i18n="tips.title">💡 Conseils pour un prompt parfait</h2>
+    <ul id="tips-list"></ul>
+  </div>
+  <a href="index.html" class="cta">✨ <span data-i18n="cta">Essayer maintenant</span></a>
+</main>
+<footer class="site-footer">
+  <a href="index.html">Studio</a><a href="gallery.html">Galerie</a><a href="faq.html">FAQ</a><a href="privacy.html">Confidentialité</a>
+  <div style="margin-top:.5rem">© 2026 IA Pixora</div>
+</footer>
+<script>
+var GUIDE_I18N={
+ fr:{page:{title:'Comment créer votre image IA',sub:'4 étapes simples, 30 secondes.'},tips:{title:'💡 Conseils pour un prompt parfait'},cta:'Essayer maintenant',steps:[
+  {t:'Décrivez votre idée',d:'Dans le champ texte, décrivez ce que vous voulez voir. Soyez précis : sujet + décor + style + lumière.',ex:'"Chat astronaute sur la lune, ultra réaliste, lumière cinématique"'},
+  {t:'Choisissez le format',d:'Carré (1:1) pour les réseaux sociaux, Portrait (3:4) pour mobile, Cinéma (16:9) pour fonds d\'écran.',ex:''},
+  {t:'Choisissez le modèle',d:'⚡ Fast : instantané. ✨ PRO : qualité maximum. 🎨 Artistique : style créatif.',ex:''},
+  {t:'Générez, téléchargez, partagez',d:'Votre image arrive en ~10-20 secondes. Téléchargez-la, partagez-la (+5 points) ou remixez-la pour l\'améliorer.',ex:''}
+ ],tips_list:[
+  'Soyez précis : sujet + décor + style + lumière',
+  'Plus vous donnez de détails, meilleur est le résultat',
+  'Remixez un prompt réussi pour créer des variations',
+  'Partagez vos créations pour gagner des points'
+ ]},
+ en:{page:{title:'How to create your AI image',sub:'4 simple steps, 30 seconds.'},tips:{title:'💡 Tips for a perfect prompt'},cta:'Try now',steps:[
+  {t:'Describe your idea',d:'In the text field, describe what you want to see. Be precise: subject + setting + style + lighting.',ex:'"Astronaut cat on the moon, ultra realistic, cinematic lighting"'},
+  {t:'Choose the format',d:'Square (1:1) for social media, Portrait (3:4) for mobile, Cinema (16:9) for wallpapers.',ex:''},
+  {t:'Choose the model',d:'⚡ Fast: instant. ✨ PRO: maximum quality. 🎨 Artistic: creative style.',ex:''},
+  {t:'Generate, download, share',d:'Your image arrives in ~10-20 seconds. Download it, share it (+5 points) or remix it to improve it.',ex:''}
+ ],tips_list:[
+  'Be precise: subject + setting + style + lighting',
+  'The more details you give, the better the result',
+  'Remix a successful prompt to create variations',
+  'Share your creations to earn points'
+ ]}
+};
+var curLang='fr';
+function tG(k){var v=GUIDE_I18N[curLang];var ks=k.split('.');for(var i=0;i<ks.length;i++)v=v[ks[i]];return v||k;}
+function renderGuide(){
+ document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');var v=tG(k);if(v)el.textContent=v;});
+ var st=document.getElementById('steps');st.innerHTML='';
+ GUIDE_I18N[curLang].steps.forEach(function(s,i){
+  var d=document.createElement('div');d.className='step';
+  d.innerHTML='<div class="step-num">'+(i+1)+'</div><div><h3>'+s.t+'</h3><p>'+s.d+'</p>'+(s.ex?'<span class="ex">'+s.ex+'</span>':'')+'</div>';
+  st.appendChild(d);
+ }); var tl=document.getElementById('tips-list');tl.innerHTML='';
+ GUIDE_I18N[curLang].tips_list.forEach(function(t){
+  var li=document.createElement('li');li.textContent=t;tl.appendChild(li);
+ });
+}
+function changeGuideLang(l){curLang=l;localStorage.setItem('pixora_lang',l);document.documentElement.lang=l;document.getElementById('lang-select').value=l;renderGuide();}
+document.addEventListener('DOMContentLoaded',function(){
+ var s=localStorage.getItem('pixora_lang');if(s==='en'||s==='fr')curLang=s;
+ document.getElementById('lang-select').value=curLang;
+ document.documentElement.lang=curLang;
+ renderGuide();
+});
+</script>
+</body>
+</html>

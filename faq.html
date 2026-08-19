@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FAQ | IA Pixora</title>
+<meta name="description" content="Questions fréquentes IA Pixora : gratuité, points, badges, images, compte.">
+<link rel="canonical" href="https://iapixora.com/faq.html">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#050507;--surf:rgba(24,24,27,0.6);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--hdr:rgba(20,20,23,0.85)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100dvh;padding-bottom:90px;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+.site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--hdr);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.header-logo{display:flex;align-items:center;gap:0.5rem}
+.header-logo svg{width:28px;height:28px}
+.logo-text{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lang-select{padding:0.3rem 0.4rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.7rem;font-weight:600;cursor:pointer}
+.main-content{max-width:800px;margin:0 auto;padding:1rem;padding-top:72px}
+.page-title{font-size:2rem;font-weight:800;margin-bottom:0.3rem}
+.page-sub{font-size:0.85rem;color:var(--muted);margin-bottom:2rem}
+.faq-item{background:var(--surf);border:1px solid var(--border);border-radius:16px;margin-bottom:0.8rem;overflow:hidden}
+.faq-q{width:100%;padding:1.1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:0.8rem;background:none;border:none;color:var(--text);font-family:var(--font);font-size:0.92rem;font-weight:700;cursor:pointer;text-align:left}
+.faq-q i{color:var(--prim);transition:transform 0.3s;flex-shrink:0}
+.faq-item.open .faq-q i{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.3s ease}
+.faq-a p{padding:0 1.2rem 1.1rem;font-size:0.85rem;color:var(--muted);line-height:1.7}
+.contact-box{background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:12px;padding:1.2rem;text-align:center;margin-top:1.5rem}
+.contact-box a{color:var(--prim);font-weight:600}
+.site-footer{text-align:center;padding:1.5rem 1rem;color:var(--dim);font-size:0.68rem;border-top:1px solid var(--border);margin-top:1.5rem}
+.site-footer a{color:var(--muted);margin:0 0.5rem}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a href="index.html" class="header-logo">
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#hg)"/></svg>
+    <span class="logo-text">IA Pixora</span>
+  </a>
+  <select class="lang-select" id="lang-select" onchange="changeFaqLang(this.value)">
+    <option value="fr">🇫🇷 FR</option>
+    <option value="en">🇬🇧 EN</option>
+  </select></header>
+<main class="main-content">
+  <h1 class="page-title" data-i18n="page.title">Questions Fréquentes</h1>
+  <p class="page-sub" data-i18n="page.sub">Tout ce que vous devez savoir sur IA Pixora.</p>
+  <div id="faq-list"></div>
+  <div class="contact-box">
+    <p data-i18n="page.contact">Une autre question ?</p>
+    <a href="mailto:leonard@iapixora.com">leonard@iapixora.com</a>
+  </div>
+</main>
+<footer class="site-footer">
+  <a href="index.html">Studio</a><a href="gallery.html">Galerie</a><a href="guide.html">Guide</a><a href="privacy.html">Confidentialité</a>
+  <div style="margin-top:.5rem">© 2026 IA Pixora</div>
+</footer>
+<script>
+var FAQ_I18N={
+ fr:{page:{title:'Questions Fréquentes',sub:'Tout ce que vous devez savoir sur IA Pixora.',contact:'Une autre question ?'},items:[
+  {q:"Qu'est-ce que IA Pixora ?",a:"IA Pixora est un générateur d'images par intelligence artificielle, gratuit et sans inscription. Décrivez votre idée, l'IA crée votre image en ~10 secondes."},
+  {q:"Est-ce vraiment gratuit ?",a:"Oui. 10 essais gratuits sans compte, puis illimité avec un compte gratuit (+40 points offerts à l'inscription)."},
+  {q:"Ai-je besoin d'un compte ?",a:"Non pour essayer. Oui pour sauvegarder vos créations, gagner des points, débloquer des badges et parrainer des amis."},
+  {q:"Comment gagner des points ?",a:"En générant des images, en partageant vos créations (+5), en invitant des amis (+10 par filleul) et en gardant votre streak quotidien."},
+  {q:"À quoi servent les points ?",a:"Les points font monter votre niveau, débloquent des badges (bronze → diamant) et donnent accès aux récompenses de la boutique."},
+  {q:"Que deviennent mes images ?",a:"Sans compte : supprimées automatiquement après 1 heure. Avec compte : conservées en permanence dans votre galerie personnelle."},
+  {q:"Puis-je utiliser mes images commercialement ?",a:"Oui, vos images vous appartiennent. Usage personnel et commercial autorisé."},
+  {q:"Comment supprimer mon compte ?",a:"Depuis votre profil, ou en nous contactant à leonard@iapixora.com. Suppression immédiate et définitive."}
+ ]},
+ en:{page:{title:'Frequently Asked Questions',sub:'Everything you need to know about IA Pixora.',contact:'Another question?'},items:[
+  {q:"What is IA Pixora?",a:"IA Pixora is a free AI image generator, no signup required. Describe your idea, the AI creates your image in ~10 seconds."},
+  {q:"Is it really free?",a:"Yes. 10 free trials without an account, then unlimited with a free account (+40 bonus points on signup)."},
+  {q:"Do I need an account?",a:"No to try. Yes to save your creations, earn points, unlock badges and refer friends."},
+  {q:"How do I earn points?",a:"By generating images, sharing your creations (+5), inviting friends (+10 per referral) and keeping your daily streak."},
+  {q:"What are points for?",a:"Points raise your level, unlock badges (bronze → diamond) and give access to shop rewards."},
+  {q:"What happens to my images?",a:"Without account: automatically deleted after 1 hour. With account: permanently saved in your personal gallery."},
+  {q:"Can I use my images commercially?",a:"Yes, your images belong to you. Personal and commercial use allowed."},
+  {q:"How do I delete my account?",a:"From your profile, or by contacting us at leonard@iapixora.com. Immediate and permanent deletion."}
+ ]}
+};
+var curLang='fr';
+function tF(k){var v=FAQ_I18N[curLang];var ks=k.split('.');for(var i=0;i<ks.length;i++)v=v[ks[i]];return v||k;}
+function renderFaq(){
+ document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');var v=tF(k);if(v)el.textContent=v;});
+ var list=document.getElementById('faq-list');list.innerHTML='';
+ FAQ_I18N[curLang].items.forEach(function(it){
+  var d=document.createElement('div');d.className='faq-item';
+  d.innerHTML='<button class="faq-q">'+it.q+' <i class="fas fa-chevron-down"></i></button><div class="faq-a"><p>'+it.a+'</p></div>';
+  d.querySelector('.faq-q').onclick=function(){
+   var open=d.classList.toggle('open');
+   var a=d.querySelector('.faq-a');
+   a.style.maxHeight=open?a.scrollHeight+'px':'0';
+  };  list.appendChild(d);
+ });
+}
+function changeFaqLang(l){curLang=l;localStorage.setItem('pixora_lang',l);document.documentElement.lang=l;document.getElementById('lang-select').value=l;renderFaq();}
+document.addEventListener('DOMContentLoaded',function(){
+ var s=localStorage.getItem('pixora_lang');if(s==='en'||s==='fr')curLang=s;
+ document.getElementById('lang-select').value=curLang;
+ document.documentElement.lang=curLang;
+ renderFaq();
+});
+</script>
+</body>
+</html>
