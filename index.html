@@ -555,5 +555,33 @@ db.auth.onAuthStateChange(async function(event){if(event==='SIGNED_IN'){await lo
 async function cleanupExpiredCreations(){return;}
 document.addEventListener('DOMContentLoaded',async function(){try{await loadLang(detectLang());detectReferral();await loadApiKeys();await loadDynamicConfig();await loadUserTier();await updateUI();await cleanupExpiredCreations();await loadStudio();await loadRecent();selModelCard(selectedModel);setTimeout(function(){var sponsorBlock=document.getElementById('sponsorised-container');if(sponsorBlock&&sponsorBlock.children.length===0)sponsorBlock.style.display='none';},2000);}catch(err){notify('Erreur init: '+err.message,'error');}});
 </script>
+
+<style>
+.niches-seo{margin:24px 16px 0;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:16px}
+.niches-seo h5{font-size:.68rem;font-weight:700;letter-spacing:.15em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.niches-grid{display:flex;flex-wrap:wrap;gap:8px}
+.niches-grid a{padding:8px 14px;border-radius:100px;border:1px solid rgba(139,92,246,.4);color:#d8c9ff;background:rgba(139,92,246,.08);font-size:.72rem;font-weight:600;text-decoration:none}
+</style>
+<section class="niches-seo">
+<h5>Explore nos univers IA</h5>
+<div class="niches-grid">
+<a href="/niche/fr/tatouage">🎯 Tatouage</a>
+<a href="/niche/fr/avatar">🎭 Avatar</a>
+<a href="/niche/fr/anime">🌸 Anime</a>
+<a href="/niche/fr/logo">💼 Logo</a>
+<a href="/niche/fr/animaux">🐾 Animaux</a>
+<a href="/niche/fr/fond-ecran">📱 Fond Ecran</a>
+<a href="/niche/fr/coloriage">🖍️ Coloriage</a>
+<a href="/niche/fr/miniature-youtube">🎬 Miniature Youtube</a>
+<a href="/niche/fr/couverture-livre">📚 Couverture Livre</a>
+<a href="/niche/fr/decoration">🏠 Decoration</a>
+<a href="/niche/fr/nourriture">🍕 Nourriture</a>
+<a href="/niche/fr/mode">👗 Mode</a>
+<a href="/niche/fr/immobilier">🏢 Immobilier</a>
+<a href="/niche/fr/espace">🚀 Espace</a>
+<a href="/niche/fr/mariage">💍 Mariage</a>
+<a href="/niche/fr/sticker">✨ Sticker</a>
+</div>
+</section>
 </body>
 </html>
