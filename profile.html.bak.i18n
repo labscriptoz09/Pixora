@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8B5CF6">
+<script src="/i18n.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZXXYQRBQ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TDZXXYQRBQ');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title data-i18n="profile.title">My Profile | IA Pixora</title>
+<meta name="description" data-i18n="profile.description" data-i18n-attr="content" content="Manage your IA Pixora account, points, badges and settings.">
+<link rel="canonical" href="https://iapixora.com/profile.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="IA Pixora"><meta property="og:url" content="https://iapixora.com/profile.html"><meta property="og:title" data-i18n="profile.title" data-i18n-attr="content" content="My Profile | IA Pixora"><meta property="og:description" data-i18n="profile.og_description" data-i18n-attr="content" content="Manage your IA Pixora account."><meta property="og:image" content="https://iapixora.com/og-image.jpg">
+<meta name="robots" content="noindex, follow">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#08080a;--card:#141419;--card2:#1b1b22;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--border2:rgba(255,255,255,.14);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--cyan:#22d3ee;--gold:#FBBF24;--gold-dim:rgba(251,191,36,0.1);--success:#10B981;--danger:#EF4444;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;padding-bottom:160px;-webkit-font-smoothing:antialiased}
+button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ===== PUBS BLOQUÉES ===== */
+.pxr-wrapper{display:none!important}
+#sponsorised-container{display:none!important}
+
+/* ===== HEADER ===== */
+header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(8,8,10,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.burger{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px;flex-shrink:0}
+.header-logo{display:flex;align-items:center;gap:7px;flex:1;min-width:0;text-decoration:none}
+.header-logo svg{width:24px;height:24px;flex-shrink:0}
+.logo-text{font-size:.92rem;font-weight:800;letter-spacing:.08em;white-space:nowrap;background:linear-gradient(90deg,#c4b5fd,#8B5CF6 45%,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-right{display:flex;align-items:center;gap:6px;margin-left:auto;position:relative;flex-shrink:0}
+.balance-pill{display:flex;align-items:center;gap:.4rem;padding:.35rem .7rem;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:20px;font-size:.75rem;font-weight:700;color:var(--gold)}
+.balance-pill i{color:var(--gold);font-size:.8rem}
+.balance-pill span{font-family:var(--mono)}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;cursor:pointer;color:#fff}
+
+/* ===== MAIN ===== */
+main.main-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:20px}
+
+/* ===== PROFILE HEADER ===== */
+.profile-header{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(236,72,153,.1));border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:1.5rem;text-align:center;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.profile-avatar-large{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:#fff;margin:0 auto .8rem;box-shadow:0 8px 24px rgba(139,92,246,.4)}
+.profile-name{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
+.profile-email{font-size:.82rem;color:var(--muted);margin-bottom:.8rem;word-break:break-all}
+.profile-tier{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .9rem;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:100px;font-size:.75rem;font-weight:700;color:var(--gold)}
+
+/* ===== STATS GRID ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-bottom:1.5rem}@media(min-width:600px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem;text-align:center;transition:all .2s}
+.stat-card:hover{border-color:var(--prim);transform:translateY(-2px)}
+.stat-icon{width:36px;height:36px;margin:0 auto .5rem;background:var(--elev);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.stat-val{font-size:1.2rem;font-weight:800;margin-bottom:.1rem;font-family:var(--mono)}
+.stat-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+
+/* ===== PROFILE SECTIONS ===== */
+.profile-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.2rem}
+.section-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.section-title i{color:var(--prim)}
+
+/* ===== BADGE DISPLAY ===== */
+.badge-display{display:flex;align-items:center;gap:1rem;padding:1rem;background:var(--card2);border-radius:12px;border:1px solid var(--border)}
+.badge-icon-large{font-size:2.5rem}
+.badge-info{flex:1}
+.badge-info h4{font-size:.95rem;font-weight:700;margin-bottom:.2rem}
+.badge-info p{font-size:.78rem;color:var(--muted)}
+.badge-progress-wrap{margin-top:.5rem}
+.badge-progress{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.badge-progress-bar{height:100%;border-radius:3px;transition:width .5s ease}
+
+/* ===== REFERRAL MINI ===== */
+.ref-mini{display:flex;align-items:center;gap:.8rem;padding:1rem;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:12px}
+.ref-mini-icon{width:40px;height:40px;border-radius:10px;background:rgba(139,92,246,.15);display:flex;align-items:center;justify-content:center;color:var(--prim);font-size:1.1rem}
+.ref-mini-info{flex:1}
+.ref-mini-info h4{font-size:.88rem;font-weight:700;margin-bottom:.1rem}
+.ref-mini-info p{font-size:.75rem;color:var(--muted)}
+.btn-mini{padding:.5rem .9rem;border-radius:10px;font-size:.75rem;font-weight:700;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;white-space:nowrap}
+
+/* ===== PROFILE MENU ===== */
+.profile-menu{display:flex;flex-direction:column;gap:.5rem}
+.profile-menu-item{display:flex;align-items:center;gap:1rem;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+.profile-menu-item:hover{border-color:var(--prim);background:rgba(139,92,246,.05)}
+.profile-menu-item i{width:20px;text-align:center;color:var(--muted);font-size:1rem}
+.profile-menu-item.danger{color:var(--danger)}
+.profile-menu-item.danger i{color:var(--danger)}
+.profile-menu-item.danger:hover{background:rgba(239,68,68,.08);border-color:var(--danger)}
+
+/* ===== MENU HAMBURGER ===== */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:75;opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.on{opacity:1;pointer-events:auto}
+.menu{position:fixed;top:0;left:0;bottom:0;width:290px;max-width:82%;z-index:80;background:rgba(15,15,20,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-right:1px solid var(--border2);transform:translateX(-105%);transition:transform .3s cubic-bezier(.2,.9,.3,1);padding:18px 12px;display:flex;flex-direction:column;gap:2px}
+.menu.open{transform:translateX(0)}
+.menu-head{display:flex;align-items:center;gap:8px;padding:8px 12px 16px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.menu-head svg{width:24px;height:24px}
+.m-item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;color:var(--text);font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit;text-align:left}
+.m-item:active{background:rgba(139,92,246,.12);color:#c4b5fd}
+.m-item i{font-style:normal;width:22px;text-align:center}
+.m-sep{height:1px;background:var(--border);margin:8px 6px}.m-lang{display:flex;gap:6px;padding:6px 10px}
+.m-lang select{flex:1;padding:10px 0;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* ===== BOTTOM NAV ===== */
+nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;background:rgba(10,10,13,.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding:8px 6px calc(10px + env(safe-area-inset-bottom))}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--dim);font-size:.6rem;font-weight:600;padding:6px 0;border-radius:12px;position:relative}
+.nav-item i{font-size:1.15rem}
+.nav-item[data-nav="studio"].active{color:var(--prim)}
+.nav-item[data-nav="gallery"].active{color:#3B82F6}
+.nav-item[data-nav="points"].active{color:var(--gold)}
+.nav-item[data-nav="shop"].active{color:var(--success)}
+.nav-item[data-nav="profile"].active{color:var(--sec)}
+.nav-item[data-nav="profile"].active i{filter:drop-shadow(0 0 8px rgba(236,72,153,.7))}
+
+/* ===== FOOTER ===== */
+.site-footer{text-align:center;padding:1.5rem 1rem;color:var(--dim);font-size:.68rem;border-top:1px solid var(--border);margin-top:2rem}
+.site-footer a{color:var(--muted);text-decoration:none;margin:0 .5rem}
+
+/* ===== DESKTOP ===== */
+@media(min-width:768px){
+  .page-title{font-size:2.2rem}
+  nav.nav-mobile{left:50%;right:auto;transform:translateX(-50%);max-width:900px}
+}
+</style>
+</head>
+<body>
+
+<!-- MENU HAMBURGER -->
+<div class="scrim" id="scrim" onclick="closeMenu()"></div>
+<div class="menu" id="menu">
+  <div class="menu-head">
+    <svg viewBox="0 0 100 100"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs><polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g2)"/><text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text></svg>
+    <span class="logo-text">IAPIXORA</span>
+  </div>
+  <a class="m-item" href="index.html" onclick="closeMenu()"><i></i>Accueil</a>
+  <a class="m-item" href="gallery.html" onclick="closeMenu()"><i>🖼️</i>Galerie</a>
+  <a class="m-item" href="shop.html" onclick="closeMenu()"><i>🛍️</i>Boutique</a>
+  <a class="m-item" href="earn.html" onclick="closeMenu()"><i>💰</i>Gagner des points</a>
+  <a class="m-item" href="profile.html" onclick="closeMenu()"><i>👤</i>Mon profil</a>
+  <div class="m-sep"></div>
+  <div class="m-lang">
+    <select id="lang-select" onchange="changeProfileLang(this.value)">
+      <option value="fr">🇫🇷 Français</option>
+      <option value="en">🇬🇧 English</option>
+    </select>
+  </div>
+  <div class="m-sep"></div>
+  <a class="m-item" href="privacy.html" onclick="closeMenu()"><i>🔒</i>Confidentialité</a>
+</div>
+<!-- HEADER -->
+<header class="site-header">
+  <button class="burger" onclick="openMenu()">☰</button>
+  <a href="index.html" class="header-logo">
+    <svg viewBox="0 0 100 100">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs>
+      <polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g)"/>
+      <polygon points="50,4 96,38 50,48" fill="rgba(255,255,255,.18)"/>
+      <polygon points="4,38 50,48 22,96" fill="rgba(0,0,0,.18)"/>
+      <text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text>
+    </svg>
+    <span class="logo-text">IAPIXORA</span>
+  </a>
+  <div class="header-right">
+    <div class="balance-pill">
+      <i class="fas fa-coins"></i>
+      <span id="header-points">---</span>
+    </div>
+    <div class="user-avatar" id="header-avatar"><span id="header-initial">U</span></div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main-content">
+  
+  <!-- PROFILE HEADER -->
+  <div class="profile-header">
+    <div class="profile-avatar-large" id="profile-avatar">U</div>
+    <div class="profile-name" id="profile-name">Utilisateur</div>
+    <div class="profile-email" id="profile-email">email@example.com</div>
+    <div class="profile-tier">
+      <i class="fas fa-crown"></i>
+      <span id="profile-tier-name" data-i18n="profile.tier">Tier</span> 1
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="color:var(--gold)"><i class="fas fa-bolt"></i></div>
+      <div class="stat-val" id="stat-points">0</div>
+      <div class="stat-lbl"data-i18n="profile.points">Points</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="color:#F97316"><i class="fas fa-fire"></i></div>
+      <div class="stat-val" id="stat-streak">0</div>
+      <div class="stat-lbl">Streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="color:var(--prim)"><i class="fas fa-image"></i></div>      <div class="stat-val" id="stat-generated">0</div>
+      <div class="stat-lbl"data-i18n="profile.creations">Creations</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="color:var(--success)"><i class="fas fa-coins"></i></div>
+      <div class="stat-val" id="stat-earned">0</div>
+      <div class="stat-lbl"data-i18n="profile.total_earned">Total Earned</div>
+    </div>
+  </div>
+
+  <!-- BADGE SECTION -->
+  <div class="profile-section">
+    <div class="section-title"><i class="fas fa-trophy"></i> <span data-i18n="profile.badge_title">My Creator Badge</span></div>
+    <div class="badge-display" id="badge-display">
+      <div class="badge-icon-large" id="badge-icon">🎨</div>
+      <div class="badge-info">
+        <h4 id="badge-name">Apprenti Créateur</h4>
+        <p id="badge-desc">0 / 5 images pour le prochain badge</p>
+        <div class="badge-progress-wrap">
+          <div class="badge-progress"><div class="badge-progress-bar" id="badge-bar" style="width:0%;background:linear-gradient(90deg,#CD7F32,#E8A862)"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERRAL MINI -->
+  <div class="profile-section">
+    <div class="section-title"><i class="fas fa-user-friends"></i> <span data-i18n="profile.referral">Referral</span></div>
+    <div class="ref-mini">
+      <div class="ref-mini-icon"><i class="fas fa-gift"></i></div>
+      <div class="ref-mini-info">
+        <h4 id="ref-count-title">0 filleul(s)</h4>
+        <p>+10 points par ami invité</p>
+      </div>
+      <a href="earn.html" class="btn-mini">Inviter</a>
+    </div>
+  </div>
+
+  <!-- ACTIONS MENU -->
+  <div class="profile-section" style="background:transparent;border:none;padding:0">
+    <div class="section-title"><i class="fas fa-cog"></i> <span>Paramètres</span></div>
+    <div class="profile-menu">
+      <a href="earn.html" class="profile-menu-item"><i class="fas fa-coins"></i>Gagner des points</a>
+      <a href="shop.html" class="profile-menu-item"><i class="fas fa-shopping-bag"></i>Boutique</a>
+      <a href="gallery.html" class="profile-menu-item"><i class="fas fa-images"></i>Mes créations (Galerie)</a>
+      <button class="profile-menu-item danger" onclick="doLogout()"><i class="fas fa-sign-out-alt"></idata-i18n="profile.logout">Logout</button>
+    </div>
+  </div>
+
+  <footer class="site-footer">    <a href="index.html">Accueil</a>
+    <a href="gallery.html">Galerie</a>
+    <a href="shop.html">Boutique</a>
+    <a href="earn.html">Gagner</a>
+    <a href="privacy.html">Confidentialité</a>
+    <div style="margin-top:.5rem">© 2026 IA Pixora. Tous droits réservés.</div>
+  </footer>
+</main>
+
+<!-- NAV 5 ONGLETS -->
+<nav class="nav-mobile">
+  <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Accueil</span></a>
+  <a href="gallery.html" class="nav-item" data-nav="gallery"><i class="fas fa-images"></i><span>Galerie</span></a>
+  <a href="shop.html" class="nav-item" data-nav="shop"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+  <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span>Gagner</span></a>
+  <a href="profile.html" class="nav-item active" data-nav="profile"><i class="fas fa-user"></i><span>Profil</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="ads-loader.js"></script>
+<script>
+// ========== MENU ==========
+function openMenu(){document.getElementById('menu').classList.add('open');document.getElementById('scrim').classList.add('on');}
+function closeMenu(){document.getElementById('menu').classList.remove('open');document.getElementById('scrim').classList.remove('on');}
+
+// ========== I18N SIMPLE ==========
+var // i18n géré par i18n.js + lang/*.json
+var currentProfileLang = 'fr';
+function tProfile(key){var keys=key.split('.');var val=PROFILE_I18N[currentProfileLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
+function changeProfileLang(lang){currentProfileLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;loadProfileData();}
+function detectProfileLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();return nav.indexOf('en')!==-1?'en':'fr'}
+
+// ========== SUPABASE ==========
+const SUPABASE_URL = 'https://cfwzilhetkclpytjsopu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const BADGES_CONFIG = [
+  { id: 'bronze', icon: '🎨', threshold: 5, points: 5, colorClass: 'bronze' },
+  { id: 'silver', icon: '️', threshold: 15, points: 10, colorClass: 'silver' },
+  { id: 'gold', icon: '👑', threshold: 20, points: 20, colorClass: 'gold' },
+  { id: 'diamond', icon: '💎', threshold: 50, points: 50, colorClass: 'diamond' }
+];
+
+async function init() {
+  var lang = detectProfileLang();
+  currentProfileLang = lang;  var sel = document.getElementById('lang-select');
+  if (sel) sel.value = lang;
+  document.documentElement.lang = lang;
+
+  const { data: { user }, error } = await db.auth.getUser();
+  if (error || !user) { window.location.href = 'index.html'; return; }
+  
+  await loadProfileData(user);
+}
+
+async function loadProfileData(user) {
+  if (!user) {
+    const { data: { user: u } } = await db.auth.getUser();
+    user = u;
+  }
+  if (!user) { window.location.href = 'index.html'; return; }
+
+  // 1. User Data
+  const { data: userData } = await db.from('user_data').select('*').eq('user_id', user.id).single();
+  const pts = userData?.points || 0;
+  const streak = userData?.streak || 0;
+  const gen = userData?.total_generated || 0;
+  const earned = userData?.total_earned || 0;
+  const tier = userData?.tier || 1;
+  const claimedBadges = userData?.badges_claimed || [];
+
+  // 2. UI Updates
+  const name = user.user_metadata?.name || user.email || 'Utilisateur';
+  const initial = name.charAt(0).toUpperCase();
+  
+  document.getElementById('profile-name').textContent = name;
+  document.getElementById('profile-email').textContent = user.email;
+  document.getElementById('profile-avatar').textContent = initial;
+  document.getElementById('header-initial').textContent = initial;
+  document.getElementById('header-points').textContent = pts.toLocaleString();
+  
+  document.getElementById('stat-points').textContent = pts.toLocaleString();
+  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('stat-generated').textContent = gen;
+  document.getElementById('stat-earned').textContent = earned.toLocaleString();
+  
+  const tierNames = tProfile('tier_names');
+  document.getElementById('profile-tier-name').textContent = tierNames[tier - 1] || tierNames[0];
+
+  // 3. Badge Logic
+  let currentBadge = null;
+  let nextBadge = null;
+  for (let i = BADGES_CONFIG.length - 1; i >= 0; i--) {
+    if (claimedBadges.includes(BADGES_CONFIG[i].id)) { currentBadge = BADGES_CONFIG[i]; break; }
+  }  for (let j = 0; j < BADGES_CONFIG.length; j++) {
+    if (!claimedBadges.includes(BADGES_CONFIG[j].id)) { nextBadge = BADGES_CONFIG[j]; break; }
+  }
+
+  const badgeIcon = document.getElementById('badge-icon');
+  const badgeName = document.getElementById('badge-name');
+  const badgeDesc = document.getElementById('badge-desc');
+  const badgeBar = document.getElementById('badge-bar');
+
+  if (currentBadge) {
+    badgeIcon.textContent = currentBadge.icon;
+    badgeName.textContent = tProfile('badge_names.' + currentBadge.id);
+    if (nextBadge) {
+      const remaining = nextBadge.threshold - gen;
+      badgeDesc.textContent = (remaining > 0 ? remaining : 0) + ' ' + tProfile('next_badge');
+      const progress = Math.min((gen / nextBadge.threshold) * 100, 100);
+      badgeBar.style.width = progress + '%';
+      badgeBar.className = 'badge-progress-bar ' + nextBadge.colorClass;
+    } else {
+      badgeDesc.textContent = ' Niveau maximum atteint !';
+      badgeBar.style.width = '100%';
+    }
+  } else if (nextBadge) {
+    badgeIcon.textContent = nextBadge.icon;
+    badgeName.textContent = tProfile('badge_names.' + nextBadge.id);
+    badgeDesc.textContent = gen + ' / ' + nextBadge.threshold + ' ' + tProfile('next_badge');
+    const progress = Math.min((gen / nextBadge.threshold) * 100, 100);
+    badgeBar.style.width = progress + '%';
+    badgeBar.className = 'badge-progress-bar ' + nextBadge.colorClass;
+  } else {
+    badgeIcon.textContent = '';
+    badgeName.textContent = 'Aucun badge';
+    badgeDesc.textContent = tProfile('no_badge');
+    badgeBar.style.width = '0%';
+  }
+
+  // 4. Referral Count
+  try {
+    const { data: refs } = await db.from('referrals').select('id').eq('sponsor_id', user.id).eq('validated', true);
+    const refCount = refs ? refs.length : 0;
+    document.getElementById('ref-count-title').textContent = refCount + ' ' + tProfile('ref_count');
+  } catch(e) { console.error('Referral count error:', e); }
+}
+
+async function doLogout() {
+  if (!confirm('Voulez-vous vraiment vous déconnecter ?')) return;
+  await db.auth.signOut();
+  window.location.href = 'index.html';
+}
+init();
+</script>
+</body>
+</html>

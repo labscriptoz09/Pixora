@@ -1,13 +1,12 @@
-// Proxy CDN : masque l'URL worker derrière iapixora.com
+// Proxy simple : /api/img?f=gen/xxx.png
 export default async function handler(req, res) {
-  const { path } = req.query;
-  const key = Array.isArray(path) ? path.join("/") : String(path || "");
-  if (!key || key.includes("..")) {
+  const f = req.query.f || "";
+  if (!f || f.includes("..")) {
     res.status(400).json({ error: "bad path" });
     return;
   }
   const up = await fetch(
-    `https://iapixora-gen.slimansoufian1.workers.dev/img/${key}`
+    `https://iapixora-gen.slimansoufian1.workers.dev/img/${encodeURIComponent(f)}`
   );
   if (!up.ok) {
     res.status(up.status).end();
