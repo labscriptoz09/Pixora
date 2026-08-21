@@ -10,8 +10,24 @@ export default async function handler(req, res) {
     return url;
   }
   imgUrl = await pick(imgUrl);
+
+  // MODE RAW : sert l'image elle-meme (og:image LinkedIn)
+  if (req.query.raw === '1' && imgUrl.includes('.r2.dev/')) {
+    try {
+      const r = await fetch(imgUrl, { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'image/*' } });
+      if (r.ok) {
+        const ext = imgUrl.split('.').pop().toLowerCase();
+        const ct = ext === 'png' ? 'image/png' : (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/webp';
+        const buf = Buffer.from(await r.arrayBuffer());
+        res.setHeader('Content-Type', ct);
+        res.setHeader('Cache-Control', 'public, max-age=604800');
+        return res.status(200).send(buf);
+      }
+    } catch (e) {}
+  }
+
   const ogUrl = imgUrl.includes('.r2.dev/')
-    ? 'https://www.iapixora.com/api/img?p=' + encodeURIComponent(imgUrl.split('.r2.dev/')[1])
+    ? 'https://www.iapixora.com/api/share?img=' + encodeURIComponent(imgUrl) + '&raw=1'
     : imgUrl;
   const lang = req.query.lang === 'en' ? 'en' : 'fr';
 
