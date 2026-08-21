@@ -1,7 +1,9 @@
-// api/share.js - v3.0: EN/FR complet + 6 images récentes + Like/Comment/Remix
+// api/share.js - v3.1: Language switcher in nav + Login button (not profile)
 export default async function handler(req, res) {
   let imgUrl = req.query.img || 'https://www.iapixora.com/favicon.png';
   const lang = req.query.lang === 'en' ? 'en' : 'fr';
+  const otherLang = lang === 'fr' ? 'en' : 'fr';
+  const otherLangLabel = lang === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR';
 
   async function pick(url) {
     const variants = [url];
@@ -42,9 +44,9 @@ export default async function handler(req, res) {
         headers: { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}` }
       });
       if (dbRes.ok) {
-        const data = await dbRes.json();
-        recentImages = data.filter(i => i.image_url && i.image_url !== imgUrl).slice(0, 6);
-      }    }
+        const data = await dbRes.json();        recentImages = data.filter(i => i.image_url && i.image_url !== imgUrl).slice(0, 6);
+      }
+    }
   } catch (e) {}
 
   // Fallback si Supabase ne répond pas
@@ -74,6 +76,9 @@ export default async function handler(req, res) {
     faq: SITE + '/faq.html'
   };
 
+  // Lien switch langue = meme page avec autre lang
+  const switchUrl = `${SITE}/api/share?img=${encodeURIComponent(imgUrl)}&lang=${otherLang}`;
+
   const t = {
     fr: {
       title: 'Regarde cette image IA créée avec IA Pixora 🎨',
@@ -88,19 +93,16 @@ export default async function handler(req, res) {
       more_title: 'Créations récentes de la communauté',
       more_sub: 'Découvre les dernières images générées par nos utilisateurs',
       cta_title: 'Crée ta propre image IA',
-      cta_sub: 'Gratuit · Sans inscription · 10 images/jour',
-      footer_privacy: 'Confidentialité',
+      cta_sub: 'Gratuit · Sans inscription · 10 images/jour',      footer_privacy: 'Confidentialité',
       footer_guide: 'Guide',
       footer_faq: 'FAQ',
       nav_home: 'Accueil',
-      nav_gallery: 'Galerie',      nav_shop: 'Boutique',
-      nav_profile: 'Mon profil',
+      nav_gallery: 'Galerie',
+      nav_shop: 'Boutique',
+      nav_login: 'Connexion',
       like: 'J\'aime',
       comment: 'Commenter',
-      remix: 'Remixer',
-      likes_count: 'personnes aiment',
-      comments_count: 'commentaires',
-      login_to_interact: 'Connecte-toi pour aimer et commenter'
+      remix: 'Remixer'
     },
     en: {
       title: 'Check out this AI image made with IA Pixora 🎨',
@@ -122,17 +124,13 @@ export default async function handler(req, res) {
       nav_home: 'Home',
       nav_gallery: 'Gallery',
       nav_shop: 'Shop',
-      nav_profile: 'My profile',
+      nav_login: 'Log in',
       like: 'Like',
       comment: 'Comment',
-      remix: 'Remix',
-      likes_count: 'people like this',
-      comments_count: 'comments',
-      login_to_interact: 'Log in to like and comment'
+      remix: 'Remix'
     }
   }[lang];
 
-  // Générer les 6 cards d'images récentes
   const recentCards = recentImages.map((img, i) => {
     const shareLink = `${SITE}/api/share?img=${encodeURIComponent(img.image_url)}&lang=${lang}`;
     return `<a href="${shareLink}" class="recent-card">
@@ -142,9 +140,9 @@ export default async function handler(req, res) {
 
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
-<head>    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${t.title}</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>${t.title}</title>
     <meta name="description" content="${t.desc}">
     <link rel="canonical" href="${URLS.home}">
     <link rel="icon" type="image/png" href="${SITE}/favicon.png">
@@ -168,16 +166,23 @@ export default async function handler(req, res) {
         :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--surf2:rgba(39,39,42,0.5);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--text:#FAFAFA;--muted:#A1A1AA;--green:#10B981;--red:#EF4444;--font:'Inter',sans-serif}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;display:flex;flex-direction:column}
+
+        /* NAV */
         .nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;background:rgba(5,5,7,0.85)}
         .nav-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
         .nav-logo svg{width:28px;height:28px}
         .nav-logo span{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .nav-right{display:flex;gap:0.8rem;align-items:center}
         .nav-links{display:flex;gap:1rem;align-items:center}
         .nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:600;transition:color 0.2s}
         .nav-links a:hover{color:var(--text)}
-        .nav-login{padding:0.4rem 1rem;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:8px;color:var(--prim)!important;transition:all 0.2s}
+        .btn-lang{padding:0.35rem 0.8rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-size:0.8rem;font-weight:700;transition:all 0.2s;white-space:nowrap}
+        .btn-lang:hover{background:rgba(255,255,255,0.12);border-color:var(--prim)}
+        .nav-login{padding:0.4rem 1rem;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:8px;color:var(--prim)!important;transition:all 0.2s;white-space:nowrap}
         .nav-login:hover{background:rgba(139,92,246,0.25)!important}
-        @media(max-width:600px){.nav-links a:not(.nav-login){display:none}}
+        @media(max-width:600px){.nav-links a:not(.nav-login):not(.btn-lang){display:none}}
+
+        /* MAIN */
         .main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;gap:2rem}
         .container{max-width:640px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
         .badge-free{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);font-size:0.75rem;font-weight:700;padding:4px 14px;border-radius:20px}
@@ -186,12 +191,12 @@ export default async function handler(req, res) {
 
         /* INTERACTION BAR */
         .interaction-bar{display:flex;gap:0.6rem;width:100%;justify-content:center;flex-wrap:wrap}
-        .btn-interact{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.4rem;background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:12px;font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.2s;text-decoration:none}
-        .btn-interact:hover{background:rgba(255,255,255,0.1);color:var(--text);border-color:var(--prim)}
+        .btn-interact{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.4rem;background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:12px;font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.2s;text-decoration:none}        .btn-interact:hover{background:rgba(255,255,255,0.1);color:var(--text);border-color:var(--prim)}
         .btn-interact.liked{color:var(--red);border-color:var(--red);background:rgba(239,68,68,0.1)}
         .btn-interact .count{font-size:0.75rem;opacity:0.7}
         .btn-remix{color:var(--prim)!important;border-color:rgba(139,92,246,0.3)!important;background:rgba(139,92,246,0.08)!important}
         .btn-remix:hover{background:rgba(139,92,246,0.2)!important;border-color:var(--prim)!important}
+
         .actions{display:flex;gap:0.8rem;width:100%;flex-wrap:wrap;justify-content:center}
         .btn-create{display:inline-flex;align-items:center;gap:0.6rem;padding:1rem 2rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;text-decoration:none;box-shadow:0 8px 30px rgba(139,92,246,0.4);transition:all 0.3s;border:none;cursor:pointer;flex:1;justify-content:center;min-width:220px}
         .btn-create:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,0.6)}
@@ -221,18 +226,21 @@ export default async function handler(req, res) {
     </style>
 </head>
 <body>
+    <!-- NAV WITH LANGUAGE SWITCHER + LOGIN -->
     <nav class="nav">
         <a href="${URLS.home}" class="nav-logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#sg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
             <span>IA Pixora</span>
         </a>
-        <div class="nav-links">
-            <a href="${URLS.home}">${t.nav_home}</a>
-            <a href="${URLS.gallery}">${t.nav_gallery}</a>
-            <a href="${URLS.shop}">${t.nav_shop}</a>
-            <a href="${URLS.profile}" class="nav-login">${t.nav_profile}</a>
-        </div>
-    </nav>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="${URLS.home}">${t.nav_home}</a>
+                <a href="${URLS.gallery}">${t.nav_gallery}</a>
+                <a href="${URLS.shop}">${t.nav_shop}</a>
+            </div>
+            <a href="${switchUrl}" class="btn-lang">${otherLangLabel}</a>
+            <a href="${URLS.profile}" class="nav-login">${t.nav_login}</a>
+        </div>    </nav>
 
     <div class="main">
         <div class="container">
@@ -241,7 +249,8 @@ export default async function handler(req, res) {
             <div class="image-wrapper">
                 <img src="${imgUrl}" alt="AI Generated Image - IA Pixora" onclick="window.open('${imgUrl}','_blank')" onerror="this.parentElement.innerHTML='<p style=\\'padding:2rem;color:var(--muted);text-align:center\\'>${t.error}</p>'">
             </div>
-            <!-- INTERACTION BAR: Like / Comment / Remix -->
+
+            <!-- INTERACTION BAR -->
             <div class="interaction-bar">
                 <button class="btn-interact" onclick="toggleLike(this)" data-img="${encodeURIComponent(imgUrl)}">
                     <i class="fas fa-heart"></i> ${t.like} <span class="count" id="like-count">0</span>
@@ -280,8 +289,7 @@ export default async function handler(req, res) {
             </div>
             <div class="recent-grid">
                 ${recentCards}
-            </div>
-        </div>
+            </div>        </div>
     </div>
 
     <footer class="footer">
@@ -295,28 +303,12 @@ export default async function handler(req, res) {
             const liked=localStorage.getItem(key)==='1';
             const countEl=btn.querySelector('#like-count');
             let count=parseInt(countEl.textContent)||0;
-            if(!liked){
-                localStorage.setItem(key,'1');
-                btn.classList.add('liked');
-                countEl.textContent=count+1;
-            }else{
-                localStorage.removeItem(key);
-                btn.classList.remove('liked');
-                countEl.textContent=Math.max(0,count-1);
-            }
+            if(!liked){localStorage.setItem(key,'1');btn.classList.add('liked');countEl.textContent=count+1}
+            else{localStorage.removeItem(key);btn.classList.remove('liked');countEl.textContent=Math.max(0,count-1)}
         }
-
-        // Restore like state on load
         document.addEventListener('DOMContentLoaded',function(){
             const btn=document.querySelector('.btn-interact[data-img]');
-            if(btn){
-                const key='pixora_like_'+btn.dataset.img;
-                if(localStorage.getItem(key)==='1'){
-                    btn.classList.add('liked');
-                    const c=btn.querySelector('#like-count');
-                    if(c)c.textContent=parseInt(c.textContent)+1;
-                }
-            }
+            if(btn){const key='pixora_like_'+btn.dataset.img;if(localStorage.getItem(key)==='1'){btn.classList.add('liked');const c=btn.querySelector('#like-count');if(c)c.textContent=parseInt(c.textContent)+1}}
         });
     </script>
 </body>
