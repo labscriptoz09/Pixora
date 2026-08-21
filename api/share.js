@@ -2,21 +2,13 @@
 export default async function handler(req, res) {
   let imgUrl = req.query.img || 'https://www.iapixora.com/favicon.png';
 
-  // AUTO-FIX : verifie que l'image existe, sinon corrige F <-> sans F
-  async function pick(url) {
-    let alt = null;
-    if (url.includes('/gen/F')) alt = url.replace('/gen/F', '/gen/');
-    else if (url.includes('.r2.dev/gen/')) alt = url.replace('/gen/', '/gen/F');
-    for (const c of [url, alt]) {
-      if (!c) continue;
-      try {
-        const r = await fetch(c, { method: 'HEAD' });
-        if (r.ok) return c;
-      } catch (e) {}
-    }
-    return 'https://www.iapixora.com/favicon.png';
+  // FIX DIRECT : si l'image a un F, essaie aussi sans F
+  // Le fichier sur R2 n'a pas le F mais le site l'ajoute parfois
+  if (imgUrl.includes('/gen/F')) {
+    const withoutF = imgUrl.replace('/gen/F', '/gen/');
+    // On utilise directement la version sans F (qui existe)
+    imgUrl = withoutF;
   }
-  imgUrl = await pick(imgUrl);
   const lang = req.query.lang === 'en' ? 'en' : 'fr';
 
   const texts = {
