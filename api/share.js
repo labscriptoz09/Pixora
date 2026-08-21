@@ -1,8 +1,7 @@
-// api/share.js - v2: Page partage enrichie avec contexte site complet
+// api/share.js - v2.1: Liens corrigés vers pages .html réelles
 export default async function handler(req, res) {
   let imgUrl = req.query.img || 'https://www.iapixora.com/favicon.png';
 
-  // Résolution variantes F/
   async function pick(url) {
     const variants = [url];
     if (url.includes('/gen/F')) variants.push(url.replace('/gen/F', '/gen/'));
@@ -13,7 +12,7 @@ export default async function handler(req, res) {
   }
   imgUrl = await pick(imgUrl);
 
-  // MODE RAW : sert l'image brute pour og:image (LinkedIn/Twitter preview)
+  // MODE RAW : og:image preview (LinkedIn/Twitter/Discord)
   if (req.query.raw === '1' && imgUrl.includes('.r2.dev/')) {
     try {
       const r = await fetch(imgUrl, { headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'image/*' } });
@@ -40,17 +39,21 @@ export default async function handler(req, res) {
       btn_create: '✨ Créer mon image gratuite',
       btn_download: 'Télécharger',
       btn_gallery: 'Explorer la galerie',
-      btn_universes: 'Voir les univers',
+      btn_shop: 'Boutique',
+      btn_earn: 'Gagner des points',
       badge: 'Générée gratuitement sur IA Pixora',
       error: 'Image non disponible',
       more_title: 'Découvre plus de créations',
       more_sub: 'Des milliers d\'images générées par notre communauté',      cta_title: 'Crée ta propre image IA',
       cta_sub: 'Gratuit · Sans inscription · 10 images/jour',
       footer_privacy: 'Confidentialité',
-      footer_terms: 'CGU',
+      footer_guide: 'Guide',
+      footer_faq: 'FAQ',
       nav_home: 'Accueil',
       nav_gallery: 'Galerie',
-      nav_universes: 'Univers',
+      nav_shop: 'Boutique',
+      nav_earn: 'Points',
+      nav_profile: 'Mon profil',
       nav_login: 'Connexion'
     },
     en: {
@@ -59,7 +62,8 @@ export default async function handler(req, res) {
       btn_create: '✨ Create my free image',
       btn_download: 'Download',
       btn_gallery: 'Explore gallery',
-      btn_universes: 'Browse universes',
+      btn_shop: 'Shop',
+      btn_earn: 'Earn points',
       badge: 'Generated for free on IA Pixora',
       error: 'Image not available',
       more_title: 'Discover more creations',
@@ -67,15 +71,30 @@ export default async function handler(req, res) {
       cta_title: 'Create your own AI image',
       cta_sub: 'Free · No signup · 10 images/day',
       footer_privacy: 'Privacy',
-      footer_terms: 'Terms',
+      footer_guide: 'Guide',
+      footer_faq: 'FAQ',
       nav_home: 'Home',
       nav_gallery: 'Gallery',
-      nav_universes: 'Universes',
+      nav_shop: 'Shop',
+      nav_earn: 'Points',
+      nav_profile: 'My profile',
       nav_login: 'Login'
     }
   };
 
   const t = texts[lang];
+
+  // URLs réelles du site (pages .html)
+  const SITE = 'https://www.iapixora.com';
+  const URLS = {
+    home: SITE + '/',
+    gallery: SITE + '/gallery.html',
+    shop: SITE + '/shop.html',
+    earn: SITE + '/earn.html',
+    profile: SITE + '/profile.html',
+    privacy: SITE + '/privacy.html',
+    guide: SITE + '/guide.html',    faq: SITE + '/faq.html'
+  };
 
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
@@ -84,16 +103,17 @@ export default async function handler(req, res) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${t.title}</title>
     <meta name="description" content="${t.desc}">
-    <link rel="canonical" href="https://www.iapixora.com/api/share">
-    <link rel="icon" type="image/png" href="https://www.iapixora.com/favicon.png">
-    <link rel="apple-touch-icon" href="https://www.iapixora.com/favicon.png">
+    <link rel="canonical" href="${URLS.home}">
+    <link rel="icon" type="image/png" href="${SITE}/favicon.png">
+    <link rel="apple-touch-icon" href="${SITE}/favicon.png">
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="IA Pixora">
-    <meta property="og:url" content="https://www.iapixora.com/api/share">
+    <meta property="og:url" content="${URLS.home}">
     <meta property="og:title" content="${t.title}">
     <meta property="og:description" content="${t.desc}">
-    <meta property="og:image" content="${ogUrl}">    <meta property="og:image:width" content="1024">
+    <meta property="og:image" content="${ogUrl}">
+    <meta property="og:image:width" content="1024">
     <meta property="og:image:height" content="1024">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -108,8 +128,6 @@ export default async function handler(req, res) {
         :root{--bg:#050507;--surf:rgba(24,24,27,0.6);--surf2:rgba(39,39,42,0.5);--border:rgba(63,63,70,0.5);--prim:#8B5CF6;--sec:#EC4899;--text:#FAFAFA;--muted:#A1A1AA;--green:#10B981;--font:'Inter',sans-serif}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;display:flex;flex-direction:column}
-
-        /* NAV */
         .nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;background:rgba(5,5,7,0.85)}
         .nav-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text)}
         .nav-logo svg{width:28px;height:28px}
@@ -120,35 +138,21 @@ export default async function handler(req, res) {
         .nav-login{padding:0.4rem 1rem;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:8px;color:var(--prim)!important;transition:all 0.2s}
         .nav-login:hover{background:rgba(139,92,246,0.25)!important}
         @media(max-width:600px){.nav-links a:not(.nav-login){display:none}}
-
-        /* MAIN */
         .main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;gap:2rem}
         .container{max-width:640px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
-
-        /* BADGE */
-        .badge-free{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);font-size:0.75rem;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:0.02em}
-
-        /* IMAGE */
+        .badge-free{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);font-size:0.75rem;font-weight:700;padding:4px 14px;border-radius:20px}
         .image-wrapper{width:100%;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(139,92,246,0.2);position:relative;background:var(--surf)}
-        .image-wrapper img{width:100%;height:auto;display:block;cursor:pointer}
-
-        /* ACTIONS */
-        .actions{display:flex;gap:0.8rem;width:100%;flex-wrap:wrap;justify-content:center}
+        .image-wrapper img{width:100%;height:auto;display:block;cursor:pointer}        .actions{display:flex;gap:0.8rem;width:100%;flex-wrap:wrap;justify-content:center}
         .btn-create{display:inline-flex;align-items:center;gap:0.6rem;padding:1rem 2rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:white;border-radius:14px;font-weight:700;font-size:1rem;text-decoration:none;box-shadow:0 8px 30px rgba(139,92,246,0.4);transition:all 0.3s;border:none;cursor:pointer;flex:1;justify-content:center;min-width:220px}
         .btn-create:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,0.6)}
         .btn-download{display:inline-flex;align-items:center;gap:0.5rem;padding:1rem 1.5rem;background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text);border-radius:14px;font-weight:600;font-size:0.9rem;text-decoration:none;transition:all 0.2s;cursor:pointer;flex:1;justify-content:center;min-width:160px}
         .btn-download:hover{background:rgba(255,255,255,0.15);border-color:var(--prim)}
-
-        /* SECONDARY LINKS */
         .secondary-actions{display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center}
         .btn-secondary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.3rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--muted);border-radius:12px;font-weight:600;font-size:0.8rem;text-decoration:none;transition:all 0.2s}
         .btn-secondary:hover{background:rgba(255,255,255,0.1);color:var(--text);border-color:var(--border)}
-        /* CTA SECTION */
         .cta-section{text-align:center;display:flex;flex-direction:column;align-items:center;gap:0.6rem;padding:1.5rem;background:var(--surf2);border-radius:20px;border:1px solid var(--border);width:100%}
         .cta-title{font-size:1.5rem;font-weight:800;line-height:1.3;background:linear-gradient(135deg,#fff 30%,var(--prim));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .cta-sub{font-size:0.9rem;color:var(--muted);line-height:1.5}
-
-        /* MORE CREATIONS */
         .more-section{width:100%;max-width:640px;display:flex;flex-direction:column;gap:1rem}
         .more-header{text-align:center;display:flex;flex-direction:column;gap:0.3rem}
         .more-title{font-size:1.1rem;font-weight:700}
@@ -157,90 +161,69 @@ export default async function handler(req, res) {
         .more-grid a{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--border);transition:all 0.2s;aspect-ratio:1}
         .more-grid a:hover{border-color:var(--prim);transform:scale(1.03)}
         .more-grid img{width:100%;height:100%;object-fit:cover}
-
-        /* FOOTER */
         .footer{padding:1.5rem;text-align:center;font-size:0.7rem;color:var(--muted);border-top:1px solid var(--border);margin-top:auto}
         .footer a{color:var(--prim);text-decoration:none;margin:0 0.3rem}
         .footer a:hover{text-decoration:underline}
-
-        @media(max-width:400px){
-            .cta-title{font-size:1.2rem}
-            .btn-create,.btn-download{padding:0.85rem 1rem;font-size:0.85rem;min-width:auto}
-            .more-grid{grid-template-columns:repeat(2,1fr)}
-            .nav{padding:0.8rem 1rem}
-        }
+        @media(max-width:400px){.cta-title{font-size:1.2rem}.btn-create,.btn-download{padding:0.85rem 1rem;font-size:0.85rem;min-width:auto}.more-grid{grid-template-columns:repeat(2,1fr)}.nav{padding:0.8rem 1rem}}
     </style>
 </head>
 <body>
-    <!-- NAVIGATION -->
     <nav class="nav">
-        <a href="https://www.iapixora.com" class="nav-logo">
+        <a href="${URLS.home}" class="nav-logo">
             <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><path d="M16 2L28 10L24 28H8L4 10L16 2Z" fill="url(#sg)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><path d="M16 2L4 10L16 14L16 2Z" fill="rgba(255,255,255,0.2)"/></svg>
             <span>IA Pixora</span>
         </a>
         <div class="nav-links">
-            <a href="https://www.iapixora.com">${t.nav_home}</a>
-            <a href="https://www.iapixora.com/galerie">${t.nav_gallery}</a>
-            <a href="https://www.iapixora.com" class="nav-login">${t.nav_login}</a>
+            <a href="${URLS.home}">${t.nav_home}</a>
+            <a href="${URLS.gallery}">${t.nav_gallery}</a>
+            <a href="${URLS.shop}">${t.nav_shop}</a>
+            <a href="${URLS.profile}" class="nav-login">${t.nav_profile}</a>
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <div class="main">
         <div class="container">
             <div class="badge-free"><i class="fas fa-check-circle"></i> ${t.badge}</div>
-
             <div class="image-wrapper">
-                <img src="${imgUrl}" alt="AI Generated Image - IA Pixora" onclick="window.open('${imgUrl}','_blank')" onerror="this.parentElement.innerHTML='<p style=\\'padding:2rem;color:var(--muted);text-align:center\\'>${t.error}</p>'">            </div>
-
+                <img src="${imgUrl}" alt="AI Generated Image - IA Pixora" onclick="window.open('${imgUrl}','_blank')" onerror="this.parentElement.innerHTML='<p style=\\'padding:2rem;color:var(--muted);text-align:center\\'>${t.error}</p>'">
+            </div>
             <div class="actions">
-                <a href="https://www.iapixora.com" class="btn-create"><i class="fas fa-wand-magic-sparkles"></i> ${t.btn_create}</a>
+                <a href="${URLS.home}" class="btn-create"><i class="fas fa-wand-magic-sparkles"></i> ${t.btn_create}</a>
                 <button class="btn-download" onclick="downloadImage('${imgUrl}')"><i class="fas fa-download"></i> ${t.btn_download}</button>
             </div>
-
-            <div class="secondary-actions">
-                <a href="https://www.iapixora.com/galerie" class="btn-secondary"><i class="fas fa-images"></i> ${t.btn_gallery}</a>
-                <a href="https://www.iapixora.com" class="btn-secondary"><i class="fas fa-layer-group"></i> ${t.btn_universes}</a>
+            <div class="secondary-actions">                <a href="${URLS.gallery}" class="btn-secondary"><i class="fas fa-images"></i> ${t.btn_gallery}</a>
+                <a href="${URLS.shop}" class="btn-secondary"><i class="fas fa-store"></i> ${t.btn_shop}</a>
+                <a href="${URLS.earn}" class="btn-secondary"><i class="fas fa-coins"></i> ${t.btn_earn}</a>
             </div>
-
             <div class="cta-section">
                 <h2 class="cta-title">${t.cta_title}</h2>
                 <p class="cta-sub">${t.cta_sub}</p>
-                <a href="https://www.iapixora.com" class="btn-create" style="margin-top:0.5rem;padding:0.8rem 1.8rem;font-size:0.9rem"><i class="fas fa-sparkles"></i> ${t.btn_create}</a>
+                <a href="${URLS.home}" class="btn-create" style="margin-top:0.5rem;padding:0.8rem 1.8rem;font-size:0.9rem"><i class="fas fa-sparkles"></i> ${t.btn_create}</a>
             </div>
         </div>
 
-        <!-- MORE CREATIONS -->
         <div class="more-section">
             <div class="more-header">
                 <h3 class="more-title">${t.more_title}</h3>
                 <p class="more-sub">${t.more_sub}</p>
             </div>
             <div class="more-grid">
-                <a href="https://www.iapixora.com/api/share?img=https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/gen/1787312224754-geometric-wolf-dotwork-black-and-grey-wh.png&lang=${lang}"><img src="https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/gen/1787312224754-geometric-wolf-dotwork-black-and-grey-wh.png" alt="Wolf" loading="lazy"></a>
-                <a href="https://www.iapixora.com/api/share?img=https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/gen/1787312235969-geometric-wolf-dotwork-black-and-grey-wh.png&lang=${lang}"><img src="https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/gen/1787312235969-geometric-wolf-dotwork-black-and-grey-wh.png" alt="Art" loading="lazy"></a>
-                <a href="https://www.iapixora.com/galerie"><div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--surf2);color:var(--muted);font-size:0.75rem;font-weight:600;text-align:center;padding:0.5rem"><i class="fas fa-arrow-right" style="margin-right:0.3rem"></i> ${t.btn_gallery}</div></a>
+                <a href="${URLS.gallery}"><img src="https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/gen/1787312224754-geometric-wolf-dotwork-black-and-grey-wh.png" alt="Wolf" loading="lazy"></a>
+                <a href="${URLS.gallery}"><img src="https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/gen/1787312235969-geometric-wolf-dotwork-black-and-grey-wh.png" alt="Art" loading="lazy"></a>
+                <a href="${URLS.gallery}"><div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--surf2);color:var(--muted);font-size:0.75rem;font-weight:600;text-align:center;padding:0.5rem"><i class="fas fa-arrow-right" style="margin-right:0.3rem"></i> ${t.btn_gallery}</div></a>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer">
-        © 2026 IA Pixora · <a href="https://www.iapixora.com/privacy.html">${t.footer_privacy}</a> · <a href="https://www.iapixora.com/terms.html">${t.footer_terms}</a>
+        © 2026 IA Pixora · <a href="${URLS.privacy}">${t.footer_privacy}</a> · <a href="${URLS.guide}">${t.footer_guide}</a> · <a href="${URLS.faq}">${t.footer_faq}</a>
     </footer>
 
     <script>
-        function downloadImage(url) {
-            fetch(url).then(r=>r.blob()).then(blob=>{
-                const u = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = u; a.download = 'ia-pixora-' + Date.now() + '.png';
-                document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                URL.revokeObjectURL(u);
-            }).catch(()=> window.open(url, '_blank'));
-        }
+        function downloadImage(url){fetch(url).then(r=>r.blob()).then(b=>{const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+'.png';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}).catch(()=>window.open(url,'_blank'))}
     </script>
-</body></html>`;
+</body>
+</html>`;
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
