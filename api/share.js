@@ -1,6 +1,22 @@
 // api/share.js
-export default function handler(req, res) {
-  const imgUrl = req.query.img || 'https://www.iapixora.com/favicon.png';
+export default async function handler(req, res) {
+  let imgUrl = req.query.img || 'https://www.iapixora.com/favicon.png';
+
+  // AUTO-FIX : verifie que l'image existe, sinon corrige F <-> sans F
+  async function pick(url) {
+    let alt = null;
+    if (url.includes('/gen/F')) alt = url.replace('/gen/F', '/gen/');
+    else if (url.includes('.r2.dev/gen/')) alt = url.replace('/gen/', '/gen/F');
+    for (const c of [url, alt]) {
+      if (!c) continue;
+      try {
+        const r = await fetch(c, { method: 'HEAD' });
+        if (r.ok) return c;
+      } catch (e) {}
+    }
+    return 'https://www.iapixora.com/favicon.png';
+  }
+  imgUrl = await pick(imgUrl);
   const lang = req.query.lang === 'en' ? 'en' : 'fr';
 
   const texts = {
