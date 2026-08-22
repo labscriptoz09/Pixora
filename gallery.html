@@ -49,7 +49,7 @@ header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:cen
 .user-stats.show{display:flex}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;cursor:pointer;color:#fff}
 .user-avatar.show{display:flex}
-.btn-auth{padding:.4rem .7rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:10px;font-size:.68rem;font-weight:600;display:flex;align-items:center;gap:.35rem;border:none;cursor:pointer;white-space:nowrap}
+.btn-auth{padding:.4rem .7rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:10px;font-size:.68rem;font-weight:600;display:flex;align-items:center;gap:.35rem;border:none;cursor:pointer;white-space:nowrap}.badge-trial{font-size:.55rem;font-weight:700;padding:5px 9px;border-radius:100px;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;white-space:nowrap;box-shadow:0 0 12px rgba(139,92,246,.35);cursor:pointer}body.logged .badge-trial{display:none}
 /* ===== PAGE CONTENT ===== */
 .main-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:24px}
 .page-title{font-size:1.6rem;font-weight:800;margin-bottom:.3rem;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -311,8 +311,8 @@ nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;ba
   </a>
   <div class="header-right">
     <div class="user-stats" id="user-stats"><i class="fas fa-bolt"></i><span id="header-points">0</span></div>
-    <div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span></div>
-    <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'"><i class="fas fa-sign-in-alt"></i> <span data-i18n="header.login">Connexion</span></button>
+    <span class="badge-trial" style="background:linear-gradient(135deg,#ea580c,#fb923c);box-shadow:0 0 12px rgba(249,115,22,0.4);">10 essais gratuits</span><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span></div>
+    <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'" style="background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;" aria-label="Connexion"><i class="fas fa-user-circle" style="font-size:1.3rem;color:#fb923c;"></i></button>
     <div class="user-menu" id="user-menu">
       <div class="menu-header">
         <div class="menu-avatar" id="menu-avatar">U</div>
@@ -456,7 +456,7 @@ document.addEventListener('click',function(e){var menu=document.getElementById('
 async function doLogout(){await db.auth.signOut();closeUserMenu();updateUI();setTimeout(function(){location.reload()},800)}
 async function getUser(){var r=await db.auth.getUser();return r.data.user}
 async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,user_id:null};var r=await db.from('user_data').select('*').eq('user_id',u.id).single();var d=r.data||{points:0,streak:1};d.user_id=u.id;return d}
-async function updateUI(){var logged=await getUser();document.getElementById('user-stats').classList.toggle('show',!!logged);document.getElementById('user-avatar').classList.toggle('show',!!logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('menu-points').textContent=d.points||0;var name=logged.user_metadata&&logged.user_metadata.name?logged.user_metadata.name:'Utilisateur';var initial=name.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=initial;document.getElementById('menu-avatar').textContent=initial;document.getElementById('menu-name').textContent=name;document.getElementById('menu-email').textContent=logged.email}}
+async function updateUI(){var logged=await getUser();document.body.classList.toggle('logged',!!logged);document.getElementById('user-stats').classList.toggle('show',!!logged);document.getElementById('user-avatar').classList.toggle('show',!!logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('menu-points').textContent=d.points||0;var name=logged.user_metadata&&logged.user_metadata.name?logged.user_metadata.name:'Utilisateur';var initial=name.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=initial;document.getElementById('menu-avatar').textContent=initial;document.getElementById('menu-name').textContent=name;document.getElementById('menu-email').textContent=logged.email}}
 
 function openLB(url){lbUrl=url;document.getElementById('lb-img').src=url;document.getElementById('lightbox').style.display='flex';document.body.style.overflow='hidden'}
 function closeLB(){document.getElementById('lightbox').style.display='none';document.body.style.overflow='';lbUrl=''}
