@@ -310,16 +310,10 @@ async function runCycle() {
 
   try {
     // 6. Lancer le navigateur avec anti-détection
-    // Configurer LD_LIBRARY_PATH pour les libs NSS locales
+    // Détection intelligente de l'environnement (Userland vs GitHub Runner)
     const os = require('os');
-    const localLibs = path.join(os.homedir(), 'chromium-libs', 'usr', 'lib', 'aarch64-linux-gnu');
-    if (!process.env.LD_LIBRARY_PATH || !process.env.LD_LIBRARY_PATH.includes(localLibs)) {
-      process.env.LD_LIBRARY_PATH = localLibs + ':' + (process.env.LD_LIBRARY_PATH || '');
-    }
-    const chromePath = path.join(os.homedir(), '.cache', 'ms-playwright', 'chromium-1234', 'chrome-linux', 'chrome');
-
-    browser = await chromium.launch({
-      executablePath: chromePath,
+    const fs = require('fs');
+    let launchOptions = {
       headless: true,
       args: [
         '--disable-blink-features=AutomationControlled',
@@ -330,8 +324,26 @@ async function runCycle() {
         '--disable-web-security',
         '--disable-features=IsolateOrigins,site-per-process'
       ]
-    });
+    };
 
+    // Chemin Userland (mobile)
+    const userlandChrome = path.join(os.homedir(), '.cache', 'ms-playwright', 'chromium-1234', 'chrome-linux', 'chrome');
+    const userlandLibs = path.join(os.homedir(), 'chromium-libs', 'usr', 'lib', 'aarch64-linux-gnu');
+
+    if (fs.existsSync(userlandChrome)) {
+      // Environnement Userland
+      launchOptions.executablePath = userlandChrome;
+      if (!process.env.LD_LIBRARY_PATH || !process.env.LD_LIBRARY_PATH.includes(userlandLibs)) {
+        process.env.LD_LIBRARY_PATH = userlandLibs + ':' + (process.env.LD_LIBRARY_PATH || '');
+      }
+      console.log('[ENV] Userland detected → ' + userlandChrome);
+    } else {
+      // Environnement GitHub Runner / CI → utiliser le Chromium Playwright par défaut
+      console.log('[ENV] CI/GitHub detected → using default Playwright Chromium');
+      // Pas de executablePath = Playwright utilise son propre binaire installé
+    }
+
+    browser = await chromium.launch(launchOptions);
     const context = await browser.newContext({
       locale: profile.locale,
       timezoneId: profile.tz,
