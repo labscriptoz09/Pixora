@@ -487,7 +487,7 @@ var db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 var BUCKET='pixora-gallery';var curType='image';var lbUrl='';var lbType='image';
 var DEFAULT_TIERS={1:{costs:{image:4,video:18},rewards:{video:8,survey:20,sponsor:2,streak:3,share:5},limits:{video:3,sponsor:5,share:1}},2:{costs:{image:6,video:25},rewards:{video:5,survey:12,sponsor:1,streak:2,share:3},limits:{video:3,sponsor:5,share:1}},3:{costs:{image:8,video:35},rewards:{video:3,survey:6,sponsor:1,streak:1,share:2},limits:{video:3,sponsor:5,share:1}}};
 var CONFIG_TIERS=JSON.parse(JSON.stringify(DEFAULT_TIERS));var currentTier=1;var pendingReferrer=null;var API_KEYS={};var currentDiscountUntil=null;var discountTimerInterval=null;
-var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
+var R2_PUBLIC_URL='https://www.iapixora.com/img';
 var WORKER_GEN_URL='https://iapixora-gen.slimansoufian1.workers.dev';
 function setGenStatus(target,state,text){var el=document.getElementById(target);if(!el)return;if(state==='idle'){el.className='gen-status';el.innerHTML='';}else if(state==='loading'){el.className='gen-status active';el.innerHTML='<span class="mini-spin"></span> '+text;}else if(state==='done'){el.className='gen-status';el.innerHTML='<i class="fas fa-check-circle" style="color:var(--success)"></i> '+text;}else if(state==='error'){el.className='gen-status';el.innerHTML='<i class="fas fa-exclamation-circle" style="color:var(--danger)"></i> '+text;}}
 async function generateImageViaProxy(prompt,width,height,model){
