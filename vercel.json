@@ -1,7 +1,8 @@
 {
   "rewrites": [
-    { "source": "/niche/:lang/:niche", "destination": "/api/niche?lang=:lang&niche=:niche" },
-    { "source": "/share", "destination": "/api/share" },
-    { "source": "/share.html", "destination": "/api/share" }
+    {
+      "source": "/img/:path*",
+      "destination": "https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/:path*"
+    }
   ]
 }
