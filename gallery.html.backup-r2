@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="theme-color" content="#8B5CF6">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDZXXYQRBQ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TDZXXYQRBQ');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Galerie Publique IA Pixora | Créations Communauté Permanentes</title>
+<meta name="description" content="Découvrez les créations IA générées par la communauté IA Pixora. Une galerie permanente pour voter, commenter et s'inspirer gratuitement.">
+<link rel="canonical" href="https://iapixora.com/gallery.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="IA Pixora"><meta property="og:url" content="https://iapixora.com/gallery.html"><meta property="og:title" content="Galerie Publique IA Pixora | Créations Communauté"><meta property="og:description" content="Découvrez les créations IA générées par la communauté IA Pixora."><meta property="og:image" content="https://iapixora.com/og-image.jpg">
+<meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://iapixora.com/gallery.html"><meta property="twitter:title" content="Galerie Publique IA Pixora | Créations Communauté"><meta property="twitter:description" content="Découvrez les créations IA générées par la communauté IA Pixora."><meta property="twitter:image" content="https://iapixora.com/og-image.jpg">
+<meta name="robots" content="index,follow"><meta name="author" content="IA Pixora">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ImageGallery","name":"Galerie Publique IA Pixora","description":"Créations IA générées par la communauté, disponibles en permanence.","url":"https://iapixora.com/gallery.html"}
+</script>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#08080a;--card:#141419;--card2:#1b1b22;--surf:rgba(24,24,27,0.6);--elev:rgba(39,39,42,0.8);--border:rgba(63,63,70,0.5);--border2:rgba(255,255,255,.14);--glow:rgba(139,92,246,0.25);--prim:#8B5CF6;--sec:#EC4899;--cyan:#22d3ee;--gold:#FBBF24;--gold-dim:rgba(251,191,36,0.1);--success:#10B981;--danger:#EF4444;--orange:#F97316;--text:#FAFAFA;--muted:#A1A1AA;--dim:#71717A;--font:'Inter',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;padding-bottom:160px;-webkit-font-smoothing:antialiased}
+button{background:none;border:none;cursor:pointer;font-family:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ===== PUBS BLOQUÉES ===== */
+#sponsorised-container{display:none!important}
+.pxr-wrapper{display:none!important}
+
+/* ===== TOAST ===== */
+.toast-notification{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-150px);background:var(--elev);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;padding:.8rem 1.2rem;font-size:.85rem;font-weight:600;z-index:10000;transition:transform .4s;display:flex;align-items:center;gap:.7rem;box-shadow:0 10px 40px rgba(0,0,0,.5);white-space:nowrap;max-width:90vw}
+.toast-notification.show{transform:translateX(-50%) translateY(0)}
+.toast-notification.success{border-color:var(--success)}
+.toast-notification.error{border-color:var(--danger);background:rgba(239,68,68,.15)}
+.toast-notification.success i{color:var(--success)}
+.toast-notification.error i{color:var(--danger)}
+
+/* ===== HEADER ===== */
+header.site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(8,8,10,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.burger{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px;flex-shrink:0}
+.header-logo{display:flex;align-items:center;gap:7px;flex:1;min-width:0;text-decoration:none}
+.header-logo svg{width:24px;height:24px;flex-shrink:0}
+.logo-text{font-size:.92rem;font-weight:800;letter-spacing:.08em;white-space:nowrap;background:linear-gradient(90deg,#c4b5fd,#8B5CF6 45%,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-right{display:flex;align-items:center;gap:6px;margin-left:auto;position:relative;flex-shrink:0}
+.user-stats{display:none;align-items:center;gap:.3rem;padding:.3rem .6rem;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:20px;font-size:.72rem;font-weight:700;color:var(--gold)}
+.user-stats.show{display:flex}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:none;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;cursor:pointer;color:#fff}
+.user-avatar.show{display:flex}
+.btn-auth{padding:.4rem .7rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border-radius:10px;font-size:.68rem;font-weight:600;display:flex;align-items:center;gap:.35rem;border:none;cursor:pointer;white-space:nowrap}.badge-trial{font-size:.55rem;font-weight:700;padding:5px 9px;border-radius:100px;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;white-space:nowrap;box-shadow:0 0 12px rgba(139,92,246,.35);cursor:pointer}body.logged .badge-trial{display:none}
+/* ===== PAGE CONTENT ===== */
+.main-content{max-width:900px;margin:0 auto;padding:1rem;padding-top:24px}
+.page-title{font-size:1.6rem;font-weight:800;margin-bottom:.3rem;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 20%,var(--prim) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.page-sub{font-size:.82rem;color:var(--muted);margin-bottom:1.2rem}
+
+/* ===== GALLERY GRID ===== */
+.results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-bottom:1rem}
+@media(min-width:640px){.results-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.results-grid{grid-template-columns:repeat(4,1fr)}}
+.result-card{aspect-ratio:1;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:transform .3s,box-shadow .3s;cursor:pointer}
+.result-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5);border-color:rgba(139,92,246,.3)}
+.result-card img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ===== OVERLAYS ===== */
+.gallery-overlay{position:absolute;top:0;left:0;right:0;background:linear-gradient(to bottom,rgba(0,0,0,.7) 0%,transparent 60%);display:flex;align-items:flex-start;justify-content:flex-end;padding:.5rem;gap:.3rem;opacity:0;transition:opacity .3s;z-index:5}
+.result-card:hover .gallery-overlay{opacity:1}
+@media(hover:none){.gallery-overlay{opacity:0}}
+.gallery-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;transition:all .2s;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px)}
+.gallery-btn-remix{background:rgba(139,92,246,.3);border-color:rgba(139,92,246,.5)}
+.gallery-btn-remix:hover{background:var(--prim);transform:scale(1.1)}
+.gallery-btn-prompt{background:rgba(6,182,212,.3);border-color:rgba(6,182,212,.5)}
+.gallery-btn-prompt:hover{background:var(--cyan);transform:scale(1.1)}
+
+.result-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 100%);display:flex;align-items:center;justify-content:center;padding:.5rem;gap:.3rem;opacity:0;transition:opacity .3s;z-index:4}
+.result-card:hover .result-overlay{opacity:1}
+@media(hover:none){.result-overlay{opacity:1}}
+
+.action-btn,.action-btn-comment,.dl-btn,.share-btn-gallery{display:flex;align-items:center;justify-content:center;gap:.2rem;padding:.4rem .5rem;backdrop-filter:blur(10px);border-radius:8px;font-size:.7rem;font-weight:600;transition:all .2s;cursor:pointer;flex:1;max-width:90px;min-width:0}
+.action-btn{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.4);color:#FCA5A5}
+.action-btn:hover,.action-btn.voted{background:#EF4444;border-color:#EF4444;color:#fff}
+.action-btn-comment{background:rgba(249,115,22,.2);border:1px solid rgba(249,115,22,.4);color:#FDBA74}
+.action-btn-comment:hover{background:var(--orange);border-color:var(--orange);color:#fff}
+.dl-btn{background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.4);color:#6EE7B7}
+.dl-btn:hover{background:var(--success);border-color:var(--success);color:#fff}
+.share-btn-gallery{background:rgba(236,72,153,.2);border:1px solid rgba(236,72,153,.4);color:#F9A8D4}
+.share-btn-gallery:hover{background:var(--sec);border-color:var(--sec);color:#fff}
+.action-count{font-family:'JetBrains Mono',monospace;font-size:.65rem}
+
+@media(max-width:640px){
+  .result-overlay{padding:.4rem;gap:.2rem}
+  .action-btn,.action-btn-comment,.dl-btn,.share-btn-gallery{padding:.35rem .4rem;font-size:.65rem}
+}
+
+/* ===== LOAD MORE ===== */
+.load-more-wrap{text-align:center;margin-top:1.5rem;padding:1rem}
+#gallery-loader{color:var(--muted);padding:.6rem;font-size:.85rem}
+#gallery-more{padding:.85rem 1.8rem;background:linear-gradient(135deg,var(--prim),var(--sec));color:#fff;border:none;border-radius:12px;font-weight:700;font-size:.9rem;cursor:pointer;box-shadow:0 4px 15px rgba(139,92,246,.4);transition:all .2s}
+#gallery-more:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,.6)}
+#gallery-end{color:var(--dim);font-size:.8rem;padding:.6rem}
+/* ===== REFERENCE GALLERY ===== */
+.ref-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.ref-title{font-size:1.1rem;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;letter-spacing:-.01em}
+.ref-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+@media(min-width:640px){.ref-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.ref-grid{grid-template-columns:repeat(4,1fr)}}
+.ref-img{aspect-ratio:1;object-fit:cover;border-radius:14px;cursor:pointer;transition:transform .3s;border:1px solid var(--border);width:100%}
+.ref-img:hover{transform:scale(1.03);border-color:rgba(139,92,246,.4)}
+
+/* ===== LIGHTBOX ===== */
+.lightbox{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.95);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;flex-direction:column;padding:1rem}
+.lightbox[style*="flex"]{display:flex}
+.lightbox img{max-width:90vw;max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.lightbox-close{position:absolute;top:1rem;right:1rem;width:44px;height:44px;background:rgba(255,255,255,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;cursor:pointer;transition:all .2s}
+.lightbox-close:hover{background:var(--danger);transform:rotate(90deg)}
+.lightbox-actions{display:flex;gap:1rem;margin-top:1.5rem}
+.lb-btn{padding:.7rem 1.3rem;background:var(--prim);color:#fff;border-radius:10px;font-weight:600;font-size:.85rem;display:flex;align-items:center;gap:.5rem;cursor:pointer;border:none;transition:all .2s}
+.lb-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(139,92,246,.4)}
+.lb-btn.sec{background:rgba(255,255,255,.1)}
+
+/* ===== COMMENT MODAL ===== */
+.comment-modal{position:fixed;inset:0;z-index:10003;background:rgba(0,0,0,.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
+.comment-modal[style*="flex"]{display:flex}
+.comment-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:450px}
+.comment-box h3{font-size:1rem;font-weight:700;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.comment-box h3 i{color:var(--prim)}
+.comment-input{width:100%;min-height:80px;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;padding:.8rem;color:var(--text);font-family:inherit;font-size:.9rem;resize:none;outline:none;margin-bottom:.8rem}
+.comment-input:focus{border-color:var(--prim)}
+.comment-char{font-size:.7rem;color:var(--dim);margin-bottom:.5rem;text-align:right;font-family:'JetBrains Mono',monospace}
+.comment-actions{display:flex;gap:.6rem;justify-content:flex-end}
+.comment-btn{padding:.6rem 1.2rem;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.4rem;border:none}
+.comment-btn.primary{background:var(--prim);color:#fff}
+.comment-btn.secondary{background:rgba(255,255,255,.08);color:var(--muted)}
+
+/* ===== SHARE MODAL ===== */
+.share-modal{position:fixed;inset:0;z-index:10004;background:rgba(0,0,0,.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:1rem}
+.share-modal.active{display:flex}
+.share-box{background:var(--elev);border:1px solid var(--border);border-radius:20px;padding:1.5rem;width:100%;max-width:420px;max-height:85vh;overflow-y:auto}
+.share-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.share-header h3{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.share-header h3 i{color:var(--prim)}
+.share-close{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1rem;background:rgba(255,255,255,.05);cursor:pointer;border:none}
+.share-category{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin:.8rem 0 .4rem}
+.share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.share-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem .3rem;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--text);font-size:.6rem;font-weight:600;cursor:pointer;text-decoration:none}
+.share-btn:hover{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.3);transform:translateY(-2px)}
+.share-btn i{font-size:1.2rem}
+.share-preview{width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;margin-bottom:.8rem;border:1px solid var(--border)}
+.share-preview img{width:100%;height:100%;object-fit:cover}
+/* ===== MENU ===== */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:75;opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.on{opacity:1;pointer-events:auto}
+.menu{position:fixed;top:0;left:0;bottom:0;width:290px;max-width:82%;z-index:80;background:rgba(15,15,20,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-right:1px solid var(--border2);transform:translateX(-105%);transition:transform .3s cubic-bezier(.2,.9,.3,1);padding:18px 12px;display:flex;flex-direction:column;gap:2px}
+.menu.open{transform:translateX(0)}
+.menu-head{display:flex;align-items:center;gap:8px;padding:8px 12px 16px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.menu-head svg{width:24px;height:24px}
+.m-item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;color:var(--text);font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit;text-align:left}
+.m-item:active{background:rgba(139,92,246,.12);color:#c4b5fd}
+.m-item i{font-style:normal;width:22px;text-align:center}
+.m-sep{height:1px;background:var(--border);margin:8px 6px}
+.m-lang{display:flex;gap:6px;padding:6px 10px}
+.m-lang select{flex:1;padding:10px 0;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* ===== USER MENU DROPDOWN ===== */
+.user-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:var(--elev);backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:16px;padding:.6rem;box-shadow:0 20px 60px rgba(0,0,0,.6);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .25s;z-index:1001}
+.user-menu.show{opacity:1;visibility:visible;transform:translateY(0)}
+.menu-header{display:flex;align-items:center;gap:.7rem;padding:.5rem .3rem .7rem;border-bottom:1px solid var(--border)}
+.menu-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--prim),var(--sec));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#fff}
+.menu-info{flex:1;min-width:0}
+.menu-name{font-size:.85rem;font-weight:700}
+.menu-email{font-size:.65rem;color:var(--muted)}
+.menu-points-bar{display:flex;align-items:center;gap:.4rem;padding:.4rem .5rem;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:8px;margin:.5rem 0}
+.menu-points-bar i{color:var(--gold)}
+.menu-points-bar span{font-size:.8rem;font-weight:700;color:var(--gold);flex:1}
+.menu-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .5rem;border-radius:10px;color:var(--text);font-size:.8rem;font-weight:500;cursor:pointer;text-decoration:none}
+.menu-item.danger{color:var(--danger)}
+.menu-divider{height:1px;background:var(--border);margin:.3rem 0}
+
+/* ===== BOTTOM NAV ===== */
+nav.nav-mobile{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;background:rgba(10,10,13,.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding:8px 6px calc(10px + env(safe-area-inset-bottom))}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--dim);font-size:.6rem;font-weight:600;padding:6px 0;border-radius:12px;position:relative}
+.nav-item i{font-size:1.15rem}
+.nav-item[data-nav="studio"].active{color:var(--prim)}
+.nav-item[data-nav="studio"].active i{filter:drop-shadow(0 0 8px rgba(139,92,246,.7))}
+.nav-item[data-nav="gallery"].active{color:#3B82F6}
+.nav-item[data-nav="gallery"].active i{filter:drop-shadow(0 0 8px rgba(59,130,246,.6))}
+.nav-item[data-nav="points"].active{color:var(--gold)}
+.nav-item[data-nav="shop"].active{color:var(--success)}
+.nav-item[data-nav="profile"].active{color:var(--sec)}
+.nav-item .badge{position:absolute;top:3px;right:8px;background:var(--danger);color:#fff;font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:6px}
+
+/* ===== FOOTER ===== */
+.site-footer{text-align:center;padding:1.5rem 1rem;color:var(--dim);font-size:.68rem;border-top:1px solid var(--border);margin-top:2rem}
+.site-footer a{color:var(--muted);text-decoration:none;margin:0 .5rem}
+
+/* ===== DESKTOP ===== */
+@media(min-width:768px){
+  .main-content{padding:1.5rem}  .page-title{font-size:2rem}
+  .ref-section{max-width:900px;margin-left:auto;margin-right:auto}
+  nav.nav-mobile{left:50%;right:auto;transform:translateX(-50%);max-width:900px}
+}
+</style>
+</head>
+<body>
+
+<!-- MENU HAMBURGER -->
+<div class="scrim" id="scrim" onclick="closeMenu()"></div>
+<div class="menu" id="menu">
+  <div class="menu-head">
+    <svg viewBox="0 0 100 100"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs><polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g2)"/><text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text></svg>
+    <span class="logo-text">IAPIXORA</span>
+  </div>
+  <button class="m-item" onclick="window.location.href='index.html';closeMenu()"><i>🏠</i>Accueil</button>
+  <button class="m-item" onclick="openLB ? null : null"><i>🖼️</i>Galerie</button>
+  <a class="m-item" href="earn.html" onclick="closeMenu()"><i>💰</i>Gagner des points</a>
+  <a class="m-item" href="shop.html" onclick="closeMenu()"><i>🛍️</i>Boutique</a>
+  <a class="m-item" href="profile.html" onclick="closeMenu()"><i>👤</i>Mon profil</a>
+  <div class="m-sep"></div>
+  <button class="m-item" onclick="alert('FAQ - À ajouter');closeMenu()"><i>❓</i>Questions fréquentes</button>
+  <div class="m-sep"></div>
+  <div class="m-lang">
+    <select id="lang-select" onchange="changeGalleryLang(this.value)">
+      <option value="fr">🇫🇷 Français</option>
+      <option value="en">🇬🇧 English</option>
+    </select>
+  </div>
+  <div class="m-sep"></div>
+  <a class="m-item" href="privacy.html" onclick="closeMenu()"><i>🔒</i>Confidentialité</a>
+</div>
+
+<!-- TOAST -->
+<div class="toast-notification" id="toast"><i class="fas fa-check-circle"></i><span id="toast-text"></span></div>
+
+<!-- SHARE MODAL -->
+<div class="share-modal" id="share-modal">
+  <div class="share-box">
+    <div class="share-header">
+      <h3><i class="fas fa-share-nodes"></i> <span data-i18n="share.title">Partager</span></h3>
+      <button class="share-close" onclick="closeShareModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="share-preview" id="share-preview"></div>
+    <div class="share-category" data-i18n="share.cat_messaging">💬 Messagerie</div>
+    <div class="share-grid">
+      <a class="share-btn" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+      <a class="share-btn" onclick="shareTo('telegram')"><i class="fab fa-telegram"></i>Telegram</a>
+      <a class="share-btn" onclick="shareTo('email')"><i class="fas fa-envelope"></i>Email</a>
+      <a class="share-btn" onclick="copyShareLink()"><i class="fas fa-link"></i>Copier</a>    </div>
+    <div class="share-category" data-i18n="share.cat_social">🌐 Réseaux sociaux</div>
+    <div class="share-grid">
+      <a class="share-btn" onclick="shareTo('twitter')"><i class="fab fa-x-twitter"></i>X</a>
+      <a class="share-btn" onclick="shareTo('facebook')"><i class="fab fa-facebook-f"></i>Facebook</a>
+      <a class="share-btn" onclick="shareTo('instagram')"><i class="fab fa-instagram"></i>Instagram</a>
+      <a class="share-btn" onclick="shareTo('tiktok')"><i class="fab fa-tiktok"></i>TikTok</a>
+      <a class="share-btn" onclick="shareTo('linkedin')"><i class="fab fa-linkedin-in"></i>LinkedIn</a>
+      <a class="share-btn" onclick="shareTo('pinterest')"><i class="fab fa-pinterest-p"></i>Pinterest</a>
+      <a class="share-btn" onclick="shareTo('reddit')"><i class="fab fa-reddit-alien"></i>Reddit</a>
+      <a class="share-btn" onclick="shareTo('threads')"><i class="fab fa-threads"></i>Threads</a>
+    </div>
+    <div class="share-category" data-i18n="share.cat_community">👥 Communautés</div>
+    <div class="share-grid">
+      <a class="share-btn" onclick="shareTo('discord')"><i class="fab fa-discord"></i>Discord</a>
+      <a class="share-btn" onclick="shareTo('snapchat')"><i class="fab fa-snapchat"></i>Snapchat</a>
+      <a class="share-btn" onclick="shareTo('bluesky')"><i class="fas fa-cloud"></i>Bluesky</a>
+      <a class="share-btn" onclick="shareTo('mastodon')"><i class="fab fa-mastodon"></i>Mastodon</a>
+    </div>
+    <div class="share-category" data-i18n="share.cat_regional">🌍 Régionaux</div>
+    <div class="share-grid">
+      <a class="share-btn" onclick="shareTo('wechat')"><i class="fab fa-weixin"></i>WeChat</a>
+      <a class="share-btn" onclick="shareTo('line')"><i class="fab fa-line"></i>LINE</a>
+      <a class="share-btn" onclick="shareTo('kakao')"><i class="fas fa-comment"></i>Kakao</a>
+      <a class="share-btn" onclick="shareTo('vk')"><i class="fab fa-vk"></i>VK</a>
+    </div>
+  </div>
+</div>
+
+<!-- COMMENT MODAL -->
+<div class="comment-modal" id="comment-modal">
+  <div class="comment-box">
+    <h3><i class="fas fa-comment-dots"></i> <span data-i18n="comment.title">Laisser un commentaire</span></h3>
+    <textarea class="comment-input" id="comment-input" data-i18n-placeholder="comment.placeholder" placeholder="Votre commentaire (min. 10 caractères)..."></textarea>
+    <div class="comment-char" id="comment-char">0/10 min</div>
+    <div class="comment-actions">
+      <button class="comment-btn secondary" onclick="closeCommentModal()" data-i18n="comment.cancel">Annuler</button>
+      <button class="comment-btn primary" id="btn-submit-comment" onclick="submitComment()"><i class="fas fa-paper-plane"></i> <span data-i18n="comment.send">Envoyer</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" onclick="closeLB()"><i class="fas fa-times"></i></div>
+  <img id="lb-img" src="" alt="Zoom">
+  <div class="lightbox-actions">
+    <button class="lb-btn" onclick="dlLB()"><i class="fas fa-download"></i> <span data-i18n="lightbox.download">Télécharger</span></button>
+    <button class="lb-btn sec" onclick="closeLB()"><i class="fas fa-compress"></i> <span data-i18n="lightbox.close">Fermer</span></button>
+  </div></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <button class="burger" onclick="openMenu()">☰</button>
+  <a href="index.html" class="header-logo">
+    <svg viewBox="0 0 100 100">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs>
+      <polygon points="50,4 96,38 78,96 22,96 4,38" fill="url(#g)"/>
+      <polygon points="50,4 96,38 50,48" fill="rgba(255,255,255,.18)"/>
+      <polygon points="4,38 50,48 22,96" fill="rgba(0,0,0,.18)"/>
+      <text x="50" y="66" font-size="32" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">PX</text>
+    </svg>
+    <span class="logo-text">IAPIXORA</span>
+  </a>
+  <div class="header-right">
+    <div class="user-stats" id="user-stats"><i class="fas fa-bolt"></i><span id="header-points">0</span></div>
+    <span class="badge-trial" style="background:linear-gradient(135deg,#ea580c,#fb923c);box-shadow:0 0 12px rgba(249,115,22,0.4);">10 essais gratuits</span><div class="user-avatar" id="user-avatar" onclick="toggleUserMenu(event)"><span id="avatar-initial">U</span></div>
+    <button class="btn-auth" id="auth-btn" onclick="window.location.href='index.html'" style="background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;" aria-label="Connexion"><i class="fas fa-user-circle" style="font-size:1.3rem;color:#fb923c;"></i></button>
+    <div class="user-menu" id="user-menu">
+      <div class="menu-header">
+        <div class="menu-avatar" id="menu-avatar">U</div>
+        <div class="menu-info">
+          <div class="menu-name" id="menu-name">Utilisateur</div>
+          <div class="menu-email" id="menu-email">email@example.com</div>
+        </div>
+      </div>
+      <div class="menu-points-bar"><i class="fas fa-bolt"></i><span id="menu-points">0</span><small data-i18n="header.points">points</small></div>
+      <a href="profile.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-user"></i><span data-i18n="menu.profile">Mon profil</span></a>
+      <a href="earn.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-coins"></i><span data-i18n="menu.earn">Gagner des points</span></a>
+      <a href="shop.html" class="menu-item" onclick="closeUserMenu()"><i class="fas fa-shopping-bag"></i><span data-i18n="menu.shop">Mes achats</span></a>
+      <div class="menu-divider"></div>
+      <button class="menu-item danger" onclick="doLogout()" style="width:100%;text-align:left"><i class="fas fa-sign-out-alt"></i><span data-i18n="menu.logout">Déconnexion</span></button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main-content">
+  <h1 class="page-title" data-i18n="gallery.title">Galerie Publique</h1>
+  <p class="page-sub" data-i18n="gallery.subtitle">Découvrez et inspirez-vous des créations permanentes de la communauté IA Pixora</p>
+
+  <div class="results-grid" id="gallery-grid">
+    <div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);">
+      <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem"></i>
+      <p data-i18n="common.loading">Chargement...</p>
+    </div>
+  </div>
+
+  <div class="load-more-wrap">    <div id="gallery-loader" style="display:none;"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    <button id="gallery-more" onclick="loadGallery()" style="display:none;">Voir plus d'images <i class="fas fa-chevron-down"></i></button>
+    <div id="gallery-end" style="display:none;">✔️ Tout est affiché</div>
+  </div>
+
+  <div class="ref-section" id="permanent-gallery">
+    <h2 class="ref-title">
+      <i class="fas fa-star" style="color:#F59E0B;"></i>
+      <span data-i18n="gallery.permanent_title">Créations de référence</span>
+    </h2>
+    <div class="ref-grid">
+      <img class="ref-img" src="/assets/gallery/sample-01.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-01.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-02.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-02.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-03.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-03.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-04.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-04.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-05.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-05.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-06.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-06.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-07.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-07.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-08.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-08.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-09.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-09.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-10.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-10.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-11.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-11.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-12.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-12.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-13.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-13.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-14.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-14.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-15.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-15.jpg')">
+      <img class="ref-img" src="/assets/gallery/sample-16.jpg" alt="" loading="lazy" onclick="openLB('/assets/gallery/sample-16.jpg')">
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <a href="index.html" data-i18n="footer.studio">Accueil</a>
+    <a href="earn.html" data-i18n="footer.points">Gagner</a>
+    <a href="shop.html" data-i18n="footer.shop">Boutique</a>
+    <a href="profile.html" data-i18n="footer.profile">Profil</a>
+    <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
+    <div style="margin-top:.5rem" data-i18n="footer.copyright">© 2026 IA Pixora. Tous droits réservés.</div>
+  </footer>
+</main>
+
+<!-- NAV 5 ONGLETS -->
+<nav class="nav-mobile">
+  <a href="index.html" class="nav-item" data-nav="studio"><i class="fas fa-wand-magic-sparkles"></i><span>Accueil</span></a>
+  <a href="gallery.html" class="nav-item active" data-nav="gallery"><i class="fas fa-images"></i><span data-i18n="nav.gallery">Galerie</span></a>
+  <a href="shop.html" class="nav-item" data-nav="shop"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+  <a href="earn.html" class="nav-item" data-nav="points"><i class="fas fa-coins"></i><span data-i18n="nav.points">Gagner</span><span class="badge" id="nav-points-badge" style="display:none">0</span></a>
+  <a href="#" class="nav-item" data-nav="profile" id="mob-profile" onclick="event.preventDefault();toggleUserMenu(event)"><i class="fas fa-user"></i><span>Profil</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="ads-loader.js"></script>
+<script>
+// ========== MENU ==========
+function openMenu(){document.getElementById('menu').classList.add('open');document.getElementById('scrim').classList.add('on');}
+function closeMenu(){document.getElementById('menu').classList.remove('open');document.getElementById('scrim').classList.remove('on');}
+
+// ========== TON JS EXACT (préservé) ==========
+var GALLERY_I18N = {
+    fr: {
+        header:{login:'Connexion',points:'points'},
+        menu:{profile:'Mon profil',earn:'Gagner des points',shop:'Mes achats',logout:'Déconnexion'},
+        nav:{studio:'Studio',gallery:'Galerie',points:'Gagner'},
+        gallery:{title:'Galerie Publique',subtitle:'Découvrez et inspirez-vous des créations permanentes de la communauté IA Pixora',empty:'Aucune création pour le moment.',empty_cta:'Soyez le premier à générer dans le Studio !',error:'Erreur chargement galerie',permanent_title:'Créations de référence'},
+        comment:{title:'Laisser un commentaire',placeholder:'Votre commentaire (min. 10 caractères)...',cancel:'Annuler',send:'Envoyer',too_short:'Commentaire trop court (min. 10 caractères)',success:'+2 points pour votre commentaire !',already_today:'Vous avez déjà commenté aujourd\'hui',login_required:'Connectez-vous pour commenter'},
+        vote:{success:'+2 points pour votre vote !',already_today:'Vous avez déjà voté aujourd\'hui',already_voted:'Vous avez déjà voté cette création',login_required:'Connectez-vous pour voter'},
+        lightbox:{download:'Télécharger',close:'Fermer'},
+        common:{loading:'Chargement...'},
+        footer:{studio:'Accueil',points:'Gagner',shop:'Boutique',profile:'Profil',privacy:'Confidentialité',copyright:'© 2026 IA Pixora. Tous droits réservés.'},
+        toast:{vote_error:'ERREUR VOTE: ',comment_error:'ERREUR COMMENT: ',gallery_error:'ERREUR GALERIE: '},
+        actions:{remix:'Remix',prompt:'Copier le prompt',remix_success:'✨ Prompt remixé ! Redirection vers le Studio...',prompt_copied:'📋 Prompt copié dans le presse-papier !',prompt_unavailable:'⚠️ Prompt non disponible'},
+        share:{title:'Partager',copy:'Copier',cat_messaging:'💬 Messagerie',cat_social:'🌐 Réseaux sociaux',cat_community:'👥 Communautés',cat_regional:'🌍 Régionaux',text:'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :'}
+    },
+    en: {
+        header:{login:'Login',points:'points'},
+        menu:{profile:'My Profile',earn:'Earn Points',shop:'My Purchases',logout:'Logout'},
+        nav:{studio:'Studio',gallery:'Gallery',points:'Earn'},
+        gallery:{title:'Public Gallery',subtitle:'Discover and get inspired by permanent creations from the IA Pixora community',empty:'No creations yet.',empty_cta:'Be the first to generate in the Studio!',error:'Gallery loading error',permanent_title:'Reference Creations'},
+        comment:{title:'Leave a comment',placeholder:'Your comment (min. 10 characters)...',cancel:'Cancel',send:'Send',too_short:'Comment too short (min. 10 characters)',success:'+2 points for your comment!',already_today:'You already commented today',login_required:'Log in to comment'},
+        vote:{success:'+2 points for your vote!',already_today:'You already voted today',already_voted:'You already voted this creation',login_required:'Log in to vote'},
+        lightbox:{download:'Download',close:'Close'},
+        common:{loading:'Loading...'},
+        footer:{studio:'Home',points:'Earn',shop:'Shop',profile:'Profile',privacy:'Privacy',copyright:'© 2026 IA Pixora. All rights reserved.'},
+        toast:{vote_error:'VOTE ERROR: ',comment_error:'COMMENT ERROR: ',gallery_error:'GALLERY ERROR: '},
+        actions:{remix:'Remix',prompt:'Copy Prompt',remix_success:'✨ Prompt remixed! Redirecting to Studio...',prompt_copied:'📋 Prompt copied to clipboard!',prompt_unavailable:'⚠️ Prompt not available'},
+        share:{title:'Share',copy:'Copy',cat_messaging:'💬 Messaging',cat_social:'🌐 Social Networks',cat_community:'👥 Communities',cat_regional:'🌍 Regional',text:'Check out this AI image created with IA Pixora! Create yours for free:'}
+    }
+};
+
+var currentGalleryLang = 'fr';
+function tGallery(key){var keys=key.split('.');var val=GALLERY_I18N[currentGalleryLang];for(var i=0;i<keys.length;i++){if(val&&typeof val==='object')val=val[keys[i]];else return key}return val||key}
+function applyGalleryTranslations(){document.querySelectorAll('[data-i18n]').forEach(function(el){var key=el.getAttribute('data-i18n');var val=tGallery(key);if(val!==key)el.textContent=val});document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){var key=el.getAttribute('data-i18n-placeholder');var val=tGallery(key);if(val!==key)el.placeholder=val})}
+function changeGalleryLang(lang){currentGalleryLang=lang;localStorage.setItem('pixora_lang',lang);document.documentElement.lang=lang;var sel=document.getElementById('lang-select');if(sel)sel.value=lang;applyGalleryTranslations()}
+function detectGalleryLang(){var saved=localStorage.getItem('pixora_lang');if(saved&&(saved==='fr'||saved==='en'))return saved;var nav=(navigator.language||navigator.userLanguage||'fr').toLowerCase();if(nav.indexOf('en')!==-1)return'en';return'fr'}
+
+var SUPABASE_URL='https://cfwzilhetkclpytjsopu.supabase.co';
+var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmd3ppbGhldGtjbHB5dGpzb3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYxNjgsImV4cCI6MjA5ODkyMjE2OH0.fUAiUlEureXCj2bXJefuVvNoo9ktjDeyKb4VOK7GrEU';
+var db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+var BUCKET='pixora-gallery';
+var lbUrl='';
+var currentCommentFile='';var currentShareUrl='';
+var R2_PUBLIC_URL='https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev';
+
+var VOTE_LIMIT=1;
+var COMMENT_LIMIT=1;
+async function loadTaskLimits(){try{var result=await db.from('admin_config').select('value').eq('key','internal_tasks').single();if(result.data&&result.data.value){var tasks=result.data.value;for(var i=0;i<tasks.length;i++){if(tasks[i].type==='vote'&&tasks[i].active){VOTE_LIMIT=tasks[i].limit||1}if(tasks[i].type==='comment'&&tasks[i].active){COMMENT_LIMIT=tasks[i].limit||1}}}}catch(e){console.error('Load task limits error:',e)}}
+
+function showToast(message,type){type=type||'success';var t=document.getElementById('toast');var icon=type==='error'?'fa-exclamation-circle':'fa-check-circle';t.innerHTML='<i class="fas '+icon+'"></i><span id="toast-text">'+message+'</span>';t.className='toast-notification show '+type;setTimeout(function(){t.classList.remove('show')},5000)}
+
+function toggleUserMenu(e){if(e)e.preventDefault();document.getElementById('user-menu').classList.toggle('show')}
+function closeUserMenu(){document.getElementById('user-menu').classList.remove('show')}
+document.addEventListener('click',function(e){var menu=document.getElementById('user-menu');var avatar=document.getElementById('user-avatar');var mob=document.getElementById('mob-profile');if(!menu.contains(e.target)&&!avatar.contains(e.target)&&!mob.contains(e.target))closeUserMenu()});
+async function doLogout(){await db.auth.signOut();closeUserMenu();updateUI();setTimeout(function(){location.reload()},800)}
+async function getUser(){var r=await db.auth.getUser();return r.data.user}
+async function getUserData(){var u=await getUser();if(!u)return{points:0,streak:1,user_id:null};var r=await db.from('user_data').select('*').eq('user_id',u.id).single();var d=r.data||{points:0,streak:1};d.user_id=u.id;return d}
+async function updateUI(){var logged=await getUser();document.body.classList.toggle('logged',!!logged);document.getElementById('user-stats').classList.toggle('show',!!logged);document.getElementById('user-avatar').classList.toggle('show',!!logged);document.getElementById('auth-btn').style.display=logged?'none':'flex';if(logged){var d=await getUserData();document.getElementById('header-points').textContent=d.points||0;document.getElementById('nav-points-badge').textContent=d.points||0;document.getElementById('nav-points-badge').style.display=d.points>0?'block':'none';document.getElementById('menu-points').textContent=d.points||0;var name=logged.user_metadata&&logged.user_metadata.name?logged.user_metadata.name:'Utilisateur';var initial=name.charAt(0).toUpperCase();document.getElementById('avatar-initial').textContent=initial;document.getElementById('menu-avatar').textContent=initial;document.getElementById('menu-name').textContent=name;document.getElementById('menu-email').textContent=logged.email}}
+
+function openLB(url){lbUrl=url;document.getElementById('lb-img').src=url;document.getElementById('lightbox').style.display='flex';document.body.style.overflow='hidden'}
+function closeLB(){document.getElementById('lightbox').style.display='none';document.body.style.overflow='';lbUrl=''}
+document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB()});
+async function dlLB(){if(!lbUrl)return;try{var r=await fetch(lbUrl);var b=await r.blob();var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}catch(e){window.open(lbUrl,'_blank')}}
+async function dlDirect(btn){var card=btn.closest('.result-card');var img=card.querySelector('img');if(!img||!img.src)return;try{var r=await fetch(img.src);var b=await r.blob();var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='ia-pixora-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}catch(e){window.open(img.src,'_blank')}}
+
+function remixPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){showToast(tGallery('actions.prompt_unavailable'),'error');return}showToast(tGallery('actions.remix_success'),'success');window.location.href='index.html?remix='+encodeURIComponent(prompt)}
+function copyPrompt(card){var prompt=card.getAttribute('data-prompt');if(!prompt){showToast(tGallery('actions.prompt_unavailable'),'error');return}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(function(){showToast(tGallery('actions.prompt_copied'),'success')}).catch(function(){fallbackCopyPrompt(prompt)})}else{fallbackCopyPrompt(prompt)}}
+function fallbackCopyPrompt(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast(tGallery('actions.prompt_copied'),'success')}catch(e){showToast('Copy failed','error')}document.body.removeChild(ta)}
+
+function openShareModal(imgUrl){currentShareUrl=imgUrl;document.getElementById('share-preview').innerHTML='<img src="'+imgUrl+'" alt="Share preview">';document.getElementById('share-modal').classList.add('active');document.body.style.overflow='hidden'}
+function closeShareModal(){document.getElementById('share-modal').classList.remove('active');document.body.style.overflow='';currentShareUrl=''}
+document.getElementById('share-modal').addEventListener('click',function(e){if(e.target===this)closeShareModal()});
+
+function shareTo(network){
+    var shareUrl='https://iapixora.com/api/share?img='+encodeURIComponent(currentShareUrl)+'&lang='+currentGalleryLang;
+    var text=currentGalleryLang==='fr'?'Regarde cette image IA créée avec IA Pixora ! Crée la tienne gratuitement :':'Check out this AI image created with IA Pixora! Create yours for free:';
+    var links={
+        whatsapp:'https://wa.me/?text='+encodeURIComponent(text+' '+shareUrl),
+        telegram:'https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent(text),
+        twitter:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(shareUrl),
+        facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),
+        instagram:'https://www.instagram.com/',
+        tiktok:'https://www.tiktok.com/',
+        linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(shareUrl)+'&description='+encodeURIComponent(text),
+        pinterest:'https://pinterest.com/pin/create/button/?url='+encodeURIComponent(shareUrl)+'&description='+encodeURIComponent(text)+'&media='+encodeURIComponent(currentShareUrl),
+        reddit:'https://www.reddit.com/submit?url='+encodeURIComponent(shareUrl)+'&title='+encodeURIComponent(text),
+        discord:'https://discord.com/',
+        snapchat:'https://www.snapchat.com/',
+        threads:'https://www.threads.net/',
+        bluesky:'https://bsky.app/intent/compose?text='+encodeURIComponent(text+' '+shareUrl),
+        mastodon:'https://mastodon.social/share?text='+encodeURIComponent(text+' '+shareUrl),
+        wechat:'',        line:'https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(shareUrl),
+        kakao:'https://sharer.kakao.com/talk/friends/picker/link?url='+encodeURIComponent(shareUrl),
+        vk:'https://vk.com/share.php?url='+encodeURIComponent(shareUrl)+'&title='+encodeURIComponent(text),
+        email:'mailto:?subject='+encodeURIComponent('IA Pixora')+'&body='+encodeURIComponent(text+' '+shareUrl)
+    };
+    var link=links[network];
+    if(link)window.open(link,'_blank','noopener,noreferrer,width=600,height=400');
+    else copyShareLink();
+}
+
+function copyShareLink(){
+    var shareUrl='https://iapixora.com/api/share?img='+encodeURIComponent(currentShareUrl)+'&lang='+currentGalleryLang;
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(shareUrl).then(function(){showToast('✅ Lien copié !','success')}).catch(function(){fallbackCopyLink(shareUrl)});else fallbackCopyLink(shareUrl)
+}
+function fallbackCopyLink(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast('✅ Lien copié !','success')}catch(e){showToast('Copy failed','error')}document.body.removeChild(ta)}
+
+async function doVote(fileName,btnElement){var user=await getUser();if(!user){showToast(tGallery('vote.login_required'),'error');return}try{var startOfDay=new Date();startOfDay.setHours(0,0,0,0);var todayVotes=await db.from('votes').select('*',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',startOfDay.toISOString());if(todayVotes.error)throw new Error(todayVotes.error.message);if(todayVotes.count>=VOTE_LIMIT){showToast(tGallery('vote.already_today')+' ('+VOTE_LIMIT+'/jour)','error');return}var existing=await db.from('votes').select('id').eq('user_id',user.id).eq('creation_id',fileName).limit(1);if(existing.error)throw new Error(existing.error.message);if(existing.data&&existing.data.length>0){showToast(tGallery('vote.already_voted'),'error');return}var insertRes=await db.from('votes').insert({user_id:user.id,creation_id:fileName});if(insertRes.error)throw new Error(insertRes.error.message);var ud=await getUserData();var newPts=(ud.points||0)+2;var newEarned=(ud.total_earned||0)+2;await Promise.all([db.from('user_data').update({points:newPts,total_earned:newEarned}).eq('user_id',user.id),db.from('transactions').insert({user_id:user.id,type:'earned',title:'Voter pour une création',amount:2}),db.from('task_completions').insert({user_id:user.id,task_name:'Voter pour une création',task_type:'vote',points:2})]);document.getElementById('header-points').textContent=newPts;document.getElementById('menu-points').textContent=newPts;document.getElementById('nav-points-badge').textContent=newPts;if(btnElement){btnElement.classList.add('voted');var countSpan=btnElement.querySelector('.action-count');if(countSpan)countSpan.textContent=parseInt(countSpan.textContent)+1}showToast(tGallery('vote.success'),'success');setTimeout(function(){window.location.href='earn.html?validated=vote'},1500)}catch(e){console.error('Vote error:',e);showToast(tGallery('toast.vote_error')+e.message,'error')}}
+
+function openCommentModal(fileName){currentCommentFile=fileName;document.getElementById('comment-input').value='';document.getElementById('comment-char').textContent='0/10 min';document.getElementById('comment-modal').style.display='flex';document.getElementById('comment-input').focus()}
+function closeCommentModal(){document.getElementById('comment-modal').style.display='none';currentCommentFile=''}
+document.getElementById('comment-modal').addEventListener('click',function(e){if(e.target===this)closeCommentModal()});
+document.getElementById('comment-input').addEventListener('input',function(){var len=this.value.trim().length;document.getElementById('comment-char').textContent=len+'/10 min';document.getElementById('comment-char').style.color=len>=10?'var(--success)':'var(--dim)'});
+
+async function submitComment(){var user=await getUser();if(!user){showToast(tGallery('comment.login_required'),'error');return}var content=document.getElementById('comment-input').value.trim();if(content.length<10){showToast(tGallery('comment.too_short'),'error');return}var btn=document.getElementById('btn-submit-comment');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> ...';try{var startOfDay=new Date();startOfDay.setHours(0,0,0,0);var todayComments=await db.from('comments').select('*',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',startOfDay.toISOString());if(todayComments.error)throw new Error(todayComments.error.message);if(todayComments.count>=COMMENT_LIMIT){showToast(tGallery('comment.already_today')+' ('+COMMENT_LIMIT+'/jour)','error');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>';return}var insertRes=await db.from('comments').insert({user_id:user.id,creation_id:currentCommentFile,content:content});if(insertRes.error)throw new Error(insertRes.error.message);var ud=await getUserData();var newPts=(ud.points||0)+2;var newEarned=(ud.total_earned||0)+2;await Promise.all([db.from('user_data').update({points:newPts,total_earned:newEarned}).eq('user_id',user.id),db.from('transactions').insert({user_id:user.id,type:'earned',title:'Commenter une création',amount:2}),db.from('task_completions').insert({user_id:user.id,task_name:'Commenter une création',task_type:'comment',points:2})]);document.getElementById('header-points').textContent=newPts;document.getElementById('menu-points').textContent=newPts;document.getElementById('nav-points-badge').textContent=newPts;closeCommentModal();showToast(tGallery('comment.success'),'success');setTimeout(function(){window.location.href='earn.html?validated=comment'},1500)}catch(e){console.error('Comment error:',e);showToast(tGallery('toast.comment_error')+e.message,'error')}btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> <span>'+tGallery('comment.send')+'</span>'}
+
+var PAGE_SIZE = 20;
+var galleryOffset = 0;
+var galleryLoading = false;
+var galleryDone = false;
+
+async function loadGallery() {
+  if (galleryLoading || galleryDone) return;
+  galleryLoading = true;
+  var grid = document.getElementById('gallery-grid');
+  var loader = document.getElementById('gallery-loader');
+  var end = document.getElementById('gallery-end');
+  var more = document.getElementById('gallery-more');
+  var firstLoad = (galleryOffset === 0);
+  if (loader) loader.style.display = 'block';
+  if (more) more.style.display = 'none';
+
+  try {
+    var result = await db.from('pixora_creations')
+      .select('file_name,created_at,expires_at,prompt')
+      .order('created_at', { ascending: false })
+      .range(galleryOffset, galleryOffset + PAGE_SIZE - 1);
+
+    if (result.error) throw new Error(result.error.message);
+
+    var items = result.data || [];    if (items.length === 0) {
+      galleryDone = true;
+    } else {
+      galleryOffset += items.length;
+      if (items.length < PAGE_SIZE) galleryDone = true;
+    }
+
+    if (firstLoad) grid.innerHTML = '';
+
+    var now = new Date().toISOString();
+    var validItems = items.filter(function (item) {
+      return !item.expires_at || item.expires_at > now;
+    });
+
+    if (validItems.length > 0) {
+      var user = await getUser();
+      var userId = user ? user.id : null;
+
+      var promises = validItems.map(function (item) {
+        var rawName = item.file_name;
+        var promptText = item.prompt || '';
+        var url = '';
+        var isSupabase = (rawName.indexOf('supabase_') === 0);
+        if (isSupabase) {
+          var realName = rawName.replace('supabase_', '');
+          try {
+            url = db.storage.from(BUCKET).getPublicUrl(realName).data.publicUrl;
+          } catch (e) {
+            return null;
+          }
+        } else {
+          url = R2_PUBLIC_URL + '/' + rawName;
+        }
+        var pVotes = db.from('votes').select('id', { count: 'exact', head: true }).eq('creation_id', rawName);
+        var pComments = db.from('comments').select('id', { count: 'exact', head: true }).eq('creation_id', rawName);
+        var pUserVoted = userId ? db.from('votes').select('id').eq('user_id', userId).eq('creation_id', rawName).limit(1) : Promise.resolve({ data: [] });
+        return Promise.all([pVotes, pComments, pUserVoted]).then(function (results) {
+          return {
+            name: rawName,
+            prompt: promptText,
+            url: url,
+            voteCount: results[0].count || 0,
+            commentCount: results[1].count || 0,
+            userVoted: results[2].data && results[2].data.length > 0
+          };
+        }).catch(function () {
+          return { name: rawName, prompt: promptText, url: url, voteCount: 0, commentCount: 0, userVoted: false };
+        });
+      });
+      var stats = await Promise.all(promises);
+      stats = stats.filter(function (s) { return s !== null; });
+
+      stats.forEach(function (s) {
+        var card = document.createElement('div');
+        card.className = 'result-card';
+        if (s.prompt) card.setAttribute('data-prompt', s.prompt);
+        card.innerHTML = '<img src="' + s.url + '" alt="Création IA Pixora" loading="lazy" onerror="this.parentElement.style.display=\'none\'">' +
+          '<div class="gallery-overlay">' +
+          '<button class="gallery-btn gallery-btn-remix" onclick="event.stopPropagation();remixPrompt(this.closest(\'.result-card\'))" title="' + tGallery('actions.remix') + '"><i class="fas fa-wand-magic-sparkles"></i></button>' +
+          '<button class="gallery-btn gallery-btn-prompt" onclick="event.stopPropagation();copyPrompt(this.closest(\'.result-card\'))" title="' + tGallery('actions.prompt') + '"><i class="fas fa-copy"></i></button>' +
+          '</div>' +
+          '<div class="result-overlay">' +
+          '<button class="action-btn ' + (s.userVoted ? 'voted' : '') + '" onclick="event.stopPropagation();doVote(\'' + s.name + '\',this)" title="Voter"><i class="fas fa-heart"></i><span class="action-count">' + s.voteCount + '</span></button>' +
+          '<button class="action-btn-comment" onclick="event.stopPropagation();openCommentModal(\'' + s.name + '\')" title="Commenter"><i class="fas fa-comment"></i><span class="action-count">' + s.commentCount + '</span></button>' +
+          '<button class="dl-btn" onclick="event.stopPropagation();dlDirect(this)" title="Télécharger"><i class="fas fa-download"></i></button>' +
+          '<button class="share-btn-gallery" onclick="event.stopPropagation();openShareModal(\'' + s.url + '\')" title="Partager"><i class="fas fa-share-nodes"></i></button>' +
+          '</div>';
+        card.onclick = function () { openLB(s.url); };
+        grid.appendChild(card);
+      });
+    }
+
+    if (firstLoad && galleryOffset === 0) {
+      grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--muted);"><i class="fas fa-images" style="font-size:3rem;opacity:0.3;margin-bottom:1rem"></i><p>' + tGallery('gallery.empty') + '<br>' + tGallery('gallery.empty_cta') + '</p></div>';
+    }
+
+    if (galleryDone) {
+      if (end) end.style.display = 'block';
+      if (more) more.style.display = 'none';
+    } else {
+      if (more) more.style.display = 'inline-block';
+    }
+
+    if (!galleryDone && validItems.length === 0) {
+      galleryLoading = false;
+      if (loader) loader.style.display = 'none';
+      loadGallery();
+      return;
+    }
+  } catch (err) {
+    console.error('[GALLERY] ERREUR:', err);
+    showToast(tGallery('toast.gallery_error') + err.message, 'error');
+    if (firstLoad) {
+      grid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="font-size:2rem;margin-bottom:1rem"></i><p>Erreur: ' + err.message + '</p></div>';
+    }
+  }
+
+  galleryLoading = false;
+  if (loader) loader.style.display = 'none';}
+
+document.addEventListener('DOMContentLoaded',async function(){
+  console.log('[GALLERY] Démarrage...');
+  var lang=detectGalleryLang();
+  currentGalleryLang=lang;
+  var sel=document.getElementById('lang-select');
+  if(sel)sel.value=lang;
+  document.documentElement.lang=lang;
+  applyGalleryTranslations();
+  await loadTaskLimits();
+  await updateUI();
+  await loadGallery();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+const fs=require('fs'),path=require('path');
+const MAP={en:{tatouage:'tattoo',animaux:'animals','fond-ecran':'wallpaper',coloriage:'coloring','miniature-youtube':'youtube-thumbnail','couverture-livre':'book-cover',nourriture:'food',mode:'fashion',immobilier:'real-estate',espace:'space',mariage:'wedding'},es:{tatouage:'tatuaje',animaux:'animales','fond-ecran':'fondo-pantalla',coloriage:'colorear','miniature-youtube':'miniatura-youtube','couverture-livre':'portada-libro',decoration:'decoracion',nourriture:'comida',mode:'moda',immobilier:'inmobiliaria',espace:'espacio',mariage:'boda'}};
+var n=0;
+Object.keys(MAP).forEach(function(lang){Object.keys(MAP[lang]).forEach(function(frSlug){var trSlug=MAP[lang][frSlug];var src=path.join('niche',lang,trSlug,'index.html');if(!fs.existsSync(src))return;var html=fs.readFileSync(src,'utf8');var dst=path.join('niche',lang,frSlug);fs.mkdirSync(dst,{recursive:true});fs.writeFileSync(path.join(dst,'index.html'),html);n++})});
+console.log('OK '+n+' alias');
