@@ -1,8 +1,17 @@
 {
   "rewrites": [
-    {
-      "source": "/img/:path*",
-      "destination": "https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/:path*"
-    }
+    { "source": "/img/:path*", "destination": "https://pub-5df218abc5c34ffe8e2a67276fce23d1.r2.dev/:path*" },
+    { "source": "/niche/en/cartoon", "destination": "/niche/en/cartoon/index.html" },
+    { "source": "/niche/es/pixel-art", "destination": "/niche/es/pixel-art/index.html" }
+  ],
+  "redirects": [
+    { "source": "/niche/en/azteque", "destination": "/niche/en/samurai", "permanent": true },
+    { "source": "/niche/es/meme", "destination": "/niche/es/cartoon", "permanent": true },
+    { "source": "/niche/en/meme", "destination": "/niche/en/cartoon", "permanent": true },
+    { "source": "/niche/es/celtique", "destination": "/niche/es/viking", "permanent": true },
+    { "source": "/niche/en/celtique", "destination": "/niche/en/viking", "permanent": true },
+    { "source": "/niche/es/aquarelle", "destination": "/niche/es/acuarela", "permanent": true },
+    { "source": "/niche/en/minimaliste", "destination": "/niche/en/minimalist", "permanent": true },
+    { "source": "/lang/", "destination": "/", "permanent": true }
   ]
 }
