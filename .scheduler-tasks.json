@@ -1,0 +1,36 @@
+[
+  {
+    "name": "GA4 Metrics",
+    "command": "python3 scripts/ga4_metrics.py",
+    "intervalMin": 360,
+    "enabled": true,
+    "timeoutMs": 60000,
+    "lastRun": "2026-09-29T19:56:14.053Z",
+    "runs": 46,
+    "lastStatus": "ok"
+  },
+  {
+    "name": "SEO Enrichissement",
+    "command": "node copilote-seo-massif.cjs",
+    "intervalMin": 1440,
+    "enabled": true,
+    "timeoutMs": 14400000,
+    "lastRun": "2026-09-29T19:52:09.558Z",
+    "runs": 12,
+    "lastStatus": "ok"
+  },
+  {
+    "name": "Régénération HTML",
+    "command": "node gen-niches-pro.cjs",
+    "intervalMin": 1440,
+    "enabled": false,
+    "timeoutMs": 600000
+  },
+  {
+    "name": "Rapport Telegram",
+    "command": "node reporter.cjs",
+    "intervalMin": 1440,
+    "enabled": false,
+    "timeoutMs": 120000
+  }
+]

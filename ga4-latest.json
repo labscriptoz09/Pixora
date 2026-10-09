@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-28",
+  "generated_at": "2026-09-29T19:56:13.696633",
+  "totals": {
+    "sessions": 59,
+    "engaged_sessions": 0,
+    "engagement_pct": 0.0,
+    "total_pageviews": 76
+  },
+  "by_source": [
+    {
+      "source": "(not set)",
+      "sessions": 26,
+      "engaged": 0,
+      "avg_duration": 21.7,
+      "pageviews": 24,
+      "bounce_rate": 100.0
+    },
+    {
+      "source": "(direct)",
+      "sessions": 12,
+      "engaged": 0,
+      "avg_duration": 59.1,
+      "pageviews": 15,
+      "bounce_rate": 100.0
+    },
+    {
+      "source": "google",
+      "sessions": 11,
+      "engaged": 0,
+      "avg_duration": 149.6,
+      "pageviews": 16,
+      "bounce_rate": 100.0
+    },
+    {
+      "source": "images.google",
+      "sessions": 6,
+      "engaged": 0,
+      "avg_duration": 23.0,
+      "pageviews": 12,
+      "bounce_rate": 100.0
+    },
+    {
+      "source": "facebook.com",
+      "sessions": 3,
+      "engaged": 0,
+      "avg_duration": 68.6,
+      "pageviews": 7,
+      "bounce_rate": 100.0
+    },
+    {
+      "source": "bing",
+      "sessions": 1,
+      "engaged": 0,
+      "avg_duration": 23.7,
+      "pageviews": 2,
+      "bounce_rate": 100.0
+    }
+  ]
+}

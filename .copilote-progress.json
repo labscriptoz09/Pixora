@@ -1,0 +1,370 @@
+{
+  "done": [
+    "en/3d",
+    "en/animals",
+    "en/abstract",
+    "en/animaux",
+    "en/anime",
+    "en/avatar",
+    "en/book-cover",
+    "en/cartoon",
+    "en/coloriage",
+    "en/coloring",
+    "en/couverture-livre",
+    "en/cyberpunk",
+    "en/decoration",
+    "en/espace",
+    "en/fantasy",
+    "en/fashion",
+    "en/fond-ecran",
+    "en/food",
+    "en/gothic",
+    "en/graffiti",
+    "en/immobilier",
+    "en/ink",
+    "en/landscape",
+    "en/logo",
+    "en/mariage",
+    "en/miniature-youtube",
+    "en/minimalist",
+    "en/mode",
+    "en/oil",
+    "en/pencil",
+    "en/pixel-art",
+    "en/pop-art",
+    "en/portrait",
+    "en/real-estate",
+    "en/realistic",
+    "en/retro",
+    "en/samurai",
+    "en/space",
+    "en/sticker",
+    "en/tatouage",
+    "en/tattoo",
+    "en/tribal",
+    "en/viking",
+    "en/wallpaper",
+    "en/watercolor",
+    "en/wedding",
+    "en/youtube-thumbnail",
+    "en/zentangle",
+    "es/3d",
+    "es/abstracto",
+    "es/animales",
+    "es/anime",
+    "es/avatar",
+    "es/cartoon",
+    "es/colorear",
+    "es/comida",
+    "es/couverture-livre",
+    "es/cyberpunk",
+    "es/decoracion",
+    "es/decoration",
+    "es/espace",
+    "es/espacio",
+    "es/fantasia",
+    "es/fond-ecran",
+    "es/fondo-pantalla",
+    "es/gotico",
+    "es/graffiti",
+    "es/inmobiliaria",
+    "es/mariage",
+    "es/miniatura-youtube",
+    "es/moda",
+    "es/mode",
+    "es/nourriture",
+    "es/oleo",
+    "es/paisaje",
+    "es/pixel-art",
+    "es/pop-art",
+    "es/portada-libro",
+    "es/realista",
+    "es/retrato",
+    "es/retro",
+    "es/samurai",
+    "es/tatuaje",
+    "es/tribal",
+    "fr/tribal",
+    "fr/viking",
+    "en/nourriture",
+    "es/animaux",
+    "es/boda",
+    "es/coloriage",
+    "es/immobilier",
+    "es/lapiz",
+    "es/logo",
+    "es/miniature-youtube",
+    "es/minimalista",
+    "es/sticker",
+    "es/viking",
+    "es/zentangle",
+    "fr/3d",
+    "fr/animaux",
+    "fr/anime",
+    "fr/cartoon",
+    "fr/coloriage",
+    "fr/couverture-livre",
+    "fr/decoration",
+    "fr/abstrait",
+    "fr/cyberpunk",
+    "fr/fantasy",
+    "fr/fond-ecran",
+    "fr/gothique",
+    "fr/graffiti",
+    "fr/minimaliste",
+    "fr/paysage",
+    "fr/pixel-art",
+    "fr/portrait",
+    "fr/realiste",
+    "fr/retro",
+    "fr/zentangle",
+    "fr/miniature-youtube",
+    "fr/pop-art"
+  ],
+  "errors": [
+    {
+      "key": "en/abstract",
+      "error": "Expected ',' or ']' after array element in JSON at position 623 (line 10 column 8)"
+    },
+    {
+      "key": "en/nourriture",
+      "error": "timeout"
+    },
+    {
+      "key": "es/acuarela",
+      "error": "Unterminated string in JSON at position 922 (line 10 column 161)"
+    },
+    {
+      "key": "es/animaux",
+      "error": "Expected ':' after property name in JSON at position 285 (line 5 column 94)"
+    },
+    {
+      "key": "es/boda",
+      "error": "Unterminated string in JSON at position 890 (line 10 column 177)"
+    },
+    {
+      "key": "es/coloriage",
+      "error": "Unterminated string in JSON at position 977 (line 10 column 232)"
+    },
+    {
+      "key": "es/immobilier",
+      "error": "timeout"
+    },
+    {
+      "key": "es/lapiz",
+      "error": "Expected ':' after property name in JSON at position 287 (line 5 column 104)"
+    },
+    {
+      "key": "es/logo",
+      "error": "Unterminated string in JSON at position 1002 (line 10 column 142)"
+    },
+    {
+      "key": "es/miniature-youtube",
+      "error": "Expected ',' or ']' after array element in JSON at position 804 (line 10 column 96)"
+    },
+    {
+      "key": "es/minimalista",
+      "error": "timeout"
+    },
+    {
+      "key": "es/sticker",
+      "error": "Unterminated string in JSON at position 927 (line 10 column 339)"
+    },
+    {
+      "key": "es/tatouage",
+      "error": "Unexpected end of JSON input"
+    },
+    {
+      "key": "es/tinta",
+      "error": "timeout"
+    },
+    {
+      "key": "es/viking",
+      "error": "Expected ',' or ']' after array element in JSON at position 981 (line 10 column 264)"
+    },
+    {
+      "key": "es/zentangle",
+      "error": "Unterminated string in JSON at position 960 (line 10 column 266)"
+    },
+    {
+      "key": "fr/3d",
+      "error": "timeout"
+    },
+    {
+      "key": "fr/abstrait",
+      "error": "timeout"
+    },
+    {
+      "key": "fr/animaux",
+      "error": "timeout"
+    },
+    {
+      "key": "fr/anime",
+      "error": "socket hang up"
+    },
+    {
+      "key": "fr/avatar",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/cartoon",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/coloriage",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/couverture-livre",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/cyberpunk",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/decoration",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/espace",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/fantasy",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/fond-ecran",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/gothique",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/graffiti",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/immobilier",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/ink",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/logo",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/mariage",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/miniature-youtube",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/minimaliste",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/mode",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/nourriture",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/oil",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/paysage",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/pencil",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/pixel-art",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/pop-art",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/portrait",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/realiste",
+      "error": "connect ECONNREFUSED 127.0.0.1:8081"
+    },
+    {
+      "key": "fr/retro",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/samurai",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/sticker",
+      "error": "Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "key": "fr/tatouage",
+      "error": "Unterminated string in JSON at position 963 (line 10 column 243)"
+    },
+    {
+      "key": "es/acuarela",
+      "error": "Unterminated string in JSON at position 935 (line 10 column 247)"
+    },
+    {
+      "key": "es/tatouage",
+      "error": "Expected ',' or ']' after array element in JSON at position 968 (line 11 column 1)"
+    },
+    {
+      "key": "es/tinta",
+      "error": "Expected ':' after property name in JSON at position 380 (line 5 column 151)"
+    },
+    {
+      "key": "fr/abstrait",
+      "error": "Unterminated string in JSON at position 1003 (line 10 column 264)"
+    },
+    {
+      "key": "fr/avatar",
+      "error": "Unterminated string in JSON at position 928 (line 10 column 164)"
+    },
+    {
+      "key": "fr/cyberpunk",
+      "error": "Unterminated string in JSON at position 1016 (line 10 column 237)"
+    },
+    {
+      "key": "fr/miniature-youtube",
+      "error": "Unterminated string in JSON at position 1115 (line 10 column 228)"
+    },
+    {
+      "key": "fr/pop-art",
+      "error": "Unterminated string in JSON at position 968 (line 10 column 108)"
+    },
+    {
+      "key": "fr/pop-art",
+      "error": "timeout"
+    },
+    {
+      "key": "fr/pop-art",
+      "error": "Unterminated string in JSON at position 1043 (line 10 column 358)"
+    },
+    {
+      "key": "fr/pop-art",
+      "error": "timeout"
+    }
+  ]
+}

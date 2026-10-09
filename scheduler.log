@@ -1,0 +1,1731 @@
+[2026-09-17T20:01:39.782Z] ⏰ Scheduler démarré
+[2026-09-17T20:01:39.862Z] 📋 4 tâches initialisées
+[2026-09-17T20:01:39.866Z]    ✅ GA4 Metrics (360min)
+[2026-09-17T20:01:39.867Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-17T20:01:39.883Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-17T20:01:39.885Z]    ⏸️ Rapport Telegram (1440min)
+[2026-09-17T20:01:39.899Z] 🚀 Exécution: GA4 Metrics
+[2026-09-17T20:01:51.904Z] ✅ GA4 Metrics terminé
+[2026-09-17T20:01:51.910Z] 📋 ✅ GA4 Rapport: 125 sessions, 49.6% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-17T20:01:51.918Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-18T07:53:45.593Z] ⏰ Scheduler démarré
+[2026-09-18T07:53:45.616Z]    ✅ GA4 Metrics (360min)
+[2026-09-18T07:53:45.617Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-18T07:53:45.619Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-18T07:53:45.620Z]    ⏸️ Rapport Telegram (1440min)
+[2026-09-18T07:53:45.624Z] 🚀 Exécution: GA4 Metrics
+[2026-09-18T07:53:51.193Z] ✅ GA4 Metrics terminé
+[2026-09-18T07:53:51.194Z] 📋 ✅ GA4 Rapport: 83 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-18T07:53:51.195Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-18T07:56:18.274Z] ⏰ Scheduler démarré
+[2026-09-18T07:56:18.274Z] ⏰ Scheduler démarré
+[2026-09-18T07:56:18.291Z]    ✅ GA4 Metrics (360min)
+[2026-09-18T07:56:18.291Z]    ✅ GA4 Metrics (360min)
+[2026-09-18T07:56:18.292Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-18T07:56:18.292Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-18T07:56:18.294Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-18T07:56:18.294Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-18T07:56:18.295Z]    ⏸️ Rapport Telegram (1440min)
+[2026-09-18T07:56:18.295Z]    ⏸️ Rapport Telegram (1440min)
+[2026-09-18T07:56:18.299Z] 🚀 Exécution: GA4 Metrics
+[2026-09-18T07:56:18.299Z] 🚀 Exécution: GA4 Metrics
+[2026-09-18T07:56:28.537Z] ✅ GA4 Metrics terminé
+[2026-09-18T07:56:28.537Z] ✅ GA4 Metrics terminé
+[2026-09-18T07:56:28.555Z] 📋 ✅ GA4 Rapport: 83 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-18T07:56:28.555Z] 📋 ✅ GA4 Rapport: 83 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-18T07:56:28.559Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-18T07:56:28.559Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-18T08:47:59.543Z] ✅ SEO Enrichissement terminé
+[2026-09-18T08:47:59.543Z] ✅ SEO Enrichissement terminé
+[2026-09-18T08:47:59.556Z] 📋 ⏭️  en/3d (déjà fait)
+⏭️  en/abstract (déjà fait)
+⏭️  en/animals (déjà fait)
+⏭️  en/animaux_OLD (déjà fait)
+⏭️  en/anime (déjà fait)
+⏭️  en/avatar (déjà fait)
+⏭️  en/book-cover (déjà fait)
+⏭️  en/cartoon (déjà fait)
+⏭️  en/coloriage_OLD (déjà fait)
+⏭️  en/coloring (déjà fait)
+⏭️  en/couverture-livre
+[2026-09-18T08:47:59.556Z] 📋 ⏭️  en/3d (déjà fait)
+⏭️  en/abstract (déjà fait)
+⏭️  en/animals (déjà fait)
+⏭️  en/animaux_OLD (déjà fait)
+⏭️  en/anime (déjà fait)
+⏭️  en/avatar (déjà fait)
+⏭️  en/book-cover (déjà fait)
+⏭️  en/cartoon (déjà fait)
+⏭️  en/coloriage_OLD (déjà fait)
+⏭️  en/coloring (déjà fait)
+⏭️  en/couverture-livre
+/home/userland/Pixora/scheduler.cjs:82
+main().catch(e => log(`❌ Fatal: ${e.message}`));
+      ^
+
+TypeError: Cannot read properties of undefined (reading 'catch')
+    at Object.<anonymous> (/home/userland/Pixora/scheduler.cjs:82:7)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Module._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+
+Node.js v22.22.1
+[2026-09-18T10:47:17.230Z] ⏰ Scheduler démarré
+[2026-09-18T10:47:17.230Z] ⏰ Scheduler démarré
+[2026-09-18T10:47:17.303Z]    ✅ GA4 Metrics (360min)
+[2026-09-18T10:47:17.303Z]    ✅ GA4 Metrics (360min)
+[2026-09-18T10:47:17.305Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-18T10:47:17.305Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-18T10:47:17.306Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-18T10:47:17.306Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-18T10:47:17.309Z]    ⏸️ Rapport Telegram (1440min)
+[2026-09-18T10:47:17.309Z]    ⏸️ Rapport Telegram (1440min)
+/home/userland/Pixora/scheduler.cjs:82
+main().catch(e => log(`❌ Fatal: ${e.message}`));
+      ^
+
+TypeError: Cannot read properties of undefined (reading 'catch')
+    at Object.<anonymous> (/home/userland/Pixora/scheduler.cjs:82:7)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Module._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+
+Node.js v22.22.1
+[2026-09-18T10:49:33.816Z] ⏰ Scheduler démarré
+[2026-09-18T10:49:33.816Z] ⏰ Scheduler démarré
+[2026-09-18T10:49:33.905Z]    ✅ GA4 Metrics (360min)
+[2026-09-18T10:49:33.905Z]    ✅ GA4 Metrics (360min)
+[2026-09-18T10:49:33.907Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-18T10:49:33.907Z]    ✅ SEO Enrichissement (1440min)
+[2026-09-18T10:49:33.910Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-18T10:49:33.910Z]    ⏸️ Régénération HTML (1440min)
+[2026-09-18T10:49:33.913Z]    ⏸️ Rapport Telegram (1440min)
+[2026-09-18T10:49:33.913Z]    ⏸️ Rapport Telegram (1440min)
+[2026-09-18T14:00:47.584Z] 🚀 Exécution: GA4 Metrics
+[2026-09-18T14:00:47.584Z] 🚀 Exécution: GA4 Metrics
+[2026-09-18T14:04:26.659Z] ✅ GA4 Metrics terminé
+[2026-09-18T14:04:26.659Z] ✅ GA4 Metrics terminé
+[2026-09-18T14:04:26.661Z] 📋 ✅ GA4 Rapport: 108 sessions, 3.7% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-18T14:04:26.661Z] 📋 ✅ GA4 Rapport: 108 sessions, 3.7% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-18T20:04:59.246Z] 🚀 Exécution: GA4 Metrics
+[2026-09-18T20:04:59.246Z] 🚀 Exécution: GA4 Metrics
+[2026-09-18T20:05:12.945Z] ✅ GA4 Metrics terminé
+[2026-09-18T20:05:12.945Z] ✅ GA4 Metrics terminé
+[2026-09-18T20:05:12.952Z] 📋 ✅ GA4 Rapport: 88 sessions, 48.9% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-18T20:05:12.952Z] 📋 ✅ GA4 Rapport: 88 sessions, 48.9% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T02:05:39.671Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T02:05:39.671Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T02:05:57.408Z] ✅ GA4 Metrics terminé
+[2026-09-19T02:05:57.408Z] ✅ GA4 Metrics terminé
+[2026-09-19T02:05:57.410Z] 📋 ✅ GA4 Rapport: 71 sessions, 1.4% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T02:05:57.410Z] 📋 ✅ GA4 Rapport: 71 sessions, 1.4% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T08:15:50.740Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T08:15:50.740Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T08:29:53.258Z] ✅ GA4 Metrics terminé
+[2026-09-19T08:29:53.258Z] ✅ GA4 Metrics terminé
+[2026-09-19T08:29:53.261Z] 📋 ✅ GA4 Rapport: 85 sessions, 2.4% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T08:29:53.261Z] 📋 ✅ GA4 Rapport: 85 sessions, 2.4% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T09:10:20.022Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-19T09:10:20.022Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-19T12:15:57.483Z] ❌ SEO Enrichissement: Command failed: node copilote-seo-massif.cjs
+[2026-09-19T12:15:57.483Z] ❌ SEO Enrichissement: Command failed: node copilote-seo-massif.cjs
+[2026-09-19T14:32:13.809Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T14:32:13.809Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T14:34:02.066Z] ✅ GA4 Metrics terminé
+[2026-09-19T14:34:02.066Z] ✅ GA4 Metrics terminé
+[2026-09-19T14:34:02.072Z] 📋 ✅ GA4 Rapport: 91 sessions, 3.3% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T14:34:02.072Z] 📋 ✅ GA4 Rapport: 91 sessions, 3.3% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T20:34:33.415Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T20:34:33.415Z] 🚀 Exécution: GA4 Metrics
+[2026-09-19T20:34:40.524Z] ✅ GA4 Metrics terminé
+[2026-09-19T20:34:40.524Z] ✅ GA4 Metrics terminé
+[2026-09-19T20:34:40.526Z] 📋 ✅ GA4 Rapport: 89 sessions, 28.1% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-19T20:34:40.526Z] 📋 ✅ GA4 Rapport: 89 sessions, 28.1% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-20T02:35:23.896Z] 🚀 Exécution: GA4 Metrics
+[2026-09-20T02:35:23.896Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-20T02:35:29.933Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-20T02:35:29.933Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-20T08:35:44.951Z] 🚀 Exécution: GA4 Metrics
+[2026-09-20T08:35:44.951Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-20T08:35:50.853Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-20T08:35:50.853Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-20T12:23:50.519Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-20T12:23:50.519Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-20T18:13:28.648Z] ✅ SEO Enrichissement terminé
+[2026-09-20T18:13:28.648Z] ✅ SEO Enrichissement terminé
+[2026-09-20T18:13:28.658Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+[4/79] fr/abstrait... RETRY 1/3 (Unterminated string in JSON at position )
+ RETRY 2/3 (Unterminated string in JSON at position )
+ OK: Titre orienté utilisateur + IA + Gratuit + (2026),
+SKIP [5/7
+[2026-09-20T18:13:28.658Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+[4/79] fr/abstrait... RETRY 1/3 (Unterminated string in JSON at position )
+ RETRY 2/3 (Unterminated string in JSON at position )
+ OK: Titre orienté utilisateur + IA + Gratuit + (2026),
+SKIP [5/7
+[2026-09-20T18:13:28.670Z] 🚀 Exécution: GA4 Metrics
+[2026-09-20T18:13:28.670Z] 🚀 Exécution: GA4 Metrics
+[2026-09-20T18:13:34.379Z] ✅ GA4 Metrics terminé
+[2026-09-20T18:13:34.379Z] ✅ GA4 Metrics terminé
+[2026-09-20T18:13:34.380Z] 📋 ✅ GA4 Rapport: 85 sessions, 43.5% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-20T18:13:34.380Z] 📋 ✅ GA4 Rapport: 85 sessions, 43.5% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-21T00:13:47.910Z] 🚀 Exécution: GA4 Metrics
+[2026-09-21T00:13:47.910Z] 🚀 Exécution: GA4 Metrics
+[2026-09-21T00:13:53.456Z] ✅ GA4 Metrics terminé
+[2026-09-21T00:13:53.456Z] ✅ GA4 Metrics terminé
+[2026-09-21T00:13:53.461Z] 📋 ✅ GA4 Rapport: 88 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-21T00:13:53.461Z] 📋 ✅ GA4 Rapport: 88 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-21T06:14:29.230Z] 🚀 Exécution: GA4 Metrics
+[2026-09-21T06:14:29.230Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-21T06:14:34.281Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-21T06:14:34.281Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-21T12:15:12.800Z] 🚀 Exécution: GA4 Metrics
+[2026-09-21T12:15:12.800Z] 🚀 Exécution: GA4 Metrics
+[2026-09-21T12:15:18.319Z] ✅ GA4 Metrics terminé
+[2026-09-21T12:15:18.319Z] ✅ GA4 Metrics terminé
+[2026-09-21T12:15:18.321Z] 📋 ✅ GA4 Rapport: 112 sessions, 1.8% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-21T12:15:18.321Z] 📋 ✅ GA4 Rapport: 112 sessions, 1.8% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-21T18:17:58.201Z] 🚀 Exécution: GA4 Metrics
+[2026-09-21T18:17:58.201Z] 🚀 Exécution: GA4 Metrics
+[2026-09-21T18:18:03.666Z] ✅ GA4 Metrics terminé
+[2026-09-21T18:18:03.666Z] ✅ GA4 Metrics terminé
+[2026-09-21T18:18:03.668Z] 📋 ✅ GA4 Rapport: 102 sessions, 38.2% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-21T18:18:03.668Z] 📋 ✅ GA4 Rapport: 102 sessions, 38.2% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-21T18:18:03.669Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-21T18:18:03.669Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-21T18:53:16.665Z] ✅ SEO Enrichissement terminé
+[2026-09-21T18:53:16.665Z] ✅ SEO Enrichissement terminé
+[2026-09-21T18:53:16.695Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-21T18:53:16.695Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-22T00:18:16.674Z] 🚀 Exécution: GA4 Metrics
+[2026-09-22T00:18:16.674Z] 🚀 Exécution: GA4 Metrics
+[2026-09-22T00:19:14.988Z] ✅ GA4 Metrics terminé
+[2026-09-22T00:19:14.988Z] ✅ GA4 Metrics terminé
+[2026-09-22T00:19:14.990Z] 📋 ✅ GA4 Rapport: 89 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-22T00:19:14.990Z] 📋 ✅ GA4 Rapport: 89 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-22T06:19:51.705Z] 🚀 Exécution: GA4 Metrics
+[2026-09-22T06:19:51.705Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-22T06:19:56.876Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-22T06:19:56.876Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-22T12:20:37.802Z] 🚀 Exécution: GA4 Metrics
+[2026-09-22T12:20:37.802Z] 🚀 Exécution: GA4 Metrics
+[2026-09-22T12:20:46.644Z] ✅ GA4 Metrics terminé
+[2026-09-22T12:20:46.644Z] ✅ GA4 Metrics terminé
+[2026-09-22T12:20:46.645Z] 📋 ✅ GA4 Rapport: 122 sessions, 1.6% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-22T12:20:46.645Z] 📋 ✅ GA4 Rapport: 122 sessions, 1.6% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-22T18:20:57.199Z] 🚀 Exécution: GA4 Metrics
+[2026-09-22T18:20:57.199Z] 🚀 Exécution: GA4 Metrics
+[2026-09-22T18:21:02.953Z] ✅ GA4 Metrics terminé
+[2026-09-22T18:21:02.953Z] ✅ GA4 Metrics terminé
+[2026-09-22T18:21:02.954Z] 📋 ✅ GA4 Rapport: 110 sessions, 41.8% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-22T18:21:02.954Z] 📋 ✅ GA4 Rapport: 110 sessions, 41.8% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-22T18:53:58.862Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-22T18:53:58.862Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-22T19:10:46.699Z] ✅ SEO Enrichissement terminé
+[2026-09-22T19:10:46.699Z] ✅ SEO Enrichissement terminé
+[2026-09-22T19:10:46.705Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-22T19:10:46.705Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-23T00:21:48.607Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T00:21:48.607Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T00:21:54.881Z] ✅ GA4 Metrics terminé
+[2026-09-23T00:21:54.881Z] ✅ GA4 Metrics terminé
+[2026-09-23T00:21:54.883Z] 📋 ✅ GA4 Rapport: 81 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T00:21:54.883Z] 📋 ✅ GA4 Rapport: 81 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T06:36:06.195Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T06:36:06.195Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T06:37:58.837Z] ✅ GA4 Metrics terminé
+[2026-09-23T06:37:58.837Z] ✅ GA4 Metrics terminé
+[2026-09-23T06:37:58.839Z] 📋 ✅ GA4 Rapport: 93 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T06:37:58.839Z] 📋 ✅ GA4 Rapport: 93 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T12:40:53.134Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T12:40:53.134Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T12:40:59.382Z] ✅ GA4 Metrics terminé
+[2026-09-23T12:40:59.382Z] ✅ GA4 Metrics terminé
+[2026-09-23T12:40:59.384Z] 📋 ✅ GA4 Rapport: 112 sessions, 0.9% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T12:40:59.384Z] 📋 ✅ GA4 Rapport: 112 sessions, 0.9% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T18:41:30.178Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T18:41:30.178Z] 🚀 Exécution: GA4 Metrics
+[2026-09-23T18:41:36.082Z] ✅ GA4 Metrics terminé
+[2026-09-23T18:41:36.082Z] ✅ GA4 Metrics terminé
+[2026-09-23T18:41:36.083Z] 📋 ✅ GA4 Rapport: 146 sessions, 0.7% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T18:41:36.083Z] 📋 ✅ GA4 Rapport: 146 sessions, 0.7% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-23T19:11:31.866Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-23T19:11:31.866Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-23T19:29:35.698Z] ✅ SEO Enrichissement terminé
+[2026-09-23T19:29:35.698Z] ✅ SEO Enrichissement terminé
+[2026-09-23T19:29:35.720Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-23T19:29:35.720Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-24T00:41:46.727Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T00:41:46.727Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T00:41:53.409Z] ✅ GA4 Metrics terminé
+[2026-09-24T00:41:53.409Z] ✅ GA4 Metrics terminé
+[2026-09-24T00:41:53.410Z] 📋 ✅ GA4 Rapport: 111 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T00:41:53.410Z] 📋 ✅ GA4 Rapport: 111 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T06:42:04.583Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T06:42:04.583Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T06:42:10.418Z] ✅ GA4 Metrics terminé
+[2026-09-24T06:42:10.418Z] ✅ GA4 Metrics terminé
+[2026-09-24T06:42:10.419Z] 📋 ✅ GA4 Rapport: 127 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T06:42:10.419Z] 📋 ✅ GA4 Rapport: 127 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T12:42:21.058Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T12:42:21.058Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T12:42:27.178Z] ✅ GA4 Metrics terminé
+[2026-09-24T12:42:27.178Z] ✅ GA4 Metrics terminé
+[2026-09-24T12:42:27.182Z] 📋 ✅ GA4 Rapport: 134 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T12:42:27.182Z] 📋 ✅ GA4 Rapport: 134 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T18:42:51.491Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T18:42:51.491Z] 🚀 Exécution: GA4 Metrics
+[2026-09-24T18:42:57.754Z] ✅ GA4 Metrics terminé
+[2026-09-24T18:42:57.754Z] ✅ GA4 Metrics terminé
+[2026-09-24T18:42:57.756Z] 📋 ✅ GA4 Rapport: 174 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T18:42:57.756Z] 📋 ✅ GA4 Rapport: 174 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-24T19:29:53.925Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-24T19:29:53.925Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-24T19:42:31.397Z] ✅ SEO Enrichissement terminé
+[2026-09-24T19:42:31.397Z] ✅ SEO Enrichissement terminé
+[2026-09-24T19:42:31.399Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-24T19:42:31.399Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-25T00:43:34.869Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T00:43:34.869Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T00:43:41.184Z] ✅ GA4 Metrics terminé
+[2026-09-25T00:43:41.184Z] ✅ GA4 Metrics terminé
+[2026-09-25T00:43:41.186Z] 📋 ✅ GA4 Rapport: 145 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T00:43:41.186Z] 📋 ✅ GA4 Rapport: 145 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T06:43:47.818Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T06:43:47.818Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T06:43:54.081Z] ✅ GA4 Metrics terminé
+[2026-09-25T06:43:54.081Z] ✅ GA4 Metrics terminé
+[2026-09-25T06:43:54.083Z] 📋 ✅ GA4 Rapport: 201 sessions, 0.5% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T06:43:54.083Z] 📋 ✅ GA4 Rapport: 201 sessions, 0.5% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T12:44:36.047Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T12:44:36.047Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T12:44:42.801Z] ✅ GA4 Metrics terminé
+[2026-09-25T12:44:42.801Z] ✅ GA4 Metrics terminé
+[2026-09-25T12:44:42.803Z] 📋 ✅ GA4 Rapport: 246 sessions, 0.4% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T12:44:42.803Z] 📋 ✅ GA4 Rapport: 246 sessions, 0.4% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T18:44:56.849Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T18:44:56.849Z] 🚀 Exécution: GA4 Metrics
+[2026-09-25T18:45:03.006Z] ✅ GA4 Metrics terminé
+[2026-09-25T18:45:03.006Z] ✅ GA4 Metrics terminé
+[2026-09-25T18:45:03.008Z] 📋 ✅ GA4 Rapport: 245 sessions, 25.3% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T18:45:03.008Z] 📋 ✅ GA4 Rapport: 245 sessions, 25.3% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-25T19:43:23.068Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-25T19:43:23.068Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-25T19:43:24.175Z] ✅ SEO Enrichissement terminé
+[2026-09-25T19:43:24.175Z] ✅ SEO Enrichissement terminé
+[2026-09-25T19:43:24.177Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-25T19:43:24.177Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-26T00:45:11.605Z] 🚀 Exécution: GA4 Metrics
+[2026-09-26T00:45:11.605Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-26T00:45:16.748Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-26T00:45:16.748Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-26T06:45:29.335Z] 🚀 Exécution: GA4 Metrics
+[2026-09-26T06:45:29.335Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-26T06:45:34.343Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-26T06:45:34.343Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-26T12:45:57.900Z] 🚀 Exécution: GA4 Metrics
+[2026-09-26T12:45:57.900Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-26T12:46:02.702Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-26T12:46:02.702Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-26T18:46:08.260Z] 🚀 Exécution: GA4 Metrics
+[2026-09-26T18:46:08.260Z] 🚀 Exécution: GA4 Metrics
+[2026-09-26T18:46:20.983Z] ✅ GA4 Metrics terminé
+[2026-09-26T18:46:20.983Z] ✅ GA4 Metrics terminé
+[2026-09-26T18:46:20.985Z] 📋 ✅ GA4 Rapport: 216 sessions, 0.5% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-26T18:46:20.985Z] 📋 ✅ GA4 Rapport: 216 sessions, 0.5% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-26T19:43:48.289Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-26T19:43:48.289Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-26T19:43:49.670Z] ✅ SEO Enrichissement terminé
+[2026-09-26T19:43:49.670Z] ✅ SEO Enrichissement terminé
+[2026-09-26T19:43:49.671Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-26T19:43:49.671Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-27T00:47:07.953Z] 🚀 Exécution: GA4 Metrics
+[2026-09-27T00:47:07.953Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-27T00:47:13.194Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T00:47:13.194Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T06:47:27.229Z] 🚀 Exécution: GA4 Metrics
+[2026-09-27T06:47:27.229Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-27T06:47:32.347Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T06:47:32.347Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T12:53:22.026Z] 🚀 Exécution: GA4 Metrics
+[2026-09-27T12:53:22.026Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-27T12:53:27.908Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T12:53:27.908Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T18:53:56.686Z] 🚀 Exécution: GA4 Metrics
+[2026-09-27T18:53:56.686Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-27T18:54:01.696Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T18:54:01.696Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-27T19:43:59.450Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-27T19:43:59.450Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-27T19:44:01.037Z] ✅ SEO Enrichissement terminé
+[2026-09-27T19:44:01.037Z] ✅ SEO Enrichissement terminé
+[2026-09-27T19:44:01.038Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-27T19:44:01.038Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-28T00:54:05.519Z] 🚀 Exécution: GA4 Metrics
+[2026-09-28T00:54:05.519Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-28T00:54:10.673Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T00:54:10.673Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T06:54:26.384Z] 🚀 Exécution: GA4 Metrics
+[2026-09-28T06:54:26.384Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-28T06:54:31.016Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T06:54:31.016Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T13:05:13.995Z] 🚀 Exécution: GA4 Metrics
+[2026-09-28T13:05:13.995Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-28T13:09:28.440Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T13:09:28.440Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T19:41:56.987Z] 🚀 Exécution: GA4 Metrics
+[2026-09-28T19:41:56.987Z] 🚀 Exécution: GA4 Metrics
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 331, in _with_call
+    return call.result(), call
+           ~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 447, in result
+    raise self
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_interceptor.py", line 314, in continuation
+    response, call = self._thunk(new_method).with_call(
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=new_compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 1182, in with_call
+    return _end_unary_response_blocking(state, call, True, None)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+	debug_error_string = "UNAVAILABLE:errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]"
+>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 75, in <module>
+    get_metrics()
+    ~~~~~~~~~~~^^
+  File "/home/userland/Pixora/scripts/ga4_metrics.py", line 38, in get_metrics
+    response = client.run_report(request)
+  File "/usr/local/lib/python3.14/dist-packages/google/analytics/data_v1beta/services/beta_analytics_data/client.py", line 836, in run_report
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/gapic_v1/method.py", line 373, in __call__
+    result = wrapped_func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ServiceUnavailable: 503 errors resolving analyticsdata.googleapis.com:443: [field:hostname lookup error:address lookup failed for analyticsdata.googleapis.com:443: Could not contact DNS servers]
+[2026-09-28T19:49:17.809Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T19:49:17.809Z] ❌ GA4 Metrics: Command failed: python3 scripts/ga4_metrics.py
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
+    return callable_(*args, **kwargs)
+  File "/usr/local/lib/python3.14/dist-packages/grpc/_intercep
+[2026-09-28T19:49:17.814Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-28T19:49:17.814Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-28T19:51:08.648Z] ✅ SEO Enrichissement terminé
+[2026-09-28T19:51:08.648Z] ✅ SEO Enrichissement terminé
+[2026-09-28T19:51:08.649Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-28T19:51:08.649Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-29T01:49:52.224Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T01:49:52.224Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T01:49:58.046Z] ✅ GA4 Metrics terminé
+[2026-09-29T01:49:58.046Z] ✅ GA4 Metrics terminé
+[2026-09-29T01:49:58.047Z] 📋 ✅ GA4 Rapport: 13 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-29T01:49:58.047Z] 📋 ✅ GA4 Rapport: 13 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-29T07:50:10.251Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T07:50:10.251Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T07:50:15.858Z] ✅ GA4 Metrics terminé
+[2026-09-29T07:50:15.858Z] ✅ GA4 Metrics terminé
+[2026-09-29T07:50:15.859Z] 📋 ✅ GA4 Rapport: 23 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-29T07:50:15.859Z] 📋 ✅ GA4 Rapport: 23 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-29T13:55:12.142Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T13:55:12.142Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T13:55:22.342Z] ✅ GA4 Metrics terminé
+[2026-09-29T13:55:22.342Z] ✅ GA4 Metrics terminé
+[2026-09-29T13:55:22.343Z] 📋 ✅ GA4 Rapport: 46 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-29T13:55:22.343Z] 📋 ✅ GA4 Rapport: 46 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-29T19:52:08.320Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-29T19:52:08.320Z] 🚀 Exécution: SEO Enrichissement
+[2026-09-29T19:52:09.554Z] ✅ SEO Enrichissement terminé
+[2026-09-29T19:52:09.554Z] ✅ SEO Enrichissement terminé
+[2026-09-29T19:52:09.556Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-29T19:52:09.556Z] 📋 Chargement: 79 niches depuis valid_urls.json
+SKIP [1/79] fr/3d
+SKIP [2/79] es/3d
+SKIP [3/79] es/abstracto
+SKIP [4/79] fr/abstrait
+SKIP [5/79] es/animales
+SKIP [6/79] es/anime
+SKIP [7/79] es/avatar
+SKIP [8/79] es/boda
+SKIP [9/79] en/book-cover
+SKIP [10/79] fr/cartoon
+SKIP [11/79] en/cartoon
+SKIP [12/
+[2026-09-29T19:56:08.508Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T19:56:08.508Z] 🚀 Exécution: GA4 Metrics
+[2026-09-29T19:56:14.051Z] ✅ GA4 Metrics terminé
+[2026-09-29T19:56:14.051Z] ✅ GA4 Metrics terminé
+[2026-09-29T19:56:14.052Z] 📋 ✅ GA4 Rapport: 59 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json
+[2026-09-29T19:56:14.052Z] 📋 ✅ GA4 Rapport: 59 sessions, 0.0% engagement
+📄 Sauvegardé: /home/userland/Pixora/scripts/../ga4-latest.json

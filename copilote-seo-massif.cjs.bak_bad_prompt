@@ -1,0 +1,98 @@
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const LLAMA_API = 'http://127.0.0.1:8081/v1/chat/completions';
+const NICHE_DIR = path.join(__dirname, 'niche');
+const MODEL = '/home/userland/llama.cpp/models/qwen2.5-3b.gguf';
+const RESULTS_FILE = path.join(__dirname, 'copilote-seo-all.json');
+const PROGRESS_FILE = path.join(__dirname, '.copilote-progress.json');
+
+function loadProgress() {
+  try { return JSON.parse(fs.readFileSync(PROGRESS_FILE, 'utf8')); }
+  catch { return { done: [], errors: [] }; }
+}
+function saveProgress(p) { fs.writeFileSync(PROGRESS_FILE, JSON.stringify(p)); }
+
+async function generateSEO(nicheSlug, lang) {
+  const prompt = `Tu es un expert SEO. Génère pour la niche "${nicheSlug}" en langue "${lang}":
+1. Un titre SEO (max 60 caractères, mot-clé principal au début)
+2. Une meta description (max 155 caractères, CTA inclus)
+3. 5 mots-clés longue traîne pertinents
+4. Un paragraphe d'introduction SEO de 150 mots
+Réponds UNIQUEMENT en JSON valide:
+{"title":"...","meta":"...","keywords":["...","...","...","...","..."],"intro":"..."}`;
+
+  const data = JSON.stringify({
+    model: MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.7, max_tokens: 500
+  });
+
+  return new Promise((resolve, reject) => {
+    const req = http.request(LLAMA_API, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }
+    }, (res) => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(body);
+          resolve(JSON.parse(json.choices[0].message.content));
+        } catch (e) { reject(e); }
+      });
+    });
+    req.on('error', reject);
+    req.write(data);
+    req.end();
+  });
+}
+async function main() {
+  const progress = loadProgress();
+  const langs = ['en', 'es', 'fr'];
+  const allResults = [];
+  let count = 0, errors = 0;
+
+  for (const lang of langs) {
+    const langDir = path.join(NICHE_DIR, lang);
+    if (!fs.existsSync(langDir)) continue;
+    const slugs = fs.readdirSync(langDir).filter(f =>
+      fs.statSync(path.join(langDir, f)).isDirectory()
+    );
+
+    for (const slug of slugs) {
+      const key = `${lang}/${slug}`;
+      if (progress.done.includes(key)) {
+        console.log(`⏭️  ${key} (déjà fait)`);
+        continue;
+      }
+
+      console.log(`⏳ [${++count}] ${key}...`);
+      try {
+        const seo = await generateSEO(slug, lang);
+        allResults.push({ lang, slug, ...seo, generatedAt: new Date().toISOString() });
+        progress.done.push(key);
+        saveProgress(progress);
+        console.log(`✅ ${key}: "${seo.title}"`);
+      } catch (e) {
+        errors++;
+        progress.errors.push({ key, error: e.message });
+        saveProgress(progress);
+        console.log(`❌ ${key}: ${e.message}`);
+      }
+    }
+  }
+
+  // Fusionner avec résultats précédents
+  let existing = [];
+  try { existing = JSON.parse(fs.readFileSync(RESULTS_FILE, 'utf8')); } catch {}
+  const merged = [...existing, ...allResults];
+  fs.writeFileSync(RESULTS_FILE, JSON.stringify(merged, null, 2));
+
+  console.log(`\n═══════════════════════════════════`);
+  console.log(`📊 TERMINÉ: ${merged.length} niches enrichies`);
+  console.log(`❌ Erreurs: ${errors}`);
+  console.log(`📄 Fichier: ${RESULTS_FILE}`);
+  console.log(`═══════════════════════════════════`);
+}
+main().catch(console.error);
